@@ -3,6 +3,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+aicespana/migrations/
+static/
+manage.py
+AIC_Espana/settings.py
+AIC_Espana/wsgi.py
+AIC_Espana/asgi.py
 # C extensions
 *.so
 
