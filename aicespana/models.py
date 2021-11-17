@@ -24,10 +24,12 @@ class ActividadManager(models.Manager):
 
 class Actividad(models.Model):
     nombreActividad = models.CharField(max_length=200)
-    domicilioSocial = models.CharField(max_length=200)
+    calle = models.CharField(max_length=40, null=True, blank = True)
+    poblacion = models.CharField(max_length=40, null=True, blank = True)
+    provincia = models.CharField(max_length=20, null=True, blank = True)
 
     def __str__ (self):
-        return '%s' %(self.activity_name)
+        return '%s' %(self.nombreActividad)
 
 
 class Proyecto(models.Model):
@@ -87,6 +89,14 @@ class TipoColaboracion(models.Model):
         return '%s' %(self.tipoColaboracion)
 
 
+class PersonalExternoManager(models.Manager):
+    def create_new_external_pesonel(self, data):
+        new_ext_personel = self.create(nombre = data['nombre'], apellido = data['apellidos'], calle = data['calle'],
+                poblacion = data['poblacion'], provincia = data['provincia'], codigoPostal = data['codigo'],
+                DNI = data['nif'], fechaNacimiento = data['nacimiento'], email = data['email'], telefonoFijo = data['fijo'],
+                telefonoMovil = data['movil'] )
+        return new_ext_personel
+
 class PersonalExterno(models.Model):
     grupoAsociado = models.ForeignKey(
                         Grupo,
@@ -115,6 +125,11 @@ class PersonalExterno(models.Model):
     telefonoFijo = models.CharField(max_length=20, null=True, blank = True)
     telefonoMovil = models.CharField(max_length=40, null=True, blank = True)
 
+    def __str__ (self):
+        return '%s,%s' %(self.nombre, self.apellido)
+
+
+    objects = PersonalExternoManager()
 
 class PersonalIglesia(models.Model):
     cargo = models.ForeignKey(

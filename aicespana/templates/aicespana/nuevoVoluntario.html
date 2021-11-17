@@ -1,0 +1,116 @@
+{% extends 'aicespana/base.html' %}
+{% load static %}
+{% block content %}
+<style media="screen">
+	.form-group.required .control-label:after {
+	  content:"  *";
+	  color:red;
+	}
+</style>
+
+{% if confirmation_data %}
+	<div class="container-md">
+		<div class="row g-3"">
+			<div class="col-md-10">
+				<div class="card">
+					<div class="card-header"><h2 style="text-align:center">Datos Guardados</h2> </div>
+					<div class="card-body">
+						<p style="text-align:center">Los datos de {{confirmation_data.nombre}} {{confirmation_data.apellidos}} se han guardado correctamente</p>
+					</div> <!-- end card -->
+				</div> <!-- end card body -->
+		    </div> <!-- end col-md-10 -->
+		</div> <!-- end row-->
+	</div> <!-- end container -->
+	<div class="container-md">
+		<div class="row g-3"">
+			<div class="col-md-10">
+				<div class="card">
+					<p>Para dar de alta un nuevo voluntario hacer click en el boton de abajo</p>
+					<br><br>
+					<div class="text-center">
+						<a href="/nuevoVoluntario"> <button type="button" class="btn btn-outline-secondary float-center" >Añadir un nuevo Voluntario</button> </a>
+					</div> <!-- end text center -->
+				</div> <!-- end card -->
+			</div> <!-- end card body -->
+		</div> <!-- end col-md-10 -->
+	</div> <!-- end row-->
+</div> <!-- end container -->
+
+{% else %}
+	<section class="light">
+		<div class="container md-8">
+			<h1 class="h1 text-center" id="pageHeaderTitle">Formulario de alta</h1>
+	    </div>
+	</section>
+	<div class="container-md">
+	    <div class="row g-3"">
+	        <div class="col-md-10">
+	            <div class="card">
+	                    <div class="card-body">
+	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="altaVoluntario" id="altaVoluntario" >
+	                        {% csrf_token %}
+	                        <input type="hidden" name="action" value="altaVoluntario"/>
+							<div class="form-group required">
+		                        <div class="col-md-5">
+		                            <label class="control-label " for="nombre">Nombre</label>
+		                            <input type="text" required class="form-control" id="nombre", name='nombre'>
+		                        </div>
+
+		                        <div class="col-md-5">
+		                            <label for="apellidos"  class="control-label">Apellidos</label>
+		                            <input type="text" required class="form-control" id="apellidos" name='apellidos'>
+		                        </div>
+		                        <div class="col-md-5">
+		                            <label for="nif"  class="control-label">NIF/NIE</label>
+		                            <input type="text" required class="form-control" id="nif" name='nif'>
+		                        </div>
+							</div>
+	                        <div class="col-md-5">
+	                            <label for="nacimiento" class="form-label">Fecha de Nacimiento</label>
+	                            <input type="date" class="form-control" id="nacimiento" name='nacimiento'>
+	                        </div>
+
+	                        <div class="col-md-12">
+	                            <label for="calle" class="form-label">Calle</label>
+	                            <input type="text" class="form-control" id="calle" name='calle' placeholder="Indicar la calle">
+	                        </div>
+	                        <div class="col-md-6">
+	                            <label for="poblacion" class="form-label">Población</label>
+	                            <input type="text" class="form-control" id="poblacion" name='poblacion'>
+	                        </div>
+	                        <div class="col-md-4">
+	                            <label for="provincia" class="form-label">Provincia</label>
+	                            <select id="provincia" class="form-select" name='provincia'>
+	                                <option selected value=''>Selecionar</option>
+	                                <option>Madrid</option>
+	                            </select>
+	                        </div>
+	                        <div class="col-md-2">
+	                            <label for="codigo" class="form-label">Código Postal</label>
+	                            <input type="text" class="form-control" id="codigo" name='codigo'>
+	                        </div>
+	                        <div class="col-12">
+	                            <label for="email" class="form-label">email</label>
+	                            <input type="email" required class="form-control" id="email" name='email'>
+	                        </div>
+	                        <div class="col-md-6">
+	                            <label for="fijo" class="form-label">Telefono Fijo</label>
+	                            <input type="text" class="form-control" id="fijo" name='fijo'>
+	                        </div>
+	                        <div class="col-md-6">
+	                            <label for="movil" class="form-label">Telefono Movil</label>
+	                            <input type="tel" class="form-control" id="movil" name='movil'>
+	                        </div>
+	                        <div class="col-12">
+	                            <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
+	                            <button type="submit" class="btn-outline-primary float-end ">Guardar datos</button>
+	                        </div>
+	                    </form>
+						<p>Los campos con * son obligatorios</p>
+	                </div>
+	            </div>
+	        </div> <!-- end col-md-10 -->
+	    </div> <!-- end row-->
+	</div> <!-- end container -->
+{% endif %}
+{% endblock %}

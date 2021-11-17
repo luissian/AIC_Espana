@@ -24,7 +24,10 @@ class ProyectoAdmin(admin.ModelAdmin):
     list_display = ['nombreProyecto', 'poblacion', 'provincia']
 
 class ActividadAdmin(admin.ModelAdmin):
-    list_display = ['nombreActividad', 'domicilioSocial']
+    list_display = ['nombreActividad',  'poblacion', 'provincia']
+
+class PersonalExternoAdmin(admin.ModelAdmin):
+    list_display = ['nombre', 'apellido', 'DNI', 'fechaNacimiento']
 
 admin.site.register(EntidadesConCargo , EntidadesConCargoAdmin)
 admin.site.register(Cargo, CargoAdmin)
@@ -34,3 +37,4 @@ admin.site.register(Parroquia, ParroquiaAdmin)
 admin.site.register(Grupo, GrupoAdmin)
 admin.site.register(Proyecto, ProyectoAdmin)
 admin.site.register(Actividad, ActividadAdmin)
+admin.site.register(PersonalExterno,PersonalExternoAdmin)
