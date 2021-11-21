@@ -12,7 +12,7 @@ class Cargo(models.Model):
     entidadCargo = models.ForeignKey(
                         EntidadesConCargo,
                         on_delete=models.CASCADE)
-    nombreCargo = models.CharField(max_length=20)
+    nombreCargo = models.CharField(max_length=50)
 
     def __str__(self):
         return '%s,%s' %(self.entidadCargo , self.nombreCargo)
