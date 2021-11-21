@@ -17,6 +17,9 @@ class Cargo(models.Model):
     def __str__(self):
         return '%s,%s' %(self.entidadCargo , self.nombreCargo)
 
+    def get_responsability_name(self):
+        return '%s' %(self.nombreCargo)
+
 class ActividadManager(models.Manager):
     def create_actividad(self,data):
 
@@ -31,6 +34,9 @@ class Actividad(models.Model):
     def __str__ (self):
         return '%s' %(self.nombreActividad)
 
+    def get_activity_name (self):
+        return '%s' %(self.nombreActividad)
+
 
 class Proyecto(models.Model):
     nombreProyecto = models.CharField(max_length=80)
@@ -42,11 +48,17 @@ class Proyecto(models.Model):
     def __str__(self):
         return '%s' %(self.nombreProyecto)
 
+    def get_project_name(self):
+        return '%s' %(self.nombreProyecto)
+
 class Delegacion(models.Model):
     nombreDelegacion = models.CharField(max_length=20)
 
 
     def __str__(self):
+        return '%s' %(self.nombreDelegacion)
+
+    def get_delegacion_name(self):
         return '%s' %(self.nombreDelegacion)
 
 
@@ -81,11 +93,17 @@ class Grupo(models.Model):
     def __str__ (self):
         return '%s' %(self.nombreGrupo)
 
+    def get_group_name (self):
+        return '%s' %(self.nombreGrupo)
+
 
 class TipoColaboracion(models.Model):
     tipoColaboracion = models.CharField(max_length=40)
 
     def __str__ (self):
+        return '%s' %(self.tipoColaboracion)
+
+    def get_collaboration_name (self):
         return '%s' %(self.tipoColaboracion)
 
 
@@ -127,6 +145,15 @@ class PersonalExterno(models.Model):
 
     def __str__ (self):
         return '%s,%s' %(self.nombre, self.apellido)
+
+    def get_personal_id(self):
+        return '%s' %(self.pk)
+
+    def get_personal_name(self):
+        return '%s,%s' %(self.nombre, self.apellido)
+
+    def get_personal_location(self):
+        return '%s' %(self.location)
 
 
     objects = PersonalExternoManager()

@@ -1,0 +1,49 @@
+{% extends 'aicespana/base.html' %}
+{% load static %}
+{% block content %}
+<script type="text/javascript" src="{% static 'aicespana/js/aicespana.js' %}"></script>
+{% if  delegaciones %}
+
+	<div class="container-md">
+		<div class="row g-3"">
+			<div class="col-md-6">
+				<div class="card">
+					<div class="card-header"><h2 style="text-align:center">Listado de Delegaciones</h2> </div>
+					<div class="card-body">
+						<button onclick="exportTableToExcel('runsFound')" class="btn float-end">Guardar Tabla en Excel <i class="bi bi-download"></i></button>
+						<div class="table-wrapper">
+			                <table id="runsFound" class="table table-hover mb-0">
+			                    <thead>
+			                        <tr>
+										<th>Delegación</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for delegacion in delegaciones %}
+										<tr>
+											<td>{{delegacion}}</td>
+										</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div> <!--  end of table wrapper  -->
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+			</div> <!-- end col-md-8 -->
+		</div> <!-- end row-->
+	</div> <!-- end container -->
+
+{% else %}
+	<div class="container sm-8">
+		<div class="card border-danger mb-3" style="max-width: 68rem;">
+			<div class="card-header" style="text-align:center">Listado delegaciones</div>
+			<div class="card-body">
+			   <h5 class="card-title" style="text-align:center">No hay ninguna delegación definida</h5>
+			   <p class="card-text">.</p>
+			</div>
+
+		</div> <!-- end card  -->
+	</div> <!-- end container -->
+
+{% endif %}
+{% endblock %}
