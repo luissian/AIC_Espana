@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 
 aicespana/migrations/
+memorias_de_proyectos/
 static/
 manage.py
 AIC_Espana/settings.py

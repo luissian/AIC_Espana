@@ -13,7 +13,7 @@
 		<div class="row g-3"">
 			<div class="col-md-10">
 				<div class="card-danger">
-					<div class="card-header"><h2 style="text-align:center">Voluntario no encontrado</h2> </div>
+					<div class="card-header"><h2 style="text-align:center">El voluntario no se encuentra en la base de datos</h2> </div>
 					<div class="card-body">
 						{% for values in ERROR %}
 							<h4>{{values}}</h4>
@@ -55,11 +55,277 @@
 		</div> <!-- end row-->
 	</div> <!-- end container -->
 
+{% elif personal_available_settings %}
+	<div class="container-md">
+		<div class="row g-3"">
+			<div class="col-md-10">
+				<div class="card">
+					<div class="card-header"><h2 style="text-align:center">Información de {{personal_available_settings.name}}</h2> </div>
+					<div class="card-body">
+						<div class="col-md-6">
+							{% if personal_available_settings.responsability != '' %}
+									<p style="text-align:center">{{personal_available_settings.name}} tiene el cargo de {{personal_available_settings.responsability}}</p>
+							{% else %}
+								<p style="text-align:center">{{personal_available_settings.name}} no tiene acualmente ningún cargo</p>
+							{% endif %}
+							<br><br>
+							{% if personal_available_settings.collaboration != '' %}
+								<p style="text-align:center">{{personal_available_settings.name}} es un {{personal_available_settings.collaboration}}</p>
+							{% else %}
+								<p style="text-align:center">{{personal_available_settings.name}} no se le ha asignado ningun tipo de colabración</p>
+							{% endif %}
+						</div> <!-- end col-md-10 -->
+						<div class="col-md-10">
+							<table class="table table-hover">
+								<tbody>
+									<tr>
+										<td>Grupo</td>
+										<td>
+											{% if personal_available_settings.group != '' %}
+												{{personal_available_settings.group}}
+											{% else %}
+												Sin asignar
+											{% endif %}
+										</td>
+									</tr>
+									<tr>
+										<td>Parroquia</td>
+										<td>
+											{% if personal_available_settings.parroquia != '' %}
+												{{personal_available_settings.parroquia}}
+											{% else %}
+												Sin asignar
+											{% endif %}
+										</td>
+									</tr>
+									<tr>
+										<td>Diocesis</td>
+										<td>
+											{% if personal_available_settings.diocesis != '' %}
+												{{personal_available_settings.diocesis}}
+											{% else %}
+												Sin asignar
+											{% endif %}
+										</td>
+									</tr>
+									<tr>
+										<td>Delegación</td>
+										<td>
+											{% if personal_available_settings.delegacion %}
+												{{personal_available_settings.delegacion}}
+											{% else %}
+												Sin asignar
+											{% endif %}
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div> <!-- end col-md-10 -->
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+			</div> <!-- end col-md-10 -->
+		</div> <!-- end row-->
+	</div> <!-- end container -->
+	<br>
+	<div class="container-md">
+	    <div class="row g-3"">
+	        <div class="col-md-10">
+	            <div class="card">
+					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Formulario para asignar cargos</h3></div>
+                    <div class="card-body">
+	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="asignarCargos" id="asignarCargos" >
+	                        {% csrf_token %}
+	                        <input type="hidden" name="action" value="asignarCargos"/>
+							<input type="hidden" name="user_id" value="{{personal_available_settings.user_id}}"/>
+								<br>
+		                        <div class="col-md-10">
+		                            <label  class="control-label col-md-3" for="grupo">Seleciona el Grupo</label>
+									<select name="grupo" id="grupo" class="col-md-6">
+										<option value="">Sin determinar</option>
+										{% for id, group, parroquia  in personal_available_settings.available_groups %}
+											<option value="{{id}}">{{group}} en {{parroquia}}</option>
+										{% endfor %}
+									</select>
+
+		                        </div>
+								<br>
+								<div class="col-md-10">
+		                            <label for="proyecto"  class="control-label col-md-3">Seleciona el proyecto</label>
+									<select name="proyecto" id="proyecto" class="col-md-6">
+										<option value="">Sin determinar</option>
+										{% for id, project  in personal_available_settings.available_projects %}
+											<option value="{{id}}">{{project}} </option>
+										{% endfor %}
+									</select>
+								</div>
+								<br>
+
+								<div class="col-md-10">
+	                            	<label for="actividad"  class="control-label col-md-3">Seleciona la actividad</label>
+
+									<select name="actividad" id="actividad" class="col-md-6">
+										<option value="">Sin determinar</option>
+										{% for id, activity  in personal_available_settings.available_activity %}
+											<option value="{{id}}">{{activity}}</option>
+										{% endfor %}
+									</select>
+		                        </div>
+								<br>
+								<div class="col-md-10">
+	                            	<label for="cargo"  class="control-label col-md-3">Seleciona el cargo</label>
+									<select name="cargo" id="cargo" class="col-md-6">
+										<option value="">Sin determinar</option>
+										{% for id, cargo  in personal_available_settings.available_responsible %}
+											<option value="{{id}}">{{cargo}}</option>
+										{% endfor %}
+									</select>
+		                        </div>
+								<br>
+								<div class="col-md-10">
+	                            	<label for="colaboracion"  class="control-label col-md-3">Seleciona el tipo de colaboración</label>
+									<select name="colaboracion" id="colaboracion" class="col-md-6">
+										<option value="">Sin determinar</option>
+										{% for id, collaboration  in personal_available_settings.available_collaboration %}
+											<option value="{{id}}">{{collaboration}}</option>
+										{% endfor %}
+									</select>
+		                        </div>
+	                        <div class="col-12">
+	                            <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
+	                            <button type="submit" class="btn-outline-primary float-end ">Guardar cambios</button>
+	                        </div>
+	                    </form>
+	                </div>
+	            </div>
+	        </div> <!-- end col-md-10 -->
+	    </div> <!-- end row-->
+	</div> <!-- end container -->
+{% elif updated_data %}
+	<section class="light">
+		<div class="container md-8">
+			<h1 class="h1 text-center" id="pageHeaderTitle">Asignacion de cargos de voluntarios</h1>
+		</div>
+	</section>
+	<br><br><br>
+	<div class="container-md">
+		<div class="row g-3"">
+			<div class="col-md-10">
+				<div class="card">
+					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Datos actualizados del voluntario</h3></div>
+					<div class="card-body">
+						<h3 class="h1 text-center"> {{updated_data.name}}</h3>
+						<div class="col-md-10">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th colspan="2">Datos de grupo</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>Grupo</td>
+										<td>
+											{% if updated_data.group != '' %}
+												{{updated_data.group}}
+											{% else %}
+												Sin asignar
+											{% endif %}
+										</td>
+									</tr>
+									<tr>
+										<td>Parroquia</td>
+										<td>
+											{% if updated_data.parroquia != '' %}
+												{{updated_data.parroquia}}
+											{% else %}
+												Sin asignar
+											{% endif %}
+										</td>
+									</tr>
+									<tr>
+										<td>Diocesis</td>
+										<td>
+											{% if updated_data.diocesis != '' %}
+												{{updated_data.diocesis}}
+											{% else %}
+												Sin asignar
+											{% endif %}
+										</td>
+									</tr>
+									<tr>
+										<td>Delegación</td>
+										<td>
+											{% if updated_data.delegacion %}
+												{{updated_data.delegacion}}
+											{% else %}
+												Sin asignar
+											{% endif %}
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<br><br>
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th colspan="2">Cargos que tiene el voluntario</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>Tipo de Voluntario</td>
+										<td>
+											{% if updated_data.collaboration != '' %}
+												{{updated_data.collaboration}}
+											{% else %}
+												Sin asignar
+											{% endif %}
+										</td>
+									</tr>
+									<tr>
+										<td>Cargo</td>
+										<td>
+											{% if updated_data.responsability != '' %}
+												{{updated_data.responsability}}
+											{% else %}
+												Sin asignar
+											{% endif %}
+										</td>
+									</tr>
+									<tr>
+										<td>Proyecto </td>
+										<td>
+											{% if updated_data.project != '' %}
+												{{updated_data.project}}
+											{% else %}
+												Sin asignar
+											{% endif %}
+										</td>
+									</tr>
+
+									<tr>
+										<td>Actividad</td>
+										<td>
+											{% if updated_data.activity %}
+												{{updated_data.activity}}
+											{% else %}
+												Sin asignar
+											{% endif %}
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div> <!-- end col-md-10 -->
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+			</div> <!-- end col-md-10 -->
+		</div> <!-- end row-->
+	</div> <!-- end container -->
 
 {% else %}
 	<section class="light">
 		<div class="container md-8">
-			<h1 class="h1 text-center" id="pageHeaderTitle">Formulario de asignacion de cargos de voluntarios</h1>
+			<h1 class="h1 text-center" id="pageHeaderTitle">Asignacion de cargos de voluntarios</h1>
 
 	    </div>
 	</section>
@@ -90,7 +356,7 @@
 
 	                        <div class="col-12">
 	                            <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
-	                            <button type="submit" class="btn-outline-primary float-end ">Guardar datos</button>
+	                            <button type="submit" class="btn-outline-primary float-end ">Buscar voluntario</button>
 	                        </div>
 	                    </form>
 	                </div>

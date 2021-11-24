@@ -21,7 +21,11 @@ class GrupoAdmin(admin.ModelAdmin):
     list_display = ['nombreGrupo', 'parroquiaDependiente', 'provincia']
 
 class ProyectoAdmin(admin.ModelAdmin):
-    list_display = ['nombreProyecto', 'poblacion', 'provincia']
+    actions = ['download_file']
+    list_display = ['nombreProyecto', 'poblacion', 'provincia', 'memoriaProyecto']
+    def download_file(self, request, queryset):
+        None
+    download_file.short_description = "Download CSV file for selected stats."
 
 class ActividadAdmin(admin.ModelAdmin):
     list_display = ['nombreActividad',  'poblacion', 'provincia']

@@ -31,11 +31,12 @@ def cargos_voluntarios(request):
             return render(request, 'aicespana/cargosVoluntarios.html')
         if request.POST['nif'] != '':
             if PersonalExterno.objects.filter(DNI__iexact = request.POST['nif']).exists():
-                personal_obj = PersonalExterno.objects.filter(DNI__iexact = request.POST['nif'])
-                if len(personal_obj) > 1:
+                personal_objs = PersonalExterno.objects.filter(DNI__iexact = request.POST['nif'])
+                if len(personal_objs) > 1:
                     error = ['Hay más de 1 persona que tiene el mismo NIF/NIE', reques.POST['nif']]
                     return render(request, 'aicespana/cargosVoluntarios.html',{'ERROR':error})
-                personal_available_settings = get_responsablity_data_for_voluntary(personal_obj[0])
+                personal_available_settings = get_responsablity_data_for_voluntary(personal_objs[0])
+                personal_available_settings.update(get_external_personal_responsability(personal_objs[0]))
                 import pdb; pdb.set_trace()
                 return render(request, 'aicespana/cargosVoluntarios.html', {'personal_available_settings':personal_available_settings})
 
@@ -58,11 +59,22 @@ def cargos_voluntarios(request):
                 personal_list.append([personal_obj.get_personal_id(), personal_obj.get_personal_name(),personal_obj.get_personal_location()])
             return render(request, 'aicespana/cargosVoluntarios.html', {'personal_list':personal_list})
         personal_available_settings = get_responsablity_data_for_voluntary(personal_objs[0])
-        import pdb; pdb.set_trace()
+        personal_available_settings.update(get_external_personal_responsability(personal_objs[0]))
+        personal_available_settings['user_id'] = personal_objs[0].get_personal_id()
         return render(request, 'aicespana/cargosVoluntarios.html', {'personal_available_settings':personal_available_settings})
-    if request.method == 'POST' and request.POST['action'] == 'cargosVoluntario':
-        if request.POST['nif'] != '':
-            pass
+    if request.method == 'POST' and request.POST['action'] == 'asignarCargos':
+        import pdb; pdb.set_trace()
+        user_obj = get_user_obj_from_id(request.POST['user_id'])
+        data = {}
+        data['cargo'] = request.POST['cargo']
+        data['actividad'] = request.POST['actividad']
+        data['grupo'] = request.POST['grupo']
+        data['proyecto'] = request.POST['proyecto']
+        data['colaboracion'] = request.POST['colaboracion']
+        user_obj.update_information(data)
+        updated_data = get_external_personal_responsability(user_obj)
+        
+        return render(request, 'aicespana/cargosVoluntarios.html', {'updated_data':updated_data})
     return render(request, 'aicespana/cargosVoluntarios.html')
 
 def listado_delegaciones(request):
