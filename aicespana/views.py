@@ -63,7 +63,6 @@ def cargos_voluntarios(request):
         personal_available_settings['user_id'] = personal_objs[0].get_personal_id()
         return render(request, 'aicespana/cargosVoluntarios.html', {'personal_available_settings':personal_available_settings})
     if request.method == 'POST' and request.POST['action'] == 'asignarCargos':
-        import pdb; pdb.set_trace()
         user_obj = get_user_obj_from_id(request.POST['user_id'])
         data = {}
         data['cargo'] = request.POST['cargo']
@@ -73,19 +72,20 @@ def cargos_voluntarios(request):
         data['colaboracion'] = request.POST['colaboracion']
         user_obj.update_information(data)
         updated_data = get_external_personal_responsability(user_obj)
-        
+
         return render(request, 'aicespana/cargosVoluntarios.html', {'updated_data':updated_data})
     return render(request, 'aicespana/cargosVoluntarios.html')
 
 def listado_delegaciones(request):
+    delegaciones = []
     if Delegacion.objects.all().exists():
-        delegaciones = []
         delegacion_objs = Delegacion.objects.all().order_by('nombreDelegacion')
         for delegacion_obj in delegacion_objs:
-            delegaciones.append(delegacion_obj.get_delegacion_name())
-
-        return render(request,'aicespana/listadoDelegaciones.html', {'delegaciones': delegaciones})
-    return render(request,'aicespana/listadoDelegaciones.html')
+            delegaciones.append([delegacion_obj.get_delegation_id(), delegacion_obj.get_delegacion_name()])
+    if request.method == 'POST' and request.POST['action'] == 'informacionDelegacion':
+        delegacion_data = get_delegation_data(request.POST['delegacion'])
+        return render(request,'aicespana/listadoDelegaciones.html', {'delegacion_data':delegacion_data})
+    return render(request,'aicespana/listadoDelegaciones.html', {'delegaciones': delegaciones})
 
 #@login_required
 def nuevo_voluntario(request):

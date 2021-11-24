@@ -71,6 +71,9 @@ class Delegacion(models.Model):
     def __str__(self):
         return '%s' %(self.nombreDelegacion)
 
+    def get_delegation_id(self):
+        return '%s' %(self.pk)
+
     def get_delegacion_name(self):
         return '%s' %(self.nombreDelegacion)
 
@@ -83,6 +86,9 @@ class Diocesis(models.Model):
 
     def __str__ (self):
         return '%s' %(self.nombreDiocesis)
+        
+    def get_diocesis_id(self):
+        return '%s' %(self.pk)
 
     def get_delegacion_name (self):
         if delegacionDependiente :

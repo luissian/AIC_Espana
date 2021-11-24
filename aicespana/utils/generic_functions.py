@@ -1,10 +1,36 @@
 from aicespana.models import *
 
 
+def get_delegation_data(delegation_id):
+    '''
+    Description:
+        The function gets the information and the personal name and the responsability.
+    Input:
+        delegation_id  # id of the delegation
+    Return:
+        delegation_data
+    '''
+    delegation_data = {}
+    delegation_data['cargos'] = []
+    if Delegacion.objects.filter(pk__exact = delegation_id).exists():
+        delegation_data['name'] = Delegacion.objects.filter(pk__exact = delegation_id).last().get_delegacion_name()
+        if Cargo.objects.filter(entidadCargo__entidad__iexact = 'delegación').exists():
+            cargo_objs = Cargo.objects.filter(entidadCargo__entidad__iexact = 'delegación')
+            for cargo_obj in cargo_objs:
+                cargo_name = cargo_obj.get_cargo_name()
+                if PersonalExterno.objects.filter(cargo__nombreCargo__exact = cargo_name).exists():
+                    user_name = PersonalExterno.objects.filter(cargo__nombreCargo__exact = cargo_name).last().get_personal_name()
+                else:
+                    user_name = 'Puesto vacante'
+                delegation_data['cargos'].append([cargo_name, user_name ])
+
+    return delegation_data
+
+
 def get_external_personal_responsability(personal_obj):
     '''
     Description:
-        The function gets the volantary responsability.
+        The function gets the voluntary responsability.
     Input:
         personal_obj  # instance of the personel to get data
     Return:
