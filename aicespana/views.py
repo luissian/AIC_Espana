@@ -87,6 +87,19 @@ def listado_delegaciones(request):
         return render(request,'aicespana/listadoDelegaciones.html', {'delegacion_data':delegacion_data})
     return render(request,'aicespana/listadoDelegaciones.html', {'delegaciones': delegaciones})
 
+
+def listado_diocesis(request):
+    diocesis = []
+    if Diocesis.objects.all().exists():
+        diocesis_objs = Diocesis.objects.all().order_by('nombreDiocesis')
+        for diocesis_obj in diocesis_objs:
+            diocesis.append([diocesis_obj.get_diocesis_id(),diocesis_obj.get_diocesis_name()])
+    if request.method == 'POST' and request.POST['action'] == 'informacionDiocesis':
+        diocesis_data = get_diocesis_data(request.POST['diocesis'])
+        
+        return render(request,'aicespana/listadoDiocesis.html', {'diocesis_data': diocesis_data})
+    return render(request,'aicespana/listadoDiocesis.html', {'diocesis': diocesis})
+
 #@login_required
 def nuevo_voluntario(request):
     if request.method == 'POST' and request.POST['action'] == 'altaVoluntario':

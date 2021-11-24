@@ -86,7 +86,7 @@ class Diocesis(models.Model):
 
     def __str__ (self):
         return '%s' %(self.nombreDiocesis)
-        
+
     def get_diocesis_id(self):
         return '%s' %(self.pk)
 
@@ -117,6 +117,12 @@ class Parroquia(models.Model):
         if self.diocesisDependiente:
             return '%s' %(self.diocesisDependiente.get_diocesis_name())
         return 'No asignado'
+
+    def get_poblacion_name(self):
+        return '%s' %(self.poblacion)
+
+    def get_provincia_name(self):
+        return '%s' %(self.provincia)
 
 class Grupo(models.Model):
     parroquiaDependiente = models.ForeignKey(

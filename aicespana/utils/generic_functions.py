@@ -15,7 +15,7 @@ def get_delegation_data(delegation_id):
     if Delegacion.objects.filter(pk__exact = delegation_id).exists():
         delegation_data['name'] = Delegacion.objects.filter(pk__exact = delegation_id).last().get_delegacion_name()
         if Cargo.objects.filter(entidadCargo__entidad__iexact = 'delegación').exists():
-            cargo_objs = Cargo.objects.filter(entidadCargo__entidad__iexact = 'delegación')
+            cargo_objs = Cargo.objects.filter(entidadCargo__entidad__iexact = 'delegación').order_by('nombreCargo')
             for cargo_obj in cargo_objs:
                 cargo_name = cargo_obj.get_cargo_name()
                 if PersonalExterno.objects.filter(cargo__nombreCargo__exact = cargo_name).exists():
@@ -26,6 +26,40 @@ def get_delegation_data(delegation_id):
 
     return delegation_data
 
+
+def get_diocesis_data(diocesis_id):
+    '''
+    Description:
+        The function gets the information and the personal name and the responsability.
+    Input:
+        diocesis_id  # id of the diocesis
+    Return:
+        diocesis_data
+    '''
+    diocesis_data = {}
+    diocesis_data['cargos'] = []
+    if Diocesis.objects.filter(pk__exact = diocesis_id).exists():
+        diocesis_obj = Diocesis.objects.filter(pk__exact = diocesis_id).last()
+        diocesis_data['diocesis_name'] = diocesis_obj.get_diocesis_name()
+        if Parroquia.objects.filter(diocesisDependiente = diocesis_obj).exists():
+            diocesis_data['parroquias'] = []
+            parroquia_objs = Parroquia.objects.filter(diocesisDependiente = diocesis_obj)
+            for parroquia_obj in parroquia_objs :
+                diocesis_data['parroquias'].append(parroquia_obj.get_parroquia_name())
+            diocesis_data['poblacion'] = parroquia_obj.get_poblacion_name()
+            diocesis_data['provincia'] = parroquia_obj.get_provincia_name()
+        if Cargo.objects.filter(entidadCargo__entidad__iexact = 'diocesis').exists():
+            cargo_objs = Cargo.objects.filter(entidadCargo__entidad__iexact = 'diocesis').order_by('nombreCargo')
+            for cargo_obj in cargo_objs:
+                cargo_name = cargo_obj.get_cargo_name()
+                if PersonalExterno.objects.filter(cargo__nombreCargo__exact = cargo_name).exists():
+                    personal_obj = PersonalExterno.objects.filter(cargo__nombreCargo__exact = cargo_name).last()
+                    diocesis_data['cargos'].append([cargo_name , personal_obj.get_personal_name(), personal_obj.get_full_address_in_one_line(),
+                    personal_obj.get_movil_number(), personal_obj,get_telefone(), personal_obj.get_email()])
+                else:
+                    diocesis_data['cargos'].append([cargo_name, 'Sin Asignar' , '--' , '--', '--', '--'])
+
+    return diocesis_data
 
 def get_external_personal_responsability(personal_obj):
     '''

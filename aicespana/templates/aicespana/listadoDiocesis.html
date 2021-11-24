@@ -1,0 +1,126 @@
+{% extends 'aicespana/base.html' %}
+{% load static %}
+{% block content %}
+<script type="text/javascript" src="{% static 'aicespana/js/aicespana.js' %}"></script>
+{% if  diocesis_data %}
+
+	<div class="container-md">
+		<div class="row mt-4">
+			<div class="col-md-10">
+				<div class="card">
+					<div class="card-header"><h2 style="text-align:center">Información de la Diocesis de  {{diocesis_data.name}}</h2> </div>
+					<div class="card-body">
+						<button onclick="exportTableToExcel('dioGeneral')" class="btn float-end">Guardar Tabla en Excel <i class="bi bi-download"></i></button>
+						<div class="table-wrapper">
+			                <table id="dioGeneral" class="table table-hover mb-0">
+			                    <thead>
+			                        <tr>
+										<th colspan="2">Datos generales de la Diocesis</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>Población</td>
+										<td>{{diocesis_data.poblacion}}</td>
+									</tr>
+									<tr>
+										<td>Provincia</td>
+										<td>{{diocesis_data.provincia}}</td>
+									</tr>
+
+									<tr>
+										<td>Parroquias</td>
+										<td>
+											{% for value in diocesis_data.parroquias %}
+												{{value}} <br>
+											{% endfor %}
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div> <!--  end of table wrapper  -->
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+			</div> <!-- end col-md-8 -->
+		</div> <!-- end row-->
+
+		<div class="row mt-5">
+			<div class="col-md-10">
+				<div class="card">
+					<div class="card-header"><h2 style="text-align:center">Cargos en la Diocesis de {{diocesis_data.name}}</h2> </div>
+					<div class="card-body">
+						<button onclick="exportTableToExcel('delegacion')" class="btn float-end">Guardar Tabla en Excel <i class="bi bi-download"></i></button>
+						<div class="table-wrapper">
+			                <table id="delegacion" class="table table-hover mb-0">
+			                    <thead>
+			                        <tr>
+										<th>Cargo</th>
+										<th>Persona asignada</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for cargo, name, addr, movil, telephone, email in diocesis_data.cargos %}
+										<tr>
+											<td><strong>{{cargo}}</strong></td>
+											<td>{{name}}</td>
+										</tr>
+										<tr>
+											<td class="col text-center">Dirección</td>
+											<td>{{addr}}</td>
+										</tr>
+										<tr>
+											<td class="col text-center">Tlf. Móvil</td>
+											<td>{{movil}}</td>
+										</tr>
+										<tr>
+											<td class="col text-center">Tlf. Fijo</td>
+											<td>{{telephone}}</td>
+										</tr>
+										<tr>
+											<td class="col text-center">email</td>
+											<td>{{email}}</td>
+										</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div> <!--  end of table wrapper  -->
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+			</div> <!-- end col-md-8 -->
+		</div> <!-- end row-->
+	</div> <!-- end container -->
+
+{% else %}
+	<div class="container sm-8">
+		<div class=""row" style="margin-top: 20px;">
+			<div class="card  mb-3" style="max-width: 68rem;">
+				<div class="card-header" style="text-align:center">Información de Diocesis</div>
+				<div class="card-body">
+				   <form class="row g-3" method="post" enctype="multipart/form-data" name="informacionDiocesis" id="informacionDiocesis" >
+					   {% csrf_token %}
+					   <input type="hidden" name="action" value="informacionDiocesis"/>
+
+
+						<div class="col-md-10">
+							<br><br>
+						    <label  class="control-label col-md-5" for="grupo">Seleciona la diocesis</label>
+							<select name="diocesis" id="diocesis" class="col-md-4" required>
+								<option value=""></option>
+								{% for id, dio  in diocesis %}
+								    <option value="{{id}}">{{dio}}</option>
+								{% endfor %}
+							</select>
+							<br><br>
+							<div class="col-md-12">
+								<input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
+								<button type="submit" class="btn-outline-primary float-end ">Obtener infomacion</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div> <!-- end card  -->
+		</div>
+	</div> <!-- end container -->
+
+{% endif %}
+{% endblock %}
