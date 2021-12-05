@@ -1,4 +1,6 @@
 import os
+from datetime import date
+from dateutil.relativedelta import relativedelta
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage, default_storage
@@ -109,6 +111,9 @@ class Parroquia(models.Model):
 
     def __str__(self):
         return '%s' %(self.nombreParroquia)
+
+    def get_parroquia_id(self):
+        return '%s' %(self.pk)
 
     def get_parroquia_name(self):
         return '%s' %(self.nombreParroquia)
@@ -248,6 +253,12 @@ class PersonalExterno(models.Model):
         if self.grupoAsociado :
             return '%s' %(self.grupoAsociado.get_group_name())
         return ''
+
+    def get_old(self):
+        if self.fechaNacimiento != None:
+            return relativedelta(date.today(), self.fechaNacimiento).years
+        return 0
+
     def get_parroquia_belongs_to(self):
         if self.grupoAsociado :
             return '%s' %(self.grupoAsociado.get_parroquia_name())
@@ -262,6 +273,20 @@ class PersonalExterno(models.Model):
         if self.cargo :
             return '%s' %(self.cargo.get_cargo_name())
         return ''
+
+    def get_voluntario_data(self):
+        data = []
+        data.append(str(self.nombre, self.apellido))
+        data.append(self.calle)
+        data.append(self.poblacion)
+        data.append(self.provincia)
+        data.append(self.codigoPostal)
+        data.append(self.email)
+        data.append(self.DNI)
+        data.append(self.movil)
+        data.append(self.get_group_belongs_to())
+        data.append(self.get_responability_belongs_to())
+        return data
 
     def update_information(self, data):
         if data['grupo'] != '':

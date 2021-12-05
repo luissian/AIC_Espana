@@ -120,6 +120,59 @@ def get_responsablity_data_for_voluntary(personal_obj):
             responsability_optons['available_collaboration'].append([collaboration_obj.get_tipo_colaboracion_id(), collaboration_obj.get_collaboration_name()])
     return responsability_optons
 
+def get_responsibles_in_the_group(group_obj):
+    '''
+    Description:
+        The function gets the voluntary information from a group.
+    Input:
+        grupo_obj  # instance of the group
+    Return:
+        responsible_data
+    '''
+    responsible_data = []
+    if Cargo.objects.filter(entidadCargo__entidad__exact ='Grupo').exists():
+        cargo_objs = Cargo.objects.filter(entidadCargo__entidad__exact ='Grupo').order_by('nombreCargo')
+        for cargo_obj in cargo_objs:
+            p_data = []
+            if PersonalExterno.objects.filter(cargo = cargo_obj, grupoAsociado = group_obj).exists():
+                personal_obj = PersonalExterno.objects.filter(cargo = cargo_obj, grupoAsociado = group_obj).last()
+                responsible_data.append(personal_obj.get_voluntario_data())
+            else:
+                empty_data = ['-']*9
+                empty_data[0] = 'No esta asignado'
+                empty_data.append(cargo_obj.get_cargo_name())
+                responsible_data.append(empty_data)
+
+    return responsible_data
+
+def get_voluntarios_info_from_grupo(grupo_id):
+    '''
+    Description:
+        The function gets the voluntary information from a group.
+    Input:
+        grupo_id  # pk of the group
+    Functions:
+        get_responsibles_in_the_group   # located at this file
+    Return:
+        voluntarios_data
+    '''
+    voluntarios_data = {}
+
+    if Grupo.objects.filter(pk__exact = grupo_id).exists():
+        group_obj = Grupo.objects.filter(pk__exact = grupo_id).last()
+        voluntarios_data['cargos'] = get_responsibles_in_the_group(group_obj)
+        if PersonalExterno.objects.filter(grupoAsociado = group_obj).exists():
+            voluntarios_data['older_than_80'] = []
+            voluntarios_data['younger_than_80'] = []
+            personal_objs = PersonalExterno.objects.filter(grupoAsociado = group_obj).order_by('apellido')
+            for personal_obj in personal_objs:
+                if personal_obj.get_old() > 80 :
+                    voluntarios_data['older_than_80'].append(personal_obj.get_personal_name())
+                else:
+                    voluntarios_data['younger_than_80'].append(personal_obj.get_personal_name())
+    return voluntarios_data
+
+
 def get_user_obj_from_id(user_id):
     '''
     Description:

@@ -76,6 +76,9 @@ def cargos_voluntarios(request):
         return render(request, 'aicespana/cargosVoluntarios.html', {'updated_data':updated_data})
     return render(request, 'aicespana/cargosVoluntarios.html')
 
+def informacion_voluntario(request):
+    return
+
 def listado_delegaciones(request):
     delegaciones = []
     if Delegacion.objects.all().exists():
@@ -96,10 +99,23 @@ def listado_diocesis(request):
             diocesis.append([diocesis_obj.get_diocesis_id(),diocesis_obj.get_diocesis_name()])
     if request.method == 'POST' and request.POST['action'] == 'informacionDiocesis':
         diocesis_data = get_diocesis_data(request.POST['diocesis'])
-        
+
         return render(request,'aicespana/listadoDiocesis.html', {'diocesis_data': diocesis_data})
     return render(request,'aicespana/listadoDiocesis.html', {'diocesis': diocesis})
 
+
+def listado_voluntarios_grupo(request):
+    grupos = []
+    if Grupo.objects.all().exists():
+        grupo_objs = Grupo.objects.all().order_by('nombreGrupo')
+        for grupo_obj in grupo_objs:
+            grupos.append([grupo_obj.get_group_id(), grupo_obj.get_group_name(),grupo_obj.get_parroquia_name() ])
+    if request.method == 'POST' and request.POST['action'] == 'nombreGrupo':
+        voluntarios_data = get_voluntarios_info_from_grupo(request.POST['grupo_id'])
+        
+        return render(request, 'aicespana/listadoVoluntariosGrupo.html', {'voluntarios_data': voluntarios_data})
+
+    return render(request,'aicespana/listadoVoluntariosGrupo.html', {'grupos':grupos})
 #@login_required
 def nuevo_voluntario(request):
     if request.method == 'POST' and request.POST['action'] == 'altaVoluntario':
