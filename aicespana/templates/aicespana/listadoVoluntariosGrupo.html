@@ -62,9 +62,9 @@
 				  		<div class="card">
 				  			<div class="card-header"><h2 style="text-align:center">Cargos en el grupo de {{voluntarios_data.name}}</h2> </div>
 				  			<div class="card-body">
-				  				<button onclick="exportTableToExcel('delegacion')" class="btn float-end">Guardar Tabla en Excel <i class="bi bi-download"></i></button>
+				  				<button onclick="exportTableToExcel('cargos')" class="btn float-end">Guardar Tabla en Excel <i class="bi bi-download"></i></button>
 				  				<div class="table-wrapper">
-				  					<table id="delegacion" class="table table-hover mb-0">
+				  					<table id="cargos" class="table table-hover mb-0">
 				  						<thead>
 				  							<tr>
 				  								<th>Cargo</th>
@@ -135,101 +135,70 @@
 					  	</div> <!-- end col-md-8 -->
 					</div> <!-- end row-->
 				</div> <!-- end container -->
-				{% if voluntarios_data.older_than_80  %}
-					<div class="container-md">
-					    <div class="row mt-5">
-						  	<div class="col-md-10">
-						  		<div class="card">
-						  			<div class="card-header"><h2 style="text-align:center">Listado Voluntarios Menores de 80 años</h2> </div>
-						  			<div class="card-body">
-						  				<button onclick="exportTableToExcel('menores80')" class="btn float-end">Guardar Tabla en Excel <i class="bi bi-download"></i></button>
-						  				<div class="table-wrapper">
-						  					<table id="menores80" class="table table-hover mb-0">
-						  						<thead>
-						  							<tr>
-						  								<th>Nombre y apellidos del voluntario</th>
-						  							</tr>
-						  						</thead>
-						  						<tbody>
-													{% for nombre in voluntarios_data.younger_than_80 %}
-														<tr>
-															<td>{{nombre}}</td>
-														</tr>
-													{% endfor %}
-												</tbody>
-							  				</table>
-							  			</div> <!--  end of table wrapper  -->
-							  		</div> <!-- end card body-->
-							  	</div> <!-- end card  -->
-						  	</div> <!-- end col-md-8 -->
-						</div> <!-- end row-->
-					</div> <!-- end container -->
-				</div>  <!-- end tab lista -->
+			{% if voluntarios_data.older_than_80  %}
+				<div class="container-md">
+				    <div class="row mt-5">
+					  	<div class="col-md-10">
+					  		<div class="card">
+					  			<div class="card-header"><h2 style="text-align:center">Listado Voluntarios Menores de 80 años</h2> </div>
+					  			<div class="card-body">
+					  				<button onclick="exportTableToExcel('menores80')" class="btn float-end">Guardar Tabla en Excel <i class="bi bi-download"></i></button>
+					  				<div class="table-wrapper">
+					  					<table id="menores80" class="table table-hover mb-0">
+					  						<thead>
+					  							<tr>
+					  								<th>Nombre y apellidos del voluntario</th>
+					  							</tr>
+					  						</thead>
+					  						<tbody>
+												{% for nombre in voluntarios_data.younger_than_80 %}
+													<tr>
+														<td>{{nombre}}</td>
+													</tr>
+												{% endfor %}
+											</tbody>
+						  				</table>
+						  			</div> <!--  end of table wrapper  -->
+						  		</div> <!-- end card body-->
+						  	</div> <!-- end card  -->
+					  	</div> <!-- end col-md-8 -->
+					</div> <!-- end row-->
+				</div> <!-- end container -->
 			{% endif %}
-			</div>  <!-- end tab lista -->
-
+		</div>  <!-- end tab lista -->
 	</div>  <!-- end tab content -->
-
-	{% if voluntarios_data.older_than_80  %}
-	<div class="container-md">
-		<div class="row mt-4">
-			<div class="col-md-10">
-				<div class="card">
-					<div class="card-header"><h2 style="text-align:center">Listado de voluntarios mayores de 80 años</h2> </div>
-					<div class="card-body">
-						<button onclick="exportTableToExcel('mayores80')" class="btn float-end">Guardar Tabla en Excel <i class="bi bi-download"></i></button>
-						<div class="table-wrapper">
-			                <table id="mayores80" class="table table-hover mb-0">
-			                    <thead>
-			                        <tr>
-										<th>Nombre y apellidos del voluntario</th>
-									</tr>
-								</thead>
-								<tbody>
-									{% for mayor80 in voluntarios_data.older_than_80 %}
-									<tr>
-
-										<td>{{mayor80}}</td>
-									</tr>
-									{% endfor %}
-								</tbody>
-							</table>
-						</div> <!--  end of table wrapper  -->
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-8 -->
-		</div> <!-- end row-->
-	{% endif %}
 
 {% else %}
 	<div class="container sm-8">
 		<div class=""row" style="margin-top: 20px;">
-			<div class="card  mb-3" style="max-width: 68rem;">
-				<div class="card-header" style="text-align:center">Listado de Grupos</div>
-				<div class="card-body">
-				   <form class="row g-3" method="post" enctype="multipart/form-data" name="nombreGrupo" id="nombreGrupo" >
-					   {% csrf_token %}
-					   <input type="hidden" name="action" value="nombreGrupo"/>
+			<div class="overflow-auto">
+				<div class="card  mb-3" style="max-width: 68rem;">
+					<div class="card-header" style="text-align:center">Listado de Grupos</div>
+					<div class="card-body">
+					   <form class="row g-3" method="post" enctype="multipart/form-data" name="nombreGrupo" id="nombreGrupo" >
+						   {% csrf_token %}
+						   <input type="hidden" name="action" value="nombreGrupo"/>
 
 
-						<div class="col-md-10">
-							<br><br>
-						    <label  class="control-label col-md-5" for="grupo">Seleciona el grupo</label>
-							<select name="grupo_id" id="grupo_id" class="col-md-4" required>
-								<option value=""></option>
-								{% for id, grp , parroquia  in grupos %}
-								    <option value="{{id}}">{{grp}} en la parroquia "{{parroquia}}"</option>
-								{% endfor %}
-							</select>
-							<br><br>
-							<div class="col-md-12">
-								<input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
-								<button type="submit" class="btn-outline-primary float-end ">Obtener voluntarios pertenecientes al grupo</button>
+							<div class="col-md-10">
+								<br><br>
+							    <label  class="control-label col-md-5" for="grupo">Seleciona el grupo</label>
+								<select name="grupo_id" id="grupo_id" class="col-md-4" required>
+									<option value=""></option>
+									{% for id, grp , parroquia  in grupos %}
+									    <option value="{{id}}">{{grp}} en la parroquia "{{parroquia}}"</option>
+									{% endfor %}
+								</select>
+								<br><br>
+								<div class="col-md-12">
+									<input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
+									<button type="submit" class="btn-outline-primary float-end ">Obtener voluntarios pertenecientes al grupo</button>
+								</div>
 							</div>
-						</div>
-					</form>
-				</div>
-			</div> <!-- end card  -->
+						</form>
+					</div>
+				</div> <!-- end card  -->
+			</div> <!-- end scroll  -->
 		</div>
 	</div> <!-- end container -->
 

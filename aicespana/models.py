@@ -276,14 +276,14 @@ class PersonalExterno(models.Model):
 
     def get_voluntario_data(self):
         data = []
-        data.append(str(self.nombre, self.apellido))
+        data.append(str(self.nombre + ' ' + self.apellido))
         data.append(self.calle)
         data.append(self.poblacion)
         data.append(self.provincia)
         data.append(self.codigoPostal)
         data.append(self.email)
         data.append(self.DNI)
-        data.append(self.movil)
+        data.append(self.telefonoMovil)
         data.append(self.get_group_belongs_to())
         data.append(self.get_responability_belongs_to())
         return data

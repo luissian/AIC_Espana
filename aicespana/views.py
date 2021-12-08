@@ -37,7 +37,6 @@ def cargos_voluntarios(request):
                     return render(request, 'aicespana/cargosVoluntarios.html',{'ERROR':error})
                 personal_available_settings = get_responsablity_data_for_voluntary(personal_objs[0])
                 personal_available_settings.update(get_external_personal_responsability(personal_objs[0]))
-                import pdb; pdb.set_trace()
                 return render(request, 'aicespana/cargosVoluntarios.html', {'personal_available_settings':personal_available_settings})
 
             error = ['No hay nigún voluntario que tenga el NIF/NIE', request.POST['nif']]
@@ -77,7 +76,36 @@ def cargos_voluntarios(request):
     return render(request, 'aicespana/cargosVoluntarios.html')
 
 def informacion_voluntario(request):
-    return
+    if request.method == 'POST' and request.POST['action'] == 'busquedaVoluntario':
+        if request.POST['nif'] == '' and request.POST['nombre'] == '' and request.POST['apellidos'] == '':
+            return render(request, 'aicespana/informacionVoluntario.html')
+        if request.POST['nif'] != '':
+            if PersonalExterno.objects.filter(DNI__iexact = request.POST['nif']).exists():
+                personal_objs = PersonalExterno.objects.filter(DNI__iexact = request.POST['nif'])
+                if len(personal_objs) > 1:
+                    error = ['Hay más de 1 persona que tiene el mismo NIF/NIE', reques.POST['nif']]
+                    return render(request, 'aicespana/informacionVoluntario.html',{'ERROR':error})
+                info_voluntario = personal_objs[0].get_voluntario_data()
+                return render(request, 'aicespana/informacionVoluntario.html',{'info_voluntario':info_voluntario})
+            error = ['No hay nigún voluntario que tenga el NIF/NIE', request.POST['nif']]
+            return render(request, 'aicespana/informacionVoluntario.html',{'ERROR':error})
+        personal_objs = PersonalExterno.objects.all()
+        if request.POST['apellidos'] != '':
+            personal_objs = personal_objs.filter(apellidos__iexact = request.POST['apelidos'])
+            if len(personal_objs) == 0:
+                error = ['No hay nigún voluntario con el apellido', request.POST['apellidos']]
+                return render(request, 'aicespana/informacionVoluntario.html',{'ERROR':error})
+        if request.POST['nombre'] != '':
+            personal_objs = personal_objs.filter(nombre__iexact = request.POST['nombre'])
+            if len(personal_objs) == 0:
+                error = ['No hay nigún voluntario con el nombre', request.POST['nombre']]
+                return render(request, 'aicespana/informacionVoluntario.html',{'ERROR':error})
+        if len(personal_objs) >1 :
+            error = ['Hay más de un voluntario que cumple los criterios de busqueda']
+            return render(request, 'aicespana/informacionVoluntario.html', {'ERROR':error})
+        info_voluntario = [personal_objs[0].get_voluntario_data()]
+        return render(request,'aicespana/informacionVoluntario.html',{'info_voluntario':info_voluntario})
+    return render(request,'aicespana/informacionVoluntario.html')
 
 def listado_delegaciones(request):
     delegaciones = []
@@ -112,7 +140,7 @@ def listado_voluntarios_grupo(request):
             grupos.append([grupo_obj.get_group_id(), grupo_obj.get_group_name(),grupo_obj.get_parroquia_name() ])
     if request.method == 'POST' and request.POST['action'] == 'nombreGrupo':
         voluntarios_data = get_voluntarios_info_from_grupo(request.POST['grupo_id'])
-        
+
         return render(request, 'aicespana/listadoVoluntariosGrupo.html', {'voluntarios_data': voluntarios_data})
 
     return render(request,'aicespana/listadoVoluntariosGrupo.html', {'grupos':grupos})

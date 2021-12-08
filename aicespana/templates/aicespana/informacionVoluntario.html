@@ -1,0 +1,116 @@
+{% extends 'aicespana/base.html' %}
+{% load static %}
+{% block content %}
+<style media="screen">
+	.form-group.required .control-label:after {
+	  content:"  *";
+	  color:red;
+	}
+</style>
+{% if ERROR %}
+
+	<div class="container-md">
+		<div class="row align-items-center">
+			<div class="col-md-10">
+				<div class="card border-danger mb-3" style="max-width: 58rem;">
+					<div class="card-header"><h3 style="text-align:center">Resultado busqueda</h3> </div>
+					<div class="card-body text-danger">
+						{% for values in ERROR %}
+							<h4>{{values}}</h4>
+						{% endfor %}
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+		    </div> <!-- end col-md-10 -->
+		</div> <!-- end row-->
+	</div> <!-- end container -->
+
+{% endif %}
+
+{% if info_voluntario %}
+	<div class="container-md">
+		<div class="row mt-5">
+			<div class="col-md-10">
+				<div class="card">
+					<div class="card-header"><h2 style="text-align:center">Información del Voluntario</h2> </div>
+					<div class="card-body">
+						<button onclick="exportTableToExcel('voluntario')" class="btn float-end">Guardar Tabla en Excel <i class="bi bi-download"></i></button>
+						<div class="table-wrapper">
+							<table id="voluntario" class="table table-hover mb-0">
+								<tbody>
+									{% for name, calle, pob, prov, cpostal, email, dni, movil, grupo, responsable in info_voluntario %}
+										<tr>
+											<td class="col text-center">Nombre</td>
+											<td>{{name}}</td>
+										</tr>
+										<tr>
+											<td class="col text-center">Dirección</td>
+											<td>{{calle}}<br>{{pob}}<br>{{prov}}<br>{{cpostal}}</td>
+										</tr>
+										<tr>
+											<td class="col text-center">Tlf. Móvil</td>
+											<td>{{movil}}</td>
+										</tr>
+										<tr>
+											<td class="col text-center">Tlf. Fijo</td>
+											<td>{{telephone}}</td>
+										</tr>
+										<tr>
+											<td class="col text-center">email</td>
+											<td>{{email}}</td>
+										</tr>
+										<tr>
+											<td class="col text-center">Grupo</td>
+											<td >{{grupo}}</td>
+										</tr>
+										<tr>
+											<td class="col text-center">Cargo</td>
+											<td >{{responsable}}</td>
+										</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div> <!--  end of table wrapper  -->
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+			</div> <!-- end col-md-8 -->
+		</div> <!-- end row-->
+	</div> <!-- end container -->
+
+{% else %}
+	<br><br><br>
+	<div class="container-md">
+	    <div class="row g-3"">
+	        <div class="col-md-10">
+	            <div class="card">
+					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Formulario para la busqueda de voluntario/colaborador</h3></div>
+                    <div class="card-body">
+	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="busquedaVoluntario" id="busquedaVoluntario" >
+	                        {% csrf_token %}
+	                        <input type="hidden" name="action" value="busquedaVoluntario"/>
+
+		                        <div class="col-md-5">
+		                            <label class="control-label " for="nombre">Nombre</label>
+		                            <input type="text"  class="form-control" id="nombre", name='nombre'>
+		                        </div>
+
+		                        <div class="col-md-5">
+		                            <label for="apellidos"  class="control-label">Apellidos</label>
+		                            <input type="text"  class="form-control" id="apellidos" name='apellidos'>
+		                        </div>
+		                        <div class="col-md-5">
+		                            <label for="nif"  class="control-label">NIF/NIE</label>
+		                            <input type="text"  class="form-control" id="nif" name='nif'>
+		                        </div>
+
+	                        <div class="col-12">
+	                            <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
+	                            <button type="submit" class="btn-outline-primary float-end ">Buscar voluntario</button>
+	                        </div>
+	                    </form>
+	                </div>
+	            </div>
+	        </div> <!-- end col-md-10 -->
+	    </div> <!-- end row-->
+	</div> <!-- end container -->
+{% endif %}
+{% endblock %}
