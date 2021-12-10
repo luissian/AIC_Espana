@@ -148,14 +148,15 @@ def listado_voluntarios_grupo(request):
 def nuevo_voluntario(request):
     if request.method == 'POST' and request.POST['action'] == 'altaVoluntario':
         confirmation_data = ''
-        info_to_fetch = ['nombre', 'apellidos','nif','nacimiento','calle','poblacion', 'provincia', 'codigo', 'email', 'fijo', 'movil']
+        info_to_fetch = ['nombre', 'apellidos','nif','nacimiento','calle','poblacion', 'provincia', 'codigo', 'email', 'fijo', 'movil', 'tipoColaboracion']
         personal_data = {}
         for field in info_to_fetch:
             personal_data[field] = request.POST[field]
-        PersonalExterno_obj = PersonalExterno.objects.create_new_external_pesonel(personal_data)
+        PersonalExterno_obj = PersonalExterno.objects.create_new_external_personel(personal_data)
         confirmation_data = {}
         confirmation_data['nombre'] = request.POST['nombre']
         confirmation_data['apellidos'] = request.POST['apellidos']
 
         return render(request,'aicespana/nuevoVoluntario.html',{'confirmation_data': confirmation_data})
-    return render(request,'aicespana/nuevoVoluntario.html')
+    new_volunteer_data = {'types':get_volunteer_types() ,'provincias':get_provincias()}
+    return render(request,'aicespana/nuevoVoluntario.html',{'new_volunteer_data':new_volunteer_data})

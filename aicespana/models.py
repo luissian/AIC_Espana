@@ -34,37 +34,7 @@ class ActividadManager(models.Manager):
 
         return new_actividad
 
-class Actividad(models.Model):
-    nombreActividad = models.CharField(max_length=200)
-    calle = models.CharField(max_length=40, null=True, blank = True)
-    poblacion = models.CharField(max_length=40, null=True, blank = True)
-    provincia = models.CharField(max_length=20, null=True, blank = True)
 
-    def __str__ (self):
-        return '%s' %(self.nombreActividad)
-
-    def get_actividad_id(self):
-        return '%s' %(self.pk)
-
-    def get_activity_name (self):
-        return '%s' %(self.nombreActividad)
-
-
-class Proyecto(models.Model):
-    nombreProyecto = models.CharField(max_length=80)
-    memoriaProyecto = models.FileField( storage= memory_project_path_location)
-    calle = models.CharField(max_length=40)
-    poblacion = models.CharField(max_length=20)
-    provincia = models.CharField(max_length=20)
-
-    def __str__(self):
-        return '%s' %(self.nombreProyecto)
-
-    def get_proyecto_id(self):
-        return '%s' %(self.pk)
-
-    def get_project_name(self):
-        return '%s' %(self.nombreProyecto)
 
 class Delegacion(models.Model):
     nombreDelegacion = models.CharField(max_length=20)
@@ -84,7 +54,7 @@ class Diocesis(models.Model):
     delegacionDependiente = models.ForeignKey(
                         Delegacion,
                         on_delete=models.CASCADE)
-    nombreDiocesis = models.CharField(max_length=20)
+    nombreDiocesis = models.CharField(max_length=80)
 
     def __str__ (self):
         return '%s' %(self.nombreDiocesis)
@@ -104,10 +74,12 @@ class Parroquia(models.Model):
     diocesisDependiente = models.ForeignKey(
                         Diocesis,
                         on_delete=models.CASCADE)
-    nombreParroquia = models.CharField(max_length=60)
-    calle = models.CharField(max_length=40)
-    poblacion = models.CharField(max_length=20)
-    provincia = models.CharField(max_length=20)
+    nombreParroquia = models.CharField(max_length=80)
+    calle = models.CharField(max_length=80)
+    poblacion = models.CharField(max_length=60)
+    provincia = models.CharField(max_length=40)
+    codigoPostal = models.CharField(max_length=20, null=True, blank = True)
+    observaciones = models.CharField(max_length=1000, null=True, blank=True)
 
     def __str__(self):
         return '%s' %(self.nombreParroquia)
@@ -129,16 +101,19 @@ class Parroquia(models.Model):
     def get_provincia_name(self):
         return '%s' %(self.provincia)
 
+
 class Grupo(models.Model):
     parroquiaDependiente = models.ForeignKey(
                         Parroquia,
                         on_delete=models.CASCADE)
-    calle = models.CharField(max_length=40, null=True, blank = True)
-    poblacion = models.CharField(max_length=40, null=True, blank = True)
-    provincia = models.CharField(max_length=20, null=True, blank = True)
+    calle = models.CharField(max_length=80, null=True, blank = True)
+    poblacion = models.CharField(max_length=60, null=True, blank = True)
+    provincia = models.CharField(max_length=40, null=True, blank = True)
+    codigoPostal = models.CharField(max_length=20, null=True, blank = True)
     fechaErecion = models.DateField(auto_now = False, null=True, blank = True)
-    registroNumero =  models.CharField(max_length=20)
-    nombreGrupo =  models.CharField(max_length=40)
+    registroNumero =  models.CharField(max_length=50)
+    nombreGrupo =  models.CharField(max_length=80)
+    observaciones = models.CharField(max_length=1000, null=True, blank=True)
 
 
     def __str__ (self):
@@ -167,9 +142,52 @@ class Grupo(models.Model):
         return 'No asignado'
 
 
+class Proyecto(models.Model):
+    parroquiaDependiente = models.ForeignKey(
+                        Parroquia,
+                        on_delete=models.CASCADE, null=True, blank = True)
+    grupoAsociado = models.ForeignKey(
+                        Grupo,
+                        on_delete=models.CASCADE, null=True, blank = True)
+    nombreProyecto = models.CharField(max_length=80)
+    memoriaProyecto = models.FileField( storage= memory_project_path_location, null=True, blank = True)
+    calle = models.CharField(max_length=80)
+    poblacion = models.CharField(max_length=60)
+    provincia = models.CharField(max_length=40)
+
+    def __str__(self):
+        return '%s' %(self.nombreProyecto)
+
+    def get_proyecto_id(self):
+        return '%s' %(self.pk)
+
+    def get_project_name(self):
+        return '%s' %(self.nombreProyecto)
+
+class Actividad(models.Model):
+    parroquiaDependiente = models.ForeignKey(
+                        Parroquia,
+                        on_delete=models.CASCADE, null=True, blank = True)
+    grupoAsociado = models.ForeignKey(
+                        Grupo,
+                        on_delete=models.CASCADE, null=True, blank = True)
+    nombreActividad = models.CharField(max_length=200)
+    calle = models.CharField(max_length=80, null=True, blank = True)
+    poblacion = models.CharField(max_length=60, null=True, blank = True)
+    provincia = models.CharField(max_length=40, null=True, blank = True)
+
+    def __str__ (self):
+        return '%s' %(self.nombreActividad)
+
+    def get_activity_id(self):
+        return '%s' %(self.pk)
+
+    def get_activity_name (self):
+        return '%s' %(self.nombreActividad)
+
 
 class TipoColaboracion(models.Model):
-    tipoColaboracion = models.CharField(max_length=40)
+    tipoColaboracion = models.CharField(max_length=60)
 
     def __str__ (self):
         return '%s' %(self.tipoColaboracion)
@@ -181,12 +199,18 @@ class TipoColaboracion(models.Model):
         return '%s' %(self.tipoColaboracion)
 
 
+
+
 class PersonalExternoManager(models.Manager):
-    def create_new_external_pesonel(self, data):
+    def create_new_external_personel(self, data):
+        if TipoColaboracion.objects.filter(pk__exact = data['tipoColaboracion']).exists():
+            tipoColaboracion_obj = TipoColaboracion.objects.get(pk__exact = data['tipoColaboracion'])
+        else:
+            tipoColaboracion_obj = None
         new_ext_personel = self.create(nombre = data['nombre'], apellido = data['apellidos'], calle = data['calle'],
                 poblacion = data['poblacion'], provincia = data['provincia'], codigoPostal = data['codigo'],
                 DNI = data['nif'], fechaNacimiento = data['nacimiento'], email = data['email'], telefonoFijo = data['fijo'],
-                telefonoMovil = data['movil'] )
+                telefonoMovil = data['movil'],  tipoColaboracion = tipoColaboracion_obj)
         return new_ext_personel
 
 class PersonalExterno(models.Model):
@@ -207,9 +231,9 @@ class PersonalExterno(models.Model):
                         on_delete=models.CASCADE, null=True, blank = True)
     nombre = models.CharField(max_length=40)
     apellido = models.CharField(max_length=40)
-    calle = models.CharField(max_length=40, null=True, blank = True)
-    poblacion = models.CharField(max_length=40, null=True, blank = True)
-    provincia = models.CharField(max_length=20, null=True, blank = True)
+    calle = models.CharField(max_length=80, null=True, blank = True)
+    poblacion = models.CharField(max_length=60, null=True, blank = True)
+    provincia = models.CharField(max_length=40, null=True, blank = True)
     codigoPostal = models.CharField(max_length=20, null=True, blank = True)
     DNI = models.CharField(max_length=20, null=True, blank = True)
     fechaNacimiento = models.DateField(auto_now = False, null=True, blank = True)
@@ -231,12 +255,22 @@ class PersonalExterno(models.Model):
 
     def get_activity_belongs_to(self):
         if self.actividadAsociada:
-            return '%s' %(self.get_activity_name())
+            return '%s' %(self.actividadAsociada.get_activity_name())
+        return ''
+
+    def get_activity_id_belongs_to(self):
+        if self.actividadAsociada:
+            return '%s' %(self.actividadAsociada.get_activity_id())
         return ''
 
     def get_collaboration_belongs_to(self):
         if self.tipoColaboracion:
-            return '%s' %(self.get_collaboration_name())
+            return '%s' %(self.tipoColaboracion.get_collaboration_name())
+        return ''
+
+    def get_collaboration_id_belongs_to(self):
+        if self.tipoColaboracion:
+            return '%s' %(self.tipoColaboracion.get_tipo_colaboracion_id())
         return ''
 
     def get_diocesis_belongs_to(self):
@@ -254,6 +288,11 @@ class PersonalExterno(models.Model):
             return '%s' %(self.grupoAsociado.get_group_name())
         return ''
 
+    def get_group_id_belongs_to(self):
+        if self.grupoAsociado :
+            return '%s' %(self.grupoAsociado.get_group_id())
+        return ''
+
     def get_old(self):
         if self.fechaNacimiento != None:
             return relativedelta(date.today(), self.fechaNacimiento).years
@@ -269,9 +308,19 @@ class PersonalExterno(models.Model):
             return '%s' %(self.proyectoAsociado.get_project_name())
         return ''
 
+    def get_project_id_belongs_to(self):
+        if self.proyectoAsociado :
+            return '%s' %(self.proyectoAsociado.get_proyecto_id())
+        return ''
+
     def get_responability_belongs_to(self):
         if self.cargo :
             return '%s' %(self.cargo.get_cargo_name())
+        return ''
+
+    def get_responability_id_belongs_to(self):
+        if self.cargo :
+            return '%s' %(self.cargo.get_cargo_id())
         return ''
 
     def get_voluntario_data(self):
@@ -344,3 +393,8 @@ class PersonalIglesia(models.Model):
     delegacion = models.ForeignKey(
                         Delegacion,
                         on_delete=models.CASCADE)
+    nombre = models.CharField(max_length=40,null=True, blank = True)
+    apellido = models.CharField(max_length=40,null=True, blank = True)
+
+    def __str__ (self):
+        return '%s %s' %(self.nombre, self.apellido)

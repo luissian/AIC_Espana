@@ -73,15 +73,30 @@ def get_external_personal_responsability(personal_obj):
     personal_responsability ={}
     personal_responsability['group'] = personal_obj.get_group_belongs_to()
     personal_responsability['project'] = personal_obj.get_project_belongs_to()
+    personal_responsability['project_id'] = personal_obj.get_project_id_belongs_to()
     personal_responsability['activity'] = personal_obj.get_activity_belongs_to()
+    personal_responsability['activity_id'] = personal_obj.get_activity_id_belongs_to()
     personal_responsability['responsability'] = personal_obj.get_responability_belongs_to()
+    personal_responsability['responsability_id'] = personal_obj.get_responability_id_belongs_to()
     personal_responsability['collaboration'] = personal_obj.get_collaboration_belongs_to()
+    personal_responsability['collaboration_id'] = personal_obj.get_collaboration_id_belongs_to()
     personal_responsability['group'] = personal_obj.get_group_belongs_to()
+    personal_responsability['group_id'] = personal_obj.get_group_id_belongs_to()
     personal_responsability['parroquia'] = personal_obj.get_parroquia_belongs_to()
     personal_responsability['diocesis'] = personal_obj.get_diocesis_belongs_to()
     personal_responsability['delegacion'] = personal_obj.get_delegacion_belongs_to()
     personal_responsability['name'] = personal_obj.get_personal_name()
+
     return personal_responsability
+
+def get_provincias():
+
+    list_provincias =['Albacete', 'Alicante','Almería,''Álava','Asturias','Ávila','Badajoz','Baleares','Barcelona','Bizkaia','Burgos',
+        'Cáceres','Cádiz','Cantabria','Castellón','Ciudad Real','Córdoba','Coruña','Cuenca','Gipuzkoa','Girona','Granada','Guadalajara',
+        'Huelva', 'Huesca','Jaén','León','Lleida','Lugo','Madrid','Málaga','Murcia','Navarra','Ourense','Palencia','Palmas, Las',
+        'Pontevedra','Rioja, La','Salamanca','Santa Cruz de Tenerife','Segovia','Sevilla','Soria','Tarragona','Teruel','Toledo',
+        'Valencia','Valladolid','Zamora','Zaragoza','Ceuta','Melilla']
+    return list_provincias
 
 def get_responsablity_data_for_voluntary(personal_obj):
     '''
@@ -109,13 +124,13 @@ def get_responsablity_data_for_voluntary(personal_obj):
     if Actividad.objects.all().exists():
         activity_objs = Actividad.objects.all().order_by('nombreActividad')
         for activity_obj in activity_objs:
-            responsability_optons['available_actitvities'].append([activity_obj.get_actividad_id(),activity_obj.get_activity_name()])
+            responsability_optons['available_actitvities'].append([activity_obj.get_activity_id(),activity_obj.get_activity_name()])
     if Cargo.objects.all().exists():
         responsible_objs = Cargo.objects.all().order_by('nombreCargo')
         for responsible_obj in responsible_objs:
             responsability_optons['available_responsible'].append([responsible_obj.get_cargo_id() , responsible_obj.get_cargo_name()])
     if TipoColaboracion.objects.all().exists():
-        colaboration_objs = TipoColaboracion.objects.all().order_by('tipoColaboracion')
+        collaboration_objs = TipoColaboracion.objects.all().order_by('tipoColaboracion')
         for collaboration_obj in collaboration_objs:
             responsability_optons['available_collaboration'].append([collaboration_obj.get_tipo_colaboracion_id(), collaboration_obj.get_collaboration_name()])
     return responsability_optons
@@ -172,6 +187,19 @@ def get_voluntarios_info_from_grupo(grupo_id):
                     voluntarios_data['younger_than_80'].append(personal_obj.get_personal_name())
     return voluntarios_data
 
+def get_volunteer_types():
+    '''
+    Description:
+        The function gets the possible type of volunteer
+    Return:
+        volunteer_types
+    '''
+    volunteer_types = []
+    if TipoColaboracion.objects.all().exists():
+        colaboracion_objs = TipoColaboracion.objects.all().order_by('tipoColaboracion')
+        for colaboracion_obj in colaboracion_objs:
+            volunteer_types.append([colaboracion_obj.get_tipo_colaboracion_id(),colaboracion_obj.get_collaboration_name()])
+    return volunteer_types
 
 def get_user_obj_from_id(user_id):
     '''

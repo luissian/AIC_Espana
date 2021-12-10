@@ -33,6 +33,9 @@ class ActividadAdmin(admin.ModelAdmin):
 class PersonalExternoAdmin(admin.ModelAdmin):
     list_display = ['nombre', 'apellido', 'DNI', 'fechaNacimiento']
 
+class TipoColaboracionAdmin(admin.ModelAdmin):
+    list_display = ['tipoColaboracion']
+
 admin.site.register(EntidadesConCargo , EntidadesConCargoAdmin)
 admin.site.register(Cargo, CargoAdmin)
 admin.site.register(Delegacion, DelegacionAdmin)
@@ -42,3 +45,4 @@ admin.site.register(Grupo, GrupoAdmin)
 admin.site.register(Proyecto, ProyectoAdmin)
 admin.site.register(Actividad, ActividadAdmin)
 admin.site.register(PersonalExterno,PersonalExternoAdmin)
+admin.site.register(TipoColaboracion,TipoColaboracionAdmin)

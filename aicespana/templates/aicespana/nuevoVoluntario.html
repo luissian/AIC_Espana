@@ -83,7 +83,9 @@
 	                            <label for="provincia" class="form-label">Provincia</label>
 	                            <select id="provincia" class="form-select" name='provincia'>
 	                                <option selected value=''>Selecionar</option>
-	                                <option>Madrid</option>
+									{% for prov in new_volunteer_data.provincias %}
+	                                	<option value = {{prov}}>{{prov}}</option>
+									{% endfor %}
 	                            </select>
 	                        </div>
 	                        <div class="col-md-2">
@@ -102,6 +104,16 @@
 	                            <label for="movil" class="form-label">Telefono Movil</label>
 	                            <input type="tel" class="form-control" id="movil" name='movil'>
 	                        </div>
+							<div class="col-md-4">
+	                            <label for="tipoColaboracion" class="form-label">Tipo de Colaboración</label>
+	                            <select id="tipoColaboracion" class="form-select" name='tipoColaboracion'>
+	                                <option selected value=''>Selecionar</option>
+									{% for id,val in new_volunteer_data.types %}
+	                                	<option value="{{id}}">{{val}}</option>
+									{% endfor %}
+	                            </select>
+	                        </div>
+							<br><br>
 	                        <div class="col-12">
 	                            <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
 	                            <button type="submit" class="btn-outline-primary float-end ">Guardar datos</button>
