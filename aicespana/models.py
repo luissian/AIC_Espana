@@ -383,6 +383,15 @@ class PersonalExterno(models.Model):
 
     objects = PersonalExternoManager()
 
+
+class PersonalManager(models.Manager):
+    def create_new_personel(self, data):
+        new_personel = self.create(nombre = data['nombre'], apellido = data['apellido'],
+                DNI = data['nif'], email = data['email'], telefonoFijo = data['fijo'],
+                telefonoMovil = data['movil'])
+        return new_personel
+
+
 class PersonalIglesia(models.Model):
     cargo = models.ForeignKey(
                         Cargo,
@@ -392,9 +401,81 @@ class PersonalIglesia(models.Model):
                         on_delete=models.CASCADE, null=True, blank = True)
     delegacion = models.ForeignKey(
                         Delegacion,
-                        on_delete=models.CASCADE)
+                        on_delete=models.CASCADE, null=True, blank = True)
     nombre = models.CharField(max_length=40,null=True, blank = True)
     apellido = models.CharField(max_length=40,null=True, blank = True)
+    DNI = models.CharField(max_length=20, null=True, blank = True)
+    email = models.CharField(max_length=40, null=True, blank = True)
+    telefonoFijo = models.CharField(max_length=20, null=True, blank = True)
+    telefonoMovil = models.CharField(max_length=40, null=True, blank = True)
 
     def __str__ (self):
         return '%s %s' %(self.nombre, self.apellido)
+
+    def get_personal_id(self):
+        return '%s' %(self.pk)
+
+    def get_personal_name(self):
+        return '%s %s' %(self.nombre, self.apellido)
+
+    def get_delegacion_belongs_to(self):
+        if self.delegacion :
+            return '%s' %(self.delegacion.get_delegacion_name())
+        return ''
+
+    def get_delegacion_id_belongs_to(self):
+        if self.delegacion :
+            return '%s' %(self.delegacion.get_delegation_id())
+        return ''
+
+    def get_group_belongs_to(self):
+        if self.grupoAsociado :
+            return '%s' %(self.grupoAsociado.get_group_name())
+        return ''
+
+    def get_group_id_belongs_to(self):
+        if self.grupoAsociado :
+            return '%s' %(self.grupoAsociado.get_group_id())
+        return ''
+
+    def get_responability_belongs_to(self):
+        if self.cargo :
+            return '%s' %(self.cargo.get_cargo_name())
+        return ''
+
+    def get_responability_id_belongs_to(self):
+        if self.cargo :
+            return '%s' %(self.cargo.get_cargo_id())
+        return ''
+
+
+    def update_information(self, data):
+        if data['grupo'] != '':
+            try:
+                grupo_obj = Grupo.objects.get(pk__exact = data['grupo'])
+            except:
+                grupo_obj = None
+        else:
+            grupo_obj = None
+        if data['delegacion'] != '':
+            try:
+                delegacion_obj = Delegacion.objects.get(pk__exact = data['delegacion'])
+            except:
+                delegacion_obj = None
+        else:
+            delegacion_obj = None
+        if data['cargo'] != '':
+            try:
+                cargo_obj = Cargo.objects.get(pk__exact = data['cargo'])
+            except:
+                cargo_obj = None
+        else:
+            cargo_obj = None
+
+        self.grupoAsociado = grupo_obj
+        self.delegacion = delegacion_obj
+        self.cargo = cargo_obj
+        self.save()
+        return self
+
+    objects = PersonalManager()

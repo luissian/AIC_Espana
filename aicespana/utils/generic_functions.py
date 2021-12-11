@@ -71,7 +71,6 @@ def get_external_personal_responsability(personal_obj):
         personal_responsability
     '''
     personal_responsability ={}
-    personal_responsability['group'] = personal_obj.get_group_belongs_to()
     personal_responsability['project'] = personal_obj.get_project_belongs_to()
     personal_responsability['project_id'] = personal_obj.get_project_id_belongs_to()
     personal_responsability['activity'] = personal_obj.get_activity_belongs_to()
@@ -89,6 +88,25 @@ def get_external_personal_responsability(personal_obj):
 
     return personal_responsability
 
+def get_personal_responsability(personal_obj):
+    '''
+    Description:
+        The function gets the personal responsability.
+    Input:
+        personal_obj  # instance of the personel to get data
+    Return:
+        personal_responsability
+    '''
+    personal_responsability ={}
+    personal_responsability['group'] = personal_obj.get_group_belongs_to()
+    personal_responsability['group_id'] = personal_obj.get_group_id_belongs_to()
+    personal_responsability['responsability'] = personal_obj.get_responability_belongs_to()
+    personal_responsability['responsability_id'] = personal_obj.get_responability_id_belongs_to()
+    personal_responsability['delegacion'] = personal_obj.get_delegacion_belongs_to()
+    personal_responsability['delegacion_id'] = personal_obj.get_delegacion_id_belongs_to()
+    personal_responsability['name'] = personal_obj.get_personal_name()
+    return personal_responsability
+
 def get_provincias():
 
     list_provincias =['Albacete', 'Alicante','Almería,''Álava','Asturias','Ávila','Badajoz','Baleares','Barcelona','Bizkaia','Burgos',
@@ -97,6 +115,33 @@ def get_provincias():
         'Pontevedra','Rioja, La','Salamanca','Santa Cruz de Tenerife','Segovia','Sevilla','Soria','Tarragona','Teruel','Toledo',
         'Valencia','Valladolid','Zamora','Zaragoza','Ceuta','Melilla']
     return list_provincias
+
+def get_responsablity_data_for_personel(personal_obj):
+    '''
+    Description:
+        The function gets the available options that a personel of AIC can have.
+    Input:
+        personal_obj  # instance of the personel to get data
+    Return:
+        responsability_options
+    '''
+    responsability_options = {}
+    responsability_options['available_groups'] = []
+    responsability_options['available_delegacion'] = []
+    responsability_options['available_responsible'] = []
+    if Grupo.objects.all().exists():
+        group_objs = Grupo.objects.all().order_by('nombreGrupo')
+        for group_obj in group_objs:
+            responsability_options['available_groups'].append([group_obj.get_group_id(), group_obj.get_group_name(), group_obj.get_parroquia_name()])
+    if Cargo.objects.all().exists():
+        responsible_objs = Cargo.objects.all().order_by('nombreCargo')
+        for responsible_obj in responsible_objs:
+            responsability_options['available_responsible'].append([responsible_obj.get_cargo_id() , responsible_obj.get_cargo_name()])
+    if Delegacion.objects.all().exists():
+        delegacion_objs = Delegacion.objects.all().order_by('nombreDelegacion')
+        for delegacion_obj in delegacion_objs:
+            responsability_options['available_delegacion'].append([delegacion_obj.get_delegation_id(), delegacion_obj.get_delegacion_name()])
+    return responsability_options
 
 def get_responsablity_data_for_voluntary(personal_obj):
     '''
@@ -212,4 +257,18 @@ def get_user_obj_from_id(user_id):
     '''
     if PersonalExterno.objects.filter(pk__exact = user_id).exists():
         return PersonalExterno.objects.filter(pk__exact = user_id).last()
+    return False
+
+
+def get_personel_obj_from_id(user_id):
+    '''
+    Description:
+        The function gets the personal instance from the the primary key.
+    Input:
+        user_id  # pk of the user
+    Return:
+        the personel instance or false
+    '''
+    if PersonalIglesia.objects.filter(pk__exact = user_id).exists():
+        return PersonalIglesia.objects.filter(pk__exact = user_id).last()
     return False

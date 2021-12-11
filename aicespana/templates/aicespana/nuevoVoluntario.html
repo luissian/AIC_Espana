@@ -65,54 +65,60 @@
 		                            <label for="nif"  class="control-label">NIF/NIE</label>
 		                            <input type="text" required class="form-control" id="nif" name='nif'>
 		                        </div>
-							</div>
-	                        <div class="col-md-5">
-	                            <label for="nacimiento" class="form-label">Fecha de Nacimiento</label>
-	                            <input type="date" class="form-control" id="nacimiento" name='nacimiento'>
-	                        </div>
 
-	                        <div class="col-md-12">
-	                            <label for="calle" class="form-label">Calle</label>
-	                            <input type="text" class="form-control" id="calle" name='calle' placeholder="Indicar la calle">
-	                        </div>
-	                        <div class="col-md-6">
-	                            <label for="poblacion" class="form-label">Población</label>
-	                            <input type="text" class="form-control" id="poblacion" name='poblacion'>
-	                        </div>
-	                        <div class="col-md-4">
-	                            <label for="provincia" class="form-label">Provincia</label>
-	                            <select id="provincia" class="form-select" name='provincia'>
-	                                <option selected value=''>Selecionar</option>
-									{% for prov in new_volunteer_data.provincias %}
-	                                	<option value = {{prov}}>{{prov}}</option>
-									{% endfor %}
-	                            </select>
-	                        </div>
-	                        <div class="col-md-2">
-	                            <label for="codigo" class="form-label">Código Postal</label>
-	                            <input type="text" class="form-control" id="codigo" name='codigo'>
-	                        </div>
-	                        <div class="col-12">
-	                            <label for="email" class="form-label">email</label>
-	                            <input type="email" required class="form-control" id="email" name='email'>
-	                        </div>
-	                        <div class="col-md-6">
-	                            <label for="fijo" class="form-label">Telefono Fijo</label>
-	                            <input type="text" class="form-control" id="fijo" name='fijo'>
-	                        </div>
-	                        <div class="col-md-6">
-	                            <label for="movil" class="form-label">Telefono Movil</label>
-	                            <input type="tel" class="form-control" id="movil" name='movil'>
-	                        </div>
-							<div class="col-md-4">
-	                            <label for="tipoColaboracion" class="form-label">Tipo de Colaboración</label>
-	                            <select id="tipoColaboracion" class="form-select" name='tipoColaboracion'>
-	                                <option selected value=''>Selecionar</option>
-									{% for id,val in new_volunteer_data.types %}
-	                                	<option value="{{id}}">{{val}}</option>
-									{% endfor %}
-	                            </select>
-	                        </div>
+
+		                        <div class="col-md-5">
+		                            <label for="nacimiento" class="form-label">Fecha de Nacimiento</label>
+		                            <input type="date" required class="form-control" id="nacimiento" name='nacimiento'>
+		                        </div>
+							</div>
+
+							<div class="form-group">
+		                        <div class="col-md-12">
+		                            <label for="calle" class="form-label">Calle</label>
+		                            <input type="text" class="form-control" id="calle" name='calle' placeholder="Indicar la calle">
+		                        </div>
+		                        <div class="col-md-6">
+		                            <label for="poblacion" class="form-label">Población</label>
+		                            <input type="text" class="form-control" id="poblacion" name='poblacion'>
+		                        </div>
+		                        <div class="col-md-4">
+		                            <label for="provincia" class="form-label">Provincia</label>
+		                            <select id="provincia" class="form-select" name='provincia'>
+		                                <option selected value=''>Selecionar</option>
+										{% for prov in new_volunteer_data.provincias %}
+		                                	<option value = {{prov}}>{{prov}}</option>
+										{% endfor %}
+		                            </select>
+		                        </div>
+		                        <div class="col-md-2">
+		                            <label for="codigo" class="form-label">Código Postal</label>
+		                            <input type="text" class="form-control" id="codigo" name='codigo'>
+		                        </div>
+		                        <div class="col-12">
+		                            <label for="email" class="form-label">email</label>
+		                            <input type="email" required class="form-control" id="email" name='email'>
+		                        </div>
+		                        <div class="col-md-6">
+		                            <label for="fijo" class="form-label">Telefono Fijo</label>
+		                            <input type="text" class="form-control" id="fijo" name='fijo'>
+		                        </div>
+		                        <div class="col-md-6">
+		                            <label for="movil" class="form-label">Telefono Movil</label>
+		                            <input type="tel" class="form-control" id="movil" name='movil'>
+		                        </div>
+							</div>
+							<div class="form-group required">
+								<div class="col-md-4">
+		                            <label for="tipoColaboracion" class="form-label">Tipo de Colaboración</label>
+		                            <select id="tipoColaboracion" required class="form-select" name='tipoColaboracion'>
+		                                <option selected value=''>Selecionar</option>
+										{% for id,val in new_volunteer_data.types %}
+		                                	<option value="{{id}}">{{val}}</option>
+										{% endfor %}
+		                            </select>
+		                        </div>
+							</div>
 							<br><br>
 	                        <div class="col-12">
 	                            <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">

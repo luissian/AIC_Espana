@@ -12,5 +12,6 @@ urlpatterns = [
     path('listadoDelegaciones', views.listado_delegaciones, name ='listado_delegaciones'),
     path('listadoDiocesis', views.listado_diocesis, name = 'listado_diocesis'),
     path('listadoVoluntariosGrupo', views.listado_voluntarios_grupo, name='listado_voluntarios_grupo'),
+    path('nuevoPersonalIglesia', views.nuevo_personal_iglesia, name = 'nuevo_personal_iglesia'),
     path('nuevoVoluntario', views.nuevo_voluntario, name='nuevo_voluntario'),
 ]
