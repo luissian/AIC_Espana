@@ -5,7 +5,7 @@ __pycache__/
 
 aicespana/migrations/
 memorias_de_proyectos/
-static/
+#static/
 manage.py
 AIC_Espana/settings.py
 AIC_Espana/wsgi.py
