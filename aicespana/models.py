@@ -151,6 +151,7 @@ class Proyecto(models.Model):
                         on_delete=models.CASCADE, null=True, blank = True)
     nombreProyecto = models.CharField(max_length=80)
     memoriaProyecto = models.FileField( storage= memory_project_path_location, null=True, blank = True)
+    fotografiaProyecto = models.FileField( storage= memory_project_path_location, null=True, blank = True)
     calle = models.CharField(max_length=80)
     poblacion = models.CharField(max_length=60)
     provincia = models.CharField(max_length=40)
