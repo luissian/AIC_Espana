@@ -1,0 +1,97 @@
+{% extends 'aicespana/base.html' %}
+{% load static %}
+{% block content %}
+<style media="screen">
+	.form-group.required .control-label:after {
+	  content:"  *";
+	  color:red;
+	}
+</style>
+
+{% if ERROR %}
+	<div class="container-md">
+		<div class="row g-3"">
+			<div class="col-md-6 offset-3">
+				<div class="card text-center bg-danger">
+					<div class="card-header">
+						<h2 style="text-align:center">ERROR</h2>
+					</div>
+					<div class="card-body">
+						<p class="card-text">
+							{% for text in ERROR %}
+								{{text}}
+							{% endfor %}
+						</p>
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+			</div> <!-- end col-md-10 -->
+		</div> <!-- end row-->
+	</div> <!-- end container -->
+{% endif %}
+
+{% if confirmation_data %}
+	<div class="container-md">
+		<div class="row g-3"">
+			<div class="col-md-10">
+				<div class="card">
+					<div class="card-header"><h2 style="text-align:center">Datos Guardados</h2> </div>
+					<div class="card-body">
+						<p style="text-align:center">Los delegación {{confirmation_data}} se ha guardado correctamente</p>
+						<br><br><br>
+						<input type="button" value="Dar de alta otra Delegación" onclick="location.href ='/altaDelegacion' ;"/>
+						<br><br>
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+		    </div> <!-- end col-md-10 -->
+		</div> <!-- end row-->
+	</div> <!-- end container -->
+
+{% else %}
+	<br><br>
+	<div class="container-md">
+	    <div class="row g-3"">
+	        <div class="col-md-7">
+	            <div class="card">
+					<div class="card-header"><h2 style="text-align:center">Formulario alta Delegación</h2> </div>
+	                <div class="card-body">
+	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="altaDelegacion" id="altaDelegacion" >
+	                        {% csrf_token %}
+	                        <input type="hidden" name="action" value="altaDelegacion"/>
+							<div class="form-group required">
+		                        <div class="col-md-6">
+		                            <label class="control-label " for="nombre">Nombre de la Delegación</label>
+		                            <input type="text" required class="form-control" id="nombre", name='nombre'>
+		                        </div>
+							</div>
+
+							<br><br>
+	                        <div class="col-12">
+	                            <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
+	                            <button type="submit" class="btn-outline-primary float-end ">Guardar datos</button>
+	                        </div>
+	                    </form>
+						<br><br>
+						<p>Los campos con  <span style="color:red"> * </span> son obligatorios</p>
+	                </div>  <!-- end card-body -->
+	            </div>  <!-- end card -->
+	        </div> <!-- end col-md-7 -->
+			<div class="col-md-4 offset-1">
+	            <div class="card">
+					<div class="card-header"><h2 style="text-align:center">Listado de delegaciones</h2> </div>
+	                    <div class="card-body">
+							<table class="table table-hover">
+                            	<tbody>
+									{% for delegacion in delegaciones %}
+										<tr>
+											<td>{{ delegacion }}</td>
+										</tr>
+										{% endfor %}
+	                            </tbody>
+	                        </table>
+						</div>  <!-- end card-body -->
+		            </div>  <!-- end card -->
+		        </div> <!-- end col-md-5 -->
+	    </div> <!-- end row-->
+	</div> <!-- end container -->
+{% endif %}
+{% endblock %}

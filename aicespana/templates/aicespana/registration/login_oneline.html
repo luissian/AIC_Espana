@@ -1,0 +1,35 @@
+<div class="container">
+    {% if user.is_authenticated %}
+        <div class="col-sm-4 offset-8" >
+            <form id="signin" class="navbar-form navbar-right" role="form" method="post" action="{% url 'logout' %}?next={{request.path}}">
+               {% csrf_token %}
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="bi bi-person-check"></i></span>
+                   <div class="col-sm-8"><input id="id_username" type="text" class="form-control" name="username" value="" placeholder="{{user.get_username}}" readonly></div>
+
+               <button type="submit" class="btn btn-primary float-end "> Logoutww <i class="bi bi-box-arrow-right"></i></button>
+               </div>
+           </form>
+       </div>
+    {% else %}
+            <div class="row justify-content-sm-center mt-4">
+                <div class="col-sm-6">
+                <form id="signin" class="navbar-form navbar-right" role="form" method="post" action="{% url 'login' %}">
+                   {% csrf_token %}
+
+                   <div class="input-group">
+                       <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                       <label class="col-sm-6  control-label" for="nombre">Nombre de usuario</label>
+                       <div class="col-sm-6"><input id="id_username" type="text" required class="form-control" name="username" value="" placeholder="Nombre de usuario"></div>
+                   </div>
+
+                   <div class="input-group">
+                       <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                       <label class="col-sm-6 control-label " for="nombre">Contraseña</label>
+                        <div class="col-sm-6"><input id="id_password" type="password" required class="form-control" name="password" value="" placeholder="Contraseña"></div>
+                   </div>
+                   <button type="submit" class="btn btn-primary"> Login </button>
+                </form>
+            {% endif %}
+        </div>
+    

@@ -6,10 +6,79 @@ from django.template import loader
 from django.contrib.auth.decorators import login_required
 
 from .models import *
+from .message_text import *
 from .utils.generic_functions import *
 
 def index(request):
     return render(request,'aicespana/index.html')
+
+#@login_required
+def alta_actividad(request):
+    return render(request,'aicespana/altaActividad.html',{'new_actividad_data':new_actividad_data})
+
+
+@login_required
+def alta_delegacion(request):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    delegacion_objs = Delegacion.objects.all().order_by('nombreDelegacion')
+    delegaciones = []
+    for delegacion_obj in delegacion_objs:
+        delegaciones.append(delegacion_obj.get_delegacion_name())
+    if request.method == 'POST' and request.POST['action'] == 'altaDelegacion':
+        if Delegacion.objects.filter(nombreDelegacion__iexact = request.POST['nombre']).exists():
+            error = [ERROR_DELEGACION_EXIST, request.POST['nombre']]
+            return render(request,'aicespana/altaDelegacion.html',{'delegaciones':delegaciones, 'ERROR':error})
+        new_delegacion_obj = Delegacion.objects.create(nombreDelegacion = request.POST['nombre'])
+        return render(request,'aicespana/altaDelegacion.html',{'delegaciones':delegaciones,'confirmation_data': request.POST['nombre']})
+    return render(request,'aicespana/altaDelegacion.html',{'delegaciones':delegaciones})
+
+#@login_required
+def alta_diocesis(request):
+    return render(request,'aicespana/altadiocesis.html',{'new_diocesis_data':new_diocesis_data})
+
+#@login_required
+def alta_grupo(request):
+    return render(request,'aicespana/altaGrupo.html',{'new_grupo_data':new_grupo_data})
+
+#@login_required
+def alta_personal_iglesia(request):
+    if request.method == 'POST' and request.POST['action'] == 'altaPersonal':
+        confirmation_data = ''
+        info_to_fetch = ['nombre', 'apellido','nif', 'email', 'fijo', 'movil']
+        personal_data = {}
+        for field in info_to_fetch:
+            personal_data[field] = request.POST[field]
+        PersonalExterno_obj = PersonalIglesia.objects.create_new_personel(personal_data)
+        confirmation_data = {}
+        confirmation_data['nombre'] = request.POST['nombre']
+        confirmation_data['apellido'] = request.POST['apellido']
+        return render(request,'aicespana/altaPersonalIglesia.html',{'confirmation_data': confirmation_data})
+    new_personel_data =''
+    return render(request,'aicespana/altaPersonalIglesia.html',{'new_personel_data':new_personel_data})
+
+#@login_required
+def alta_proyecto(request):
+    return render(request,'aicespana/altaProyecto.html',{'new_proyecto_data':new_proyecto_data})
+
+#@login_required
+def alta_voluntario(request):
+    if request.method == 'POST' and request.POST['action'] == 'altaVoluntario':
+        confirmation_data = ''
+        info_to_fetch = ['nombre', 'apellidos','nif','nacimiento','calle','poblacion', 'provincia', 'codigo', 'email', 'fijo', 'movil', 'tipoColaboracion']
+        personal_data = {}
+        for field in info_to_fetch:
+            personal_data[field] = request.POST[field]
+        PersonalExterno_obj = PersonalExterno.objects.create_new_external_personel(personal_data)
+        confirmation_data = {}
+        confirmation_data['nombre'] = request.POST['nombre']
+        confirmation_data['apellidos'] = request.POST['apellidos']
+
+        return render(request,'aicespana/altaVoluntario.html',{'confirmation_data': confirmation_data})
+    new_volunteer_data = {'types':get_volunteer_types() ,'provincias':get_provincias()}
+    return render(request,'aicespana/altaVoluntario.html',{'new_volunteer_data':new_volunteer_data})
+
+
 
 @login_required
 def listado_voluntarios(request):
@@ -31,7 +100,7 @@ def cargos_personal_iglesia(request):
                     error = ['Hay más de 1 persona que tiene el mismo NIF/NIE', reques.POST['nif']]
                     return render(request, 'aicespana/cargosPersonalIglesia.html',{'ERROR':error})
                 return render(request, 'aicespana/cargosVoluntarios.html', {'personal_available_settings':personal_available_settings})
-            error = ['No hay nigún personal de AIC que tenga el NIF/NIE', request.POST['nif']]
+            error = [ERROR_NOT_FIND_PERSONAL_NIF, request.POST['nif']]
             return render(request, 'aicespana/cargosPersonalIglesia.html',{'ERROR':error})
         personal_objs = PersonalIglesia.objects.all()
         if request.POST['apellido'] != '':
@@ -39,7 +108,7 @@ def cargos_personal_iglesia(request):
         if request.POST['nombre'] != '':
             personal_objs = personal_objs.filter(nombre__iexact = request.POST['nombre'])
         if len(personal_objs) == 0:
-            error = ['No hay nigún Personal de la AIC que cumpla los criterios de busqueda', str(request.POST['nombre']  + ' ' + request.POST['apellido']) ]
+            error = [ERROR_NOT_FIND_PERSONAl_CRITERIA, str(request.POST['nombre']  + ' ' + request.POST['apellido']) ]
             return render(request, 'aicespana/cargosPersonalIglesia.html',{'ERROR':error})
         if len(personal_objs) >1 :
             personal_list = []
@@ -182,34 +251,3 @@ def listado_voluntarios_grupo(request):
         return render(request, 'aicespana/listadoVoluntariosGrupo.html', {'voluntarios_data': voluntarios_data})
 
     return render(request,'aicespana/listadoVoluntariosGrupo.html', {'grupos':grupos})
-#@login_required
-def nuevo_voluntario(request):
-    if request.method == 'POST' and request.POST['action'] == 'altaVoluntario':
-        confirmation_data = ''
-        info_to_fetch = ['nombre', 'apellidos','nif','nacimiento','calle','poblacion', 'provincia', 'codigo', 'email', 'fijo', 'movil', 'tipoColaboracion']
-        personal_data = {}
-        for field in info_to_fetch:
-            personal_data[field] = request.POST[field]
-        PersonalExterno_obj = PersonalExterno.objects.create_new_external_personel(personal_data)
-        confirmation_data = {}
-        confirmation_data['nombre'] = request.POST['nombre']
-        confirmation_data['apellidos'] = request.POST['apellidos']
-
-        return render(request,'aicespana/nuevoVoluntario.html',{'confirmation_data': confirmation_data})
-    new_volunteer_data = {'types':get_volunteer_types() ,'provincias':get_provincias()}
-    return render(request,'aicespana/nuevoVoluntario.html',{'new_volunteer_data':new_volunteer_data})
-#@login_required
-def nuevo_personal_iglesia(request):
-    if request.method == 'POST' and request.POST['action'] == 'altaPersonal':
-        confirmation_data = ''
-        info_to_fetch = ['nombre', 'apellido','nif', 'email', 'fijo', 'movil']
-        personal_data = {}
-        for field in info_to_fetch:
-            personal_data[field] = request.POST[field]
-        PersonalExterno_obj = PersonalIglesia.objects.create_new_personel(personal_data)
-        confirmation_data = {}
-        confirmation_data['nombre'] = request.POST['nombre']
-        confirmation_data['apellido'] = request.POST['apellido']
-        return render(request,'aicespana/nuevoPersonalIglesia.html',{'confirmation_data': confirmation_data})
-    new_personel_data =''
-    return render(request,'aicespana/nuevoPersonalIglesia.html',{'new_personel_data':new_personel_data})

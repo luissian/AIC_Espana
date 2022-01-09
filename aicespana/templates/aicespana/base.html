@@ -16,9 +16,11 @@
     </head>
      <!-- END HEAD -->
      <!-- BODY -->
+
     <body>
+        <div class="container">
         <!-- Navigation-->
-        <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
+        <nav class="navbar navbar-expand-lg navbar-light navbar-custom" id="mainNav">
 
             <div class="container-fluid">
                 <a class="navbar-brand" href="/">
@@ -28,50 +30,97 @@
                   <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                          <a class="nav-link active" aria-current="page" href="/">Inicio</a>
-                        </li>
+                    <ul class="navbar-nav ms-auto navbar-right">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Alta de Personas
-                            </a>
+                            <a class="nav-link dropdown-toggle text-danger" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">DELEGACIÓN</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="/nuevoVoluntario">Nuevo voluntario</a></li>
-                                <li><a class="dropdown-item" href="/nuevoPersonalIglesia">Nuevo personal de iglesia</a></li>
+                                <li><a class="dropdown-item text-primary" href="/altaDelegacion">Alta Delegación</a></li>
+                                <li><a class="dropdown-item text-primary" href="/modificacionDelegacion">Modificar datos Delegación</a></li>
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-danger" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                DIÓCESIS
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                              <li><a class="dropdown-item text-primary" href="/altaDiocesis">Alta Diócesis</a></li>
+                              <li><a class="dropdown-item text-primary" href="/modificacionDiocesis">Modificar datos Diócesis</a></li>
+                          </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-danger" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                GRUPO
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item text-primary" href="/altaGruposDelegación">Alta Grupo</a></li>
+                                <li><a class="dropdown-item text-primary" href="/modificacionGrupos">Modificar datos Grupo</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-danger" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                VOLUNTARIO
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item text-primary" href="/altaVoluntario">Alta Voluntario</a></li>
+                                <li><a class="dropdown-item text-primary" href="/modificacionVoluntario">Modificar datos Voluntario</a></li>
+                                <li><a class="dropdown-item text-primary" href="/cargosVoluntario">Asignar cargos a Voluntario</a></li>
+                                <li><a class="dropdown-item text-primary" href="/informacionVoluntario">Informacion de Voluntario</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-danger" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                PERSONAL IGLESIA
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item text-primary" href="/altaPersonal">Alta Personal</a></li>
+                                <li><a class="dropdown-item text-primary" href="/modificacionPersonal">Modificar datos Personal</a></li>
+                                <li><a class="dropdown-item text-primary" href="/cargosPersonal">Asignar cargos a Personal</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-danger" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                PROYECTOS
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item text-primary" href="/altaProyecto">Alta Proyecto</a></li>
+                                <li><a class="dropdown-item text-primary" href="/modificacionProyectos">Modificar datos Proyecto</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-danger" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                ACTIVIDADES
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item text-primary" href="/altaActividad">Alta Proyecto</a></li>
+                                <li><a class="dropdown-item text-primary" href="/modificacionActividad">Modificar datos Actividad</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Listados
+                                LISTADOS
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" href="/listadoDelegaciones">Delegaciones</a></li>
                                 <li><a class="dropdown-item" href="/listadoDiocesis">Diocesis</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="/listadoVoluntariosGrupo">Voluntarios en un Grupo</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="/informacionVoluntario">Informacion de Voluntario</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Asignar Cargos
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="/cargosVoluntarios">Cargos voluntarios</a></li>
-                                <li><a class="dropdown-item" href="/cargosPersonalIglesia">Cargos Personal Iglesia</a></li>
+
+
                             </ul>
                         </li>
                         <li class="nav-item">
                           <a class="nav-link active" aria-current="page" href="/">Contacto</a>
                         </li>
+
                     </ul>
                 </div>
             </div>
         </nav>
-
-
+        </div>
+        <!-- Logging pannel -->
+        {% include 'registration/login_oneline.html' %}
+          <!-- End Loggin pannel -->
 
         {% block content %}
 	       <!--========== HERE WILL BE THE INFORMATION FROM DJANGO CODE  ==========-->
@@ -91,7 +140,7 @@
                             <li class="list-inline-item">⋅</li>
                             <li class="list-inline-item"><a href="#!">Privacy Policy</a></li>
                         </ul>
-                        <p class="text-muted small mb-4 mb-lg-0">&copy; Your Website 2021. All Rights Reserved.</p>
+                        <p class="text-muted small mb-4 mb-lg-0">&copy; 2022. All Rights Reserved.</p>
                     </div>
                     <div class="col-lg-6 h-100 text-center text-lg-end my-auto">
                         <ul class="list-inline mb-0">

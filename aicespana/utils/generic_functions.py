@@ -1,5 +1,5 @@
 from aicespana.models import *
-
+from django.contrib.auth.models import Group, User
 
 def get_delegation_data(delegation_id):
     '''
@@ -272,3 +272,23 @@ def get_personel_obj_from_id(user_id):
     if PersonalIglesia.objects.filter(pk__exact = user_id).exists():
         return PersonalIglesia.objects.filter(pk__exact = user_id).last()
     return False
+
+
+def is_manager (request):
+    '''
+    Description:
+        The function will check if the logged user belongs to wetlab
+        manager group
+    Input:
+        request # contains the session information
+    Return:
+        Return True if the user belongs to Wetlab Manager, False if not
+    '''
+    try:
+        groups = Group.objects.get(name = 'responsable')
+        if groups not in request.user.groups.all():
+            return False
+    except:
+        return False
+
+    return True
