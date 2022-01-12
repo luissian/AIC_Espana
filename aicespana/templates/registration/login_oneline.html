@@ -7,10 +7,10 @@
             <form id="signin" class="navbar-form navbar-right" role="form" method="post" action="{% url 'logout' %}?next={{request.path}}">
                {% csrf_token %}
                 <div class="input-group">
-                    <span class="input-group-addon"><i class="bi bi-person-check"></i></span>
-                   <div class="col-sm-8"><input id="id_username" type="text" class="form-control" name="username" value="" placeholder="{{user.get_username}}" readonly></div>
+                    <i class="bi bi-person-check"></i>
+                    <label class="col-sm-6"> Usuario registrado : <strong>{{user.get_username}}</strong> </label>
 
-               <button type="submit" class="btn btn-primary float-end "> Logout </button>
+               <button type="submit" class="btn btn-primary float-end "> Cerrar sesión <i class="bi bi-box-arrow-right"></i></button>
                </div>
            </form>
        </div>
@@ -27,7 +27,7 @@
                    </div>
 
                    <div class="input-group">
-                       <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                       <i class="bi bi-lock"></i>
                        <label class="col-sm-6 control-label " for="nombre">Contraseña</label>
                         <div class="col-sm-6"><input id="id_password" type="password" required class="form-control" name="password" value="" placeholder="Contraseña"></div>
                    </div>
@@ -35,4 +35,3 @@
                 </form>
             {% endif %}
         </div>
-    

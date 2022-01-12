@@ -21,10 +21,7 @@ def alta_actividad(request):
 def alta_delegacion(request):
     if not is_manager(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
-    delegacion_objs = Delegacion.objects.all().order_by('nombreDelegacion')
-    delegaciones = []
-    for delegacion_obj in delegacion_objs:
-        delegaciones.append(delegacion_obj.get_delegacion_name())
+    delegaciones = delegation_name_list()
     if request.method == 'POST' and request.POST['action'] == 'altaDelegacion':
         if Delegacion.objects.filter(nombreDelegacion__iexact = request.POST['nombre']).exists():
             error = [ERROR_DELEGACION_EXIST, request.POST['nombre']]
@@ -33,9 +30,23 @@ def alta_delegacion(request):
         return render(request,'aicespana/altaDelegacion.html',{'delegaciones':delegaciones,'confirmation_data': request.POST['nombre']})
     return render(request,'aicespana/altaDelegacion.html',{'delegaciones':delegaciones})
 
-#@login_required
+@login_required
 def alta_diocesis(request):
-    return render(request,'aicespana/altadiocesis.html',{'new_diocesis_data':new_diocesis_data})
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    diocesis_data = {}
+    diocesis_data['delegation_data'] = delegation_id_and_name_list()
+    diocesis_data['diocesis_list'] = get_diocesis_name_and_delegation_name()
+
+    if request.method == 'POST' and request.POST['action'] == 'altaDiocesis':
+        if Diocesis.objects.filter(nombreDiocesis__iexact = request.POST['nombre']).exists():
+            error = [ERROR_DIOCESIS_EXIST, request.POST['nombre']]
+            return render(request,'aicespana/altaDiocesis.html',{'diocesis_data':diocesis_data, 'ERROR':error})
+        data = {'name':request.POST['nombre'], 'delegation_id':request.POST['delegacion_id']}
+        new_diocesis_obj =Diocesis.objects.create_new_diocesis(data)
+
+        return render(request,'aicespana/altaDiocesis.html',{'diocesis_data':diocesis_data,'confirmation_data': request.POST['nombre']})
+    return render(request,'aicespana/altaDiocesis.html',{'diocesis_data':diocesis_data})
 
 #@login_required
 def alta_grupo(request):
@@ -78,8 +89,32 @@ def alta_voluntario(request):
     new_volunteer_data = {'types':get_volunteer_types() ,'provincias':get_provincias()}
     return render(request,'aicespana/altaVoluntario.html',{'new_volunteer_data':new_volunteer_data})
 
+@login_required
+def modificacion_delegacion(request):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    delegacion_data = delegation_id_and_name_list()
 
+    return render(request,'aicespana/modificacionDelegacion.html',{'delegacion_data':delegacion_data})
 
+@login_required
+def modificar_delegacion(request,delegation_id):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    if not Delegacion.objects.filter(pk__exact = delegation_id).exists():
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_DELEGACION_NOT_EXIST})
+    delegacion_obj = Delegacion.objects.filter(pk__exact= delegation_id).last()
+    delegacion = {}
+    delegacion['id'] = delegacion_obj.get_delegacion_id()
+    delegacion['name'] = delegacion_obj.get_delegacion_name()
+    if request.method == 'POST' and request.POST['action'] == 'modificarDelegacion':
+        if Delegacion.objects.filter(nombreDelegacion__iexact = request.POST['nombre']).exclude(pk__exact =request.POST['delegacion_id'] ).exists():
+            return render (request,'aicespana/modificarDelegacion.html', {'ERROR': ERROR_DELEGACION_MODIFICATION_EXIST, 'delegacion':delegacion})
+        delegation_obj = get_delegation_obj_from_id(request.POST['delegacion_id'])
+        delegation_obj.update_delegacion_name(request.POST['nombre'])
+        return render(request,'aicespana/modificarDelegacion.html',{'confirmation_data': request.POST['nombre']})
+
+    return render(request,'aicespana/modificarDelegacion.html',{'delegacion':delegacion})
 @login_required
 def listado_voluntarios(request):
 

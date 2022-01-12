@@ -43,12 +43,23 @@ class Delegacion(models.Model):
     def __str__(self):
         return '%s' %(self.nombreDelegacion)
 
-    def get_delegation_id(self):
+    def get_delegacion_id(self):
         return '%s' %(self.pk)
 
     def get_delegacion_name(self):
         return '%s' %(self.nombreDelegacion)
 
+    def update_delegacion_name(self, name):
+        self.nombreDelegacion = name
+        self.save()
+        return self
+
+class DiocesisManager(models.Manager):
+    def create_new_diocesis(self, data):
+        if Delegacion.objects.filter(pk__exact = data['delegation_id']).exists():
+            delegation_obj = Delegacion.objects.filter(pk__exact = data['delegation_id']).last()
+        new_diocesis = self.create(nombreDiocesis = data['name'], delegacionDependiente = delegation_obj )
+        return new_diocesis
 
 class Diocesis(models.Model):
     delegacionDependiente = models.ForeignKey(
@@ -63,12 +74,14 @@ class Diocesis(models.Model):
         return '%s' %(self.pk)
 
     def get_delegacion_name (self):
-        if delegacionDependiente :
+        if self.delegacionDependiente :
             return '%s' %(self.delegacionDependiente.get_delegacion_name())
         return 'No asignado'
 
     def get_diocesis_name (self):
         return '%s' %(self.nombreDiocesis)
+
+    objects = DiocesisManager()
 
 class Parroquia(models.Model):
     diocesisDependiente = models.ForeignKey(

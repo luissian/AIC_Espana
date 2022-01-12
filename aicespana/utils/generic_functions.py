@@ -26,6 +26,42 @@ def get_delegation_data(delegation_id):
 
     return delegation_data
 
+def delegation_name_list():
+    '''
+    Description:
+        The function gets a list with all delegation names.
+    Return:
+        delegation_name_list
+    '''
+    delegation_name_list = []
+    delegacion_objs = Delegacion.objects.all().order_by('nombreDelegacion')
+    for delegacion_obj in delegacion_objs:
+        delegation_name_list.append(delegacion_obj.get_delegacion_name())
+    return delegation_name_list
+
+def delegation_id_and_name_list():
+    '''
+    Description:
+        The function gets a list with the ids and delegation names.
+    Return:
+        delegation_id_name_list
+    '''
+    delegation_id_name_list = []
+    delegacion_objs = Delegacion.objects.all().order_by('nombreDelegacion')
+    for delegacion_obj in delegacion_objs:
+        delegation_id_name_list.append([delegacion_obj.get_delegacion_id(), delegacion_obj.get_delegacion_name()])
+    return delegation_id_name_list
+
+def get_delegation_obj_from_id(delegation_id):
+    '''
+    Description:
+        The function return the delegation object from their id.
+    Input:
+        delegation_id   # id of the deletation
+    Return:
+        delegation_id_name_list
+    '''
+    return Delegacion.objects.filter(pk__exact = delegation_id).last()
 
 def get_diocesis_data(diocesis_id):
     '''
@@ -59,6 +95,19 @@ def get_diocesis_data(diocesis_id):
                 else:
                     diocesis_data['cargos'].append([cargo_name, 'Sin Asignar' , '--' , '--', '--', '--'])
 
+    return diocesis_data
+
+def get_diocesis_name_and_delegation_name():
+    '''
+    Description:
+        The function gets the diocesis name and the delegation belogs to
+    Return:
+        diocesis_data
+    '''
+    diocesis_data = []
+    diocesis_objs = Diocesis.objects.all().order_by('delegacionDependiente')
+    for diocesis_obj in diocesis_objs:
+        diocesis_data.append([diocesis_obj.get_diocesis_name(),diocesis_obj.get_delegacion_name()])
     return diocesis_data
 
 def get_external_personal_responsability(personal_obj):

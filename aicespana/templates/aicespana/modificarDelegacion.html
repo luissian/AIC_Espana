@@ -1,0 +1,72 @@
+{% extends 'aicespana/base.html' %}
+{% load static %}
+{% block content %}
+
+{% if ERROR %}
+	<div class="container-md">
+		<div class="row g-3"">
+			<div class="col-md-6 offset-3">
+				<div class="card text-center bg-danger">
+					<div class="card-header">
+						<h2 style="text-align:center">ERROR</h2>
+					</div>
+					<div class="card-body">
+						<p class="card-text">
+							{{ERROR}}
+
+						</p>
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+			</div> <!-- end col-md-10 -->
+		</div> <!-- end row-->
+	</div> <!-- end container -->
+{% endif %}
+
+{% if confirmation_data %}
+	<div class="container-md">
+		<div class="row g-3">
+			<div class="col-md-10">
+				<div class="card">
+					<div class="card-header"><h2 style="text-align:center">Datos Guardados</h2> </div>
+					<div class="card-body">
+						<p style="text-align:center">Los cambios de la delegación {{confirmation_data}} se han guardado correctamente</p>
+
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+		    </div> <!-- end col-md-10 -->
+		</div> <!-- end row-->
+	</div> <!-- end container -->
+
+{% else %}
+	<br><br>
+	<div class="container-md">
+	    <div class="row g-3">
+	        <div class="col-md-9">
+	            <div class="card">
+					<div class="card-header"><h2 style="text-align:center">Formulario para cambiar el nombre de la Delegación {{delegacion.name}}</h2> </div>
+	                <div class="card-body">
+	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="modificarDelegacion" id="modificarDelegacion" >
+	                        {% csrf_token %}
+	                        <input type="hidden" name="action" value="modificarDelegacion"/>
+							<input type="hidden" name="delegacion_id" value="{{delegacion.id}}"/>
+							<div class="form-group required">
+		                        <div class="col-md-6">
+		                            <label class="control-label " for="nombre">Escribe el nuevo nombre de la Delegación</label>
+		                            <input type="text" required class="form-control" id="nombre" name='nombre'>
+		                        </div>
+							</div>
+
+							<br><br>
+	                        <div class="col-12">
+	                            <button type="submit" class="btn-outline-primary float-end ">Guardar datos</button>
+	                        </div>
+	                    </form>
+						<br><br>
+						<p>Los campos con  <span style="color:red"> * </span> son obligatorios</p>
+	                </div>  <!-- end card-body -->
+	            </div>  <!-- end card -->
+	        </div> <!-- end col-md-7 -->
+	    </div> <!-- end row-->
+	</div> <!-- end container -->
+{% endif %}
+{% endblock %}
