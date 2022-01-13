@@ -94,7 +94,6 @@ def modificacion_delegacion(request):
     if not is_manager(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     delegacion_data = delegation_id_and_name_list()
-
     return render(request,'aicespana/modificacionDelegacion.html',{'delegacion_data':delegacion_data})
 
 @login_required
@@ -103,9 +102,9 @@ def modificar_delegacion(request,delegation_id):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     if not Delegacion.objects.filter(pk__exact = delegation_id).exists():
         return render (request,'aicespana/errorPage.html', {'content': ERROR_DELEGACION_NOT_EXIST})
-    delegacion_obj = Delegacion.objects.filter(pk__exact= delegation_id).last()
+    delegacion_obj = get_delegation_obj_from_id(delegacion_id)
     delegacion = {}
-    delegacion['id'] = delegacion_obj.get_delegacion_id()
+    delegacion['id'] = request.POST['delegacion_id']
     delegacion['name'] = delegacion_obj.get_delegacion_name()
     if request.method == 'POST' and request.POST['action'] == 'modificarDelegacion':
         if Delegacion.objects.filter(nombreDelegacion__iexact = request.POST['nombre']).exclude(pk__exact =request.POST['delegacion_id'] ).exists():
@@ -115,6 +114,43 @@ def modificar_delegacion(request,delegation_id):
         return render(request,'aicespana/modificarDelegacion.html',{'confirmation_data': request.POST['nombre']})
 
     return render(request,'aicespana/modificarDelegacion.html',{'delegacion':delegacion})
+
+@login_required
+def modificacion_diocesis(request):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    diocesis_data = {}
+    #diocesis_data['delegation_data'] = delegation_id_and_name_list()
+    diocesis_data['diocesis_list'] = get_diocesis_id_name_and_delegation_name()
+
+    return render(request,'aicespana/modificacionDiocesis.html',{'diocesis_data':diocesis_data})
+
+@login_required
+def modificar_diocesis(request,diocesis_id):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    if not Diocesis.objects.filter(pk__exact = diocesis_id).exists():
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_DIOCESIS_NOT_EXIST})
+    diocesis_obj = get_diocesis_obj_from_id(diocesis_id)
+    diocesis_data = {}
+    diocesis_data['delegation_id'] = diocesis_obj.get_delegacion_id()
+    diocesis_data['delegation_name'] = diocesis_obj.get_delegacion_name()
+    diocesis_data['diocesis_id'] = diocesis_obj.get_diocesis_id()
+    diocesis_data['diocesis_name'] = diocesis_obj.get_diocesis_name()
+    diocesis_data['delegation_id_name_list'] = delegation_id_and_name_list()
+
+    if request.method == 'POST' and request.POST['action'] == 'modificarDiocesis':
+        if Diocesis.objects.filter(nombreDiocesis__iexact = request.POST['diocesisNombre']).exclude(pk__exact =request.POST['diocesisID'] ).exists():
+            return render (request,'aicespana/modificarDiocesis.html', {'ERROR': ERROR_DIOCESIS_MODIFICATION_EXIST, 'diocesis_data':diocesis_data})
+        delegation_obj = get_delegation_obj_from_id(request.POST['delegacion_id'])
+        get_diocesis_obj_from_id(request.POST['diocesisID'])
+        diocesis_obj.update_diocesis_data(request.POST['diocesisNombre'],delegation_obj)
+        return render(request,'aicespana/modificarDiocesis.html',{'confirmation_data': request.POST['diocesisNombre']})
+
+    return render(request,'aicespana/modificarDiocesis.html',{'diocesis_data':diocesis_data})
+
+
+
 @login_required
 def listado_voluntarios(request):
 

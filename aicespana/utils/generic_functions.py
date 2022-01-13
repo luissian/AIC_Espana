@@ -57,11 +57,22 @@ def get_delegation_obj_from_id(delegation_id):
     Description:
         The function return the delegation object from their id.
     Input:
-        delegation_id   # id of the deletation
+        delegation_id   # id of the delegation
     Return:
-        delegation_id_name_list
+        object of delegation instance
     '''
     return Delegacion.objects.filter(pk__exact = delegation_id).last()
+
+def get_diocesis_obj_from_id(diocesis_id):
+    '''
+    Description:
+        The function return the diocesis object from their id.
+    Input:
+        delegation_id   # id of the diocesis
+    Return:
+        object of diocesis instance
+    '''
+    return Diocesis.objects.filter(pk__exact = diocesis_id).last()
 
 def get_diocesis_data(diocesis_id):
     '''
@@ -95,6 +106,19 @@ def get_diocesis_data(diocesis_id):
                 else:
                     diocesis_data['cargos'].append([cargo_name, 'Sin Asignar' , '--' , '--', '--', '--'])
 
+    return diocesis_data
+
+def get_diocesis_id_name_and_delegation_name():
+    '''
+    Description:
+        The function gets the diocesis id , the diocesis name and the delegation belogs to
+    Return:
+        diocesis_data
+    '''
+    diocesis_data = []
+    diocesis_objs = Diocesis.objects.all().order_by('delegacionDependiente')
+    for diocesis_obj in diocesis_objs:
+        diocesis_data.append([diocesis_obj.get_diocesis_id(),diocesis_obj.get_diocesis_name(),diocesis_obj.get_delegacion_name()])
     return diocesis_data
 
 def get_diocesis_name_and_delegation_name():

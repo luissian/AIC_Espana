@@ -73,6 +73,11 @@ class Diocesis(models.Model):
     def get_diocesis_id(self):
         return '%s' %(self.pk)
 
+    def get_delegacion_id (self):
+        if self.delegacionDependiente :
+            return '%s' %(self.delegacionDependiente.get_delegacion_id())
+        return ''
+
     def get_delegacion_name (self):
         if self.delegacionDependiente :
             return '%s' %(self.delegacionDependiente.get_delegacion_name())
@@ -80,6 +85,12 @@ class Diocesis(models.Model):
 
     def get_diocesis_name (self):
         return '%s' %(self.nombreDiocesis)
+
+    def update_diocesis_data(self,nombre,delegacion):
+        self.nombreDiocesis = nombre
+        self.delegacionDependiente = delegacion
+        self.save()
+        return self
 
     objects = DiocesisManager()
 

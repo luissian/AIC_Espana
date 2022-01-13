@@ -21,6 +21,8 @@ urlpatterns = [
     path('listadoVoluntariosGrupo', views.listado_voluntarios_grupo, name='listado_voluntarios_grupo'),
     path('modificarDelegacion=<int:delegation_id>', views.modificar_delegacion, name = 'modificar_delegacion'),
     path('modificacionDelegacion', views.modificacion_delegacion, name = 'modificacion_delegacion'),
+    path('modificarDiocesis=<int:diocesis_id>', views.modificar_diocesis, name = 'modificar_diocesis'),
+    path('modificacionDiocesis', views.modificacion_diocesis, name = 'modificacion_diocesis'),
 
 
 ]
