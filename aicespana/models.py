@@ -94,6 +94,15 @@ class Diocesis(models.Model):
 
     objects = DiocesisManager()
 
+
+class ParroquiaManager(models.Manager):
+    def create_new_parroquia (self, data):
+        new_parroquia = self.create(diocesisDependiente = data['diocesis_obj'], nombreParroquia = data['nombre'],
+                    calle = data['calle'],poblacion = data['poblacion'], codigoPostal = data['codigo'],
+                    observaciones = data['observaciones'])
+        return new_parroquia
+
+
 class Parroquia(models.Model):
     diocesisDependiente = models.ForeignKey(
                         Diocesis,
@@ -118,6 +127,10 @@ class Parroquia(models.Model):
         if self.diocesisDependiente:
             return '%s' %(self.diocesisDependiente.get_diocesis_name())
         return 'No asignado'
+    def get_diocesis_id(self):
+        if self.diocesisDependiente:
+            return '%s' %(self.diocesisDependiente.get_diocesis_id())
+        return ''
 
     def get_poblacion_name(self):
         return '%s' %(self.poblacion)
@@ -125,11 +138,29 @@ class Parroquia(models.Model):
     def get_provincia_name(self):
         return '%s' %(self.provincia)
 
+    def get_parroquia_full_data(self):
+        return [self.nombreParroquia, self.get_parroquia_id(), self.get_diocesis_name(), self.get_diocesis_id() ,self.calle, self.poblacion, self.provincia,self.codigoPostal,self.observaciones]
+
+    def update_parroquia_data(self, data):
+        self.diocesisDependiente = Diocesis.objects.filter(pk__exact = data['diocesisID']).last()
+        self.nombreParroquia = data['parroquia_name']
+        self.calle = data['calle']
+        self.poblacion = data['poblacion']
+        self.provincia = data['provincia']
+        self.codigoPostal = data['codigo']
+        self.observaciones = data['observaciones']
+        self.save()
+        return self
+
+    objects = ParroquiaManager()
 
 class Grupo(models.Model):
     parroquiaDependiente = models.ForeignKey(
                         Parroquia,
-                        on_delete=models.CASCADE)
+                        on_delete=models.CASCADE, null=True, blank = True)
+    diocesisDependiente = models.ForeignKey(
+                        Diocesis,
+                        on_delete=models.CASCADE, null=True, blank = True)
     calle = models.CharField(max_length=80, null=True, blank = True)
     poblacion = models.CharField(max_length=60, null=True, blank = True)
     provincia = models.CharField(max_length=40, null=True, blank = True)
@@ -137,6 +168,9 @@ class Grupo(models.Model):
     fechaErecion = models.DateField(auto_now = False, null=True, blank = True)
     registroNumero =  models.CharField(max_length=50)
     nombreGrupo =  models.CharField(max_length=80)
+    fechaAlta = models.DateField(auto_now = False, null=True, blank = True)
+    fechaBaja = models.DateField(auto_now = False, null=True, blank = True)
+    grupoActivo =  models.BooleanField(default= True)
     observaciones = models.CharField(max_length=1000, null=True, blank=True)
 
 
@@ -179,6 +213,10 @@ class Proyecto(models.Model):
     calle = models.CharField(max_length=80)
     poblacion = models.CharField(max_length=60)
     provincia = models.CharField(max_length=40)
+    fechaAlta = models.DateField(auto_now = False, null=True, blank = True)
+    fechaBaja = models.DateField(auto_now = False, null=True, blank = True)
+    proyectoActivo =  models.BooleanField(default= True)
+    observaciones = models.CharField(max_length=1000, null=True, blank=True)
 
     def __str__(self):
         return '%s' %(self.nombreProyecto)
@@ -200,6 +238,10 @@ class Actividad(models.Model):
     calle = models.CharField(max_length=80, null=True, blank = True)
     poblacion = models.CharField(max_length=60, null=True, blank = True)
     provincia = models.CharField(max_length=40, null=True, blank = True)
+    fechaAlta = models.DateField(auto_now = False, null=True, blank = True)
+    fechaBaja = models.DateField(auto_now = False, null=True, blank = True)
+    actividadActiva = models.BooleanField(default= True)
+    observaciones = models.CharField(max_length=1000, null=True, blank=True)
 
     def __str__ (self):
         return '%s' %(self.nombreActividad)
@@ -266,6 +308,10 @@ class PersonalExterno(models.Model):
     telefonoFijo = models.CharField(max_length=20, null=True, blank = True)
     telefonoMovil = models.CharField(max_length=40, null=True, blank = True)
     recibirBoletin = models.BooleanField(default= False,)
+    fechaAlta = models.DateField(auto_now = False, null=True, blank = True)
+    fechaBaja = models.DateField(auto_now = False, null=True, blank = True)
+    voluntarioActivo =  models.BooleanField(default= True)
+    observaciones = models.CharField(max_length=1000, null=True, blank=True)
 
     def __str__ (self):
         return '%s %s' %(self.nombre, self.apellido)
@@ -434,7 +480,10 @@ class PersonalIglesia(models.Model):
     email = models.CharField(max_length=40, null=True, blank = True)
     telefonoFijo = models.CharField(max_length=20, null=True, blank = True)
     telefonoMovil = models.CharField(max_length=40, null=True, blank = True)
+    fechaBaja = models.DateField(auto_now = False, null=True, blank = True)
+    personalActivo = models.BooleanField(default= True)
     recibirBoletin = models.BooleanField(default= False)
+    observaciones = models.CharField(max_length=1000, null=True, blank=True)
 
     def __str__ (self):
         return '%s %s' %(self.nombre, self.apellido)

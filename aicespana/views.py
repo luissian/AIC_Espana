@@ -49,7 +49,34 @@ def alta_diocesis(request):
     return render(request,'aicespana/altaDiocesis.html',{'diocesis_data':diocesis_data})
 
 #@login_required
+def alta_parroquia(request):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    parroquia_data = {}
+    parroquia_data['parroquia_diocesis_name'] = get_id_parroquia_diocesis_delegacion_name()
+    parroquia_data['diocesis_id_name_list'] = get_diocesis_id_name_list()
+    parroquia_data['provincias'] = get_provincias()
+    if request.method == 'POST' and request.POST['action'] == 'altaParroquia':
+        if check_exists_parroquia(request.POST['nombre'],request.POST['diocesis_id']):
+            return render (request, 'aicespana/altaParroquia.html',{'parroquia_data':parroquia_data, 'ERROR':ERROR_PARROQUIA_EXISTS})
+        diocesis_obj = get_diocesis_obj_from_id(request.POST['diocesis_id'])
+        parroquia_data = {'diocesis_obj': diocesis_obj}
+        list_of_data = ['nombre' ,'calle', 'poblacion', 'provincia', 'codigo','observaciones']
+        for item in list_of_data:
+            parroquia_data[item] = request.POST[item]
+
+        new_parroquia = Parroquia.objects.create_new_parroquia(parroquia_data)
+        return render(request,'aicespana/altaParroquia.html',{'parroquia_data':parroquia_data, 'confirmation_data': request.POST['nombre']})
+
+    return render(request,'aicespana/altaParroquia.html',{'parroquia_data':parroquia_data})
+
+
+#@login_required
 def alta_grupo(request):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    grupo_data = {}
+    #grupo_data['parroquia_id_name_belongs_to_diocesis_name'] =
     return render(request,'aicespana/altaGrupo.html',{'new_grupo_data':new_grupo_data})
 
 #@login_required
@@ -89,6 +116,7 @@ def alta_voluntario(request):
     new_volunteer_data = {'types':get_volunteer_types() ,'provincias':get_provincias()}
     return render(request,'aicespana/altaVoluntario.html',{'new_volunteer_data':new_volunteer_data})
 
+
 @login_required
 def modificacion_delegacion(request):
     if not is_manager(request):
@@ -102,9 +130,9 @@ def modificar_delegacion(request,delegation_id):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     if not Delegacion.objects.filter(pk__exact = delegation_id).exists():
         return render (request,'aicespana/errorPage.html', {'content': ERROR_DELEGACION_NOT_EXIST})
-    delegacion_obj = get_delegation_obj_from_id(delegacion_id)
+    delegacion_obj = get_delegation_obj_from_id(delegation_id)
     delegacion = {}
-    delegacion['id'] = request.POST['delegacion_id']
+    delegacion['id'] = delegation_id
     delegacion['name'] = delegacion_obj.get_delegacion_name()
     if request.method == 'POST' and request.POST['action'] == 'modificarDelegacion':
         if Delegacion.objects.filter(nombreDelegacion__iexact = request.POST['nombre']).exclude(pk__exact =request.POST['delegacion_id'] ).exists():
@@ -143,13 +171,56 @@ def modificar_diocesis(request,diocesis_id):
         if Diocesis.objects.filter(nombreDiocesis__iexact = request.POST['diocesisNombre']).exclude(pk__exact =request.POST['diocesisID'] ).exists():
             return render (request,'aicespana/modificarDiocesis.html', {'ERROR': ERROR_DIOCESIS_MODIFICATION_EXIST, 'diocesis_data':diocesis_data})
         delegation_obj = get_delegation_obj_from_id(request.POST['delegacion_id'])
-        get_diocesis_obj_from_id(request.POST['diocesisID'])
+        diocesis_obj = get_diocesis_obj_from_id(request.POST['diocesisID'])
         diocesis_obj.update_diocesis_data(request.POST['diocesisNombre'],delegation_obj)
         return render(request,'aicespana/modificarDiocesis.html',{'confirmation_data': request.POST['diocesisNombre']})
 
     return render(request,'aicespana/modificarDiocesis.html',{'diocesis_data':diocesis_data})
 
 
+@login_required
+def modificacion_grupo(request):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    grupo_data = {'grupo_diocesis_name': get_id_grupo_diocesis_delegacion_name()}
+
+    return render(request,'aicespana/modificacionParroquia.html',{'grupo_data':grupo_data})
+
+@login_required
+def modificar_grupo(request,grupo_id):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    if not Grupo.objects.filter(pk__exact = grupo_id).exists():
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_GRUPO_NOT_EXIST})
+
+
+
+
+
+@login_required
+def modificacion_parroquia(request):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    parroquia_data = {'parroquia_diocesis_name': get_id_parroquia_diocesis_delegacion_name()}
+
+    return render(request,'aicespana/modificacionParroquia.html',{'parroquia_data':parroquia_data})
+
+@login_required
+def modificar_parroquia(request,parroquia_id):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    if not Parroquia.objects.filter(pk__exact = parroquia_id).exists():
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_DIOCESIS_NOT_EXIST})
+    parroquia_data = get_parroquia_data_to_modify(parroquia_id)
+    parroquia_data['diocesis_id_name_list'] = get_diocesis_id_name_list()
+    parroquia_data['provincias'] = get_provincias()
+    if request.method == 'POST' and request.POST['action'] == 'modificarParroquia':
+        if Parroquia.objects.filter(nombreParroquia__iexact = request.POST['parroquia_name'], diocesisDependiente__pk__exact = request.POST['diocesisID']).exclude(pk__exact =request.POST['parroquiaID'] ).exists():
+            return render (request,'aicespana/modificarParroquia.html', {'ERROR': ERROR_PARROQUIA_MODIFICATION_EXIST, 'parroquia_data':parroquia_data})
+        parroquia_obj = get_parroquia_obj_from_id(request.POST['parroquiaID'])
+        parroquia_obj.update_parroquia_data(fetch_parroquia_data_to_modify(request.POST))
+        return render(request,'aicespana/modificarParroquia.html',{'confirmation_data':request.POST['parroquia_name']})
+    return render(request,'aicespana/modificarParroquia.html',{'parroquia_data':parroquia_data})
 
 @login_required
 def listado_voluntarios(request):

@@ -1,0 +1,111 @@
+{% extends 'aicespana/base.html' %}
+{% load static %}
+{% block content %}
+<style media="screen">
+	.form-group.required .control-label:after {
+	  content:"  *";
+	  color:red;
+	}
+</style>
+
+{% if ERROR %}
+	<div class="container-md">
+		<div class="row g-3"">
+			<div class="col-md-6 offset-3">
+				<div class="card text-center bg-danger">
+					<div class="card-header">
+						<h2 style="text-align:center">ERROR</h2>
+					</div>
+					<div class="card-body">
+						<p class="card-text">
+							{{ERROR}}
+						</p>
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+			</div> <!-- end col-md-10 -->
+		</div> <!-- end row-->
+	</div> <!-- end container -->
+{% endif %}
+
+{% if confirmation_data %}
+	<div class="container-md">
+		<div class="row g-3"">
+			<div class="col-md-10">
+				<div class="card">
+					<div class="card-header"><h2 style="text-align:center">Datos Guardados</h2> </div>
+					<div class="card-body">
+						<p style="text-align:center">Los cambios de la Parroquia {{confirmation_data}} se ha guardado correctamente</p>
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+		    </div> <!-- end col-md-10 -->
+		</div> <!-- end row-->
+	</div> <!-- end container -->
+
+{% else %}
+	<br><br>
+	<div class="container-md">
+	    <div class="row g-3">
+	        <div class="col-md-8">
+	            <div class="card">
+					<div class="card-header"><h2 style="text-align:center">Formulario para cambiar los datos de la Parroquia {{parroquia_data.parroquia_name}}</h2> </div>
+	                <div class="card-body">
+	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="modificarParroquia" id="modificarParroquia" >
+	                        {% csrf_token %}
+	                        <input type="hidden" name="action" value="modificarParroquia"/>
+							<input type="hidden" name="parroquiaID" value="{{parroquia_data.parroquiaID}}"/>
+							<div class="form-group required">
+		                        <div class="col-md-6">
+		                            <label class="control-label " for="parroquia_name">Modifica el nombre de la Parroquia</label>
+		                            <input type="text" required class="form-control" id="parroquia_name" name='parroquia_name' value="{{parroquia_data.parroquia_name}}">
+		                        </div>
+								<div class="col-md-">
+		                            <label class="control-label " for="nombre">Seleciona la Diocesis de la que depende</label>
+									<select id="diocesisID" class="form-select" name="diocesisID">
+										<option value="{{parroquia_data.diocesis_id}}">{{parroquia_data.diocesis_name}}</option>
+										{% for diocesis_id, diocesis_name in parroquia_data.diocesis_id_name_list %}
+		                                	<option value = {{diocesis_id}}>{{diocesis_name}}</option>
+										{% endfor %}
+									</select>
+								</div>
+								<div class="col-md-6">
+									<label for="calle"  class="control-label">Calle</label>
+									<input type="text" required class="form-control" id="calle" name='calle' value="{{parroquia_data.calle}}">
+								</div>
+								<div class="col-md-6">
+									<label for="poblacion"  class="control-label">Población</label>
+									<input type="text" required class="form-control" id="poblacion" name='poblacion' value = "{{parroquia_data.poblacion}}">
+								</div>
+								<div class="col-12">
+									<label for="provincia" class="control-label">Provincia</label>
+								    <select id="provincia"  required class="form-select" name='provincia'>
+									   <option selected value="{{parroquia_data.provincia}}">{{parroquia_data.provincia}}</option>
+									   {% for prov in parroquia_data.provincias %}
+										   <option value = {{prov}}>{{prov}}</option>
+									   {% endfor %}
+								    </select>
+								</div>
+								<div class="col-md-6">
+									<label for="codigo" class="control-label">Código Postal</label>
+									<input type="text" required class="form-control" id="codigo" name='codigo' value="{{parroquia_data.codigo}}">
+								</div>
+							</div>
+							<div class="form-group">
+		                        <div class="col-md-6">
+		                            <label for="observaciones" class="form-label">Observaciones</label>
+		                            <textarea name="observaciones" rows="8" cols="70" maxlength="500">{{parroquia_data.observaciones}}</textarea>
+		                        </div>
+							</div>
+							<br><br>
+	                        <div class="col-12">
+	                            <button type="submit" class="btn-outline-primary float-end ">Guardar datos</button>
+	                        </div>
+	                    </form>
+						<br><br>
+						<p>Los campos con  <span style="color:red"> * </span> son obligatorios</p>
+	                </div>  <!-- end card-body -->
+	            </div>  <!-- end card -->
+	        </div> <!-- end col-md-6 -->
+	    </div> <!-- end row-->
+	</div> <!-- end container -->
+{% endif %}
+{% endblock %}

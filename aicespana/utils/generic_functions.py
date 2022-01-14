@@ -1,5 +1,19 @@
 from aicespana.models import *
 from django.contrib.auth.models import Group, User
+import collections
+
+
+def check_exists_parroquia(parroquia_name,dioceis_id ):
+    '''
+    Description:
+        The function gets the information and the personal name and the responsability.
+    Input:
+        parroquia_name  # Name of the parroquia
+        diocesis_id     # id of the diocesis
+    Return:
+        True/False
+    '''
+    return Parroquia.objects.filter(nombreParroquia__iexact = parroquia_name, diocesisDependiente__pk__exact =dioceis_id).exists()
 
 def get_delegation_data(delegation_id):
     '''
@@ -133,6 +147,83 @@ def get_diocesis_name_and_delegation_name():
     for diocesis_obj in diocesis_objs:
         diocesis_data.append([diocesis_obj.get_diocesis_name(),diocesis_obj.get_delegacion_name()])
     return diocesis_data
+
+def get_diocesis_id_name_list():
+    '''
+    Description:
+        The function gets the diocesis id and name
+    Return:
+        diocesis_data
+    '''
+    diocesis_data = []
+    diocesis_objs = Diocesis.objects.all().order_by('delegacionDependiente')
+    for diocesis_obj in diocesis_objs:
+        diocesis_data.append([diocesis_obj.get_diocesis_id(), diocesis_obj.get_diocesis_name()])
+    return diocesis_data
+
+
+def fetch_parroquia_data_to_modify(data_form):
+    '''
+    Description:
+        The function extract the information from the user form and return a dictionnary.
+    Input:
+        data_form   # data collected in the form
+    Return:
+        data
+    '''
+    data = {}
+    extract_list = ['parroquia_name','diocesisID','calle','poblacion','provincia','codigo','observaciones']
+    for item in extract_list:
+        data[item] = data_form[item]
+    return data
+
+def get_parroquia_obj_from_id(parroquia_id):
+    '''
+    Description:
+        The function return the parroquia object from their id.
+    Input:
+        parroquia_id   # id of the parroquia
+    Return:
+        object of parroquia instance
+    '''
+    return Parroquia.objects.filter(pk__exact = parroquia_id).last()
+
+def get_id_parroquia_diocesis_delegacion_name():
+    '''
+    Description:
+        The function gets the parroquia the diocesis name and the delegation belogs to
+    Return:
+        diocesis_data
+    '''
+    diocesis_data = collections.OrderedDict()
+    if Parroquia.objects.all().exists():
+        delegation_objs = Delegacion.objects.all().order_by('nombreDelegacion')
+        for delegation_obj in delegation_objs:
+            delegation_name = delegation_obj.get_delegacion_name()
+            diocesis_objs = Diocesis.objects.filter(delegacionDependiente = delegation_obj).order_by('nombreDiocesis')
+            for diocesis_obj in diocesis_objs:
+                diocesis_name = diocesis_obj.get_diocesis_name()
+                parroquia_objs = Parroquia.objects.filter(diocesisDependiente = diocesis_obj).order_by('nombreParroquia')
+                for parroquia_obj in parroquia_objs:
+                    if not delegation_name in diocesis_data:
+                        diocesis_data[delegation_name] = []
+                    diocesis_data[delegation_name].append([parroquia_obj.get_parroquia_id(),parroquia_obj.get_parroquia_name(),diocesis_name ])
+    return diocesis_data
+
+def get_parroquia_data_to_modify(parroquia_id):
+    '''
+    Description:
+        The function gets the parroquia recorded data to modify in the form
+    Return:
+        parroquia_data
+    '''
+    parroquia_data = {}
+    parroquia_obj = get_parroquia_obj_from_id(parroquia_id)
+    data = parroquia_obj.get_parroquia_full_data()
+    extract_list = ['parroquia_name', 'parroquiaID','diocesis_name','diocesis_id','calle','poblacion','provincia','codigo','observaciones']
+    for index in range(len(extract_list)):
+        parroquia_data[extract_list[index]] = data[index]
+    return parroquia_data
 
 def get_external_personal_responsability(personal_obj):
     '''
@@ -358,7 +449,7 @@ def is_manager (request):
         Return True if the user belongs to Wetlab Manager, False if not
     '''
     try:
-        groups = Group.objects.get(name = 'responsable')
+        groups = Group.objects.get(name = 'administracion')
         if groups not in request.user.groups.all():
             return False
     except:

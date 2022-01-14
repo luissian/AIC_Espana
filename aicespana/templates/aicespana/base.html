@@ -13,6 +13,7 @@
         <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="{% static "aicespana/css/styles.css" %}" rel="stylesheet" />
+        {% load user_groups %}
     </head>
      <!-- END HEAD -->
      <!-- BODY -->
@@ -30,32 +31,44 @@
                   <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
                     <ul class="navbar-nav ms-auto navbar-right">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-danger" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">DELEGACIÓN</a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item text-primary" href="/altaDelegacion">Alta Delegación</a></li>
-                                <li><a class="dropdown-item text-primary" href="/modificacionDelegacion">Modificar datos Delegación</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-danger" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                DIÓCESIS
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                              <li><a class="dropdown-item text-primary" href="/altaDiocesis">Alta Diócesis</a></li>
-                              <li><a class="dropdown-item text-primary" href="/modificacionDiocesis">Modificar datos Diócesis</a></li>
-                          </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-danger" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                GRUPO
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item text-primary" href="/altaGruposDelegación">Alta Grupo</a></li>
-                                <li><a class="dropdown-item text-primary" href="/modificacionGrupos">Modificar datos Grupo</a></li>
-                            </ul>
-                        </li>
+                        {% if request.user|has_group:"administracion" %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-danger" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">DELEGACIÓN</a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item text-primary" href="/altaDelegacion">Alta Delegación</a></li>
+                                    <li><a class="dropdown-item text-primary" href="/modificacionDelegacion">Modificar datos Delegación</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-danger" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    DIÓCESIS
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                  <li><a class="dropdown-item text-primary" href="/altaDiocesis">Alta Diócesis</a></li>
+                                  <li><a class="dropdown-item text-primary" href="/modificacionDiocesis">Modificar datos Diócesis</a></li>
+                              </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-danger" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    PARROQUIA
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                  <li><a class="dropdown-item text-primary" href="/altaParroquia">Alta Parroquia</a></li>
+                                  <li><a class="dropdown-item text-primary" href="/modificacionParroquia">Modificar datos Parroquia</a></li>
+                              </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-danger" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    GRUPO
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item text-primary" href="/altaGrupo">Alta Grupo</a></li>
+                                    <li><a class="dropdown-item text-primary" href="/modificacionGrupo">Modificar datos Grupo</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-danger" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 VOLUNTARIO
@@ -72,7 +85,7 @@
                                 PERSONAL IGLESIA
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item text-primary" href="/altaPersonal">Alta Personal</a></li>
+                                <li><a class="dropdown-item text-primary" href="/altaPersonalIglesia">Alta Personal</a></li>
                                 <li><a class="dropdown-item text-primary" href="/modificacionPersonal">Modificar datos Personal</a></li>
                                 <li><a class="dropdown-item text-primary" href="/cargosPersonal">Asignar cargos a Personal</a></li>
                             </ul>

@@ -1,0 +1,143 @@
+{% extends 'aicespana/base.html' %}
+{% load static %}
+{% block content %}
+<style media="screen">
+	.form-group.required .control-label:after {
+	  content:"  *";
+	  color:red;
+	}
+</style>
+
+{% if confirmation_data %}
+	<div class="container-md">
+		<div class="row g-3"">
+			<div class="col-md-10">
+				<div class="card">
+					<div class="card-header"><h2 style="text-align:center">Datos Guardados</h2> </div>
+					<div class="card-body">
+						<p style="text-align:center">Los datos de la Parroquia {{confirmation_data}} se han guardado correctamente</p>
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+		    </div> <!-- end col-md-10 -->
+		</div> <!-- end row-->
+	</div> <!-- end container -->
+	<div class="container-md">
+		<div class="row g-3"">
+			<div class="col-md-10">
+				<div class="card">
+					<div class="card-body">
+						<p>Para dar de alta una nueva Parroquia hacer click en el boton de abajo</p>
+						<br><br>
+						<div class="text-center">
+							<a href="/altaParroquia"> <button type="button" class="btn btn-outline-secondary float-center" >Añadir una nueva parroquia</button> </a>
+						</div> <!-- end text center -->
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+			</div> <!-- end col-md-10 -->
+		</div> <!-- end row-->
+	</div> <!-- end container -->
+
+{% else %}
+	<section class="light">
+		<div class="container md-8">
+			<h1 class="h1 text-center" id="pageHeaderTitle">Formulario de alta Parroquia</h1>
+	    </div>
+	</section>
+	<div class="container-md">
+	    <div class="row g-3"">
+	        <div class="col-md-7">
+	            <div class="card">
+	                    <div class="card-body">
+	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="altaParroquia" id="altaParroquia" >
+	                        {% csrf_token %}
+	                        <input type="hidden" name="action" value="altaParroquia"/>
+							<div class="form-group required">
+		                        <div class="col-md-6">
+		                            <label class="control-label " for="nombre">Nombre de la Parroquia</label>
+		                            <input type="text" required class="form-control" id="nombre" name='nombre'>
+		                        </div>
+								<div class="col-md-6">
+		                            <label class="control-label " for="nombre">Seleciona la Diocesis de la que depende la parroquia</label>
+									<select id="diocesis_id" required class="form-select" name="diocesis_id">
+										<option value="">Selecciona la diocesis</option>
+										{% for diocesis_id, diocesis in parroquia_data.diocesis_id_name_list %}
+		                                	<option value = {{diocesis_id}}>{{diocesis}}</option>
+										{% endfor %}
+									</select>
+								</div>
+		                        <div class="col-md-6">
+		                            <label for="calle"  class="control-label">Calle</label>
+		                            <input type="text" required class="form-control" id="calle" name='calle'>
+		                        </div>
+		                        <div class="col-md-6">
+		                            <label for="poblacion"  class="control-label">Población</label>
+		                            <input type="text" required class="form-control" id="poblacion" name='poblacion'>
+		                        </div>
+								<div class="col-12">
+									<label for="provincia" class="control-label">Provincia</label>
+								   <select id="provincia"  required class="form-select" name='provincia'>
+									   <option selected value=''>Selecionar</option>
+									   {% for prov in parroquia_data.provincias %}
+										   <option value = {{prov}}>{{prov}}</option>
+									   {% endfor %}
+								   </select>
+		                        </div>
+		                        <div class="col-md-6">
+		                            <label for="codigo" class="control-label">Código Postal</label>
+		                            <input type="text" required class="form-control" id="codigo" name='codigo'>
+		                        </div>
+							</div>
+							<div class="form-group">
+		                        <div class="col-md-6">
+		                            <label for="observaciones" class="form-label">Observaciones</label>
+		                            <textarea name="observaciones" rows="8" cols="70" maxlength="500"></textarea>
+		                        </div>
+							</div>
+							<br><br>
+	                        <div class="col-12">
+	                            <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
+	                            <button type="submit" class="btn-outline-primary float-end ">Guardar datos</button>
+	                        </div>
+	                    </form>
+						<p>Los campos con  <span style="color:red"> * </span> son obligatorios</p>
+	                </div>
+	            </div>
+	        </div> <!-- end col-md-7 -->
+			<div class="col-md-4 offset-1">
+	            <div class="card">
+					<div class="card-header"><h2 style="text-align:center">Listado de Parroquias</h2> </div>
+	                    <div class="card-body">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th>Delegación</th>
+										<th>Diocesis</th>
+										<th>Parroquia</th>
+									</tr>
+
+								</thead>
+
+                            	<tbody>
+									{% for delegacion, parroquias in parroquia_data.parroquia_diocesis_name.items %}
+										<tr>
+											<td>{{delegacion}}</td>
+											<td></td>
+											<td></td>
+										</tr>
+										{% for id, parroquia, diocesis in parroquias %}
+										<tr>
+											<td></td>
+											<td>{{ diocesis }}</td>
+											<td>{{parroquia}}</td>
+										</tr>
+										{% endfor %}
+									{% endfor %}
+	                            </tbody>
+	                        </table>
+						</div>  <!-- end card-body -->
+		            </div>  <!-- end card -->
+		        </div> <!-- end col-md-5 -->
+	    </div> <!-- end row-->
+	</div> <!-- end container -->
+{% endif %}
+{% endblock %}

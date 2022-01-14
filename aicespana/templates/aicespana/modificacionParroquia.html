@@ -1,0 +1,43 @@
+{% extends 'aicespana/base.html' %}
+{% load static %}
+{% block content %}
+<br><br>
+<div class="container-md">
+    <div class="row g-3"">
+        <div class="col-md-7">
+            <div class="card">
+                <div class="card-header"><h2 style="text-align:center">Listado de Parroquias</h2> </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Seleciona la Parroquia que deseas modificar</h5>
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Delegación</th>
+                                    <th>Diocesis</th>
+                                    <th>Parroquia</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for delegacion, parroquias in parroquia_data.parroquia_diocesis_name.items %}
+                                    <tr>
+                                        <td>{{delegacion}}</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    {% for id, parroquia, diocesis in parroquias %}
+                                    <tr>
+                                        <td></td>
+                                        <td>{{ diocesis }}</td>
+                                        <td>{{parroquia}}&nbsp;&nbsp;<a href="/modificarParroquia={{id}}"><i class="bi bi-pen"></i></a></td>
+                                    </tr>
+                                    {% endfor %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>  <!-- end card-body -->
+	            </div>  <!-- end card -->
+	        </div> <!-- end col-md-5 -->
+    </div> <!-- end row-->
+</div> <!-- end container -->
+
+{% endblock %}
