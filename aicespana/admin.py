@@ -22,12 +22,12 @@ class ParroquiaAdmin(admin.ModelAdmin):
     search_fields = ('nombreParroquia__icontains',)
 
 class GrupoAdmin(admin.ModelAdmin):
-    list_display = ['nombreGrupo', 'parroquiaDependiente', 'provincia']
+    list_display = ['nombreGrupo', 'diocesisDependiente', 'provincia']
     search_fields = ('nombreGrupo__icontains',)
 
 class ProyectoAdmin(admin.ModelAdmin):
     actions = ['download_file']
-    list_display = ['nombreProyecto', 'poblacion', 'provincia', 'memoriaProyecto']
+    list_display = ['nombreProyecto', 'grupoAsociado', 'fechaAlta']
     def download_file(self, request, queryset):
         None
     download_file.short_description = "Download CSV file for selected stats."
@@ -35,7 +35,7 @@ class ProyectoAdmin(admin.ModelAdmin):
 
 
 class ActividadAdmin(admin.ModelAdmin):
-    list_display = ['nombreActividad',  'poblacion', 'provincia']
+    list_display = ['nombreActividad',  'grupoAsociado', 'fechaAlta']
     search_fields = ('mombreActividad__icontains',)
 
 class PersonalExternoAdmin(admin.ModelAdmin):

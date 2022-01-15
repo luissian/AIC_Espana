@@ -93,6 +93,8 @@ def alta_grupo(request):
 
 @login_required
 def alta_personal_iglesia(request):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     if request.method == 'POST' and request.POST['action'] == 'altaPersonal':
         confirmation_data = ''
         info_to_fetch = ['nombre', 'apellido','nif', 'email', 'fijo', 'movil']
@@ -107,12 +109,35 @@ def alta_personal_iglesia(request):
     new_personel_data =''
     return render(request,'aicespana/altaPersonalIglesia.html',{'new_personel_data':new_personel_data})
 
-#@login_required
+@login_required
 def alta_proyecto(request):
-    return render(request,'aicespana/altaProyecto.html',{'new_proyecto_data':new_proyecto_data})
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    proyecto_data = {}
+    proyecto_data['grupos_diocesis_id_name'] = get_id_grupo_diocesis_delegacion_name()
+    proyecto_data['proyectos_grupos_diocesis_name'] = get_id_proyectos_grupos_diocesis_delegacion_name()
+
+    if request.method == 'POST' and request.POST['action'] == 'altaProyecto':
+        if Proyecto.objects.filter(nombreProyecto__iexact = request.POST['nombre']).exists():
+            return render(request,'aicespana/altaProyecto.html',{'proyecto_data':proyecto_data, 'ERROR': ERROR_PROYECTO_EXIST})
+        data = {}
+        data['grupo_obj'] = get_grupo_obj_from_id(request.POST['grupoID'])
+        data['alta'] = request.POST['alta']
+        data['nombre'] = request.POST['nombre']
+        if 'uploadMemoria' in request.FILES:
+            data['memoria_file'] = store_file(request.FILES['uploadMemoria'])
+        if 'uploadFotografia' in request.FILES:
+            data['fotografia_file'] = store_file(request.FILES['uploadFotografia'])
+
+        new_project = Proyecto.objects.create_new_proyecto(data)
+        return render(request,'aicespana/altaProyecto.html',{'confirmation_data': request.POST['nombre']})
+
+    return render(request,'aicespana/altaProyecto.html',{'proyecto_data':proyecto_data})
 
 #@login_required
 def alta_voluntario(request):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     if request.method == 'POST' and request.POST['action'] == 'altaVoluntario':
         confirmation_data = ''
         info_to_fetch = ['nombre', 'apellidos','nif','nacimiento','calle','poblacion', 'provincia', 'codigo', 'email', 'fijo', 'movil', 'tipoColaboracion']
@@ -244,6 +269,38 @@ def modificar_parroquia(request,parroquia_id):
     return render(request,'aicespana/modificarParroquia.html',{'parroquia_data':parroquia_data})
 
 @login_required
+def modificacion_proyecto(request):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+
+    proyecto_data = {}
+    #proyecto_data['grupos_diocesis_id_name'] = get_id_grupo_diocesis_delegacion_name()
+    proyecto_data['proyectos_grupos_diocesis_name'] = get_id_proyectos_grupos_diocesis_delegacion_name()
+
+    return render(request,'aicespana/modificacionProyecto.html',{'proyecto_data':proyecto_data})
+
+
+@login_required
+def modificar_proyecto(request,proyecto_id):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    if not Proyecto.objects.filter(pk__exact = proyecto_id).exists():
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_PROYECTO_NOT_EXIST})
+    proyecto_data = get_proyecto_data_to_modify(proyecto_id)
+
+    proyecto_data['grupos_diocesis_id_name'] = get_id_grupo_diocesis_name()
+    #import pdb; pdb.set_trace()
+    if request.method == 'POST' and request.POST['action'] == 'modificarProyecto':
+        if Proyecto.objects.filter(nombreProyecto__iexact = request.POST['proyecto_name'], grupoAsociado__pk__exact = request.POST['grupoID']).exclude(pk__exact =request.POST['proyectoID'] ).exists():
+            return render (request,'aicespana/modificarProyecto.html', {'ERROR': ERROR_PROYECTO_MODIFICATION_EXIST, 'proyecto_data':proyecto_data})
+        proyecto_obj = get_proyecto_obj_from_id(request.POST['proyectoID'])
+        proyecto_obj.update_proyecto_data(fetch_proyecto_data_to_modify(request.POST, request.FILES))
+        import pdb; pdb.set_trace()
+        return render(request,'aicespana/modificarProyecto.html',{'confirmation_data':request.POST['proyecto_name']})
+    return render(request,'aicespana/modificarProyecto.html',{'proyecto_data':proyecto_data})
+
+
+@login_required
 def listado_voluntarios(request):
 
     return render(request,'listadoVoluntarios.html')
@@ -293,7 +350,6 @@ def cargos_personal_iglesia(request):
         data['grupo'] = request.POST['grupo']
         user_obj.update_information(data)
         updated_data = get_personal_responsability(user_obj)
-        import pdb; pdb.set_trace()
         return render(request, 'aicespana/cargosPersonalIglesia.html', {'updated_data':updated_data})
     return render(request, 'aicespana/cargosPersonalIglesia.html')
 

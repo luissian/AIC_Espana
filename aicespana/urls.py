@@ -28,6 +28,12 @@ urlpatterns = [
     path('modificacionDiocesis', views.modificacion_diocesis, name = 'modificacion_diocesis'),
     path('modificarParroquia=<int:parroquia_id>',views.modificar_parroquia, name = 'modificar_parroquia'),
     path('modificacionParroquia', views.modificacion_parroquia, name = "modificacion_parroquia"),
+    path('modificarProyecto=<int:proyecto_id>',views.modificar_proyecto, name = 'modificar_proyecto'),
+    path('modificacionProyecto', views.modificacion_proyecto, name = "modificacion_proyecto"),
+    #path('modificarVoluntario=<int:voluntario_id>',views.modificar_voluntario, name = 'modificar_voluntario'),
+    #path('modificacionVoluntario', views.modificacion_voluntario, name = "modificacion_voluntario"),
 
 
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

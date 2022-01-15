@@ -162,7 +162,7 @@ class GrupoManager(models.Manager):
         new_group = self.create(diocesisDependiente = data['diocesis_obj'], nombreGrupo = data['nombre'],
                     calle = data['calle'],poblacion = data['poblacion'], codigoPostal = data['codigo'],
                     observaciones = data['observaciones'],registroNumero = data['registro'],
-                    fechaErecion = data['fechaErecion'])
+                    fechaErecion =  datetime.strptime(data['fechaErecion'],"%Y-%m-%d").date())
 
         return new_group
 
@@ -231,7 +231,6 @@ class Grupo(models.Model):
         return [self.nombreGrupo, self.pk, self.get_diocesis_name(), self.get_diocesis_id() ,self.calle, self.poblacion, self.provincia,self.codigoPostal,self.observaciones, alta, baja,activo ]
 
     def update_grupo_data(self, data):
-        import pdb; pdb.set_trace()
         self.diocesisDependiente = Diocesis.objects.filter(pk__exact = data['diocesisID']).last()
         self.nombreGrupo = data['grupo_name']
         self.calle = data['calle']
@@ -251,19 +250,28 @@ class Grupo(models.Model):
 
     objects = GrupoManager()
 
+class ProyectoManager(models.Manager):
+    def create_new_proyecto(self,data):
+
+        if data['alta'] != '':
+            alta =  datetime.strptime(data['alta'],"%Y-%m-%d").date()
+        else:
+            alta = None
+
+        memoria = data['memoria_file'] if 'memoria_file' in  data != '' else None
+        fotografia = data['fotografia_file'] if 'fotografia_file' in data != '' else None
+        import pdb; pdb.set_trace()
+        new_project = self.create(nombreProyecto = data['nombre'],grupoAsociado = data['grupo_obj'],
+                fechaAlta = alta, memoriaProyecto = memoria, fotografiaProyecto = fotografia )
+        return new_project
+
 class Proyecto(models.Model):
-    parroquiaDependiente = models.ForeignKey(
-                        Parroquia,
-                        on_delete=models.CASCADE, null=True, blank = True)
     grupoAsociado = models.ForeignKey(
                         Grupo,
                         on_delete=models.CASCADE, null=True, blank = True)
     nombreProyecto = models.CharField(max_length=80)
     memoriaProyecto = models.FileField( storage= memory_project_path_location, null=True, blank = True)
     fotografiaProyecto = models.FileField( storage= memory_project_path_location, null=True, blank = True)
-    calle = models.CharField(max_length=80)
-    poblacion = models.CharField(max_length=60)
-    provincia = models.CharField(max_length=40)
     fechaAlta = models.DateField(auto_now = False, null=True, blank = True)
     fechaBaja = models.DateField(auto_now = False, null=True, blank = True)
     proyectoActivo =  models.BooleanField(default= True)
@@ -275,20 +283,67 @@ class Proyecto(models.Model):
     def get_proyecto_id(self):
         return '%s' %(self.pk)
 
-    def get_project_name(self):
+    def get_proyecto_name(self):
         return '%s' %(self.nombreProyecto)
 
+    def get_diocesis_name(self):
+        if self.grupoAsociado:
+            return '%s' %(self.grupoAsociado.get_diocesis_name())
+        return ''
+
+    def get_grupo_name(self):
+        if self.grupoAsociado:
+            return '%s' %(self.grupoAsociado.get_grupo_name())
+        return ''
+
+    def get_grupo_id(self):
+        if self.grupoAsociado:
+            return '%s' %(self.grupoAsociado.get_grupo_id())
+        return ''
+
+    def get_proyecto_full_data(self):
+        if self.fechaAlta is None:
+            alta = ''
+        else:
+            alta = self.fechaAlta.strftime("%Y-%m-%d")
+        if self.fechaBaja is None:
+            baja = ''
+        else:
+            baja = self.fechaBaja.strftime("%B %d, %Y")
+        if self.proyectoActivo:
+            activo = 'true'
+        else:
+            activo = 'false'
+        return [self.nombreProyecto, self.pk, self.get_grupo_id(), self.get_grupo_name(), self.get_diocesis_name(), alta, baja, activo, self.memoriaProyecto, self.fotografiaProyecto ]
+
+    def update_proyecto_data(self, data):
+        self.grupoAsociado = Grupo.objects.filter(pk__exact = data['grupoID']).last()
+        self.nombreProyecto = data['proyecto_name']
+        if data['activo'] == 'false':
+            self.grupoActivo = False
+        else:
+            self.grupoActivo = True
+        if data['alta'] != '':
+            self.fechaAlta = datetime.strptime(data['alta'],"%Y-%m-%d").date()
+        if data['baja'] != '':
+            self.fechaBaja = datetime.strptime(data['baja'],"%Y-%m-%d").date()
+        self.observaciones = data['observaciones']
+        if 'memoria_file' in data:
+            self.memoriaProyecto = data['memoria_file']
+        if 'fotografia_file' in data:
+            self.fotografiaProyecto = data['fotografia_file']
+        self.save()
+        return self
+
+
+
+    objects = ProyectoManager()
+
 class Actividad(models.Model):
-    parroquiaDependiente = models.ForeignKey(
-                        Parroquia,
-                        on_delete=models.CASCADE, null=True, blank = True)
     grupoAsociado = models.ForeignKey(
                         Grupo,
                         on_delete=models.CASCADE, null=True, blank = True)
     nombreActividad = models.CharField(max_length=200)
-    calle = models.CharField(max_length=80, null=True, blank = True)
-    poblacion = models.CharField(max_length=60, null=True, blank = True)
-    provincia = models.CharField(max_length=40, null=True, blank = True)
     fechaAlta = models.DateField(auto_now = False, null=True, blank = True)
     fechaBaja = models.DateField(auto_now = False, null=True, blank = True)
     actividadActiva = models.BooleanField(default= True)
@@ -358,10 +413,10 @@ class PersonalExterno(models.Model):
     email = models.CharField(max_length=40, null=True, blank = True)
     telefonoFijo = models.CharField(max_length=20, null=True, blank = True)
     telefonoMovil = models.CharField(max_length=40, null=True, blank = True)
-    recibirBoletin = models.BooleanField(default= False,)
+    recibirBoletin = models.BooleanField(default= False)
     fechaAlta = models.DateField(auto_now = False, null=True, blank = True)
     fechaBaja = models.DateField(auto_now = False, null=True, blank = True)
-    voluntarioActivo =  models.BooleanField(default= True)
+    peronalActivo =  models.BooleanField(default= True)
     observaciones = models.CharField(max_length=1000, null=True, blank=True)
 
     def __str__ (self):

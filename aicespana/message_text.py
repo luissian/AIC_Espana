@@ -17,3 +17,7 @@ ERROR_GRUPO_MODIFICATION_EXIST = 'El grupo no se puede modificar porque ya exist
 ERROR_NOT_FIND_PERSONAL_NIF = 'No hay ningún personal de Iglesia que tenga el NIF/NIE'
 ERROR_NOT_FIND_PERSONAl_CRITERIA = 'No hay nigún Personal de la Iglesia que cumpla los criterios de busqueda'
 ERROR_NOT_FIND_VOLUNTARIO_NIF = 'No hay ningún voluntario que tenga el NIF/NIE'
+
+ERROR_PROYECTO_EXIST = 'No se puede crear el Proyecto porque ya existe'
+ERROR_PROYECTO_NOT_EXIST = 'El Proyecto no existe'
+ERROR_PROYECTO_MODIFICATION_EXIST = 'El Proyecto no se puede modificar porque ya existe una con el mismo nombre'

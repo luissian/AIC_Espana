@@ -1,5 +1,7 @@
 from aicespana.models import *
 from django.contrib.auth.models import Group, User
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
 import collections
 
 
@@ -237,6 +239,32 @@ def get_parroquia_data_to_modify(parroquia_id):
         parroquia_data[extract_list[index]] = data[index]
     return parroquia_data
 
+def get_proyecto_obj_from_id(proyecto_id):
+    '''
+    Description:
+        The function return the proyecto object from their id.
+    Input:
+        proyecto_id   # id of the proyecto
+    Return:
+        object of proyecto instance
+    '''
+    return Proyecto.objects.filter(pk__exact = proyecto_id).last()
+
+def get_proyecto_data_to_modify(proyecto_id):
+    '''
+    Description:
+        The function gets the proyecto recorded data to modify in the form
+    Return:
+        proyecto_data
+    '''
+    proyecto_data = {}
+    proyecto_obj = get_proyecto_obj_from_id(proyecto_id)
+    data = proyecto_obj.get_proyecto_full_data()
+    extract_list = ['proyecto_name', 'proyectoID', 'grupoID', 'grupo_name', 'diocesis_name', 'alta', 'baja', 'activo', 'memoria', 'fotografia']
+    for index in range(len(extract_list)):
+        proyecto_data[extract_list[index]] = data[index]
+    return proyecto_data
+
 def fetch_grupo_data_to_modify(data_form):
     '''
     Description:
@@ -286,6 +314,23 @@ def get_id_grupo_diocesis_delegacion_name():
 
     return group_diocesis_data
 
+def get_id_grupo_diocesis_name():
+    '''
+    Description:
+        The function gets the group and the diocesis name belogs to
+    Return:
+        group_diocesis_data
+    '''
+    group_diocesis_data =[]
+    if Grupo.objects.all().exists():
+        diocesis_objs = Diocesis.objects.all().order_by('nombreDiocesis')
+        for diocesis_obj in diocesis_objs:
+            diocesis_name = diocesis_obj.get_diocesis_name()
+            grupo_objs = Grupo.objects.filter(diocesisDependiente = diocesis_obj).order_by('nombreGrupo')
+            for grupo_obj in grupo_objs:
+                group_diocesis_data.append([grupo_obj.get_grupo_id(),grupo_obj.get_grupo_name(),diocesis_name ])
+    return group_diocesis_data
+
 def  get_grupo_data_to_modify(grupo_id):
     '''
     Description:
@@ -299,8 +344,58 @@ def  get_grupo_data_to_modify(grupo_id):
     extract_list = ['grupo_name', 'grupoID','diocesis_name','diocesis_id','calle','poblacion','provincia','codigo','observaciones','alta', 'baja', 'activo']
     for index in range(len(extract_list)):
         grupo_data[extract_list[index]] = data[index]
-    import pdb; pdb.set_trace()
+
     return grupo_data
+
+def fetch_proyecto_data_to_modify (data_form,file_form):
+    '''
+    Description:
+        The function extract the information from the user form and return a dictionnary.
+    Input:
+        data_form   # data collected in the form
+        file_form   # files upload in the form
+    Return:
+        data
+    '''
+    data = {}
+    extract_list = ['proyecto_name','grupoID','alta', 'baja','activo', 'observaciones']
+    for item in extract_list:
+        data[item] = data_form[item]
+    if 'uploadMemoria' in file_form:
+        data['memoria_file'] = store_file(file_form['uploadMemoria'])
+    if 'uploadFotografia' in file_form:
+        data['fotografia_file'] = store_file(file_form['uploadFotografia'])
+    import pdb; pdb.set_trace()
+    return data
+
+
+def get_id_proyectos_grupos_diocesis_delegacion_name():
+    '''
+    Description:
+        The function gets the proyecto the diocesis name and the delegation belogs to
+    Return:
+        proyecto_grupo_diocesis_data
+    '''
+    proyecto_grupo_diocesis_data = collections.OrderedDict()
+    if Proyecto.objects.all().exists():
+        delegation_objs = Delegacion.objects.all().order_by('nombreDelegacion')
+        for delegation_obj in delegation_objs:
+            delegation_name = delegation_obj.get_delegacion_name()
+            diocesis_objs = Diocesis.objects.filter(delegacionDependiente = delegation_obj).order_by('nombreDiocesis')
+            for diocesis_obj in diocesis_objs:
+                diocesis_name = diocesis_obj.get_diocesis_name()
+                grupo_objs = Grupo.objects.filter(diocesisDependiente = diocesis_obj).order_by('nombreGrupo')
+                for grupo_obj in grupo_objs:
+                    grupo_name = grupo_obj.get_grupo_name()
+                    proyecto_objs = Proyecto.objects.filter(grupoAsociado = grupo_obj).order_by('nombreProyecto')
+                    for proyecto_obj in proyecto_objs:
+                        if not delegation_name in proyecto_grupo_diocesis_data:
+                            proyecto_grupo_diocesis_data[delegation_name] = collections.OrderedDict()
+                        if not diocesis_name in proyecto_grupo_diocesis_data[delegation_name]:
+                            proyecto_grupo_diocesis_data[delegation_name][diocesis_name] = []
+                        proyecto_grupo_diocesis_data[delegation_name][diocesis_name].append([proyecto_obj.get_proyecto_id(),proyecto_obj.get_proyecto_name(),grupo_name ])
+    return proyecto_grupo_diocesis_data
+
 
 def get_external_personal_responsability(personal_obj):
     '''
@@ -533,3 +628,21 @@ def is_manager (request):
         return False
 
     return True
+
+
+def store_file (user_file):
+    '''
+    Description:
+        The function save the user input file
+    Input:
+        request # contains the session information
+    Return:
+        Return True if the user belongs to Wetlab Manager, False if not
+    '''
+    import time
+    filename, file_extension = os.path.splitext(user_file.name)
+    file_name = filename+ '_' + str( time.strftime("%Y%m%d-%H%M%S")) + file_extension
+    fs = FileSystemStorage()
+    filename = fs.save(file_name,  user_file)
+    #saved_file = os.path.join(settings.MEDIA_ROOT, file_name)
+    return file_name
