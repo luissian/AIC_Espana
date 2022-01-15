@@ -1,5 +1,6 @@
 import os
 from datetime import date
+from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from django.db import models
 from django.contrib.auth.models import User
@@ -154,6 +155,17 @@ class Parroquia(models.Model):
 
     objects = ParroquiaManager()
 
+
+class GrupoManager(models.Manager):
+    def create_new_group(self, data):
+
+        new_group = self.create(diocesisDependiente = data['diocesis_obj'], nombreGrupo = data['nombre'],
+                    calle = data['calle'],poblacion = data['poblacion'], codigoPostal = data['codigo'],
+                    observaciones = data['observaciones'],registroNumero = data['registro'],
+                    fechaErecion = data['fechaErecion'])
+
+        return new_group
+
 class Grupo(models.Model):
     parroquiaDependiente = models.ForeignKey(
                         Parroquia,
@@ -177,10 +189,10 @@ class Grupo(models.Model):
     def __str__ (self):
         return '%s' %(self.nombreGrupo)
 
-    def get_group_id(self):
+    def get_grupo_id(self):
         return '%s' %(self.pk)
 
-    def get_group_name (self):
+    def get_grupo_name (self):
         return '%s' %(self.nombreGrupo)
 
     def get_parroquia_name(self):
@@ -188,10 +200,14 @@ class Grupo(models.Model):
             return '%s' %(self.parroquiaDependiente.get_parroquia_name())
         return 'No asignado'
 
+    def get_diocesis_id(self):
+        if self.diocesisDependiente:
+            return '%s' %(self.diocesisDependiente.get_diocesis_id())
+        return ''
 
     def get_diocesis_name(self):
-        if self.parroquiaDependiente :
-            return '%s' %(self.parroquiaDependiente.get_diocesis_name())
+        if self.diocesisDependiente :
+            return '%s' %(self.diocesisDependiente.get_diocesis_name())
         return 'No asignado'
 
     def get_delegacion_name(self):
@@ -199,6 +215,41 @@ class Grupo(models.Model):
             return '%s' %(self.parroquiaDependiente.get_diocesis_name())
         return 'No asignado'
 
+    def get_grupo_full_data(self):
+        if self.fechaErecion is None:
+            alta = ''
+        else:
+            alta = self.fechaErecion.strftime("%Y-%m-%d")
+        if self.fechaBaja is None:
+            baja = ''
+        else:
+            baja = self.fechaBaja.strftime("%B %d, %Y")
+        if self.grupoActivo:
+            activo = 'true'
+        else:
+            activo = 'false'
+        return [self.nombreGrupo, self.pk, self.get_diocesis_name(), self.get_diocesis_id() ,self.calle, self.poblacion, self.provincia,self.codigoPostal,self.observaciones, alta, baja,activo ]
+
+    def update_grupo_data(self, data):
+        import pdb; pdb.set_trace()
+        self.diocesisDependiente = Diocesis.objects.filter(pk__exact = data['diocesisID']).last()
+        self.nombreGrupo = data['grupo_name']
+        self.calle = data['calle']
+        self.poblacion = data['poblacion']
+        self.provincia = data['provincia']
+        self.codigoPostal = data['codigo']
+        self.fechaErecion = datetime.strptime(data['alta'],"%Y-%m-%d").date()
+        if data['activo'] == 'false':
+            self.grupoActivo = False
+        else:
+            self.grupoActivo = True
+        if data['baja'] != '':
+            self.baja = datetime.strptime(data['baja'],"%Y-%m-%d").date()
+        self.observaciones = data['observaciones']
+        self.save()
+        return self
+
+    objects = GrupoManager()
 
 class Proyecto(models.Model):
     parroquiaDependiente = models.ForeignKey(

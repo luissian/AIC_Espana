@@ -48,7 +48,7 @@ def alta_diocesis(request):
         return render(request,'aicespana/altaDiocesis.html',{'diocesis_data':diocesis_data,'confirmation_data': request.POST['nombre']})
     return render(request,'aicespana/altaDiocesis.html',{'diocesis_data':diocesis_data})
 
-#@login_required
+@login_required
 def alta_parroquia(request):
     if not is_manager(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
@@ -64,22 +64,34 @@ def alta_parroquia(request):
         list_of_data = ['nombre' ,'calle', 'poblacion', 'provincia', 'codigo','observaciones']
         for item in list_of_data:
             parroquia_data[item] = request.POST[item]
-
         new_parroquia = Parroquia.objects.create_new_parroquia(parroquia_data)
-        return render(request,'aicespana/altaParroquia.html',{'parroquia_data':parroquia_data, 'confirmation_data': request.POST['nombre']})
+        return render(request,'aicespana/altaParroquia.html',{'confirmation_data': request.POST['nombre']})
 
     return render(request,'aicespana/altaParroquia.html',{'parroquia_data':parroquia_data})
 
 
-#@login_required
+@login_required
 def alta_grupo(request):
     if not is_manager(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     grupo_data = {}
-    #grupo_data['parroquia_id_name_belongs_to_diocesis_name'] =
-    return render(request,'aicespana/altaGrupo.html',{'new_grupo_data':new_grupo_data})
+    grupo_data['diocesis_id_name_list'] = get_diocesis_id_name_list()
+    grupo_data['provincias'] = get_provincias()
+    grupo_data['grupos_diocesis_id_name'] = get_id_grupo_diocesis_delegacion_name()
+    if request.method == 'POST' and request.POST['action'] == 'altaGrupo':
+        if check_exists_grupo(request.POST['nombre'],request.POST['diocesis_id']):
+            return render (request, 'aicespana/altaGrupo.html',{'grupo_data':grupo_data, 'ERROR':ERROR_GRUPO_EXISTS})
+        diocesis_obj = get_diocesis_obj_from_id(request.POST['diocesis_id'])
+        data = {'diocesis_obj': diocesis_obj}
+        list_of_data = ['nombre' ,'registro','fechaErecion' ,'calle', 'poblacion', 'provincia', 'codigo','observaciones']
+        for item in list_of_data:
+            data[item] = request.POST[item]
+        new_grupo = Grupo.objects.create_new_group(data)
+        return render(request,'aicespana/altaParroquia.html',{'confirmation_data': request.POST['nombre']})
 
-#@login_required
+    return render(request,'aicespana/altaGrupo.html',{'grupo_data':grupo_data})
+
+@login_required
 def alta_personal_iglesia(request):
     if request.method == 'POST' and request.POST['action'] == 'altaPersonal':
         confirmation_data = ''
@@ -182,9 +194,9 @@ def modificar_diocesis(request,diocesis_id):
 def modificacion_grupo(request):
     if not is_manager(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
-    grupo_data = {'grupo_diocesis_name': get_id_grupo_diocesis_delegacion_name()}
+    grupo_data = {'grupos_diocesis_name': get_id_grupo_diocesis_delegacion_name()}
 
-    return render(request,'aicespana/modificacionParroquia.html',{'grupo_data':grupo_data})
+    return render(request,'aicespana/modificacionGrupo.html',{'grupo_data':grupo_data})
 
 @login_required
 def modificar_grupo(request,grupo_id):
@@ -192,7 +204,16 @@ def modificar_grupo(request,grupo_id):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     if not Grupo.objects.filter(pk__exact = grupo_id).exists():
         return render (request,'aicespana/errorPage.html', {'content': ERROR_GRUPO_NOT_EXIST})
-
+    grupo_data = get_grupo_data_to_modify(grupo_id)
+    grupo_data['diocesis_id_name_list'] = get_diocesis_id_name_list()
+    grupo_data['provincias'] = get_provincias()
+    if request.method == 'POST' and request.POST['action'] == 'modificarGrupo':
+        if Grupo.objects.filter(nombreGrupo__iexact = request.POST['grupo_name'], diocesisDependiente__pk__exact = request.POST['diocesisID']).exclude(pk__exact =request.POST['grupoID'] ).exists():
+            return render (request,'aicespana/modificarGrupo.html', {'ERROR': ERROR_GRUPO_MODIFICATION_EXIST, 'grupo_data':grupo_data})
+        grupo_obj = get_grupo_obj_from_id(request.POST['grupoID'])
+        grupo_obj.update_grupo_data(fetch_grupo_data_to_modify(request.POST))
+        return render(request,'aicespana/modificarGrupo.html',{'confirmation_data':request.POST['grupo_name']})
+    return render(request,'aicespana/modificarGrupo.html',{'grupo_data':grupo_data})
 
 
 

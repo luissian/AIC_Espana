@@ -3,6 +3,18 @@ from django.contrib.auth.models import Group, User
 import collections
 
 
+def check_exists_grupo(grupo_name,dioceis_id ):
+    '''
+    Description:
+        The function gets the information and the personal name and the responsability.
+    Input:
+        grupo_name  # Name of the grupo
+        diocesis_id     # id of the diocesis
+    Return:
+        True/False
+    '''
+    return Grupo.objects.filter(nombreGrupo__iexact = grupo_name, diocesisDependiente__pk__exact = dioceis_id).exists()
+
 def check_exists_parroquia(parroquia_name,dioceis_id ):
     '''
     Description:
@@ -224,6 +236,71 @@ def get_parroquia_data_to_modify(parroquia_id):
     for index in range(len(extract_list)):
         parroquia_data[extract_list[index]] = data[index]
     return parroquia_data
+
+def fetch_grupo_data_to_modify(data_form):
+    '''
+    Description:
+        The function extract the information from the user form and return a dictionnary.
+    Input:
+        data_form   # data collected in the form
+    Return:
+        data
+    '''
+    data = {}
+    extract_list = ['grupo_name','diocesisID','calle','poblacion','provincia','codigo','alta', 'baja','activo', 'observaciones']
+    for item in extract_list:
+        data[item] = data_form[item]
+    return data
+
+def get_grupo_obj_from_id(grupo_id):
+    '''
+    Description:
+        The function return the grupo object from their id.
+    Input:
+        grupo_id   # id of the grupo
+    Return:
+        object of grupo instance
+    '''
+    return Grupo.objects.filter(pk__exact = grupo_id).last()
+
+def get_id_grupo_diocesis_delegacion_name():
+    '''
+    Description:
+        The function gets the group the diocesis name and the delegation belogs to
+    Return:
+        group_diocesis_data
+    '''
+    group_diocesis_data = collections.OrderedDict()
+    if Grupo.objects.all().exists():
+        delegation_objs = Delegacion.objects.all().order_by('nombreDelegacion')
+        for delegation_obj in delegation_objs:
+            delegation_name = delegation_obj.get_delegacion_name()
+            diocesis_objs = Diocesis.objects.filter(delegacionDependiente = delegation_obj).order_by('nombreDiocesis')
+            for diocesis_obj in diocesis_objs:
+                diocesis_name = diocesis_obj.get_diocesis_name()
+                grupo_objs = Grupo.objects.filter(diocesisDependiente = diocesis_obj).order_by('nombreGrupo')
+                for grupo_obj in grupo_objs:
+                    if not delegation_name in group_diocesis_data:
+                        group_diocesis_data[delegation_name] = []
+                    group_diocesis_data[delegation_name].append([grupo_obj.get_grupo_id(),grupo_obj.get_grupo_name(),diocesis_name ])
+
+    return group_diocesis_data
+
+def  get_grupo_data_to_modify(grupo_id):
+    '''
+    Description:
+        The function gets the grupo recorded data to modify in the form
+    Return:
+        grupo_data
+    '''
+    grupo_data = {}
+    grupo_obj = get_grupo_obj_from_id(grupo_id)
+    data = grupo_obj.get_grupo_full_data()
+    extract_list = ['grupo_name', 'grupoID','diocesis_name','diocesis_id','calle','poblacion','provincia','codigo','observaciones','alta', 'baja', 'activo']
+    for index in range(len(extract_list)):
+        grupo_data[extract_list[index]] = data[index]
+    import pdb; pdb.set_trace()
+    return grupo_data
 
 def get_external_personal_responsability(personal_obj):
     '''
