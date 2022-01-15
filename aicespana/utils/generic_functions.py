@@ -436,6 +436,7 @@ def get_personal_responsability(personal_obj):
     personal_responsability ={}
     personal_responsability['group'] = personal_obj.get_group_belongs_to()
     personal_responsability['group_id'] = personal_obj.get_group_id_belongs_to()
+    personal_responsability['diocesis'] = personal_obj.get_dicesis_belongs_to()
     personal_responsability['responsability'] = personal_obj.get_responability_belongs_to()
     personal_responsability['responsability_id'] = personal_obj.get_responability_id_belongs_to()
     personal_responsability['delegacion'] = personal_obj.get_delegacion_belongs_to()
@@ -468,7 +469,7 @@ def get_responsablity_data_for_personel(personal_obj):
     if Grupo.objects.all().exists():
         group_objs = Grupo.objects.all().order_by('nombreGrupo')
         for group_obj in group_objs:
-            responsability_options['available_groups'].append([group_obj.get_group_id(), group_obj.get_group_name(), group_obj.get_parroquia_name()])
+            responsability_options['available_groups'].append([group_obj.get_grupo_id(), group_obj.get_grupo_name(), group_obj.get_diocesis_name()])
     if Cargo.objects.all().exists():
         responsible_objs = Cargo.objects.all().order_by('nombreCargo')
         for responsible_obj in responsible_objs:
@@ -476,7 +477,7 @@ def get_responsablity_data_for_personel(personal_obj):
     if Delegacion.objects.all().exists():
         delegacion_objs = Delegacion.objects.all().order_by('nombreDelegacion')
         for delegacion_obj in delegacion_objs:
-            responsability_options['available_delegacion'].append([delegacion_obj.get_delegation_id(), delegacion_obj.get_delegacion_name()])
+            responsability_options['available_delegacion'].append([delegacion_obj.get_delegacion_id(), delegacion_obj.get_delegacion_name()])
     return responsability_options
 
 def get_responsablity_data_for_voluntary(personal_obj):
@@ -497,11 +498,11 @@ def get_responsablity_data_for_voluntary(personal_obj):
     if Grupo.objects.all().exists():
         group_objs = Grupo.objects.all().order_by('nombreGrupo')
         for group_obj in group_objs:
-            responsability_optons['available_groups'].append([group_obj.get_group_id(), group_obj.get_group_name(), group_obj.get_parroquia_name()])
+            responsability_optons['available_groups'].append([group_obj.get_grupo_id(), group_obj.get_grupo_name(), group_obj.get_parroquia_name()])
     if Proyecto.objects.all().exists():
         project_objs = Proyecto.objects.all().order_by('nombreProyecto')
         for project_obj in project_objs:
-            responsability_optons['available_projects'].append([project_obj.get_proyecto_id(), project_obj.get_project_name()])
+            responsability_optons['available_projects'].append([project_obj.get_proyecto_id(), project_obj.get_proyecto_name()])
     if Actividad.objects.all().exists():
         activity_objs = Actividad.objects.all().order_by('nombreActividad')
         for activity_obj in activity_objs:

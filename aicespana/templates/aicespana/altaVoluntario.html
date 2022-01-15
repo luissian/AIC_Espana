@@ -44,7 +44,7 @@
 	    </div>
 	</section>
 	<div class="container-md">
-	    <div class="row g-3"">
+	    <div class="row g-3">
 	        <div class="col-md-10">
 	            <div class="card">
 	                    <div class="card-body">
@@ -54,7 +54,7 @@
 							<div class="form-group required">
 		                        <div class="col-md-5">
 		                            <label class="control-label " for="nombre">Nombre</label>
-		                            <input type="text" required class="form-control" id="nombre", name='nombre'>
+		                            <input type="text" required class="form-control" id="nombre" name='nombre'>
 		                        </div>
 		                        <div class="col-md-5">
 		                            <label for="apellidos"  class="control-label">Apellidos</label>
@@ -111,7 +111,7 @@
 							</div>
 							<div class="form-group required">
 								<div class="col-md-4">
-		                            <label for="tipoColaboracion" class="form-label">Tipo de Colaboración</label>
+		                            <label for="tipoColaboracion" class="control-label">Tipo de Colaboración</label>
 		                            <select id="tipoColaboracion" required class="form-select" name='tipoColaboracion'>
 		                                <option selected value=''>Selecionar</option>
 										{% for id,val in new_volunteer_data.types %}
@@ -119,6 +119,26 @@
 										{% endfor %}
 		                            </select>
 		                        </div>
+							</div>
+							<div class="form-group">
+								<div class="col-md-8">
+									<label class="control-label " for="nombre">Seleciona el Grupo del que depende</label>
+									<select id="grupoID" class="form-select" name="grupoID">
+										 <option selected value=''>Selecionar</option>
+										{% for grupo_id, grupo_name , diocesis_name in new_volunteer_data.grupos_diocesis_id_name %}
+											<option value="{{grupo_id}}">{{grupo_name}} en la diocesis de {{diocesis_name}}</option>
+										{% endfor %}
+									</select>
+								</div>
+								<br>
+								<div class="col-md-6">
+									<label for="boletin"  class="control-label">Desea recibir boletín</label>
+									<select id="boletin"  class="form-select" name='boletin'>
+										<option selected value="false">No deseo recibir el boletin</option>
+										<option value="true">Si, Deseo recibir el Boletin</option>
+									</select>
+
+								</div>
 							</div>
 							<br><br>
 	                        <div class="col-12">

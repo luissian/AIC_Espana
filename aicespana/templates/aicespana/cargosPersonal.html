@@ -10,7 +10,7 @@
 {% if ERROR %}
 
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card  border-danger">
 					<div class="card-header"><h2 style="text-align:center">No se encuentra en la base de datos</h2> </div>
@@ -28,7 +28,7 @@
 
 {% if confirmation_data %}
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-header"><h2 style="text-align:center">Datos Guardados</h2> </div>
@@ -40,7 +40,7 @@
 		</div> <!-- end row-->
 	</div> <!-- end container -->
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-body">
@@ -57,7 +57,7 @@
 
 {% elif personal_available_settings %}
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-header"><h2 style="text-align:center">Información de {{personal_available_settings.name}}</h2> </div>
@@ -119,7 +119,7 @@
 	</div> <!-- end container -->
 	<br>
 	<div class="container-md">
-	    <div class="row g-3"">
+	    <div class="row g-3">
 	        <div class="col-md-10">
 	            <div class="card">
 					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Formulario para asignar cargos</h3></div>
@@ -133,12 +133,12 @@
 		                            <label  class="control-label col-md-3" for="grupo">Seleciona el Grupo</label>
 									<select name="grupo" id="grupo" class="col-md-6">
 										{% if personal_available_settings.group_id != '' %}
-											<option value="{{personal_available_settings.group_id}}">{{personal_available_settings.group}}</option>
+											<option  selected value="{{personal_available_settings.group_id}}">{{personal_available_settings.group}} en {{personal_available_settings.diocesis}}</option>
 										{% else %}
-											<option value="">Sin determinar</option>
+											<option selected value="">Sin determinar</option>
 										{% endif %}
-										{% for id, group, parroquia  in personal_available_settings.available_groups %}
-											<option value="{{id}}">{{group}} en {{parroquia}}</option>
+										{% for id, group, diocesis  in personal_available_settings.available_groups %}
+											<option value="{{id}}">{{group}} en {{diocesis}}</option>
 										{% endfor %}
 									</select>
 
@@ -148,9 +148,9 @@
 		                            <label for="proyecto"  class="control-label col-md-3">Seleciona la delegación</label>
 									<select name="delegacion" id="delegacion" class="col-md-6">
 										{% if personal_available_settings.delegacion_id != '' %}
-											<option value="{{personal_available_settings.delegacion_id}}">{{personal_available_settings.delegacion}}</option>
+											<option selected value="{{personal_available_settings.delegacion_id}}">{{personal_available_settings.delegacion}}</option>
 										{% else %}
-											<option value="">Sin determinar</option>
+											<option selected value="">Sin determinar</option>
 										{% endif %}
 										{% for id, deleg  in personal_available_settings.available_delegacion %}
 											<option value="{{id}}">{{deleg}} </option>
@@ -165,9 +165,9 @@
 	                            	<label for="cargo"  class="control-label col-md-3">Seleciona el cargo</label>
 									<select name="cargo" id="cargo" class="col-md-6">
 										{% if personal_available_settings.responsability_id != '' %}
-											<option value="{{personal_available_settings.responsability_id}}">{{personal_available_settings.responsability}}</option>
+											<option  selected value="{{personal_available_settings.responsability_id}}">{{personal_available_settings.responsability}}</option>
 										{% else %}
-											<option value="">Sin determinar</option>
+											<option selected value="">Sin determinar</option>
 										{% endif %}
 										{% for id, cargo  in personal_available_settings.available_responsible %}
 											<option value="{{id}}">{{cargo}}</option>
@@ -194,7 +194,7 @@
 	</section>
 	<br><br><br>
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Datos actualizados del personal de la AIC</h3></div>
@@ -267,7 +267,7 @@
 	</section>
 	<br><br><br>
 	<div class="container-md">
-	    <div class="row g-3"">
+	    <div class="row g-3">
 	        <div class="col-md-10">
 	            <div class="card">
 					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Formulario para la busqueda del personal de la AIC</h3></div>

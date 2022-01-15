@@ -134,13 +134,13 @@ def alta_proyecto(request):
 
     return render(request,'aicespana/altaProyecto.html',{'proyecto_data':proyecto_data})
 
-#@login_required
+@login_required
 def alta_voluntario(request):
     if not is_manager(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     if request.method == 'POST' and request.POST['action'] == 'altaVoluntario':
         confirmation_data = ''
-        info_to_fetch = ['nombre', 'apellidos','nif','nacimiento','calle','poblacion', 'provincia', 'codigo', 'email', 'fijo', 'movil', 'tipoColaboracion']
+        info_to_fetch = ['nombre', 'apellidos','nif','nacimiento','calle','poblacion', 'provincia', 'codigo', 'email', 'fijo', 'movil', 'tipoColaboracion','grupoID', 'boletin']
         personal_data = {}
         for field in info_to_fetch:
             personal_data[field] = request.POST[field]
@@ -151,6 +151,7 @@ def alta_voluntario(request):
 
         return render(request,'aicespana/altaVoluntario.html',{'confirmation_data': confirmation_data})
     new_volunteer_data = {'types':get_volunteer_types() ,'provincias':get_provincias()}
+    new_volunteer_data['grupos_diocesis_id_name'] = get_id_grupo_diocesis_name()
     return render(request,'aicespana/altaVoluntario.html',{'new_volunteer_data':new_volunteer_data})
 
 
@@ -295,7 +296,6 @@ def modificar_proyecto(request,proyecto_id):
             return render (request,'aicespana/modificarProyecto.html', {'ERROR': ERROR_PROYECTO_MODIFICATION_EXIST, 'proyecto_data':proyecto_data})
         proyecto_obj = get_proyecto_obj_from_id(request.POST['proyectoID'])
         proyecto_obj.update_proyecto_data(fetch_proyecto_data_to_modify(request.POST, request.FILES))
-        import pdb; pdb.set_trace()
         return render(request,'aicespana/modificarProyecto.html',{'confirmation_data':request.POST['proyecto_name']})
     return render(request,'aicespana/modificarProyecto.html',{'proyecto_data':proyecto_data})
 
@@ -309,19 +309,19 @@ def listado_voluntarios(request):
 def busqueda_personal(request):
     return render(request,'resultadoBusqueda.html')
 
-def cargos_personal_iglesia(request):
+def cargos_personal(request):
     if request.method == 'POST' and request.POST['action'] == 'busquedaPersonal':
         if request.POST['nif'] == '' and request.POST['nombre'] == '' and request.POST['apellido'] == '':
-            return render(request, 'aicespana/cargosPersonalIglesia.html')
+            return render(request, 'aicespana/cargosPersonal.html')
         if request.POST['nif'] != '':
             if PersonalIglesia.objects.filter(DNI__iexact = request.POST['nif']).exists():
                 personal_objs = PersonalIglesia.objects.filter(DNI__iexact = request.POST['nif'])
                 if len(personal_objs) > 1:
                     error = ['Hay más de 1 persona que tiene el mismo NIF/NIE', reques.POST['nif']]
-                    return render(request, 'aicespana/cargosPersonalIglesia.html',{'ERROR':error})
-                return render(request, 'aicespana/cargosVoluntarios.html', {'personal_available_settings':personal_available_settings})
+                    return render(request, 'aicespana/cargosPersonal.html',{'ERROR':error})
+                return render(request, 'aicespana/cargosPersonal.html', {'personal_available_settings':personal_available_settings})
             error = [ERROR_NOT_FIND_PERSONAL_NIF, request.POST['nif']]
-            return render(request, 'aicespana/cargosPersonalIglesia.html',{'ERROR':error})
+            return render(request, 'aicespana/cargosPersonal.html',{'ERROR':error})
         personal_objs = PersonalIglesia.objects.all()
         if request.POST['apellido'] != '':
             personal_objs = personal_objs.filter(apellido__iexact = request.POST['apellido'])
@@ -329,17 +329,17 @@ def cargos_personal_iglesia(request):
             personal_objs = personal_objs.filter(nombre__iexact = request.POST['nombre'])
         if len(personal_objs) == 0:
             error = [ERROR_NOT_FIND_PERSONAl_CRITERIA, str(request.POST['nombre']  + ' ' + request.POST['apellido']) ]
-            return render(request, 'aicespana/cargosPersonalIglesia.html',{'ERROR':error})
+            return render(request, 'aicespana/cargosPersonal.html',{'ERROR':error})
         if len(personal_objs) >1 :
             personal_list = []
             for personal_obj in personal_objs:
                 personal_list.append([personal_obj.get_personal_id(), personal_obj.get_personal_name(),personal_obj.get_personal_location()])
-            return render(request, 'aicespana/cargosPersonalIglesia.html', {'personal_list':personal_list})
+            return render(request, 'aicespana/cargosPersonal.html', {'personal_list':personal_list})
         personal_available_settings = get_responsablity_data_for_personel(personal_objs[0])
         personal_available_settings.update(get_personal_responsability(personal_objs[0]))
 
         personal_available_settings['user_id'] = personal_objs[0].get_personal_id()
-        return render(request, 'aicespana/cargosPersonalIglesia.html', {'personal_available_settings':personal_available_settings})
+        return render(request, 'aicespana/cargosPersonal.html', {'personal_available_settings':personal_available_settings})
 
     if request.method == 'POST' and request.POST['action'] == 'asignarCargos':
         user_obj = get_personel_obj_from_id(request.POST['user_id'])
@@ -350,8 +350,8 @@ def cargos_personal_iglesia(request):
         data['grupo'] = request.POST['grupo']
         user_obj.update_information(data)
         updated_data = get_personal_responsability(user_obj)
-        return render(request, 'aicespana/cargosPersonalIglesia.html', {'updated_data':updated_data})
-    return render(request, 'aicespana/cargosPersonalIglesia.html')
+        return render(request, 'aicespana/cargosPersonal.html', {'updated_data':updated_data})
+    return render(request, 'aicespana/cargosPersonal.html')
 
 
 
@@ -438,7 +438,7 @@ def listado_delegaciones(request):
     if Delegacion.objects.all().exists():
         delegacion_objs = Delegacion.objects.all().order_by('nombreDelegacion')
         for delegacion_obj in delegacion_objs:
-            delegaciones.append([delegacion_obj.get_delegation_id(), delegacion_obj.get_delegacion_name()])
+            delegaciones.append([delegacion_obj.get_delegacion_id(), delegacion_obj.get_delegacion_name()])
     if request.method == 'POST' and request.POST['action'] == 'informacionDelegacion':
         delegacion_data = get_delegation_data(request.POST['delegacion'])
         return render(request,'aicespana/listadoDelegaciones.html', {'delegacion_data':delegacion_data})
@@ -463,7 +463,7 @@ def listado_voluntarios_grupo(request):
     if Grupo.objects.all().exists():
         grupo_objs = Grupo.objects.all().order_by('nombreGrupo')
         for grupo_obj in grupo_objs:
-            grupos.append([grupo_obj.get_group_id(), grupo_obj.get_group_name(),grupo_obj.get_parroquia_name() ])
+            grupos.append([grupo_obj.get_grupo_id(), grupo_obj.get_grupo_name(),grupo_obj.get_diocesis_name() ])
     if request.method == 'POST' and request.POST['action'] == 'nombreGrupo':
         voluntarios_data = get_voluntarios_info_from_grupo(request.POST['grupo_id'])
 

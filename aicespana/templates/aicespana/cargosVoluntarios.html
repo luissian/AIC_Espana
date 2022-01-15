@@ -28,7 +28,7 @@
 
 {% if confirmation_data %}
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-header"><h2 style="text-align:center">Datos Guardados</h2> </div>
@@ -40,7 +40,7 @@
 		</div> <!-- end row-->
 	</div> <!-- end container -->
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-body">
@@ -149,7 +149,7 @@
 	</div> <!-- end container -->
 	<br>
 	<div class="container-md">
-	    <div class="row g-3"">
+	    <div class="row g-3">
 	        <div class="col-md-10">
 	            <div class="card">
 					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Formulario para asignar cargos</h3></div>
@@ -163,12 +163,12 @@
 		                            <label  class="control-label col-md-3" for="grupo">Seleciona el Grupo</label>
 									<select name="grupo" id="grupo" class="col-md-6">
 										{% if personal_available_settings.group_id != '' %}
-											<option value="{{personal_available_settings.group_id}}">{{personal_available_settings.group}}</option>
+											<option selected value="{{personal_available_settings.group_id}}">{{personal_available_settings.group}} en la dioecsis {{personal_available_settings.diocesis}}</option>
 										{% else %}
-											<option value="">Sin determinar</option>
+											<option  selected value="">Sin determinar</option>
 										{% endif %}
 										{% for id, group, parroquia  in personal_available_settings.available_groups %}
-											<option value="{{id}}">{{group}} en {{parroquia}}</option>
+											<option value="{{id}}">{{group}} en la diocesis {{parroquia}}</option>
 										{% endfor %}
 									</select>
 
@@ -232,7 +232,7 @@
 									</select>
 		                        </div>
 	                        <div class="col-12">
-	                            <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
+	                           
 	                            <button type="submit" class="btn-outline-primary float-end ">Guardar cambios</button>
 	                        </div>
 	                    </form>

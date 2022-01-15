@@ -380,10 +380,19 @@ class PersonalExternoManager(models.Manager):
             tipoColaboracion_obj = TipoColaboracion.objects.get(pk__exact = data['tipoColaboracion'])
         else:
             tipoColaboracion_obj = None
+        if data['grupoID'] != '':
+            grupo_obj = Grupo.objects.filter(pk__exact = data['grupoID']).last()
+        else:
+            grupo_obj = None
+        if data['boletin'] == 'true':
+            boletin = True
+        else:
+            boletin = False
         new_ext_personel = self.create(nombre = data['nombre'], apellido = data['apellidos'], calle = data['calle'],
                 poblacion = data['poblacion'], provincia = data['provincia'], codigoPostal = data['codigo'],
                 DNI = data['nif'], fechaNacimiento = data['nacimiento'], email = data['email'], telefonoFijo = data['fijo'],
-                telefonoMovil = data['movil'],  tipoColaboracion = tipoColaboracion_obj)
+                telefonoMovil = data['movil'],  tipoColaboracion = tipoColaboracion_obj, grupoAsociado = grupo_obj,
+                recibirBoletin = boletin)
         return new_ext_personel
 
 class PersonalExterno(models.Model):
@@ -463,12 +472,12 @@ class PersonalExterno(models.Model):
 
     def get_group_belongs_to(self):
         if self.grupoAsociado :
-            return '%s' %(self.grupoAsociado.get_group_name())
+            return '%s' %(self.grupoAsociado.get_grupo_name())
         return ''
 
     def get_group_id_belongs_to(self):
         if self.grupoAsociado :
-            return '%s' %(self.grupoAsociado.get_group_id())
+            return '%s' %(self.grupoAsociado.get_grupo_id())
         return ''
 
     def get_old(self):
@@ -483,7 +492,7 @@ class PersonalExterno(models.Model):
 
     def get_project_belongs_to(self):
         if self.proyectoAsociado :
-            return '%s' %(self.proyectoAsociado.get_project_name())
+            return '%s' %(self.proyectoAsociado.get_proyecto_name())
         return ''
 
     def get_project_id_belongs_to(self):
@@ -607,17 +616,22 @@ class PersonalIglesia(models.Model):
 
     def get_delegacion_id_belongs_to(self):
         if self.delegacion :
-            return '%s' %(self.delegacion.get_delegation_id())
+            return '%s' %(self.delegacion.get_delegacion_id())
+        return ''
+
+    def get_dicesis_belongs_to(self):
+        if self.grupoAsociado :
+            return '%s' %(self.grupoAsociado.get_diocesis_name())
         return ''
 
     def get_group_belongs_to(self):
         if self.grupoAsociado :
-            return '%s' %(self.grupoAsociado.get_group_name())
+            return '%s' %(self.grupoAsociado.get_grupo_name())
         return ''
 
     def get_group_id_belongs_to(self):
         if self.grupoAsociado :
-            return '%s' %(self.grupoAsociado.get_group_id())
+            return '%s' %(self.grupoAsociado.get_grupo_id())
         return ''
 
     def get_responability_belongs_to(self):
