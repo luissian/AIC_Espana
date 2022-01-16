@@ -30,8 +30,7 @@ urlpatterns = [
     path('modificacionParroquia', views.modificacion_parroquia, name = "modificacion_parroquia"),
     path('modificarProyecto=<int:proyecto_id>',views.modificar_proyecto, name = 'modificar_proyecto'),
     path('modificacionProyecto', views.modificacion_proyecto, name = "modificacion_proyecto"),
-    #path('modificarVoluntario=<int:voluntario_id>',views.modificar_voluntario, name = 'modificar_voluntario'),
-    #path('modificacionVoluntario', views.modificacion_voluntario, name = "modificacion_voluntario"),
+    path('modificacionVoluntario', views.modificacion_voluntario, name = "modificacion_voluntario"),
 
 
 ]

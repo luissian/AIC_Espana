@@ -301,6 +301,24 @@ def modificar_proyecto(request,proyecto_id):
 
 
 @login_required
+def modificacion_voluntario(request):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    if request.method == 'POST' and request.POST['action'] == 'busquedaVoluntario':
+        if request.POST['nif'] == '' and request.POST['nombre'] == '' and request.POST['apellido'] == '':
+            return render(request, 'aicespana/cargosVoluntarios.html')
+        if request.POST['nif'] != '':
+            if PersonalExterno.objects.filter(DNI__iexact = request.POST['nif']).exists():
+                personal_objs = PersonalExterno.objects.filter(DNI__iexact = request.POST['nif'])
+                if len(personal_objs) > 1:
+                    error = ['Hay más de 1 persona que tiene el mismo NIF/NIE', reques.POST['nif']]
+                    return render(request, 'aicespana/modificacionVoluntario.html',{'ERROR':error})
+
+        return render(request,'aicespana/modificacionVoluntario.html',{'voluntario_data':voluntario_data})
+    return render(request,'aicespana/modificacionVoluntario.html')
+
+
+@login_required
 def listado_voluntarios(request):
 
     return render(request,'listadoVoluntarios.html')
