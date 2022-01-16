@@ -1,16 +1,14 @@
 <div class="container">
-    {% if form.errors %}
-        <p>Your usuario y/o contraseña son incorrectos. Por favor intentalo de nuevo.</p>
-    {% endif %}
+    
     {% if user.is_authenticated %}
         <div class="col-sm-4 offset-8" >
             <form id="signin" class="navbar-form navbar-right" role="form" method="post" action="{% url 'logout' %}?next={{request.path}}">
                {% csrf_token %}
-                <div class="input-group">
+                <div class="input-group  w-250">
                     <i class="bi bi-person-check"></i>
                     <label class="col-sm-6"> Usuario registrado : <strong>{{user.get_username}}</strong> </label>
+                    <button type="submit" class="btn btn-primary float-end "> Cerrar sesión <i class="bi bi-box-arrow-right"></i></button>
 
-               <button type="submit" class="btn btn-primary float-end "> Cerrar sesión <i class="bi bi-box-arrow-right"></i></button>
                </div>
            </form>
        </div>

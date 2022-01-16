@@ -2,40 +2,66 @@
 {% load static %}
 {% block content %}
 <script type="text/javascript" src="{% static 'aicespana/js/aicespana.js' %}"></script>
-{% if  diocesis_data %}
+{% if  delegacion_data %}
 
 	<div class="container-md">
 		<div class="row mt-4">
-			<div class="col-md-10">
+			<div class="col-md-8">
 				<div class="card">
-					<div class="card-header"><h2 style="text-align:center">Información de la Diocesis de  {{diocesis_data.name}}</h2> </div>
+					<div class="card-header"><h2 style="text-align:center">Información de la Delegación de  {{delegacion_data.delegacion_name}}</h2> </div>
 					<div class="card-body">
+
 						<button onclick="exportTableToExcel('dioGeneral')" class="btn float-end">Guardar Tabla en Excel <i class="bi bi-download"></i></button>
+
+						<table  class="table">
+							<thead>
+								<tr>
+									<th class="display-6">Voluntarios</th>
+									<th class="display-6">Grupos</th>
+									<th class="display-6">Diocesis</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for voluntario, grupos,  diocesis  in delegacion_data.summary %}
+									<tr>
+										<td class="display-4">{{voluntario}}</td>
+										<td class="display-4">{{grupos}}</td>
+										<td class="display-4">{{diocesis}}</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+			</div> <!-- end md-10-->
+			<div class="col-md-4">
+				<div class="card">
+					<div class="card-body">
+						<img src="{% static 'aicespana/images/'%}{{delegacion_data.delegacion_image}}" alt="{{delegacion_data.delegacion_name}}" class="img-fluid">
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+			</div> <!-- end md-4-->
+		</div> <!-- end row  -->
+	</div> <!-- end container  -->
+
+	<div class="container-md">
+		<div class="row mt-4">
+			<div class="col-md-6 offset-3">
+				<div class="card">
+					<div class="card-body">
 						<div class="table-wrapper">
 			                <table id="dioGeneral" class="table table-hover mb-0">
 			                    <thead>
 			                        <tr>
-										<th colspan="2">Datos generales de la Diocesis</th>
+										<th colspan="2">Diocesis </th>
 									</tr>
 								</thead>
 								<tbody>
-									<tr>
-										<td>Población</td>
-										<td>{{diocesis_data.poblacion}}</td>
-									</tr>
-									<tr>
-										<td>Provincia</td>
-										<td>{{diocesis_data.provincia}}</td>
-									</tr>
-
-									<tr>
-										<td>Parroquias</td>
-										<td>
-											{% for value in diocesis_data.parroquias %}
-												{{value}} <br>
-											{% endfor %}
-										</td>
-									</tr>
+									{% for id, diocesis  in delegacion_data.diocesis_list %}
+										<tr>
+											<td><h5>{{diocesis}} &nbsp;&nbsp<a href="/listadoDiocesis={{id}}"><i class="bi bi-journal-plus"></i></a></h5></td>
+										</tr>
+									{% endfor %}
 								</tbody>
 							</table>
 						</div> <!--  end of table wrapper  -->
@@ -43,7 +69,9 @@
 				</div> <!-- end card  -->
 			</div> <!-- end col-md-8 -->
 		</div> <!-- end row-->
+	</div> <!-- end container -->
 
+{% else %}
 		<div class="row mt-5">
 			<div class="col-md-10">
 				<div class="card">
@@ -90,7 +118,7 @@
 		</div> <!-- end row-->
 	</div> <!-- end container -->
 
-{% else %}
+
 	<div class="container sm-8">
 		<div class=""row" style="margin-top: 20px;">
 			<div class="card  mb-3" style="max-width: 68rem;">
@@ -120,7 +148,7 @@
 				</div>
 			</div> <!-- end card  -->
 		</div>
-	</div> <!-- end container -->
+
 
 {% endif %}
 {% endblock %}

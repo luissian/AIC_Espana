@@ -1,18 +1,39 @@
-{% extends 'aicespana/base.html' %}
+{% extends "aicespana/base.html" %}
 
-{% block title %}Log in to Django Boards{% endblock %}
+{% block title %}
+    Log in to Django Boards
+{% endblock %}
 
 {% block content %}
     {% if form.errors %}
-        <p>Your username and password didn't match. Please try again.</p>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <h4 class="card-title" >Tu usuario y/o contraseña son incorrectas.</h4>
+                    <div class="card-body">
+                        <p> Intentalo de nuevo</p>
+                    </div>  <!-- end card-body -->
+                </div>  <!-- end card -->
+            </div> <!-- end col-md-6 -->
+        </div> <!-- end row -->
     {% endif %}
     {% if next %}
-        {% if user.is_authenticated %}
-            <p>Your account doesn't have access to this page. To proceed,
-                please login with an account that has access.</p>
-        {% else %}
-             <p>Please login to see this page.</p>
-        {% endif %}
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    {% if user.is_authenticated %}
+                        <h5 class="card-title">Tu cuenta de usario no tiene privilegios para acceder a esta página.</h5>
+                        <div class="card-body">
+                            <p> Para continuar, por favor haz "login" con un usario que tenga acceso.</p>
+                        </div>  <!-- end card-body -->
+                    {% else %}
+                        <div class="card-body">
+                            <h4>Por favor logeate para ver esta página.</h4>
+                        </div>  <!-- end card-body -->
+                    {% endif %}
+                </div>  <!-- end card -->
+            </div> <!-- end col-md-6 -->
+        </div> <!-- end row -->
     {% endif %}
   <br><br>
   <div class="row justify-content-center">
@@ -20,17 +41,17 @@
       <div class="card">
         <div class="card-body">
           <h3 class="card-title"></h3>
-          
+
           <div class="text-center py-2">
                 <small>
                     <p> Si has olvidado tu contraseña contacta con tu administrador </p>
-          
+
                 </small>
           </div>
         </div>
-        
+
       </div>
-      
+
     </div>
   </div>
 {% endblock %}

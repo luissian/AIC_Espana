@@ -91,6 +91,35 @@ def get_delegation_obj_from_id(delegation_id):
     '''
     return Delegacion.objects.filter(pk__exact = delegation_id).last()
 
+def get_summary_of_delegation(delegation_obj):
+    '''
+    Description:
+        The function return the summary data (number of voluntarios, number of grupos and number of diocesis
+    Input:
+        delegation_obj   # object of the delegation
+    Return:
+        summary_data
+    '''
+
+    num_diocesis = Diocesis.objects.filter(delegacionDependiente = delegation_obj).count()
+    num_grupos = Grupo.objects.filter(diocesisDependiente__delegacionDependiente = delegation_obj).count()
+    num_voluntarios = PersonalExterno.objects.filter(grupoAsociado__diocesisDependiente__delegacionDependiente = delegation_obj).count()
+    return [num_voluntarios ,num_grupos, num_diocesis]
+
+
+def get_summary_of_diocesis(diocesis_obj):
+    '''
+    Description:
+        The function return the summary data (number of voluntarios and  number of grupos
+    Input:
+        delegation_obj   # object of the diocesis
+    Return:
+        summary_data
+    '''
+    num_grupos = Grupo.objects.filter(diocesisDependiente = diocesis_obj).count()
+    num_voluntarios = PersonalExterno.objects.filter(grupoAsociado__diocesisDependiente = diocesis_obj).count()
+    return [num_voluntarios ,num_grupos]
+
 def get_diocesis_obj_from_id(diocesis_id):
     '''
     Description:
@@ -175,6 +204,36 @@ def get_diocesis_id_name_list():
         diocesis_data.append([diocesis_obj.get_diocesis_id(), diocesis_obj.get_diocesis_name()])
     return diocesis_data
 
+def get_diocesis_in_delegation(delegacion_obj):
+    '''
+    Description:
+        The function gets the diocesis id and name of one delegacion
+    Input:
+        delegacion_obj  # object of delegacion
+    Return:
+        diocesis_data
+    '''
+    diocesis_data = []
+    diocesis_objs = Diocesis.objects.filter(delegacionDependiente = delegacion_obj).order_by('delegacionDependiente')
+    for diocesis_obj in diocesis_objs:
+        diocesis_data.append([diocesis_obj.get_diocesis_id(), diocesis_obj.get_diocesis_name()])
+    return diocesis_data
+
+def get_groups_in_diocesis(dioceis_obj):
+    '''
+    Description:
+        The function gets the grupos and their id from a dioceis
+    Input:
+        diocesis_obj  # object of diocesis
+    Return:
+        groups_data
+    '''
+    groups_data = []
+    if Grupo.objects.filter(diocesisDependiente = diocesis_obj).exists():
+        grupo_objs = Grupo.objects.filter(diocesisDependiente = diocesis_obj).order_by('nombreGrupo')
+        for grupo_obj in grupo_objs:
+            groups_data.append([grupo_obj.get_grupo_id(), get_grupo_name])
+    return groups_data
 
 def fetch_parroquia_data_to_modify(data_form):
     '''
@@ -614,12 +673,11 @@ def get_personel_obj_from_id(user_id):
 def is_manager (request):
     '''
     Description:
-        The function will check if the logged user belongs to wetlab
-        manager group
+        The function will check if the logged user belongs to administracion  manager group
     Input:
         request # contains the session information
     Return:
-        Return True if the user belongs to Wetlab Manager, False if not
+        Return True if the user belongs to administracion group, False if not
     '''
     try:
         groups = Group.objects.get(name = 'administracion')
@@ -629,6 +687,29 @@ def is_manager (request):
         return False
 
     return True
+def allow_all_lists (request):
+    '''
+    Description:
+        The function will check if the logged user belongs to administracion or todasDelegaciones groups
+    Input:
+        request # contains the session information
+    Return:
+        Return True if the user can see all lists, False if not
+    '''
+    try:
+        administracion_groups = Group.objects.get(name = 'administracion')
+        if administracion_groups not in request.user.groups.all():
+            todas_delegaciones = Group.objects.get(name = 'todasDelegaciones')
+            if todas_delegaciones not in request.usser.groups.all():
+                return False
+    except:
+        return False
+
+    return True
+
+def allow_own_delegation(request):
+    return True
+
 
 
 def store_file (user_file):

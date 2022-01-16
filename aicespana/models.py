@@ -39,6 +39,7 @@ class ActividadManager(models.Manager):
 
 class Delegacion(models.Model):
     nombreDelegacion = models.CharField(max_length=20)
+    imagenDelegacion = models.CharField(max_length=80, null=True, blank=True)
 
 
     def __str__(self):
@@ -50,8 +51,13 @@ class Delegacion(models.Model):
     def get_delegacion_name(self):
         return '%s' %(self.nombreDelegacion)
 
-    def update_delegacion_name(self, name):
+    def get_delegacion_image(self):
+        return '%s' %(self.imagenDelegacion)
+
+
+    def update_delegacion_name_and_image(self, name,image):
         self.nombreDelegacion = name
+        self.imagenDelegacion = image
         self.save()
         return self
 

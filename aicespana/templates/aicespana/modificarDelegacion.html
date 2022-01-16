@@ -51,7 +51,12 @@
 							<div class="form-group required">
 		                        <div class="col-md-6">
 		                            <label class="control-label " for="nombre">Escribe el nuevo nombre de la Delegación</label>
-		                            <input type="text" required class="form-control" id="nombre" name='nombre'>
+		                            <input type="text" required class="form-control" id="nombre" name='nombre' value="{{delegacion.name}}">
+		                        </div>
+								<br><br>
+								<div class="col-md-6">
+		                            <label class="control-label " for="nombre">Escribe el nombre de la imagen de la Delegación</label>
+		                            <input type="text" required class="form-control" id="image" name='image' value="{{delegacion.image}}" >
 		                        </div>
 							</div>
 

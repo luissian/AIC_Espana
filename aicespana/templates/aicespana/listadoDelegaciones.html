@@ -1,71 +1,30 @@
 {% extends 'aicespana/base.html' %}
 {% load static %}
 {% block content %}
-<script type="text/javascript" src="{% static 'aicespana/js/aicespana.js' %}"></script>
-{% if  delegacion_data %}
 
+{% if delegaciones %}
 	<div class="container-md">
-		<div class="row g-3 style="margin-top: 30px;">
-			<div class="col-md-10">
+		<div class="row g-3">
+			<div class="col-md-6 offset-3">
 				<div class="card">
-					<div class="card-header"><h2 style="text-align:center">Información de la Delegación {{delegacion_data.name}}</h2> </div>
-					<div class="card-body">
-						<button onclick="exportTableToExcel('delegacion')" class="btn float-end">Guardar Tabla en Excel <i class="bi bi-download"></i></button>
-						<div class="table-wrapper">
-			                <table id="delegacion" class="table table-hover mb-0">
-			                    <thead>
-			                        <tr>
-										<th>Cargo</th>
-										<th>Persona asignada</th>
-									</tr>
-								</thead>
-								<tbody>
-									{% for field, value in delegacion_data.cargos %}
-										<tr>
-											<td>{{field}}</td>
-											<td>{{value}}</td>
-										</tr>
-									{% endfor %}
-								</tbody>
-							</table>
-						</div> <!--  end of table wrapper  -->
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-8 -->
+					<div class="card-header"><h2 style="text-align:center">Listado de delegaciones</h2> </div>
+	                    <div class="card-body">
+							<h5 style="text-align:center">Seleciona una Delegación para ver las Diocesis que dependen de ella</h5>
+							<div class="col-md-6 offset-3">
+								<table class="table table-hover">
+	                            	<tbody>
+										{% for id, delegacion in delegaciones %}
+											<tr>
+												<td><h5>{{delegacion}} &nbsp;&nbsp<a href="/listadoDelegacion={{id}}"><i class="bi bi-journal-plus"></i></a></h5></td>
+											</tr>
+										{% endfor %}
+		                            </tbody>
+		                        </table>
+							</div> <!-- end col-md-10 -->
+						</div>  <!-- end card-body -->
+		            </div>  <!-- end card -->
+		    </div> <!-- end col-md-10 -->
 		</div> <!-- end row-->
 	</div> <!-- end container -->
-
-{% else %}
-	<div class="container sm-8">
-		<div class=""row" style="margin-top: 20px;">
-			<div class="card  mb-3" style="max-width: 68rem;">
-				<div class="card-header" style="text-align:center">Información de delegaciones</div>
-				<div class="card-body">
-				   <p class="card-text"></p>
-				   <form class="row g-3" method="post" enctype="multipart/form-data" name="informacionDelegacion" id="informacionDelegacion" >
-					   {% csrf_token %}
-					   <input type="hidden" name="action" value="informacionDelegacion"/>
-
-						<br>
-						<div class="col-md-10">
-						    <label  class="control-label col-md-5" for="grupo">Seleciona la Delegación</label>
-							<select name="delegacion" id="delegacion" class="col-md-4" required>
-								<option value=""></option>
-								{% for id, del  in delegaciones %}
-								    <option value="{{id}}">{{del}}</option>
-								{% endfor %}
-							</select>
-							<br><br>
-							<div class="col-md-12">
-								<input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
-								<button type="submit" class="btn-outline-primary float-end ">Obtener infomacion</button>
-							</div>
-						</div>
-					</form>
-				</div>
-			</div> <!-- end card  -->
-		</div>
-	</div> <!-- end container -->
-
 {% endif %}
 {% endblock %}

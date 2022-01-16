@@ -172,11 +172,12 @@ def modificar_delegacion(request,delegation_id):
     delegacion = {}
     delegacion['id'] = delegation_id
     delegacion['name'] = delegacion_obj.get_delegacion_name()
+    delegacion['image'] = delegacion_obj.get_delegacion_image()
     if request.method == 'POST' and request.POST['action'] == 'modificarDelegacion':
         if Delegacion.objects.filter(nombreDelegacion__iexact = request.POST['nombre']).exclude(pk__exact =request.POST['delegacion_id'] ).exists():
             return render (request,'aicespana/modificarDelegacion.html', {'ERROR': ERROR_DELEGACION_MODIFICATION_EXIST, 'delegacion':delegacion})
         delegation_obj = get_delegation_obj_from_id(request.POST['delegacion_id'])
-        delegation_obj.update_delegacion_name(request.POST['nombre'])
+        delegation_obj.update_delegacion_name_and_image(request.POST['nombre'], request.POST['image'])
         return render(request,'aicespana/modificarDelegacion.html',{'confirmation_data': request.POST['nombre']})
 
     return render(request,'aicespana/modificarDelegacion.html',{'delegacion':delegacion})
@@ -326,7 +327,7 @@ def listado_voluntarios(request):
 @login_required
 def busqueda_personal(request):
     return render(request,'resultadoBusqueda.html')
-
+@login_required
 def cargos_personal(request):
     if request.method == 'POST' and request.POST['action'] == 'busquedaPersonal':
         if request.POST['nif'] == '' and request.POST['nombre'] == '' and request.POST['apellido'] == '':
@@ -372,7 +373,7 @@ def cargos_personal(request):
     return render(request, 'aicespana/cargosPersonal.html')
 
 
-
+@login_required
 def cargos_voluntarios(request):
     if request.method == 'POST' and request.POST['action'] == 'busquedaVoluntario':
         if request.POST['nif'] == '' and request.POST['nombre'] == '' and request.POST['apellido'] == '':
@@ -418,7 +419,7 @@ def cargos_voluntarios(request):
 
         return render(request, 'aicespana/cargosVoluntarios.html', {'updated_data':updated_data})
     return render(request, 'aicespana/cargosVoluntarios.html')
-
+@login_required
 def informacion_voluntario(request):
     if request.method == 'POST' and request.POST['action'] == 'busquedaVoluntario':
         if request.POST['nif'] == '' and request.POST['nombre'] == '' and request.POST['apellidos'] == '':
@@ -451,6 +452,7 @@ def informacion_voluntario(request):
         return render(request,'aicespana/informacionVoluntario.html',{'info_voluntario':info_voluntario})
     return render(request,'aicespana/informacionVoluntario.html')
 
+@login_required
 def listado_delegaciones(request):
     delegaciones = []
     if Delegacion.objects.all().exists():
@@ -460,11 +462,40 @@ def listado_delegaciones(request):
     if request.method == 'POST' and request.POST['action'] == 'informacionDelegacion':
         delegacion_data = get_delegation_data(request.POST['delegacion'])
         return render(request,'aicespana/listadoDelegaciones.html', {'delegacion_data':delegacion_data})
+
     return render(request,'aicespana/listadoDelegaciones.html', {'delegaciones': delegaciones})
 
+@login_required
+def listado_delegacion(request, delegacion_id):
+    if not allow_all_lists(request):
+        if not allow_own_delegation(request):
+            return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_ALLOW_TO_SEE_LISTADOS})
+    if not Delegacion.objects.filter(pk__exact = delegacion_id).exists():
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_DELEGACION_NOT_EXIST})
+    delegacion_obj = get_delegation_obj_from_id(delegacion_id)
+    #Get the diocesis bolongs to the delegation
+    delegacion_data = {}
+    delegacion_data['diocesis_list'] = get_diocesis_in_delegation(delegacion_obj)
+    #diocesis_data['cargos_diocesis'] = ''
+    delegacion_data['summary'] = [get_summary_of_delegation(delegacion_obj)]
+    delegacion_data['delegacion_name'] = delegacion_obj.get_delegacion_name()
+    delegacion_data['delegacion_image'] = delegacion_obj.get_delegacion_image()
+    return render(request,'aicespana/listadoDelegacion.html', {'delegacion_data': delegacion_data})
 
-def listado_diocesis(request):
-    diocesis = []
+
+
+def listado_diocesis(request,diocesis_id):
+    if not allow_all_lists(request):
+        if not allow_own_delegation(request):
+            return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_ALLOW_TO_SEE_LISTADOS})
+    if not Diocesis.objects.filter(pk__exact = diocesis_id).exists():
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_DIOCESIS_NOT_EXIST})
+    diocesis_obj = get_diocesis_obj_from_id(diocesis_id)
+    diocesis_data = {}
+    diocesis_data['grupos'] = get_groups_in_diocesis(diocesis_obj)
+    diocesis_data['cargos'] = ''
+    diocesis_data['summary'] = get_summary_of_diocesis(diocesis_obj)
+
     if Diocesis.objects.all().exists():
         diocesis_objs = Diocesis.objects.all().order_by('nombreDiocesis')
         for diocesis_obj in diocesis_objs:
@@ -475,7 +506,7 @@ def listado_diocesis(request):
         return render(request,'aicespana/listadoDiocesis.html', {'diocesis_data': diocesis_data})
     return render(request,'aicespana/listadoDiocesis.html', {'diocesis': diocesis})
 
-
+@login_required
 def listado_voluntarios_grupo(request):
     grupos = []
     if Grupo.objects.all().exists():
