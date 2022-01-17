@@ -1,31 +1,49 @@
 {{% extends 'aicespana/base.html' %}
 {% load static %}
 {% block content %}
+
+<meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">
+<style >
+	.table-scroll > tbody {
+  		overflow-y: auto;
+}
+</style>
+<script type="text/javascript">
+
+</script>
+
+<script type="text/javascript">
+	function generateexcel(tableid) {
+  var table= document.getElementById(tableid);
+  var html = table.outerHTML;
+  window.open('data:application/vnd.ms-excel;base64,' + $.base64.encode(html));
+}
+</script>
 <script type="text/javascript" src="{% static 'aicespana/js/aicespana.js' %}"></script>
 {% if  grupo_data %}
 
 	<div class="container-md">
 		<div class="row mt-4">
-			<div class="col-md-8">
+			<div class="col-md-10">
 				<div class="card">
-					<div class="card-header"><h2 style="text-align:center">Información del grupo  {{grupo_data.grupo_name}}</h2> </div>
+					<div class="card-header"><h2 style="text-align:center">Información del grupo  {{grupo_data.nombre_grupo}}</h2> </div>
 					<div class="card-body">
-
-						<button onclick="exportTableToExcel('dioGeneral')" class="btn float-end">Guardar Tabla en Excel <i class="bi bi-download"></i></button>
-
 						<table  class="table">
 							<thead>
 								<tr>
 									<th class="display-6">Voluntarios</th>
 									<th class="display-6">Colaboradores</th>
-
+									<th class="display-6">Asesores</th>
+									<th class="display-6">Otros</th>
 								</tr>
 							</thead>
 							<tbody>
-								{% for voluntario, colaboradores  in grupo_data.summary %}
+								{% for voluntario, colaboradores, asesores, otros  in grupo_data.summary %}
 									<tr>
 										<td class="display-4">{{voluntario}}</td>
 										<td class="display-4">{{colaboradores}}</td>
+										<td class="display-4">{{asesores}}</td>
+										<td class="display-4">{{otros}}</td>
 									</tr>
 								{% endfor %}
 							</tbody>
@@ -33,71 +51,180 @@
 					</div> <!-- end card body-->
 				</div> <!-- end card  -->
 			</div> <!-- end md-10-->
-			<div class="col-md-4">
-				<div class="card">
-					<div class="card-body">
-
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end md-4-->
-		</div> <!-- end row  -->
 	</div> <!-- end container  -->
 
-	<div class="container-md">
-		<div class="row mt-4">
-			<div class="col-md-6 offset-3">
-				<div class="card">
-					<div class="card-body">
-						<div class="table-wrapper">
-			                <table id="dioGeneral" class="table table-hover mb-0">
-			                    <thead>
-			                        <tr>
-										<th>Grupos </th>
-									</tr>
-								</thead>
-								<tbody>
-									{% for id, grupo  in grupo_data.grupos %}
-										<tr>
-											<td><h5>{{grupo}} &nbsp;&nbsp<a href="/listadoGrupo={{id}}"><i class="bi bi-journal-plus"></i></a></h5></td>
-										</tr>
-									{% endfor %}
-								</tbody>
-							</table>
-						</div> <!--  end of table wrapper  -->
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-8 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
 
-	<div class="container-md">
-		<div class="row mt-4">
-			<div class="col-md-6 offset-3">
-				<div class="card">
-					<div class="card-body">
-						<div class="table-wrapper">
-			                <table id="dioGeneral" class="table table-hover mb-0">
-			                    <thead>
-			                        <tr>
-										<th>Cargo</th>
-										<th>Nombre y apellidos</th>
-									</tr>
-								</thead>
-								<tbody>
-									{% for cargo, nombre  in grupo_data.cargos.items %}
-										<tr>
-											<td>{{cargo}}</td>
-											<td>{{nombre}}</td>
+	<div class="container sm-12">
+		<br><br><br>
+		<ul class="nav nav-tabs" id="myTab" role="tablist">
+		  <li class="nav-item" role="presentation">
+		    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab" aria-controls="info" aria-selected="true">Información General</button>
+		  </li>
+		  <li class="nav-item" role="presentation">
+		    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#cargos" type="button" role="tab" aria-controls="cargos" aria-selected="false">Cargos del grupo</button>
+		  </li>
+		  {% if grupo_data.lista_voluntarios|length > 0 %}
+		  <li class="nav-item" role="presentation">
+		    <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#lista" type="button" role="tab" aria-controls="listaVoluntarios" aria-selected="false">Listado de Voluntarios</button>
+		  </li>
+		  {% endif %}
+		  {% if grupo_data.lista_colaboradores|length > 0 %}
+		  <li class="nav-item" role="presentation">
+		    <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#lista" type="button" role="tab" aria-controls="listaVoluntarios" aria-selected="false">Listado de Voluntarios</button>
+		  </li>
+		  {% endif %}
 
-										</tr>
-									{% endfor %}
-								</tbody>
-							</table>
-						</div> <!--  end of table wrapper  -->
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-8 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+		</ul>
+		<div class="tab-content" id="myTabContent">
+			<div class="tab-pane fade show active" id="info" role="tabpanel" aria-labelledby="info-tab">
+				<div class="container-md">
+					<div class="row mt-5">
+						<div class="col-md-6">
+							<div class="card">
+								<div class="card-header"><h2 style="text-align:center">Información general del grupo{{grupo_data.nombre_grupo}}</h2> </div>
+								<div class="card-body">
+									<div class="table-wrapper">
+										<table id="infoData" class="table table-hover mb-0">
+											<tbody>
+												<tr>
+													<td>Calle</td>
+													<td>{{grupo_data.informacion.4}}</td>
+												</tr>
+												<tr>
+													<td>Población</td>
+													<td>{{grupo_data.informacion.5}}</td>
+												</tr>
+												<tr>
+													<td>Provincia</td>
+													<td>{{grupo_data.informacion.6}}</td>
+												</tr>
+												<tr>
+													<td>Código Postal</td>
+													<td>{{grupo_data.informacion.7}}</td>
+												</tr>
+												<tr>
+													<td>Fecha de Alta</td>
+													<td>{{grupo_data.informacion.9}}</td>
+												</tr>
+												<tr>
+													<td>Fecha de Baja</td>
+													<td>{{grupo_data.informacion.10}}</td>
+												</tr>
+												<tr>
+													<td>Estado del Grupo</td>
+													<td>{{grupo_data.informacion.11}}</td>
+												</tr>
+											</tbody>
+										</table>
+									</div> <!--  end of table wrapper  -->
+								</div> <!-- end card body-->
+							</div> <!-- end card  -->
+						</div> <!-- end col-md-10 -->
+						<div class="col-md-8">
+							<div class="card">
+								<div class="card-header"><h2 style="text-align:center">Observaciones</h2> </div>
+								<div class="card-body">
+									<p>{{grupo_data.informacion.8}}</p>
+								</div> <!-- end card body-->
+							</div> <!-- end card  -->
+						</div> <!-- end col-md-10 -->
+					</div> <!-- end row-->
+				</div> <!-- end container -->
+			</div>  <!-- end tab info -->
+
+			<div class="tab-pane fade" id="cargos" role="tabpanel" aria-labelledby="cargos-tab">
+				<div class="container-md">
+					<div class="row mt-5">
+						<div class="col-md-10">
+							<div class="card">
+								<div class="card-header"><h2 style="text-align:center">Cargos en el grupo de {{grupo_data.nombre_grupo}}</h2> </div>
+								<div class="card-body">
+									<button onclick="exportTableToExcel('cargos_table')" class="btn float-end">Guardar Tabla en Excel <i class="bi bi-download"></i></button>
+
+									<input type="button" onclick="tableToExcel('cargos_table')" value="Export to Excel">
+
+									<button type="button" onclick="generateexcel('cargos_table')" > Exportar 2 to Excel</button>
+									<div class="table-wrapper">
+										<table id="cargos_table" class="table table-hover mb-0">
+											<thead>
+												<tr>
+													<th>Cargo</th>
+													<th>Persona asignada</th>
+												</tr>
+											</thead>
+											<tbody>
+												{% for cargo, nombre in grupo_data.cargos.items %}
+													<tr>
+														<td><strong>{{cargo}}</strong></td>
+														<td colspan="2">{{nombre}}</td>
+													</tr>
+												{% endfor %}
+											</tbody>
+										</table>
+									</div> <!--  end of table wrapper  -->
+								</div> <!-- end card body-->
+							</div> <!-- end card  -->
+						</div> <!-- end col-md-10 -->
+					</div> <!-- end row-->
+				</div> <!-- end container -->
+			</div>  <!-- end tab cargos -->
+
+			<div class="tab-pane fade" id="lista" role="tabpanel" aria-labelledby="lista-tab">
+				<div class="container-md">
+					<div class="row mt-5">
+						<div class="col-md-5">
+							<div class="card">
+								<div class="card-header"><h2 style="text-align:center">Voluntarios mayores de 80 años del grupo {{grupo_data.nombre_grupo}}</h2> </div>
+								<div class="card-body">
+									<button onclick="exportTableToExcel('cargos')" class="btn float-end">Guardar Tabla en Excel <i class="bi bi-download"></i></button>
+									<div class="table-wrapper">
+										<table id="cargos" class="table table-hover mb-0">
+											<thead>
+												<tr>
+													<th>Nombre y Apellidos del Voluntario</th>
+												</tr>
+											</thead>
+											<tbody>
+												{% for nombre in grupo_data.lista_voluntarios.mayor80 %}
+													<tr>
+														<td>{{nombre}}</td>
+													</tr>
+												{% endfor %}
+											</tbody>
+										</table>
+									</div> <!--  end of table wrapper  -->
+								</div> <!-- end card body-->
+							</div> <!-- end card  -->
+						</div> <!-- end col-md-10 -->
+						<div class="col-md-5">
+							<div class="card">
+								<div class="card-header"><h2 style="text-align:center">Voluntarios menores de 80 años del grupo {{grupo_data.nombre_grupo}}</h2> </div>
+								<div class="card-body">
+									<button onclick="exportTableToExcel('menor80')" class="btn float-end">Guardar Tabla en Excel <i class="bi bi-download"></i></button>
+									<div class="table-wrapper">
+										<table id="menor80" class="table table-hover mb-0">
+											<thead>
+												<tr>
+													<th>Nombre y  Apellidos del Voluntario</th>
+												</tr>
+											</thead>
+											<tbody>
+												{% for nombre in grupo_data.lista_voluntarios.menor80 %}
+													<tr>
+														<td>{{nombre}}</td>
+													</tr>
+												{% endfor %}
+											</tbody>
+										</table>
+									</div> <!--  end of table wrapper  -->
+								</div> <!-- end card body-->
+							</div> <!-- end card  -->
+						</div> <!-- end col-md-10 -->
+					</div> <!-- end row-->
+				</div> <!-- end container -->
+			</div>  <!-- end tab cargos -->
+		</div>  <!-- end tab-content -->
+	</div>  <!-- end container -->
+
 {% endif %}
 {% endblock %}

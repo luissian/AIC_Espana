@@ -129,9 +129,12 @@ def get_summary_of_group(grupo_obj):
     Return:
         summary_data
     '''
-    num_voluntarios = PersonalExterno.objects.filter(grupoAsociado = grupo_obj, peronalActivo = 'True', tipoColaboracion = 'Voluntario').count()
-    num_colaboradores=  PersonalExterno.objects.filter(grupoAsociado = grupo_obj, peronalActivo = 'True', tipoColaboracion = 'Colaborador').count()
-    return [num_voluntarios, num_colaboradores]
+    num_voluntarios = PersonalExterno.objects.filter(grupoAsociado = grupo_obj, peronalActivo = 'True', tipoColaboracion__tipoColaboracion = 'Voluntario').count()
+    num_colaboradores = PersonalExterno.objects.filter(grupoAsociado = grupo_obj, peronalActivo = 'True', tipoColaboracion__tipoColaboracion = 'Colaborador').count()
+    num_asesores=  PersonalExterno.objects.filter(grupoAsociado = grupo_obj, peronalActivo = 'True', tipoColaboracion__tipoColaboracion = 'Asesor').count()
+    num_total =  PersonalExterno.objects.filter(grupoAsociado = grupo_obj, peronalActivo = 'True').count()
+    num_otros = num_total - num_voluntarios - num_colaboradores - num_asesores
+    return [num_voluntarios, num_colaboradores, num_asesores, num_otros]
 
 def get_diocesis_obj_from_id(diocesis_id):
     '''
@@ -236,7 +239,7 @@ def get_groups_in_diocesis(diocesis_obj):
             groups_data.append([grupo_obj.get_grupo_id(), grupo_obj.get_grupo_name()])
     return groups_data
 
-def get_grupo_cargos_voluntarios(grupo_obj):
+def get_grupo_cargos(grupo_obj):
     '''
     Description:
         The function gets the information and the voluntario name and the responsability.
@@ -252,6 +255,9 @@ def get_grupo_cargos_voluntarios(grupo_obj):
             cargo_name = cargo_obj.get_cargo_name()
             if PersonalExterno.objects.filter(cargo__nombreCargo__exact = cargo_name, grupoAsociado = grupo_obj).exists():
                 personal_obj = PersonalExterno.objects.filter(cargo__nombreCargo__exact = cargo_name, grupoAsociado = grupo_obj).last()
+                cargos_data[cargo_name] = personal_obj.get_personal_name()
+            elif PersonalIglesia.objects.filter(cargo__nombreCargo__exact = cargo_name, grupoAsociado = grupo_obj).exists():
+                personal_obj = PersonalIglesia.objects.filter(cargo__nombreCargo__exact = cargo_name, grupoAsociado = grupo_obj).last()
                 cargos_data[cargo_name] = personal_obj.get_personal_name()
             else:
                 cargos_data[cargo_name] = 'Sin Asignar'
@@ -278,6 +284,24 @@ def get_grupo_cargos_personal(grupo_obj):
                 cargos_data[cargo_name] = 'Sin Asignar'
     return cargos_data
 
+def get_grupo_voluntarios(grupo_obj):
+    '''
+    Description:
+        The function gets the list of voluntarios for the group.
+    Input:
+        grupo_obj  # obj of the grupo
+    Return:
+        voluntario_list
+    '''
+    voluntario_list = {'mayor80':[], 'menor80':[]}
+    if PersonalExterno.objects.filter(grupoAsociado = grupo_obj).exists():
+        personal_objs = PersonalExterno.objects.filter(grupoAsociado = grupo_obj).order_by('apellido')
+        for personal_obj in personal_objs:
+            if personal_obj.get_old() >= 80 :
+                voluntario_list['mayor80'].append(personal_obj.get_personal_name())
+            else:
+                voluntario_list['menor80'].append(personal_obj.get_personal_name())
+    return voluntario_list
 
 def fetch_parroquia_data_to_modify(data_form):
     '''
@@ -549,7 +573,7 @@ def get_personal_responsability(personal_obj):
 
 def get_provincias():
 
-    list_provincias =['Albacete', 'Alicante','Almería,''Álava','Asturias','Ávila','Badajoz','Baleares','Barcelona','Bizkaia','Burgos',
+    list_provincias =['Albacete', 'Alicante','Almería','Álava','Asturias','Ávila','Badajoz','Baleares','Barcelona','Bizkaia','Burgos',
         'Cáceres','Cádiz','Cantabria','Castellón','Ciudad Real','Córdoba','Coruña','Cuenca','Gipuzkoa','Girona','Granada','Guadalajara',
         'Huelva', 'Huesca','Jaén','León','Lleida','Lugo','Madrid','Málaga','Murcia','Navarra','Ourense','Palencia','Palmas, Las',
         'Pontevedra','Rioja, La','Salamanca','Santa Cruz de Tenerife','Segovia','Sevilla','Soria','Tarragona','Teruel','Toledo',

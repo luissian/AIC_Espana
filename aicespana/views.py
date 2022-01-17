@@ -87,7 +87,7 @@ def alta_grupo(request):
         for item in list_of_data:
             data[item] = request.POST[item]
         new_grupo = Grupo.objects.create_new_group(data)
-        return render(request,'aicespana/altaParroquia.html',{'confirmation_data': request.POST['nombre']})
+        return render(request,'aicespana/altaGrupo.html',{'confirmation_data': request.POST['nombre']})
 
     return render(request,'aicespana/altaGrupo.html',{'grupo_data':grupo_data})
 
@@ -507,15 +507,16 @@ def listado_grupo(request, grupo_id):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_GRUPO_NOT_EXIST})
     grupo_obj = get_grupo_obj_from_id(grupo_id)
     grupo_data = {}
-    grupo_data['cargos_voluntarios'] = get_grupo_cargos_voluntarios(grupo_obj)
-    grupo_data['cargos_personal'] = get_grupo_cargos_personal(grupo_obj)
+    grupo_data['nombre_grupo'] = grupo_obj.get_grupo_name()
+    grupo_data['cargos'] = get_grupo_cargos(grupo_obj)
+    grupo_data['informacion'] = grupo_obj.get_grupo_full_data()
     grupo_data['summary'] = [get_summary_of_group(grupo_obj)]
-    grupo_data['lista_voluntarios'] = ''
+    grupo_data['lista_voluntarios'] = get_grupo_voluntarios(grupo_obj)
     grupo_data['lista_colaboradores'] = ''
     grupo_data['lista_asesores'] = ''
     grupo_data['lista_otros'] = ''
 
-    import pdb; pdb.set_trace()
+    #import pdb; pdb.set_trace()
     return render(request,'aicespana/listadoGrupo.html', {'grupo_data': grupo_data})
 
 

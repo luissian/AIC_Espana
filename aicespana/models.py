@@ -193,7 +193,7 @@ class Grupo(models.Model):
 
 
     def __str__ (self):
-        return '%s' %(self.nombreGrupo)
+        return '%s' %(self.nombreGrupo) + ' en diocesis'+ self.diocesisDependiente.nombreDiocesis
 
     def get_grupo_id(self):
         return '%s' %(self.pk)
@@ -231,9 +231,9 @@ class Grupo(models.Model):
         else:
             baja = self.fechaBaja.strftime("%B %d, %Y")
         if self.grupoActivo:
-            activo = 'true'
+            activo = 'Activo'
         else:
-            activo = 'false'
+            activo = 'Cerrado'
         return [self.nombreGrupo, self.pk, self.get_diocesis_name(), self.get_diocesis_id() ,self.calle, self.poblacion, self.provincia,self.codigoPostal,self.observaciones, alta, baja,activo ]
 
     def update_grupo_data(self, data):
