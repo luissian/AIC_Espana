@@ -1,0 +1,102 @@
+{{% extends 'aicespana/base.html' %}
+{% load static %}
+{% block content %}
+<script type="text/javascript" src="{% static 'aicespana/js/aicespana.js' %}"></script>
+{% if  diocesis_data %}
+
+	<div class="container-md">
+		<div class="row mt-4">
+			<div class="col-md-8">
+				<div class="card">
+					<div class="card-header"><h2 style="text-align:center">Información de la Diocesis de  {{diocesis_data.diocesis_name}}</h2> </div>
+					<div class="card-body">
+
+						<button onclick="exportTableToExcel('dioGeneral')" class="btn float-end">Guardar Tabla en Excel <i class="bi bi-download"></i></button>
+
+						<table  class="table">
+							<thead>
+								<tr>
+									<th class="display-6">Voluntarios</th>
+									<th class="display-6">Grupos</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for voluntario, grupos  in diocesis_data.summary %}
+									<tr>
+										<td class="display-4">{{voluntario}}</td>
+										<td class="display-4">{{grupos}}</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+			</div> <!-- end md-10-->
+			<div class="col-md-4">
+				<div class="card">
+					<div class="card-body">
+
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+			</div> <!-- end md-4-->
+		</div> <!-- end row  -->
+	</div> <!-- end container  -->
+
+	<div class="container-md">
+		<div class="row mt-4">
+			<div class="col-md-6 offset-3">
+				<div class="card">
+					<div class="card-body">
+						<div class="table-wrapper">
+			                <table id="dioGeneral" class="table table-hover mb-0">
+			                    <thead>
+			                        <tr>
+										<th>Grupos </th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for id, grupo  in diocesis_data.grupos %}
+										<tr>
+											<td><h5>{{grupo}} &nbsp;&nbsp<a href="/listadoGrupo={{id}}"><i class="bi bi-journal-plus"></i></a></h5></td>
+										</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div> <!--  end of table wrapper  -->
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+			</div> <!-- end col-md-8 -->
+		</div> <!-- end row-->
+	</div> <!-- end container -->
+
+	<div class="container-md">
+		<div class="row mt-4">
+			<div class="col-md-6 offset-3">
+				<div class="card">
+					<div class="card-body">
+						<div class="table-wrapper">
+			                <table id="dioGeneral" class="table table-hover mb-0">
+			                    <thead>
+			                        <tr>
+										<th>Cargo</th>
+										<th>Nombre y apellidos</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for cargo, nombre  in diocesis_data.cargos.items %}
+										<tr>
+											<td>{{cargo}}</td>
+											<td>{{nombre}}</td>
+
+										</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div> <!--  end of table wrapper  -->
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+			</div> <!-- end col-md-8 -->
+		</div> <!-- end row-->
+	</div> <!-- end container -->
+{% endif %}
+{% endblock %}

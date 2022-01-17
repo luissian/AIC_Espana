@@ -493,18 +493,31 @@ def listado_diocesis(request,diocesis_id):
     diocesis_obj = get_diocesis_obj_from_id(diocesis_id)
     diocesis_data = {}
     diocesis_data['grupos'] = get_groups_in_diocesis(diocesis_obj)
-    diocesis_data['cargos'] = ''
-    diocesis_data['summary'] = get_summary_of_diocesis(diocesis_obj)
+    diocesis_data['cargos'] = get_diocesis_cargos(diocesis_obj)
+    diocesis_data['summary'] = [get_summary_of_diocesis(diocesis_obj)]
+    diocesis_data['diocesis_name'] = diocesis_obj.get_diocesis_name()
+    import pdb; pdb.set_trace()
+    return render(request,'aicespana/listadoDiocesis.html', {'diocesis_data': diocesis_data})
 
-    if Diocesis.objects.all().exists():
-        diocesis_objs = Diocesis.objects.all().order_by('nombreDiocesis')
-        for diocesis_obj in diocesis_objs:
-            diocesis.append([diocesis_obj.get_diocesis_id(),diocesis_obj.get_diocesis_name()])
-    if request.method == 'POST' and request.POST['action'] == 'informacionDiocesis':
-        diocesis_data = get_diocesis_data(request.POST['diocesis'])
+def listado_grupo(request, grupo_id):
+    if not allow_all_lists(request):
+        if not allow_own_delegation(request):
+            return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_ALLOW_TO_SEE_LISTADOS})
+    if not Grupo.objects.filter(pk__exact = grupo_id).exists():
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_GRUPO_NOT_EXIST})
+    grupo_obj = get_grupo_obj_from_id(grupo_id)
+    grupo_data = {}
+    grupo_data['cargos_voluntarios'] = get_grupo_cargos_voluntarios(grupo_obj)
+    grupo_data['cargos_personal'] = get_grupo_cargos_personal(grupo_obj)
+    grupo_data['summary'] = [get_summary_of_group(grupo_obj)]
+    grupo_data['lista_voluntarios'] = ''
+    grupo_data['lista_colaboradores'] = ''
+    grupo_data['lista_asesores'] = ''
+    grupo_data['lista_otros'] = ''
 
-        return render(request,'aicespana/listadoDiocesis.html', {'diocesis_data': diocesis_data})
-    return render(request,'aicespana/listadoDiocesis.html', {'diocesis': diocesis})
+    import pdb; pdb.set_trace()
+    return render(request,'aicespana/listadoGrupo.html', {'grupo_data': grupo_data})
+
 
 @login_required
 def listado_voluntarios_grupo(request):
