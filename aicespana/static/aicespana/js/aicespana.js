@@ -1,7 +1,7 @@
 // Download a table to excel //
 function exportTableToExcel(tableID, filename = ''){
     var downloadLink;
-    var dataType = 'application/vnd.ms-excel;charset=UTF-8';
+    var dataType = 'application/vnd.ms-excel';
     var tableSelect = document.getElementById(tableID);
     var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
 
