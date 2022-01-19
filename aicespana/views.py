@@ -307,13 +307,47 @@ def modificacion_voluntario(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     if request.method == 'POST' and request.POST['action'] == 'busquedaVoluntario':
         if request.POST['nif'] == '' and request.POST['nombre'] == '' and request.POST['apellido'] == '':
-            return render(request, 'aicespana/cargosVoluntarios.html')
+            return render(request, 'aicespana/modificacionVoluntario.html')
         if request.POST['nif'] != '':
             if PersonalExterno.objects.filter(DNI__iexact = request.POST['nif']).exists():
                 personal_objs = PersonalExterno.objects.filter(DNI__iexact = request.POST['nif'])
                 if len(personal_objs) > 1:
                     error = ['Hay más de 1 persona que tiene el mismo NIF/NIE', reques.POST['nif']]
                     return render(request, 'aicespana/modificacionVoluntario.html',{'ERROR':error})
+                voluntary_data = get_defined_data_for_voluntary(personal_objs[0])
+                personal_available_settings.update(get_external_personal_responsability(personal_objs[0]))
+                voluntary_data['user_id'] = personal_objs[0].get_personal_id()
+                return render(request, 'aicespana/modificacionVoluntario.html', {'voluntary_data':voluntary_data})
+            error = ['No hay nigún voluntario que tenga el NIF/NIE', request.POST['nif']]
+            return render(request, 'aicespana/modificacionVoluntario.html',{'ERROR':error})
+        personal_objs = PersonalExterno.objects.all()
+        if request.POST['apellido'] != '':
+            personal_objs = personal_objs.filter(apellido__iexact = request.POST['apellido'])
+        if request.POST['nombre'] != '':
+            personal_objs = personal_objs.filter(nombre__iexact = request.POST['nombre'])
+        if len(personal_objs) == 0 :
+            error = ['No hay nigún voluntario que cumpla los criterios de busqueda', str(request.POST['nombre']  + ' ' + request.POST['apellido']) ]
+            return render(request, 'aicespana/modificacionVoluntario.html',{'ERROR':error})
+        if len(personal_objs) >1 :
+            personal_list = []
+            for personal_obj in personal_objs:
+                personal_list.append([personal_obj.get_personal_id(), personal_obj.get_personal_name(),personal_obj.get_personal_location()])
+            return render(request, 'aicespana/modificacionVoluntario.html', {'personal_list':personal_list})
+        voluntary_data = personal_objs[0].get_all_data_from_voluntario()
+
+        #personal_available_settings.update(get_external_personal_responsability(personal_objs[0]))
+        #voluntary_data['user_id'] = personal_objs[0].get_personal_id()
+        return render(request, 'aicespana/modificacionVoluntario.html', {'voluntary_data':voluntary_data})
+    if request.method == 'POST' and request.POST['action'] == 'actualizarCampos':
+        user_obj = get_user_obj_from_id(request.POST['user_id'])
+        data = {}
+        data['cargo'] = request.POST['cargo']
+        data['actividad'] = request.POST['actividad']
+        data['grupo'] = request.POST['grupo']
+        data['proyecto'] = request.POST['proyecto']
+        data['colaboracion'] = request.POST['colaboracion']
+        user_obj.update_information(data)
+        updated_data = get_external_personal_responsability(user_obj)
 
         return render(request,'aicespana/modificacionVoluntario.html',{'voluntario_data':voluntario_data})
     return render(request,'aicespana/modificacionVoluntario.html')
@@ -512,9 +546,9 @@ def listado_grupo(request, grupo_id):
     grupo_data['informacion'] = grupo_obj.get_grupo_full_data()
     grupo_data['summary'] = [get_summary_of_group(grupo_obj)]
     grupo_data['lista_voluntarios'] = get_grupo_voluntarios(grupo_obj)
-    grupo_data['lista_colaboradores'] = ''
-    grupo_data['lista_asesores'] = ''
-    grupo_data['lista_otros'] = ''
+    grupo_data['lista_colaboradores'] = get_grupo_colaboradores(grupo_obj)
+    grupo_data['lista_asesores'] = get_grupo_asesores(grupo_obj)
+    grupo_data['lista_otros'] = get_grupo_otros(grupo_obj)
 
     #import pdb; pdb.set_trace()
     return render(request,'aicespana/listadoGrupo.html', {'grupo_data': grupo_data})

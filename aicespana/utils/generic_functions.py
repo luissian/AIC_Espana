@@ -294,14 +294,73 @@ def get_grupo_voluntarios(grupo_obj):
         voluntario_list
     '''
     voluntario_list = {'mayor80':[], 'menor80':[]}
-    if PersonalExterno.objects.filter(grupoAsociado = grupo_obj).exists():
-        personal_objs = PersonalExterno.objects.filter(grupoAsociado = grupo_obj).order_by('apellido')
+    import pdb; pdb.set_trace()
+    if PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Voluntario').exists():
+        personal_objs = PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Voluntario').order_by('apellido')
         for personal_obj in personal_objs:
             if personal_obj.get_old() >= 80 :
                 voluntario_list['mayor80'].append(personal_obj.get_personal_name())
             else:
                 voluntario_list['menor80'].append(personal_obj.get_personal_name())
     return voluntario_list
+
+def get_grupo_colaboradores(grupo_obj):
+    '''
+    Description:
+        The function gets the list of colaboradores for the group.
+    Input:
+        grupo_obj  # obj of the grupo
+    Return:
+        colaborador_list
+    '''
+    colaborador_list = {'mayor80':[], 'menor80':[]}
+    if PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Colaborador').exists():
+        personal_objs = PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Colaborador').order_by('apellido')
+        for personal_obj in personal_objs:
+            if personal_obj.get_old() >= 80 :
+                colaborador_list['mayor80'].append(personal_obj.get_personal_name())
+            else:
+                colaborador_list['menor80'].append(personal_obj.get_personal_name())
+    return colaborador_list
+
+def get_grupo_asesores(grupo_obj):
+    '''
+    Description:
+        The function gets the list of asesores for the group.
+    Input:
+        grupo_obj  # obj of the grupo
+    Return:
+        asesor_list
+    '''
+    asesor_list = {'mayor80':[], 'menor80':[]}
+    if PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Asesor').exists():
+        personal_objs = PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Asesor').order_by('apellido')
+        for personal_obj in personal_objs:
+            if personal_obj.get_old() >= 80 :
+                asesor_list['mayor80'].append(personal_obj.get_personal_name())
+            else:
+                asesor_list['menor80'].append(personal_obj.get_personal_name())
+    return asesor_list
+
+def get_grupo_otros(grupo_obj):
+    '''
+    Description:
+        The function gets the list of other tipe of colaborations for the group.
+    Input:
+        grupo_obj  # obj of the grupo
+    Return:
+        otros_list
+    '''
+    otros_list = {'mayor80':[], 'menor80':[]}
+    colaboration_list = ['Voluntario', 'Asesor','Colaborador']
+    if PersonalExterno.objects.filter(grupoAsociado = grupo_obj).exclude(tipoColaboracion__tipoColaboracion__in = colaboration_list).exists():
+        personal_objs = PersonalExterno.objects.filter(grupoAsociado = grupo_obj).exclude(tipoColaboracion__tipoColaboracion__in = colaboration_list).order_by('apellido')
+        for personal_obj in personal_objs:
+            if personal_obj.get_old() >= 80 :
+                otros_list['mayor80'].append(personal_obj.get_personal_name())
+            else:
+                otros_list['menor80'].append(personal_obj.get_personal_name())
+    return otros_list
 
 def fetch_parroquia_data_to_modify(data_form):
     '''
@@ -643,6 +702,29 @@ def get_responsablity_data_for_voluntary(personal_obj):
         for collaboration_obj in collaboration_objs:
             responsability_optons['available_collaboration'].append([collaboration_obj.get_tipo_colaboracion_id(), collaboration_obj.get_collaboration_name()])
     return responsability_optons
+
+
+def get_defined_data_for_voluntary(personal_obj):
+    '''
+    Description:
+        The function gets the available options that a voluntary can have.
+    Input:
+        personal_obj  # instance of the personel to get data
+    Return:
+        defined_data
+    '''
+    defined_data ={}
+    data = personal_obj.get_voluntario_data()
+    fields =['nombre_apellidos', 'calle', 'poblacion', 'provincia','codigo','email', 'dni','movil','grupo' ]
+    for index in range(len(fields)):
+        defined_data[fields[index]] = data[index]
+    defined_data['nombre'] = personal_obj.get_personal_only_name()
+    defined_data['apellido'] = personal_obj.get_personal_only_apellido()
+    defined_data['user_id'] = personal_obj.get_personal_id()
+    return_data
+
+
+
 
 def get_responsibles_in_the_group(group_obj):
     '''

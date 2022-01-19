@@ -431,7 +431,7 @@ class PersonalExterno(models.Model):
     recibirBoletin = models.BooleanField(default= False)
     fechaAlta = models.DateField(auto_now = False, null=True, blank = True)
     fechaBaja = models.DateField(auto_now = False, null=True, blank = True)
-    peronalActivo =  models.BooleanField(default= True)
+    personalActivo =  models.BooleanField(default= True)
     observaciones = models.CharField(max_length=1000, null=True, blank=True)
 
     def __str__ (self):
@@ -442,6 +442,12 @@ class PersonalExterno(models.Model):
 
     def get_personal_name(self):
         return '%s %s' %(self.nombre, self.apellido)
+
+    def get_personal_only_name(self):
+        return '%s' %(self.nombre)
+
+    def get_personal_only_apellido(self):
+        return '%s' %(self.apellido)
 
     def get_personal_location(self):
         return '%s' %(self.location)
@@ -515,6 +521,66 @@ class PersonalExterno(models.Model):
         if self.cargo :
             return '%s' %(self.cargo.get_cargo_id())
         return ''
+
+    def get_all_data_from_voluntario(self):
+        if self.fechaAlta is None:
+            alta = ''
+        else:
+            alta = self.fechaAlta.strftime("%Y-%m-%d")
+        if self.fechaBaja is None:
+            baja = ''
+        else:
+            baja = self.fechaBaja.strftime("%B %d, %Y")
+        if self.fechaNacimiento is None:
+            nacimiento = ''
+        else:
+            nacimiento = self.fechaNacimiento.strftime("%Y-%m-%d")
+        if self.personalActivo:
+            activo = 'true'
+        else:
+            activo = 'false'
+        if self.recibirBoletin:
+            boletin = 'true'
+        else:
+            boletin = 'false'
+        if self.personalActivo:
+            activo = 'true'
+        else:
+            activo = 'false'
+        if self.tipoColaboracion is None:
+            colaboracion = ''
+            colaboracion_id =''
+        else:
+            colaboracion = self.tipoColaboracion.get_collaboration_name()
+            colaboracion_id = self.tipoColaboracion.get_tipo_colaboracion_id()
+        if self.grupoAsociado is None:
+            grupo = ''
+            grupo_id = ''
+        else:
+            grupo = self.grupoAsociado.get_grupo_name()
+            grupo_id = self.grupoAsociado.get_grupo_id()
+        data = {}
+        data['nombre'] = self.nombre
+        data['apellido'] = self.apellido
+        data['dni'] = self.DNI
+        data['email'] = self.email
+        data['fijo'] = self.telefonoFijo
+        data['movil'] = self.telefonoMovil
+        data['baja'] = alta
+        data['alta'] = baja
+        data['nacimiento'] = nacimiento
+        data['calle'] = self.calle
+        data['poblacion'] = self.poblacion
+        data['provincia'] = self.provincia
+        data['codigo'] = self.codigoPostal
+        data['boletin'] = boletin
+        data['observaciones'] = self.observaciones
+        data['colaboracion'] = colaboracion
+        data['colaboracion_id'] = colaboracion_id
+        data['grupo'] = grupo
+        data['grupo_id'] = grupo_id
+        data['activo'] = activo
+        return data
 
     def get_voluntario_data(self):
         data = []
@@ -601,6 +667,7 @@ class PersonalIglesia(models.Model):
     email = models.CharField(max_length=40, null=True, blank = True)
     telefonoFijo = models.CharField(max_length=20, null=True, blank = True)
     telefonoMovil = models.CharField(max_length=40, null=True, blank = True)
+    fechaAlta = models.DateField(auto_now = False, null=True, blank = True)
     fechaBaja = models.DateField(auto_now = False, null=True, blank = True)
     personalActivo = models.BooleanField(default= True)
     recibirBoletin = models.BooleanField(default= False)

@@ -1,6 +1,7 @@
 {{% extends 'aicespana/base.html' %}
 {% load static %}
 {% block content %}
+{%include 'aicespana/jexcel_funcionality.html' %}
 
 <meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">
 <style >
@@ -8,17 +9,14 @@
   		overflow-y: auto;
 }
 </style>
-<script type="text/javascript">
-
-</script>
-
-<script type="text/javascript">
-	function generateexcel(tableid) {
-  var table= document.getElementById(tableid);
-  var html = table.outerHTML;
-  window.open('data:application/vnd.ms-excel;base64,' + $.base64.encode(html));
-}
-</script>
+<style>
+    .scrolling-wrapper {
+        overflow-x: auto;
+        overflow-y: auto;
+        white-space: nowrap;
+        height: 300px;
+    }
+ </style>
 <script type="text/javascript" src="{% static 'aicespana/js/aicespana.js' %}"></script>
 {% if  grupo_data %}
 
@@ -57,22 +55,22 @@
 	<div class="container sm-12">
 		<br><br><br>
 		<ul class="nav nav-tabs" id="myTab" role="tablist">
-		  <li class="nav-item" role="presentation">
-		    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab" aria-controls="info" aria-selected="true">Información General</button>
-		  </li>
-		  <li class="nav-item" role="presentation">
-		    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#cargos" type="button" role="tab" aria-controls="cargos" aria-selected="false">Cargos del grupo</button>
-		  </li>
-		  {% if grupo_data.lista_voluntarios|length > 0 %}
-		  <li class="nav-item" role="presentation">
-		    <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#lista" type="button" role="tab" aria-controls="listaVoluntarios" aria-selected="false">Listado de Voluntarios</button>
-		  </li>
-		  {% endif %}
-		  {% if grupo_data.lista_colaboradores|length > 0 %}
-		  <li class="nav-item" role="presentation">
-		    <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#lista" type="button" role="tab" aria-controls="listaVoluntarios" aria-selected="false">Listado de Voluntarios</button>
-		  </li>
-		  {% endif %}
+		    <li class="nav-item" role="presentation">
+		    	<button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab" aria-controls="info" aria-selected="true">Información General</button>
+		  	</li>
+		  	<li class="nav-item" role="presentation">
+		    	<button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#cargos" type="button" role="tab" aria-controls="cargos" aria-selected="false">Cargos del grupo</button>
+		  	</li>
+		  	{% if grupo_data.lista_voluntarios|length > 0 %}
+		  		<li class="nav-item" role="presentation">
+		    		<button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#listaV" type="button" role="tab" aria-controls="listaVoluntarios" aria-selected="false">Listado de Voluntarios</button>
+		  		</li>
+		    {% endif %}
+		  	{% if grupo_data.lista_asesores.mayor80|length > 0  and grupo_data.lista_asesores.menor80|length > 0 %}
+		  		<li class="nav-item" role="presentation">
+		    		<button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#listaA" type="button" role="tab" aria-controls="listaAsesores" aria-selected="false">Listado de Asesores</button>
+		  		</li>
+		  	{% endif %}
 
 		</ul>
 		<div class="tab-content" id="myTabContent">
@@ -139,8 +137,36 @@
 							<div class="card">
 								<div class="card-header"><h2 style="text-align:center">Cargos en el grupo de {{grupo_data.nombre_grupo}}</h2> </div>
 								<div class="card-body">
-									<button onclick="exportTableToExcel('cargos_table')" class="btn float-end">Guardar Tabla en Excel <i class="bi bi-download"></i></button>
+
+									<div class="scrolling-wrapper">
+                            			<div id="spreadsheet1"></div>
+                        			</div>
+									<br>
+									<input type="button" value="Descarga los cargos del grupo" onclick="table1.download()"/>
+									<script>
+				                         var data1 = [{% for cargo, nombre in grupo_data.cargos.items %} ['{{cargo}}', '{{nombre}}'], {% endfor %}
+				                         ];
+
+				                        var table1 = jexcel(document.getElementById('spreadsheet1'), {
+				                            data:data1,
+				                            columns: [
+				                                { type: 'text', title:'Cargo en el grupo', width:300 },
+				                                { type: 'text', title:'Nombre y apellidos', width:350 , readOnly:true},
+
+				                            ],
+				                            allowInsertColumn:false,
+				                            allowDeleteColumn:false,
+				                            allowRenameColumn:false,
+				                            csvFileName:'cargos_grupos',
+				                            minDimensions:[2,5],
+				                            tableOverflow: false,
+				                            tableWidth: "700px",
+											hideindex:true,
+				                         });
+				                    </script>
+
 									<div class="table-wrapper">
+										<button onclick="exportTableToExcel('cargos_table')" class="btn float-end">Guardar Tabla en Excel <i class="bi bi-download"></i></button>
 										<table id="cargos_table" class="table table-hover mb-0">
 											<thead>
 												<tr>
@@ -164,61 +190,108 @@
 					</div> <!-- end row-->
 				</div> <!-- end container -->
 			</div>  <!-- end tab cargos -->
+			{% if grupo_data.lista_voluntarios|length > 0 %}
+				<div class="tab-pane fade" id="listaV" role="tabpanel" aria-labelledby="lista-tab">
+					<div class="container-md">
+						<div class="row mt-5">
+							<div class="col-md-6">
+								<div class="card">
+									<div class="card-header"><h2 style="text-align:center">Voluntarios mayores de 80 años del grupo {{grupo_data.nombre_grupo}}</h2> </div>
+									<div class="card-body">
+										{% if grupo_data.lista_voluntarios.mayor80|length > 0 %}
+											<div class="scrolling-wrapper">
+		                            			<div id="spreadsheet2"></div>
+		                        			</div>
+											<br>
+											<input type="button" value="Descarga los cargos del grupo" onclick="table2.download()"/>
+											<script>
+						                         var data2 = [{% for  nombre in grupo_data.lista_voluntarios.mayor80 %} ['{{nombre}}'], {% endfor %}
+						                         ];
 
-			<div class="tab-pane fade" id="lista" role="tabpanel" aria-labelledby="lista-tab">
-				<div class="container-md">
-					<div class="row mt-5">
-						<div class="col-md-5">
-							<div class="card">
-								<div class="card-header"><h2 style="text-align:center">Voluntarios mayores de 80 años del grupo {{grupo_data.nombre_grupo}}</h2> </div>
-								<div class="card-body">
-									<button onclick="exportTableToExcel('cargos')" class="btn float-end">Guardar Tabla en Excel <i class="bi bi-download"></i></button>
-									<div class="table-wrapper">
-										<table id="cargos" class="table table-hover mb-0">
-											<thead>
-												<tr>
-													<th>Nombre y Apellidos del Voluntario</th>
-												</tr>
-											</thead>
-											<tbody>
-												{% for nombre in grupo_data.lista_voluntarios.mayor80 %}
+						                        var table2 = jexcel(document.getElementById('spreadsheet2'), {
+						                            data:data2,
+						                            columns: [
+						                                { type: 'text', title:'Nombre del Voluntario', width:350 , readOnly:true},
+
+						                            ],
+						                            allowInsertColumn:false,
+						                            allowDeleteColumn:false,
+						                            allowRenameColumn:false,
+						                            csvFileName:'cargos_grupos',
+						                            minDimensions:[2,5],
+						                            tableOverflow: false,
+						                            tableWidth: "700px",
+													hideIndex:true,
+						                         });
+						                    </script>
+										{% else %}
+											<h5 style="text-align:center">No hay voluntarios en este grupo que sean mayores de 80 años</h5>
+										{% endif %}
+										<br>
+
+
+									</div> <!-- end card body-->
+								</div> <!-- end card  -->
+							</div> <!-- end col-md-10 -->
+							<div class="col-md-6">
+								<div class="card">
+									<div class="card-header"><h2 style="text-align:center">Voluntarios menores de 80 años del grupo {{grupo_data.nombre_grupo}}</h2> </div>
+									<div class="card-body">
+
+										<div class="scrolling-wrapper">
+	                            			<div id="spreadsheet3"></div>
+	                        			</div>
+										<br>
+										<input type="button" value="Descarga los cargos del grupo" onclick="table3.download()"/>
+										<script>
+					                         var data3 = [{% for  nombre in grupo_data.lista_voluntarios.menor80 %} ['{{nombre}}'], {% endfor %}
+					                         ];
+
+					                        var table3 = jexcel(document.getElementById('spreadsheet3'), {
+					                            data:data3,
+					                            columns: [
+					                                { type: 'text', title:'Nombre del Voluntario', width:300 , readOnly:true},
+					                            ],
+					                            allowInsertColumn:false,
+					                            allowDeleteColumn:false,
+					                            allowRenameColumn:false,
+					                            csvFileName:'cargos_grupos',
+					                            minDimensions:[1,2],
+					                            tableOverflow: false,
+					                            tableWidth: "700px",
+
+					                         });
+					                    </script>
+
+
+
+										<div class="table-wrapper">
+											<table id="menor80" class="table table-hover mb-0">
+												<thead>
 													<tr>
-														<td>{{nombre}}</td>
+														<th>Nombre y  Apellidos del Voluntario</th>
 													</tr>
-												{% endfor %}
-											</tbody>
-										</table>
-									</div> <!--  end of table wrapper  -->
-								</div> <!-- end card body-->
-							</div> <!-- end card  -->
-						</div> <!-- end col-md-10 -->
-						<div class="col-md-5">
-							<div class="card">
-								<div class="card-header"><h2 style="text-align:center">Voluntarios menores de 80 años del grupo {{grupo_data.nombre_grupo}}</h2> </div>
-								<div class="card-body">
-									<button onclick="exportTableToExcel('menor80')" class="btn float-end">Guardar Tabla en Excel <i class="bi bi-download"></i></button>
-									<div class="table-wrapper">
-										<table id="menor80" class="table table-hover mb-0">
-											<thead>
-												<tr>
-													<th>Nombre y  Apellidos del Voluntario</th>
-												</tr>
-											</thead>
-											<tbody>
-												{% for nombre in grupo_data.lista_voluntarios.menor80 %}
-													<tr>
-														<td>{{nombre}}</td>
-													</tr>
-												{% endfor %}
-											</tbody>
-										</table>
-									</div> <!--  end of table wrapper  -->
-								</div> <!-- end card body-->
-							</div> <!-- end card  -->
-						</div> <!-- end col-md-10 -->
-					</div> <!-- end row-->
-				</div> <!-- end container -->
-			</div>  <!-- end tab cargos -->
+												</thead>
+												<tbody>
+													{% for nombre in grupo_data.lista_voluntarios.menor80 %}
+														<tr>
+															<td>{{nombre}}</td>
+														</tr>
+													{% endfor %}
+												</tbody>
+											</table>
+										</div> <!--  end of table wrapper  -->
+									</div> <!-- end card body-->
+								</div> <!-- end card  -->
+							</div> <!-- end col-md-10 -->
+						</div> <!-- end row-->
+					</div> <!-- end container -->
+				</div>  <!-- end tab listaV -->
+			{% endif %}
+
+			{% if grupo_data.lista_asesores|length > 0 %}
+
+			{% endif %}
 		</div>  <!-- end tab-content -->
 	</div>  <!-- end container -->
 
