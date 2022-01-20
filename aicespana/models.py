@@ -231,9 +231,9 @@ class Grupo(models.Model):
         else:
             baja = self.fechaBaja.strftime("%B %d, %Y")
         if self.grupoActivo:
-            activo = 'Activo'
+            activo = 'true'
         else:
-            activo = 'Cerrado'
+            activo = 'false'
         return [self.nombreGrupo, self.pk, self.get_diocesis_name(), self.get_diocesis_id() ,self.calle, self.poblacion, self.provincia,self.codigoPostal,self.observaciones, alta, baja,activo ]
 
     def update_grupo_data(self, data):
@@ -364,6 +364,21 @@ class Actividad(models.Model):
     def get_activity_name (self):
         return '%s' %(self.nombreActividad)
 
+    def get_diocesis_name(self):
+        if self.grupoAsociado:
+            return '%s' %(self.grupoAsociado.get_diocesis_name())
+        return ''
+
+    def get_grupo_name(self):
+        if self.grupoAsociado:
+            return '%s' %(self.grupoAsociado.get_grupo_name())
+        return ''
+
+    def get_grupo_id(self):
+        if self.grupoAsociado:
+            return '%s' %(self.grupoAsociado.get_grupo_id())
+        return ''
+
 
 class TipoColaboracion(models.Model):
     tipoColaboracion = models.CharField(max_length=60)
@@ -396,7 +411,7 @@ class PersonalExternoManager(models.Manager):
             boletin = False
         new_ext_personel = self.create(nombre = data['nombre'], apellido = data['apellidos'], calle = data['calle'],
                 poblacion = data['poblacion'], provincia = data['provincia'], codigoPostal = data['codigo'],
-                DNI = data['nif'], fechaNacimiento = data['nacimiento'], email = data['email'], telefonoFijo = data['fijo'],
+                DNI = data['nif'], fechaNacimiento = data['nacimiento'],fechaAlta = data['alta'], email = data['email'], telefonoFijo = data['fijo'],
                 telefonoMovil = data['movil'],  tipoColaboracion = tipoColaboracion_obj, grupoAsociado = grupo_obj,
                 recibirBoletin = boletin)
         return new_ext_personel
@@ -461,6 +476,12 @@ class PersonalExterno(models.Model):
         if self.actividadAsociada:
             return '%s' %(self.actividadAsociada.get_activity_id())
         return ''
+    def get_actividad_data_for_form(self):
+        if self.actividadAsociada is None:
+            return ['','Sin asignar a Actividad', '', '']
+        else:
+            return [self.actividadAsociada.get_actividad_id(), self.actividadAsociada.get_actividad_name(),
+                        self.actividadAsociada.get_grupo_name(), self.actividadAsociada.get_diocesis_name()]
 
     def get_collaboration_belongs_to(self):
         if self.tipoColaboracion:
@@ -512,6 +533,13 @@ class PersonalExterno(models.Model):
             return '%s' %(self.proyectoAsociado.get_proyecto_id())
         return ''
 
+    def get_proyecto_data_for_form(self):
+        if self.proyectoAsociado is None:
+            return ['','Sin asignar a Proyecto', '']
+        else:
+            return [self.proyectoAsociado.get_proyecto_id(), self.proyectoAsociado.get_proyecto_name(),
+                        self.proyectoAsociado.get_grupo_name(), self.proyectoAsociado.get_diocesis_name()]
+
     def get_responability_belongs_to(self):
         if self.cargo :
             return '%s' %(self.cargo.get_cargo_name())
@@ -556,18 +584,33 @@ class PersonalExterno(models.Model):
         if self.grupoAsociado is None:
             grupo = ''
             grupo_id = ''
+            diocesis =  ''
         else:
             grupo = self.grupoAsociado.get_grupo_name()
             grupo_id = self.grupoAsociado.get_grupo_id()
+            diocesis = self.grupoAsociado.get_diocesis_name()
+        if self.proyectoAsociado is None:
+            proyecto_id = ''
+            proyecto_name = ''
+        else:
+            proyecto_id = self.proyectoAsociado.get_proyecto_id()
+            proyecto_name = self.proyectoAsociado.get_proyecto_name()
+        if self.actividadAsociada is None:
+            actividad_id = ''
+            actividad_name = ''
+        else:
+            actividad_id = self.actividadAsociada.get_activity_id()
+            actividad_name = self.actividadAsociada.get_activity_name()
         data = {}
+        data['user_id'] = self.pk
         data['nombre'] = self.nombre
         data['apellido'] = self.apellido
         data['dni'] = self.DNI
         data['email'] = self.email
         data['fijo'] = self.telefonoFijo
         data['movil'] = self.telefonoMovil
-        data['baja'] = alta
-        data['alta'] = baja
+        data['baja'] = baja
+        data['alta'] = alta
         data['nacimiento'] = nacimiento
         data['calle'] = self.calle
         data['poblacion'] = self.poblacion
@@ -579,6 +622,11 @@ class PersonalExterno(models.Model):
         data['colaboracion_id'] = colaboracion_id
         data['grupo'] = grupo
         data['grupo_id'] = grupo_id
+        data['diocesis'] = diocesis
+        data['proyecto_id'] = proyecto_id
+        data['proyecto_name'] = proyecto_name
+        data['actividad_id'] = actividad_id
+        data['actividad_name'] = actividad_name
         data['activo'] = activo
         return data
 
@@ -638,7 +686,74 @@ class PersonalExterno(models.Model):
         self.cargo = cargo_obj
         self.tipoColaboracion = colaboracion_obj
         self.save()
-        return
+        return self
+
+    def update_all_data_for_voluntary(self, data):
+
+        if TipoColaboracion.objects.filter(pk__exact = data['colaboracion_id']).exists():
+            tipoColaboracion_obj = TipoColaboracion.objects.get(pk__exact = data['colaboracion_id'])
+        else:
+            tipoColaboracion_obj = None
+        if data['grupoID'] != '':
+            if Grupo.objects.filter(pk__exact = data['grupoID']).exists():
+                grupo_obj = Grupo.objects.filter(pk__exact = data['grupoID']).last()
+            else:
+                grupo_obj = None
+        else:
+            grupo_obj = None
+        if data['boletin'] == 'true':
+            boletin = True
+        else:
+            boletin = False
+        if data['activo'] == 'true':
+            activo = True
+        else:
+            activo = False
+        if data['alta'] != '':
+            #alta = datetime.strptime(data['alta'],"%Y-%m-%d").date()
+            alta = data['alta']
+        else:
+            alta = None
+        if data['baja'] != '':
+            baja = data['baja']
+        else:
+            baja = None
+        if data['proyectoID'] == '':
+            proyecto_obj = None
+        else:
+            if Proyecto.objects.filter(pk__exact = data['proyectoID']).exists():
+                proyecto_obj = Proyecto.objects.filter(pk__exact = data['proyectoID']).last()
+            else:
+                proyecto_obj = None
+        if data['actividadID'] == '':
+            actividad_obj = None
+        else:
+            if Actividad.objects.filter(pk__exact = data['actividadID']).exists():
+                actividad_obj = Actividad.objects.filter(pk__exact = data['actividadID']).last()
+            else:
+                actividad_obj = None
+        self.nombre = data['nombre']
+        self.apellido = data['apellidos']
+        self.calle = data['calle']
+        self.poblacion = data['poblacion']
+        self.provincia = data['provincia']
+        self.codigoPostal = data['codigo']
+        self.DNI = data['dni']
+        self.fechaNacimiento = data['nacimiento']
+        self.fechaAlta = alta
+        self.fechaBaja = baja
+        self.email = data['email']
+        self.telefonoFijo = data['fijo']
+        self.telefonoMovil = data['movil']
+        self.tipoColaboracion = tipoColaboracion_obj
+        self.grupoAsociado = grupo_obj
+        self.recibirBoletin = boletin
+        self.proyectoAsociado = proyecto_obj
+        self.actividadAsociada = actividad_obj
+        self.boletin = boletin
+        self.activo = activo
+        self.save()
+        return self
 
     objects = PersonalExternoManager()
 
@@ -647,7 +762,9 @@ class PersonalManager(models.Manager):
     def create_new_personel(self, data):
         new_personel = self.create(nombre = data['nombre'], apellido = data['apellido'],
                 DNI = data['nif'], email = data['email'], telefonoFijo = data['fijo'],
-                telefonoMovil = data['movil'])
+                telefonoMovil = data['movil'],calle = data['calle'],
+                poblacion = data['poblacion'], provincia = data['provincia'],
+                codigoPostal = data['codigo'],)
         return new_personel
 
 
@@ -664,6 +781,10 @@ class PersonalIglesia(models.Model):
     nombre = models.CharField(max_length=40,null=True, blank = True)
     apellido = models.CharField(max_length=40,null=True, blank = True)
     DNI = models.CharField(max_length=20, null=True, blank = True)
+    calle = models.CharField(max_length=80, null=True, blank = True)
+    poblacion = models.CharField(max_length=60, null=True, blank = True)
+    provincia = models.CharField(max_length=40, null=True, blank = True)
+    codigoPostal = models.CharField(max_length=20, null=True, blank = True)
     email = models.CharField(max_length=40, null=True, blank = True)
     telefonoFijo = models.CharField(max_length=20, null=True, blank = True)
     telefonoMovil = models.CharField(max_length=40, null=True, blank = True)

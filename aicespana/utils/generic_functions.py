@@ -129,10 +129,10 @@ def get_summary_of_group(grupo_obj):
     Return:
         summary_data
     '''
-    num_voluntarios = PersonalExterno.objects.filter(grupoAsociado = grupo_obj, peronalActivo = 'True', tipoColaboracion__tipoColaboracion = 'Voluntario').count()
-    num_colaboradores = PersonalExterno.objects.filter(grupoAsociado = grupo_obj, peronalActivo = 'True', tipoColaboracion__tipoColaboracion = 'Colaborador').count()
-    num_asesores=  PersonalExterno.objects.filter(grupoAsociado = grupo_obj, peronalActivo = 'True', tipoColaboracion__tipoColaboracion = 'Asesor').count()
-    num_total =  PersonalExterno.objects.filter(grupoAsociado = grupo_obj, peronalActivo = 'True').count()
+    num_voluntarios = PersonalExterno.objects.filter(grupoAsociado = grupo_obj, personalActivo = 'True', tipoColaboracion__tipoColaboracion = 'Voluntario').count()
+    num_colaboradores = PersonalExterno.objects.filter(grupoAsociado = grupo_obj, personalActivo = 'True', tipoColaboracion__tipoColaboracion = 'Colaborador').count()
+    num_asesores=  PersonalExterno.objects.filter(grupoAsociado = grupo_obj, personalActivo = 'True', tipoColaboracion__tipoColaboracion = 'Asesor').count()
+    num_total =  PersonalExterno.objects.filter(grupoAsociado = grupo_obj, personalActivo = 'True').count()
     num_otros = num_total - num_voluntarios - num_colaboradores - num_asesores
     return [num_voluntarios, num_colaboradores, num_asesores, num_otros]
 
@@ -499,6 +499,19 @@ def get_id_grupo_diocesis_delegacion_name():
                     group_diocesis_data[delegation_name].append([grupo_obj.get_grupo_id(),grupo_obj.get_grupo_name(),diocesis_name ])
 
     return group_diocesis_data
+def get_gruup_list_to_select_in_form():
+    '''
+    Description:
+        The function gets the group the diocesis name to select in the user form
+    Return:
+        group_data
+    '''
+    group_data = []
+    if Grupo.objects.all().exists():
+        grupo_objs = Grupo.objects.all().order_by('nombreGrupo')
+        for grupo_obj in grupo_objs:
+            group_data.append([grupo_obj.get_grupo_id(),grupo_obj.get_grupo_name(), grupo_obj.get_diocesis_name()])
+    return group_data
 
 def get_id_grupo_diocesis_name():
     '''
@@ -581,6 +594,40 @@ def get_id_proyectos_grupos_diocesis_delegacion_name():
                             proyecto_grupo_diocesis_data[delegation_name][diocesis_name] = []
                         proyecto_grupo_diocesis_data[delegation_name][diocesis_name].append([proyecto_obj.get_proyecto_id(),proyecto_obj.get_proyecto_name(),grupo_name ])
     return proyecto_grupo_diocesis_data
+
+
+def get_project_group_diocesis():
+    '''
+    Description:
+        The function gets the proyecto and the diocesis name
+    Return:
+        proyecto_grupo_diocesis_list
+    '''
+    proyecto_grupo_diocesis_list = []
+    if Proyecto.objects.all().exists():
+        proyecto_objs = Proyecto.objects.all().order_by('nombreProyecto')
+        for proyecto_obj in proyecto_objs:
+            proyecto_grupo_diocesis_list.append([proyecto_obj.get_proyecto_id() , proyecto_obj.get_proyecto_name() ,proyecto_obj.get_grupo_name() , proyecto_obj.get_diocesis_name()])
+    return proyecto_grupo_diocesis_list
+
+
+
+
+
+
+def get_activity_group_diocesis():
+    '''
+    Description:
+        The function gets the proyecto and the diocesis name
+    Return:
+        proyecto_grupo_diocesis_list
+    '''
+    activity_grupo_diocesis_list = []
+    if Actividad.objects.all().exists():
+        actividad_objs = Actividad.objects.all().order_by('nombreActividad')
+        for actividad_obj in actividad_objs:
+            activity_grupo_diocesis_list.append([actividad_obj.get_activity_id() , actividad_obj.get_activity_name() ,actividad_obj.get_grupo_name() , actividad_obj.get_diocesis_name()])
+    return activity_grupo_diocesis_list
 
 
 def get_external_personal_responsability(personal_obj):

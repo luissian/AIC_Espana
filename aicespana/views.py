@@ -140,7 +140,7 @@ def alta_voluntario(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     if request.method == 'POST' and request.POST['action'] == 'altaVoluntario':
         confirmation_data = ''
-        info_to_fetch = ['nombre', 'apellidos','nif','nacimiento','calle','poblacion', 'provincia', 'codigo', 'email', 'fijo', 'movil', 'tipoColaboracion','grupoID', 'boletin']
+        info_to_fetch = ['nombre', 'apellidos','nif','nacimiento', 'alta' ,'calle','poblacion', 'provincia', 'codigo', 'email', 'fijo', 'movil', 'tipoColaboracion','grupoID', 'boletin']
         personal_data = {}
         for field in info_to_fetch:
             personal_data[field] = request.POST[field]
@@ -334,22 +334,27 @@ def modificacion_voluntario(request):
                 personal_list.append([personal_obj.get_personal_id(), personal_obj.get_personal_name(),personal_obj.get_personal_location()])
             return render(request, 'aicespana/modificacionVoluntario.html', {'personal_list':personal_list})
         voluntary_data = personal_objs[0].get_all_data_from_voluntario()
+        voluntary_data['provincias'] = get_provincias()
+        voluntary_data['grupo_lista'] = get_gruup_list_to_select_in_form()
+        voluntary_data['tipo_colaboracion'] = get_volunteer_types()
+        voluntary_data['proyecto_lista'] = get_project_group_diocesis()
+        voluntary_data['proyecto_data_form'] = personal_objs[0].get_proyecto_data_for_form()
+        voluntary_data['actividad_lista'] = get_activity_group_diocesis()
+        voluntary_data['actividad_data_form'] = personal_objs[0].get_actividad_data_for_form()
 
-        #personal_available_settings.update(get_external_personal_responsability(personal_objs[0]))
-        #voluntary_data['user_id'] = personal_objs[0].get_personal_id()
         return render(request, 'aicespana/modificacionVoluntario.html', {'voluntary_data':voluntary_data})
     if request.method == 'POST' and request.POST['action'] == 'actualizarCampos':
         user_obj = get_user_obj_from_id(request.POST['user_id'])
         data = {}
-        data['cargo'] = request.POST['cargo']
-        data['actividad'] = request.POST['actividad']
-        data['grupo'] = request.POST['grupo']
-        data['proyecto'] = request.POST['proyecto']
-        data['colaboracion'] = request.POST['colaboracion']
-        user_obj.update_information(data)
-        updated_data = get_external_personal_responsability(user_obj)
+        field_list = ['nombre', 'apellidos','dni','nacimiento','calle','poblacion', 'provincia', 'codigo', 'email', 'fijo', 'movil',
+                'alta', 'baja', 'colaboracion_id','grupoID', 'boletin','activo','actividadID','proyectoID']
 
-        return render(request,'aicespana/modificacionVoluntario.html',{'voluntario_data':voluntario_data})
+        for item in field_list:
+            data[item] = request.POST[item]
+
+        user_obj.update_all_data_for_voluntary(data)
+
+        return render(request,'aicespana/modificacionVoluntario.html',{'confirmation_data':request.POST['nombre'] + ' ' + request.POST['apellidos']})
     return render(request,'aicespana/modificacionVoluntario.html')
 
 
