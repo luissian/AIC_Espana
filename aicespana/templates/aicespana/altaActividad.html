@@ -36,9 +36,9 @@
 				<div class="card">
 					<div class="card-header"><h2 style="text-align:center">Datos Guardados</h2> </div>
 					<div class="card-body">
-						<p style="text-align:center">El proyecto {{confirmation_data}} se ha guardado correctamente</p>
+						<p style="text-align:center">La Actividad {{confirmation_data}} se ha guardado correctamente</p>
 						<br><br><br>
-						<input type="button" value="Dar de alta otro Proyecto" onclick="location.href ='/altaProyecto' ;"/>
+						<input type="button" value="Dar de alta otra Actividad" onclick="location.href ='/altaActividad' ;"/>
 						<br><br>
 					</div> <!-- end card body-->
 				</div> <!-- end card  -->
@@ -52,14 +52,14 @@
 	    <div class="row g-3"">
 	        <div class="col-md-6">
 	            <div class="card">
-					<div class="card-header"><h2 style="text-align:center">Formulario alta Proyecto</h2> </div>
+					<div class="card-header"><h2 style="text-align:center">Formulario alta Actividad</h2> </div>
 	                <div class="card-body">
-	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="altaProyecto" id="altaProyecto" >
+	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="altaActividad" id="altaActividad" >
 	                        {% csrf_token %}
-	                        <input type="hidden" name="action" value="altaProyecto"/>
+	                        <input type="hidden" name="action" value="altaActividad"/>
 							<div class="form-group required">
 		                        <div class="col-md-8">
-		                            <label class="control-label " for="nombre">Nombre del Proyecto</label>
+		                            <label class="control-label " for="nombre">Nombre de la Actividad</label>
 		                            <input type="text" required class="form-control" id="nombre", name='nombre'>
 		                        </div>
 								<div class="col-md-5">
@@ -70,10 +70,10 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-8">
-		                            <label for="grupoID" class="form-label">Seleciona el grupo del que depende el proyecto</label>
+		                            <label for="grupoID" class="form-label">Seleciona el grupo del que depende la actividad</label>
 		                            <select id="grupoID" class="form-select" name='grupoID'>
 		                                <option selected value=''>Selecciona el grupo</option>
-										{% for delegacion, grupos in proyecto_data.grupos_diocesis_id_name.items %}
+										{% for delegacion, grupos in actividad_data.grupos_diocesis_id_name.items %}
 											{% for id, grupo, diocesis in grupos %}
 		                                		<option value = {{id}}>{{grupo}} en diocesis {{diocesis}}</option>
 											{% endfor %}
@@ -110,13 +110,13 @@
 	        </div> <!-- end col-md-7 -->
 			<div class="col-md-6">
 	            <div class="card">
-					<div class="card-header"><h2 style="text-align:center">Listado de Proyectos</h2> </div>
+					<div class="card-header"><h2 style="text-align:center">Listado de Actividades </h2> </div>
 	                    <div class="card-body">
 							<table class="table table-hover">
 								<thead>
 									<tr>
 										<th>Delegación</th>
-										<th>Proyecto</th>
+										<th>Actividad</th>
 										<th>Grupo</th>
 										<th>Diocesis</th>
 									</tr>
@@ -124,17 +124,17 @@
 								</thead>
 
                             	<tbody>
-									{% for delegacion, diocesis_data in proyecto_data.proyectos_grupos_diocesis_name.items %}
+									{% for delegacion, diocesis_data in actividad_data.actividad_grupos_diocesis_name.items %}
 										<tr>
 											<td>{{delegacion}}</td>
 											<td></td>
 											<td></td>
 										</tr>
-										{% for diocesis, proyectos in diocesis_data.items %}
-											{% for id, proyecto, grupo in proyectos %}
+										{% for diocesis, actividades in diocesis_data.items %}
+											{% for id, actividad, grupo in actividades %}
 												<tr>
 													<td></td>
-													<td>{{proyecto}}</td>
+													<td>{{actividad}}</td>
 													<td>{{grupo}}</td>
 													<td>{{diocesis}}</td>
 												</tr>

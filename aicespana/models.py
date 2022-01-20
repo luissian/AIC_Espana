@@ -266,7 +266,7 @@ class ProyectoManager(models.Manager):
 
         memoria = data['memoria_file'] if 'memoria_file' in  data != '' else None
         fotografia = data['fotografia_file'] if 'fotografia_file' in data != '' else None
-        import pdb; pdb.set_trace()
+
         new_project = self.create(nombreProyecto = data['nombre'],grupoAsociado = data['grupo_obj'],
                 fechaAlta = alta, memoriaProyecto = memoria, fotografiaProyecto = fotografia )
         return new_project
@@ -345,11 +345,29 @@ class Proyecto(models.Model):
 
     objects = ProyectoManager()
 
+
+class ActividadManager(models.Manager):
+    def create_new_actividad(self,data):
+
+        if data['alta'] != '':
+            alta =  datetime.strptime(data['alta'],"%Y-%m-%d").date()
+        else:
+            alta = None
+
+        memoria = data['memoria_file'] if 'memoria_file' in  data != '' else None
+        fotografia = data['fotografia_file'] if 'fotografia_file' in data != '' else None
+
+        new_actividad = self.create(nombreActividad = data['nombre'],grupoAsociado = data['grupo_obj'],
+                fechaAlta = alta, memoriaActividad = memoria, fotografiaActividad = fotografia )
+        return new_actividad
+
 class Actividad(models.Model):
     grupoAsociado = models.ForeignKey(
                         Grupo,
                         on_delete=models.CASCADE, null=True, blank = True)
     nombreActividad = models.CharField(max_length=200)
+    memoriaActividad = models.FileField( storage= memory_project_path_location, null=True, blank = True)
+    fotografiaActividad = models.FileField( storage= memory_project_path_location, null=True, blank = True)
     fechaAlta = models.DateField(auto_now = False, null=True, blank = True)
     fechaBaja = models.DateField(auto_now = False, null=True, blank = True)
     actividadActiva = models.BooleanField(default= True)
@@ -358,10 +376,10 @@ class Actividad(models.Model):
     def __str__ (self):
         return '%s' %(self.nombreActividad)
 
-    def get_activity_id(self):
+    def get_actividad_id(self):
         return '%s' %(self.pk)
 
-    def get_activity_name (self):
+    def get_actividad_name (self):
         return '%s' %(self.nombreActividad)
 
     def get_diocesis_name(self):
@@ -379,6 +397,7 @@ class Actividad(models.Model):
             return '%s' %(self.grupoAsociado.get_grupo_id())
         return ''
 
+    objects = ActividadManager()
 
 class TipoColaboracion(models.Model):
     tipoColaboracion = models.CharField(max_length=60)

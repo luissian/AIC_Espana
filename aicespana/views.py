@@ -12,9 +12,30 @@ from .utils.generic_functions import *
 def index(request):
     return render(request,'aicespana/index.html')
 
-#@login_required
+@login_required
 def alta_actividad(request):
-    return render(request,'aicespana/altaActividad.html',{'new_actividad_data':new_actividad_data})
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    actividad_data = {}
+    actividad_data['grupos_diocesis_id_name'] = get_id_grupo_diocesis_delegacion_name()
+    actividad_data['actividad_grupos_diocesis_name'] = get_id_actividad_grupos_diocesis_delegacion_name()
+
+    if request.method == 'POST' and request.POST['action'] == 'altaActividad':
+        if Actividad.objects.filter(nombreActividad__iexact = request.POST['nombre']).exists():
+            return render(request,'aicespana/altaActividad.html',{'actividad_data':actividad_data, 'ERROR': ERROR_ACTIVIDAD_EXIST})
+        data = {}
+        data['grupo_obj'] = get_grupo_obj_from_id(request.POST['grupoID'])
+        data['alta'] = request.POST['alta']
+        data['nombre'] = request.POST['nombre']
+        data['observaciones'] = request.POST['observaciones']
+        if 'uploadMemoria' in request.FILES:
+            data['memoria_file'] = store_file(request.FILES['uploadMemoria'])
+        if 'uploadFotografia' in request.FILES:
+            data['fotografia_file'] = store_file(request.FILES['uploadFotografia'])
+
+        new_actividad = Actividad.objects.create_new_actividad(data)
+        return render(request,'aicespana/altaActividad.html',{'confirmation_data': request.POST['nombre']})
+    return render(request,'aicespana/altaActividad.html',{'actividad_data':actividad_data})
 
 
 @login_required
@@ -124,6 +145,7 @@ def alta_proyecto(request):
         data['grupo_obj'] = get_grupo_obj_from_id(request.POST['grupoID'])
         data['alta'] = request.POST['alta']
         data['nombre'] = request.POST['nombre']
+        data['observaciones'] = request.POST['observaciones']
         if 'uploadMemoria' in request.FILES:
             data['memoria_file'] = store_file(request.FILES['uploadMemoria'])
         if 'uploadFotografia' in request.FILES:
@@ -290,8 +312,8 @@ def modificar_proyecto(request,proyecto_id):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_PROYECTO_NOT_EXIST})
     proyecto_data = get_proyecto_data_to_modify(proyecto_id)
 
-    proyecto_data['grupos_diocesis_id_name'] = get_id_grupo_diocesis_name()
-    #import pdb; pdb.set_trace()
+    proyecto_data['grupos_diocesis_id_name'] = get_group_list_to_select_in_form()  #get_id_grupo_diocesis_name()
+
     if request.method == 'POST' and request.POST['action'] == 'modificarProyecto':
         if Proyecto.objects.filter(nombreProyecto__iexact = request.POST['proyecto_name'], grupoAsociado__pk__exact = request.POST['grupoID']).exclude(pk__exact =request.POST['proyectoID'] ).exists():
             return render (request,'aicespana/modificarProyecto.html', {'ERROR': ERROR_PROYECTO_MODIFICATION_EXIST, 'proyecto_data':proyecto_data})
@@ -335,7 +357,7 @@ def modificacion_voluntario(request):
             return render(request, 'aicespana/modificacionVoluntario.html', {'personal_list':personal_list})
         voluntary_data = personal_objs[0].get_all_data_from_voluntario()
         voluntary_data['provincias'] = get_provincias()
-        voluntary_data['grupo_lista'] = get_gruup_list_to_select_in_form()
+        voluntary_data['grupo_lista'] = get_group_list_to_select_in_form()
         voluntary_data['tipo_colaboracion'] = get_volunteer_types()
         voluntary_data['proyecto_lista'] = get_project_group_diocesis()
         voluntary_data['proyecto_data_form'] = personal_objs[0].get_proyecto_data_for_form()
@@ -535,7 +557,7 @@ def listado_diocesis(request,diocesis_id):
     diocesis_data['cargos'] = get_diocesis_cargos(diocesis_obj)
     diocesis_data['summary'] = [get_summary_of_diocesis(diocesis_obj)]
     diocesis_data['diocesis_name'] = diocesis_obj.get_diocesis_name()
-    import pdb; pdb.set_trace()
+
     return render(request,'aicespana/listadoDiocesis.html', {'diocesis_data': diocesis_data})
 
 def listado_grupo(request, grupo_id):
@@ -555,7 +577,7 @@ def listado_grupo(request, grupo_id):
     grupo_data['lista_asesores'] = get_grupo_asesores(grupo_obj)
     grupo_data['lista_otros'] = get_grupo_otros(grupo_obj)
 
-    #import pdb; pdb.set_trace()
+
     return render(request,'aicespana/listadoGrupo.html', {'grupo_data': grupo_data})
 
 

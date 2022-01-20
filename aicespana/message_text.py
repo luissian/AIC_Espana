@@ -20,6 +20,10 @@ ERROR_NOT_FIND_VOLUNTARIO_NIF = 'No hay ningún voluntario que tenga el NIF/NIE'
 
 ERROR_PROYECTO_EXIST = 'No se puede crear el Proyecto porque ya existe'
 ERROR_PROYECTO_NOT_EXIST = 'El Proyecto no existe'
-ERROR_PROYECTO_MODIFICATION_EXIST = 'El Proyecto no se puede modificar porque ya existe una con el mismo nombre'
+ERROR_PROYECTO_MODIFICATION_EXIST = 'El Proyecto no se puede modificar porque ya existe uno con el mismo nombre'
+
+ERROR_ACTIVIDAD_EXIST = 'No se puede crear la actividad porque ya existe'
+ERROR_ACTIVIDAD_NOT_EXIST = 'La Actividad no existe'
+ERROR_ACTIVIDAD_MODIFICATION_EXIST = 'La Actividad no se puede modificar porque ya existe una con el mismo nombre'
 
 ERROR_USER_NOT_ALLOW_TO_SEE_LISTADOS ='Usuario no está autorizado a acceder a los listados'
