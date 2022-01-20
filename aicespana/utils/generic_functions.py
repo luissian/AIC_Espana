@@ -362,6 +362,36 @@ def get_grupo_otros(grupo_obj):
                 otros_list['menor80'].append(personal_obj.get_personal_name())
     return otros_list
 
+
+
+def get_actividad_obj_from_id(actividad_id):
+    '''
+    Description:
+        The function return the actividad object from their id.
+    Input:
+        actividad_id   # id of the actividad
+    Return:
+        object of actividad instance
+    '''
+    return Actividad.objects.filter(pk__exact = actividad_id).last()
+
+def get_actividad_data_to_modify(actividad_id):
+    '''
+    Description:
+        The function gets the actividad recorded data to modify in the form
+    Return:
+        actividad_data
+    '''
+    actividad_data = {}
+    actividad_obj = get_actividad_obj_from_id(actividad_id)
+    data = actividad_obj.get_actividad_full_data()
+    extract_list = ['actividad_name', 'actividadID', 'grupoID', 'grupo_name', 'diocesis_name', 'alta', 'baja', 'activo', 'memoria', 'fotografia']
+    for index in range(len(extract_list)):
+        actividad_data[extract_list[index]] = data[index]
+    return actividad_data
+
+
+
 def fetch_parroquia_data_to_modify(data_form):
     '''
     Description:

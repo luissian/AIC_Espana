@@ -178,6 +178,34 @@ def alta_voluntario(request):
 
 
 @login_required
+def modificacion_actividad(request):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+
+    actividad_data = {'actividad_grupos_diocesis_name': get_id_actividad_grupos_diocesis_delegacion_name() }
+
+    return render(request,'aicespana/modificacionActividad.html',{'actividad_data':actividad_data})
+
+
+@login_required
+def modificar_actividad(request,actividad_id):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    if not Actividad.objects.filter(pk__exact = actividad_id).exists():
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_ACTIVIDAD_NOT_EXIST})
+    actividad_data = get_actividad_data_to_modify(actividad_id)
+
+    actividad_data['grupos_diocesis_id_name'] = get_group_list_to_select_in_form()  #get_id_grupo_diocesis_name()
+
+    if request.method == 'POST' and request.POST['action'] == 'modificarActividad':
+        if Actividad.objects.filter(nombreActividad__iexact = request.POST['actividad_name'], grupoAsociado__pk__exact = request.POST['grupoID']).exclude(pk__exact =request.POST['actividadID'] ).exists():
+            return render (request,'aicespana/modificarActividad.html', {'ERROR': ERROR_ACTIVIDAD_MODIFICATION_EXIST, 'actividad_data':actividad_data})
+        actividad_obj = get_actividad_obj_from_id(request.POST['actividadID'])
+        actividad_obj.update_actividad_data(fetch_actividad_data_to_modify(request.POST, request.FILES))
+        return render(request,'aicespana/modificarActividad.html',{'confirmation_data':request.POST['actividad_name']})
+    return render(request,'aicespana/modificarActividad.html',{'actividad_data':actividad_data})
+
+@login_required
 def modificacion_delegacion(request):
     if not is_manager(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})

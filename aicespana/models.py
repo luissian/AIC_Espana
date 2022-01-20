@@ -326,9 +326,9 @@ class Proyecto(models.Model):
         self.grupoAsociado = Grupo.objects.filter(pk__exact = data['grupoID']).last()
         self.nombreProyecto = data['proyecto_name']
         if data['activo'] == 'false':
-            self.grupoActivo = False
+            self.proyectoActivo = False
         else:
-            self.grupoActivo = True
+            self.proyectoActivo = True
         if data['alta'] != '':
             self.fechaAlta = datetime.strptime(data['alta'],"%Y-%m-%d").date()
         if data['baja'] != '':
@@ -396,6 +396,40 @@ class Actividad(models.Model):
         if self.grupoAsociado:
             return '%s' %(self.grupoAsociado.get_grupo_id())
         return ''
+
+    def get_actividad_full_data(self):
+        if self.fechaAlta is None:
+            alta = ''
+        else:
+            alta = self.fechaAlta.strftime("%Y-%m-%d")
+        if self.fechaBaja is None:
+            baja = ''
+        else:
+            baja = self.fechaBaja.strftime("%B %d, %Y")
+        if self.actividadActiva:
+            activo = 'true'
+        else:
+            activo = 'false'
+        return [self.nombreActividad, self.pk, self.get_grupo_id(), self.get_grupo_name(), self.get_diocesis_name(), alta, baja, activo, self.memoriaActividad, self.fotografiaActividad ]
+
+    def update_actividad_data(self, data):
+        self.grupoAsociado = Grupo.objects.filter(pk__exact = data['grupoID']).last()
+        self.nombreActividad = data['actividad_name']
+        if data['activo'] == 'false':
+            self.actividadActiva = False
+        else:
+            self.actividadActiva = True
+        if data['alta'] != '':
+            self.fechaAlta = datetime.strptime(data['alta'],"%Y-%m-%d").date()
+        if data['baja'] != '':
+            self.fechaBaja = datetime.strptime(data['baja'],"%Y-%m-%d").date()
+        self.observaciones = data['observaciones']
+        if 'memoria_file' in data:
+            self.memoriaActividad = data['memoria_file']
+        if 'fotografia_file' in data:
+            self.fotografiaActividad = data['fotografia_file']
+        self.save()
+        return self
 
     objects = ActividadManager()
 
