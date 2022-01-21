@@ -53,9 +53,9 @@
 			  {% endif %}
 					<div class="card-header"><h2 style="text-align:center">Formulario para cambiar los datos de la Actividad {{actividad_data.actividad_name}}</h2> </div>
 	                <div class="card-body">
-	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="modificaraAtividad" id="modificarActividad" >
+	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="modificarActividad" id="modificarActividad" >
 	                        {% csrf_token %}
-	                        <input type="hidden" name="action" value="modificaraAtividad"/>
+	                        <input type="hidden" name="action" value="modificarActividad"/>
 							<input type="hidden" name="actividadID" value="{{actividad_data.actividadID}}"/>
 							<div class="form-group required">
 		                        <div class="col-md-8">

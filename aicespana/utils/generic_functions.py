@@ -576,6 +576,27 @@ def  get_grupo_data_to_modify(grupo_id):
 
     return grupo_data
 
+def fetch_actividad_data_to_modify (data_form,file_form):
+    '''
+    Description:
+        The function extract the information from the user form and return a dictionnary.
+    Input:
+        data_form   # data collected in the form
+        file_form   # files upload in the form
+    Return:
+        data
+    '''
+    data = {}
+    extract_list = ['actividad_name','grupoID','alta', 'baja','activo', 'observaciones']
+    for item in extract_list:
+        data[item] = data_form[item]
+    if 'uploadMemoria' in file_form:
+        data['memoria_file'] = store_file(file_form['uploadMemoria'])
+    if 'uploadFotografia' in file_form:
+        data['fotografia_file'] = store_file(file_form['uploadFotografia'])
+    return data
+
+
 def fetch_proyecto_data_to_modify (data_form,file_form):
     '''
     Description:

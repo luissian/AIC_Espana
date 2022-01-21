@@ -118,7 +118,7 @@ def alta_personal_iglesia(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     if request.method == 'POST' and request.POST['action'] == 'altaPersonal':
         confirmation_data = ''
-        info_to_fetch = ['nombre', 'apellido','nif', 'email', 'fijo', 'movil']
+        info_to_fetch = ['nombre', 'apellido','nif', 'email', 'fijo', 'movil' , 'calle', 'poblacion', 'provincia', 'codigo']
         personal_data = {}
         for field in info_to_fetch:
             personal_data[field] = request.POST[field]
@@ -127,8 +127,8 @@ def alta_personal_iglesia(request):
         confirmation_data['nombre'] = request.POST['nombre']
         confirmation_data['apellido'] = request.POST['apellido']
         return render(request,'aicespana/altaPersonalIglesia.html',{'confirmation_data': confirmation_data})
-    new_personel_data =''
-    return render(request,'aicespana/altaPersonalIglesia.html',{'new_personel_data':new_personel_data})
+    personel_data ={'provincias':get_provincias()}
+    return render(request,'aicespana/altaPersonalIglesia.html',{'personel_data':personel_data})
 
 @login_required
 def alta_proyecto(request):

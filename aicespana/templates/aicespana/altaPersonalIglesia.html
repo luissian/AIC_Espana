@@ -67,7 +67,27 @@
 		                        </div>
 							</div>
 							<div class="form-group">
-
+								<div class="col-md-12">
+								   <label for="calle" class="form-label">Calle</label>
+								   <input type="text" class="form-control" id="calle" name='calle' placeholder="Indicar la calle">
+							   </div>
+							   <div class="col-md-6">
+								   <label for="poblacion" class="form-label">Población</label>
+								   <input type="text" class="form-control" id="poblacion" name='poblacion'>
+							   </div>
+							   <div class="col-md-4">
+								   <label for="provincia" class="form-label">Provincia</label>
+								   <select id="provincia" class="form-select" name='provincia'>
+									   <option selected value=''>Selecionar</option>
+									   {% for prov in personel_data.provincias %}
+										   <option value = {{prov}}>{{prov}}</option>
+									   {% endfor %}
+								   </select>
+							   </div>
+							   <div class="col-md-2">
+								   <label for="codigo" class="form-label">Código Postal</label>
+								   <input type="text" class="form-control" id="codigo" name='codigo'>
+							   </div>
 		                        <div class="col-12">
 		                            <label for="email" class="form-label">email</label>
 		                            <input type="email"  class="form-control" id="email" name='email'>
