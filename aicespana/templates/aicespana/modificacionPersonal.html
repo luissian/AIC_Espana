@@ -55,137 +55,82 @@
 		</div> <!-- end row-->
 	</div> <!-- end container -->
 
-{% elif voluntary_data %}
+{% elif personal_data %}
 	<div class="container-md">
 		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
-					<div class="card-header"><h2 style="text-align:center">Información de {{voluntary_data.nombre}} {{voluntary_data.apellido}}</h2> </div>
+					<div class="card-header"><h2 style="text-align:center">Información de {{personal_data.nombre}} {{personal_data.apellido}}</h2> </div>
 					<div class="card-body">
 						<form class="row g-3" method="post" enctype="multipart/form-data" name="actualizarCampos" id="actualizarCampos" >
 							{% csrf_token %}
 							<input type="hidden" name="action" value="actualizarCampos"/>
-							<input type="hidden" name="user_id" value="{{voluntary_data.user_id}}"/>
+							<input type="hidden" name="user_id" value="{{personal_data.user_id}}"/>
 							<br>
 							<div class="form-group required">
 								<div class="col-md-5">
 									<label class="control-label" for="nombre">Nombre</label>
-									<input type="text" required class="form-control" id="nombre" name='nombre' value="{{voluntary_data.nombre}}">
+									<input type="text" required class="form-control" id="nombre" name='nombre' value="{{personal_data.nombre}}">
 								</div>
 								<div class="col-md-5">
 									<label for="apellidos"  class="control-label">Apellidos</label>
-									<input type="text" required class="form-control" id="apellidos" name='apellidos' value="{{voluntary_data.apellido}}">
+									<input type="text" required class="form-control" id="apellidos" name='apellidos' value="{{personal_data.apellido}}">
 								</div>
-								<div class="col-md-5">
-									<label for="nif"  class="control-label">NIF/NIE</label>
-									<input type="text" required class="form-control" id="dni" name='dni', value="{{voluntary_data.dni}}">
-								</div>
-								<div class="col-md-5">
-									<label for="nacimiento" class="control-label">Fecha de Nacimiento</label>
-									<input type="date" required class="form-control" id="nacimiento" name='nacimiento' value="{{voluntary_data.nacimiento}}">
-								</div>
-								<div class="col-md-5">
-									<label for="alta" class="control-label">Fecha de Alta</label>
-									<input type="date" required class="form-control" id="alta" name='alta' value="{{voluntary_data.alta}}">
-								</div>
+
 							</div>
 
 							<div class="form-group">
 								<div class="col-md-5">
+									<label for="nif"  class="control-label">NIF/NIE</label>
+									<input type="text" class="form-control" id="dni" name='dni', value="{{personal_data.dni}}">
+								</div>
+								<div class="col-md-5">
+									<label for="alta" class="control-label">Fecha de Alta</label>
+									<input type="date" class="form-control" id="alta" name='alta' value="{{personal_data.alta}}">
+								</div>
+								<div class="col-md-5">
 									<label for="baja" class="control-label">Fecha de Baja</label>
-									<input type="date"  class="form-control" id="baja" name='baja' value="{{voluntary_data.baja}}">
+									<input type="date"  class="form-control" id="baja" name='baja' value="{{personal_data.baja}}">
 								</div>
 								<div class="col-md-12">
 									<label for="calle" class="form-label">Calle</label>
-									<input type="text" class="form-control" id="calle" name='calle' placeholder="Indicar la calle" value="{{voluntary_data.calle}}">
+									<input type="text" class="form-control" id="calle" name='calle' placeholder="Indicar la calle" value="{{personal_data.calle}}">
 								</div>
 								<div class="col-md-6">
 									<label for="poblacion" class="form-label">Población</label>
-									<input type="text" class="form-control" id="poblacion" name='poblacion' value="{{voluntary_data.poblacion}}">
+									<input type="text" class="form-control" id="poblacion" name='poblacion' value="{{personal_data.poblacion}}">
 								</div>
 								<div class="col-md-4">
 									<label for="provincia" class="form-label">Provincia</label>
 									<select id="provincia" class="form-select" name='provincia'>
-										<option selected value="{{voluntary_data.nombre}}">{{voluntary_data.provincia}}</option>
-										{% for prov in voluntary_data.provincias %}
+										<option selected value="{{personal_data.nombre}}">{{personal_data.provincia}}</option>
+										{% for prov in personal_data.provincias %}
 											<option value = {{prov}}>{{prov}}</option>
 										{% endfor %}
 									</select>
 								</div>
 								<div class="col-md-2">
 									<label for="codigo" class="form-label">Código Postal</label>
-									<input type="text" class="form-control" id="codigo" name='codigo' value="{{voluntary_data.codigo}}">
+									<input type="text" class="form-control" id="codigo" name='codigo' value="{{personal_data.codigo}}">
 								</div>
 								<div class="col-12">
 									<label for="email" class="form-label">email</label>
-									<input type="email" class="form-control" id="email" name='email' value="{{voluntary_data.email}}">
+									<input type="email" class="form-control" id="email" name='email' value="{{personal_data.email}}">
 								</div>
 								<div class="col-md-6">
 									<label for="fijo" class="form-label">Telefono Fijo</label>
-									<input type="text" class="form-control" id="fijo" name='fijo' value="{{voluntary_data.fijo}}">
+									<input type="text" class="form-control" id="fijo" name='fijo' value="{{personal_data.fijo}}">
 								</div>
 								<div class="col-md-6">
 									<label for="movil" class="form-label">Telefono Movil</label>
-									<input type="tel" class="form-control" id="movil" name='movil' value="{{voluntary_data.movil}}"'>
+									<input type="tel" class="form-control" id="movil" name='movil' value="{{personal_data.movil}}"'>
 								</div>
-							</div>
-							<div class="form-group required">
-								<div class="col-md-4">
-									<label for="colaboracion_id" class="control-label">Tipo de Colaboración</label>
-									<select id="colaboracion_id" required class="form-select" name='colaboracion_id'>
-										<option selected value="{{voluntary_data.colaboracion_id}}">{{voluntary_data.colaboracion}}</option>
-										{% for id,val in voluntary_data.tipo_colaboracion %}
-											<option value="{{id}}">{{val}}</option>
-										{% endfor %}
-									</select>
-								</div>
-							</div>
-							<div class="form-group">
-								<div class="col-md-8">
-									<label class="control-label " for="nombre">Seleciona el Grupo del que depende</label>
-									<select id="grupoID" class="form-select" name="grupoID">
-										 <option selected value="{{voluntary_data.grupo_id}}">{{voluntary_data.grupo}} en la diocesis de {{voluntary_data.diocesis}}</option>
-										{% for grupo_id, grupo_name , diocesis_name in voluntary_data.grupo_lista %}
-											<option value="{{grupo_id}}">{{grupo_name}} en la diocesis de {{diocesis_name}}</option>
-										{% endfor %}
-									</select>
-								</div>
-								<div class="form-group">
-									<div class="col-md-8">
-										<label class="control-label" for="proyectoID">Seleciona el Proyecto del que depende</label>
-										<select id="proyectoID" class="form-select" name="proyectoID">
-											{% if voluntary_data.proyecto_data_form.0 == '' %}
-												<option selected value=""> No pertenece a ningún Proyecto</option>
-											{% else %}
-												<option selected value="{{voluntary_data.proyecto_data_form.0}}">{{voluntary_data.proyecto_data_form.1}} del grupo {{voluntary_data.proyecto_data_form.2}} en la diocesis de {{voluntary_data.proyecto_data_form.3}}</option>
-											{% endif %}
-											<option value=""> No pertenece a ningún Proyecto</option>
-											{% for proyecto_id, proyecto_name, grupo_name , diocesis_name in voluntary_data.proyecto_lista %}
-												<option value="{{proyecto_id}}">{{proyecto_name}} en  {{grupo_name}} en la diocesis de {{diocesis_name}}</option>
-											{% endfor %}
-										</select>
-									</div>
-								<br>
-								<div class="form-group">
-									<div class="col-md-8">
-										<label class="control-label" for="actividadID">Seleciona la Actividad del que depende</label>
-										<select id="actividadID" class="form-select" name="actividadID">
-											{% if voluntary_data.actividad_data_form.0 == '' %}
-												<option selected value=""> No pertenece a ninguna Actividad</option>
-											{% else %}
-												<option selected value="{{voluntary_data.actividad_data_form.0}}">{{voluntary_data.actividad_data_form.1}} del grupo {{voluntary_data.actividad_data_form.2}} en la diocesis de {{voluntary_data.actividad_data_form.3}}</option>
-											{% endif %}
-											<option value=""> No pertenece a ninguna Actividad</option>
-											{% for actividad_id, actividad_name, grupo_name , diocesis_name in voluntary_data.actividad_lista %}
-												<option value="{{actividad_id}}">{{actividad_name}} en  {{grupo_name}} en la diocesis de {{diocesis_name}}</option>
-											{% endfor %}
-										</select>
-									</div>
+
 								<br>
 								<div class="col-md-6">
 									<label for="boletin"  class="control-label">Desea recibir boletín</label>
 									<select id="boletin"  class="form-select" name='boletin'>
-										{% if voluntary_data.boletin == 'true' %}
+										{% if personal_data.boletin == 'true' %}
 											<option selected value="true">Deseo recibir el boletin</option>
 										{% else %}
 											<option selected value="false">No deseo recibir el boletin</option>
@@ -195,15 +140,15 @@
 									</select>
 								</div>
 								<div class="col-md-6">
-									<label for="activo"  class="control-label">Estado del voluntario</label>
+									<label for="activo"  class="control-label">Estado del Personal </label>
 									<select id="activo"  class="form-select" name='activo'>
-										{% if voluntary_data.activo == 'true' %}
-											<option selected value="true">Voluntario en activo</option>
+										{% if personal_data.activo == 'true' %}
+											<option selected value="true">Personal en activo</option>
 										{% else %}
-											<option selected value="false">Voluntario de baja</option>
+											<option selected value="false">Personal de baja</option>
 										{% endif %}
-										<option value="false">Voluntario de baja</option>
-										<option value="true">SVoluntario en activo</option>
+										<option value="false">Personal de baja</option>
+										<option value="true">Personal en activo</option>
 									</select>
 								</div>
 
@@ -343,6 +288,41 @@
 			</div> <!-- end col-md-10 -->
 		</div> <!-- end row-->
 	</div> <!-- end container -->
+{% elif personal_list %}
+	<div class="container-md">
+		<div class="row g-3">
+			<div class="col-md-10">
+				<div class="card">
+					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Multiples coincidencias en la busqueda</h3></div>
+					<div class="card-body">
+						<h5 style="text-align:center">Se han encontrado varias Personal de Iglesia.</h5>
+						<p>Añade más información para encontrar sólo a un Personal de Iglesia para modificar sus datos.</p>
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<td>Nombre</td>
+									<td>Población</td>
+								</tr>
+							</thead>
+							<tbody>
+								{% for nombre, poblacion in personal_list %}
+									<tr>
+										<td>{{nombre}}</td>
+										<td>{{poblacion}}</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+						<br><br>
+						<div class="text-center">
+							<a href="/modificacionPersonal"> <button type="button" class="btn btn-outline-secondary float-center" >Buscar de nuevo</button> </a>
+						</div> <!-- end text center -->
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+			</div> <!-- end col-md-10 -->
+		</div> <!-- end row-->
+	</div> <!-- end container -->
+
 
 {% else %}
 	<section class="light">
@@ -353,7 +333,7 @@
 	</section>
 	<br><br><br>
 	<div class="container-md">
-	    <div class="row g-3"">
+	    <div class="row g-3">
 	        <div class="col-md-10">
 	            <div class="card">
 					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Formulario para la busqueda de personal</h3></div>

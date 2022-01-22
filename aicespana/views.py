@@ -349,30 +349,27 @@ def modificacion_personal(request):
             error = ['No hay nigún voluntario que cumpla los criterios de busqueda', str(request.POST['nombre']  + ' ' + request.POST['apellido']) ]
             return render(request, 'aicespana/modificacionPersonal.html',{'ERROR':error})
         if len(personal_objs) >1 :
+
             personal_list = []
             for personal_obj in personal_objs:
-                personal_list.append([personal_obj.get_personal_id(), personal_obj.get_personal_name(),personal_obj.get_personal_location()])
+                personal_list.append([personal_obj.get_personal_name(),personal_obj.get_personal_location()])
+            import pdb; pdb.set_trace()
             return render(request, 'aicespana/modificacionPersonal.html', {'personal_list':personal_list})
         personal_data = personal_objs[0].get_all_data_from_personal()
         personal_data['provincias'] = get_provincias()
-        #voluntary_data['grupo_lista'] = get_group_list_to_select_in_form()
-        #voluntary_data['tipo_colaboracion'] = get_volunteer_types()
-        #voluntary_data['proyecto_lista'] = get_project_group_diocesis()
-        #voluntary_data['proyecto_data_form'] = personal_objs[0].get_proyecto_data_for_form()
-        #voluntary_data['actividad_lista'] = get_activity_group_diocesis()
-        #voluntary_data['actividad_data_form'] = personal_objs[0].get_actividad_data_for_form()
+
 
         return render(request, 'aicespana/modificacionPersonal.html', {'personal_data':personal_data})
     if request.method == 'POST' and request.POST['action'] == 'actualizarCampos':
-        user_obj = get_user_obj_from_id(request.POST['user_id'])
+        user_obj = get_personal_obj_from_id(request.POST['user_id'])
         data = {}
-        field_list = ['nombre', 'apellidos','dni','nacimiento','calle','poblacion', 'provincia', 'codigo', 'email', 'fijo', 'movil',
-                'alta', 'baja', 'colaboracion_id','grupoID', 'boletin','activo','actividadID','proyectoID']
+        field_list = ['nombre', 'apellidos','dni','calle','poblacion', 'provincia', 'codigo', 'email', 'fijo', 'movil',
+                'alta', 'baja', 'boletin' ,'activo']
 
         for item in field_list:
             data[item] = request.POST[item]
 
-        user_obj.update_all_data_for_voluntary(data)
+        user_obj.update_all_data_for_personal(data)
 
         return render(request,'aicespana/modificacionPersonal.html',{'confirmation_data':request.POST['nombre'] + ' ' + request.POST['apellidos']})
     return render(request,'aicespana/modificacionPersonal.html')
@@ -440,7 +437,7 @@ def modificacion_voluntario(request):
         if len(personal_objs) >1 :
             personal_list = []
             for personal_obj in personal_objs:
-                personal_list.append([personal_obj.get_personal_id(), personal_obj.get_personal_name(),personal_obj.get_personal_location()])
+                personal_list.append([personal_obj.get_personal_name(),personal_obj.get_personal_location()])
             return render(request, 'aicespana/modificacionVoluntario.html', {'personal_list':personal_list})
         voluntary_data = personal_objs[0].get_all_data_from_voluntario()
         voluntary_data['provincias'] = get_provincias()
@@ -509,7 +506,7 @@ def cargos_personal(request):
         return render(request, 'aicespana/cargosPersonal.html', {'personal_available_settings':personal_available_settings})
 
     if request.method == 'POST' and request.POST['action'] == 'asignarCargos':
-        user_obj = get_personel_obj_from_id(request.POST['user_id'])
+        user_obj = get_personal_obj_from_id(request.POST['user_id'])
 
         data = {}
         data['cargo'] = request.POST['cargo']

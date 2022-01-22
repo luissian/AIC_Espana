@@ -803,7 +803,6 @@ class PersonalExterno(models.Model):
         self.recibirBoletin = boletin
         self.proyectoAsociado = proyecto_obj
         self.actividadAsociada = actividad_obj
-        self.boletin = boletin
         self.activo = activo
         self.save()
         return self
@@ -894,6 +893,47 @@ class PersonalIglesia(models.Model):
             return '%s' %(self.cargo.get_cargo_id())
         return ''
 
+    def get_all_data_from_personal(self):
+        if self.fechaAlta is None:
+            alta = ''
+        else:
+            alta = self.fechaAlta.strftime("%Y-%m-%d")
+        if self.fechaBaja is None:
+            baja = ''
+        else:
+            baja = self.fechaBaja.strftime("%B %d, %Y")
+        if self.personalActivo:
+            activo = 'true'
+        else:
+            activo = 'false'
+        if self.recibirBoletin:
+            boletin = 'true'
+        else:
+            boletin = 'false'
+        if self.personalActivo:
+            activo = 'true'
+        else:
+            activo = 'false'
+
+        data = {}
+        data['user_id'] = self.pk
+        data['nombre'] = self.nombre
+        data['apellido'] = self.apellido
+        data['dni'] = self.DNI
+        data['email'] = self.email
+        data['fijo'] = self.telefonoFijo
+        data['movil'] = self.telefonoMovil
+        data['baja'] = baja
+        data['alta'] = alta
+        data['calle'] = self.calle
+        data['poblacion'] = self.poblacion
+        data['provincia'] = self.provincia
+        data['codigo'] = self.codigoPostal
+        data['boletin'] = boletin
+        data['observaciones'] = self.observaciones
+        #data['diocesis'] = diocesis
+        data['activo'] = activo
+        return data
 
     def update_information(self, data):
         if data['grupo'] != '':
@@ -923,5 +963,43 @@ class PersonalIglesia(models.Model):
         self.cargo = cargo_obj
         self.save()
         return self
+
+
+    def update_all_data_for_personal(self, data):
+
+        if data['boletin'] == 'true':
+            boletin = True
+        else:
+            boletin = False
+        if data['activo'] == 'true':
+            activo = True
+        else:
+            activo = False
+        if data['alta'] != '':
+            alta = data['alta']
+        else:
+            alta = None
+        if data['baja'] != '':
+            baja = data['baja']
+        else:
+            baja = None
+
+        self.nombre = data['nombre']
+        self.apellido = data['apellidos']
+        self.calle = data['calle']
+        self.poblacion = data['poblacion']
+        self.provincia = data['provincia']
+        self.codigoPostal = data['codigo']
+        self.DNI = data['dni']
+        self.fechaAlta = alta
+        self.fechaBaja = baja
+        self.email = data['email']
+        self.telefonoFijo = data['fijo']
+        self.telefonoMovil = data['movil']
+        self.recibirBoletin = boletin
+        self.activo = activo
+        self.save()
+        return self
+
 
     objects = PersonalManager()

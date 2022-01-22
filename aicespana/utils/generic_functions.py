@@ -933,7 +933,7 @@ def get_user_obj_from_id(user_id):
     return False
 
 
-def get_personel_obj_from_id(user_id):
+def get_personal_obj_from_id(user_id):
     '''
     Description:
         The function gets the personal instance from the the primary key.
