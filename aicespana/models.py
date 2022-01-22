@@ -518,7 +518,7 @@ class PersonalExterno(models.Model):
         return '%s' %(self.apellido)
 
     def get_personal_location(self):
-        return '%s' %(self.location)
+        return '%s' %(self.poblacion)
 
     def get_activity_belongs_to(self):
         if self.actividadAsociada:
@@ -855,6 +855,9 @@ class PersonalIglesia(models.Model):
 
     def get_personal_name(self):
         return '%s %s' %(self.nombre, self.apellido)
+
+    def get_personal_location(self):
+        return '%s' %(self.poblacion)
 
     def get_delegacion_belongs_to(self):
         if self.delegacion :

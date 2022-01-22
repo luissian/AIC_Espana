@@ -819,7 +819,7 @@ def get_responsablity_data_for_voluntary(personal_obj):
     if Actividad.objects.all().exists():
         activity_objs = Actividad.objects.all().order_by('nombreActividad')
         for activity_obj in activity_objs:
-            responsability_optons['available_actitvities'].append([activity_obj.get_activity_id(),activity_obj.get_activity_name()])
+            responsability_optons['available_actitvities'].append([activity_obj.get_actividad_id(),activity_obj.get_actividad_name()])
     if Cargo.objects.all().exists():
         responsible_objs = Cargo.objects.all().order_by('nombreCargo')
         for responsible_obj in responsible_objs:

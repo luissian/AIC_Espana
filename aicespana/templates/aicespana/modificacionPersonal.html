@@ -1,0 +1,390 @@
+{% extends 'aicespana/base.html' %}
+{% load static %}
+{% block content %}
+<style media="screen">
+	.form-group.required .control-label:after {
+	  content:"  *";
+	  color:red;
+	}
+</style>
+{% if ERROR %}
+
+	<div class="container-md">
+		<div class="row g-3"">
+			<div class="col-md-10">
+				<div class="card  border-danger">
+					<div class="card-header"><h2 style="text-align:center">El voluntario no se encuentra en la base de datos</h2> </div>
+					<div class="card-body">
+						{% for values in ERROR %}
+							<h4>{{values}}</h4>
+						{% endfor %}
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+		    </div> <!-- end col-md-10 -->
+		</div> <!-- end row-->
+	</div> <!-- end container -->
+
+{% endif %}
+
+{% if confirmation_data %}
+	<div class="container-md">
+		<div class="row g-3">
+			<div class="col-md-10">
+				<div class="card">
+					<div class="card-header"><h2 style="text-align:center">Datos Guardados</h2> </div>
+					<div class="card-body">
+						<p style="text-align:center">Los datos de {{confirmation_data.nombre}} {{confirmation_data.apellidos}} se han guardado correctamente</p>
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+		    </div> <!-- end col-md-10 -->
+		</div> <!-- end row-->
+	</div> <!-- end container -->
+	<div class="container-md">
+		<div class="row g-3">
+			<div class="col-md-10">
+				<div class="card">
+					<div class="card-body">
+						<p>Para modificar datos de otro voluntario hacer click en el boton de abajo</p>
+						<br><br>
+						<div class="text-center">
+							<a href="/modificacionVoluntario"> <button type="button" class="btn btn-outline-secondary float-center" >Modificar datos otro  Voluntario</button> </a>
+						</div> <!-- end text center -->
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+			</div> <!-- end col-md-10 -->
+		</div> <!-- end row-->
+	</div> <!-- end container -->
+
+{% elif voluntary_data %}
+	<div class="container-md">
+		<div class="row g-3">
+			<div class="col-md-10">
+				<div class="card">
+					<div class="card-header"><h2 style="text-align:center">Información de {{voluntary_data.nombre}} {{voluntary_data.apellido}}</h2> </div>
+					<div class="card-body">
+						<form class="row g-3" method="post" enctype="multipart/form-data" name="actualizarCampos" id="actualizarCampos" >
+							{% csrf_token %}
+							<input type="hidden" name="action" value="actualizarCampos"/>
+							<input type="hidden" name="user_id" value="{{voluntary_data.user_id}}"/>
+							<br>
+							<div class="form-group required">
+								<div class="col-md-5">
+									<label class="control-label" for="nombre">Nombre</label>
+									<input type="text" required class="form-control" id="nombre" name='nombre' value="{{voluntary_data.nombre}}">
+								</div>
+								<div class="col-md-5">
+									<label for="apellidos"  class="control-label">Apellidos</label>
+									<input type="text" required class="form-control" id="apellidos" name='apellidos' value="{{voluntary_data.apellido}}">
+								</div>
+								<div class="col-md-5">
+									<label for="nif"  class="control-label">NIF/NIE</label>
+									<input type="text" required class="form-control" id="dni" name='dni', value="{{voluntary_data.dni}}">
+								</div>
+								<div class="col-md-5">
+									<label for="nacimiento" class="control-label">Fecha de Nacimiento</label>
+									<input type="date" required class="form-control" id="nacimiento" name='nacimiento' value="{{voluntary_data.nacimiento}}">
+								</div>
+								<div class="col-md-5">
+									<label for="alta" class="control-label">Fecha de Alta</label>
+									<input type="date" required class="form-control" id="alta" name='alta' value="{{voluntary_data.alta}}">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-md-5">
+									<label for="baja" class="control-label">Fecha de Baja</label>
+									<input type="date"  class="form-control" id="baja" name='baja' value="{{voluntary_data.baja}}">
+								</div>
+								<div class="col-md-12">
+									<label for="calle" class="form-label">Calle</label>
+									<input type="text" class="form-control" id="calle" name='calle' placeholder="Indicar la calle" value="{{voluntary_data.calle}}">
+								</div>
+								<div class="col-md-6">
+									<label for="poblacion" class="form-label">Población</label>
+									<input type="text" class="form-control" id="poblacion" name='poblacion' value="{{voluntary_data.poblacion}}">
+								</div>
+								<div class="col-md-4">
+									<label for="provincia" class="form-label">Provincia</label>
+									<select id="provincia" class="form-select" name='provincia'>
+										<option selected value="{{voluntary_data.nombre}}">{{voluntary_data.provincia}}</option>
+										{% for prov in voluntary_data.provincias %}
+											<option value = {{prov}}>{{prov}}</option>
+										{% endfor %}
+									</select>
+								</div>
+								<div class="col-md-2">
+									<label for="codigo" class="form-label">Código Postal</label>
+									<input type="text" class="form-control" id="codigo" name='codigo' value="{{voluntary_data.codigo}}">
+								</div>
+								<div class="col-12">
+									<label for="email" class="form-label">email</label>
+									<input type="email" class="form-control" id="email" name='email' value="{{voluntary_data.email}}">
+								</div>
+								<div class="col-md-6">
+									<label for="fijo" class="form-label">Telefono Fijo</label>
+									<input type="text" class="form-control" id="fijo" name='fijo' value="{{voluntary_data.fijo}}">
+								</div>
+								<div class="col-md-6">
+									<label for="movil" class="form-label">Telefono Movil</label>
+									<input type="tel" class="form-control" id="movil" name='movil' value="{{voluntary_data.movil}}"'>
+								</div>
+							</div>
+							<div class="form-group required">
+								<div class="col-md-4">
+									<label for="colaboracion_id" class="control-label">Tipo de Colaboración</label>
+									<select id="colaboracion_id" required class="form-select" name='colaboracion_id'>
+										<option selected value="{{voluntary_data.colaboracion_id}}">{{voluntary_data.colaboracion}}</option>
+										{% for id,val in voluntary_data.tipo_colaboracion %}
+											<option value="{{id}}">{{val}}</option>
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-md-8">
+									<label class="control-label " for="nombre">Seleciona el Grupo del que depende</label>
+									<select id="grupoID" class="form-select" name="grupoID">
+										 <option selected value="{{voluntary_data.grupo_id}}">{{voluntary_data.grupo}} en la diocesis de {{voluntary_data.diocesis}}</option>
+										{% for grupo_id, grupo_name , diocesis_name in voluntary_data.grupo_lista %}
+											<option value="{{grupo_id}}">{{grupo_name}} en la diocesis de {{diocesis_name}}</option>
+										{% endfor %}
+									</select>
+								</div>
+								<div class="form-group">
+									<div class="col-md-8">
+										<label class="control-label" for="proyectoID">Seleciona el Proyecto del que depende</label>
+										<select id="proyectoID" class="form-select" name="proyectoID">
+											{% if voluntary_data.proyecto_data_form.0 == '' %}
+												<option selected value=""> No pertenece a ningún Proyecto</option>
+											{% else %}
+												<option selected value="{{voluntary_data.proyecto_data_form.0}}">{{voluntary_data.proyecto_data_form.1}} del grupo {{voluntary_data.proyecto_data_form.2}} en la diocesis de {{voluntary_data.proyecto_data_form.3}}</option>
+											{% endif %}
+											<option value=""> No pertenece a ningún Proyecto</option>
+											{% for proyecto_id, proyecto_name, grupo_name , diocesis_name in voluntary_data.proyecto_lista %}
+												<option value="{{proyecto_id}}">{{proyecto_name}} en  {{grupo_name}} en la diocesis de {{diocesis_name}}</option>
+											{% endfor %}
+										</select>
+									</div>
+								<br>
+								<div class="form-group">
+									<div class="col-md-8">
+										<label class="control-label" for="actividadID">Seleciona la Actividad del que depende</label>
+										<select id="actividadID" class="form-select" name="actividadID">
+											{% if voluntary_data.actividad_data_form.0 == '' %}
+												<option selected value=""> No pertenece a ninguna Actividad</option>
+											{% else %}
+												<option selected value="{{voluntary_data.actividad_data_form.0}}">{{voluntary_data.actividad_data_form.1}} del grupo {{voluntary_data.actividad_data_form.2}} en la diocesis de {{voluntary_data.actividad_data_form.3}}</option>
+											{% endif %}
+											<option value=""> No pertenece a ninguna Actividad</option>
+											{% for actividad_id, actividad_name, grupo_name , diocesis_name in voluntary_data.actividad_lista %}
+												<option value="{{actividad_id}}">{{actividad_name}} en  {{grupo_name}} en la diocesis de {{diocesis_name}}</option>
+											{% endfor %}
+										</select>
+									</div>
+								<br>
+								<div class="col-md-6">
+									<label for="boletin"  class="control-label">Desea recibir boletín</label>
+									<select id="boletin"  class="form-select" name='boletin'>
+										{% if voluntary_data.boletin == 'true' %}
+											<option selected value="true">Deseo recibir el boletin</option>
+										{% else %}
+											<option selected value="false">No deseo recibir el boletin</option>
+										{% endif %}
+										<option value="false">No deseo recibir el boletin</option>
+										<option value="true">Si, Deseo recibir el Boletin</option>
+									</select>
+								</div>
+								<div class="col-md-6">
+									<label for="activo"  class="control-label">Estado del voluntario</label>
+									<select id="activo"  class="form-select" name='activo'>
+										{% if voluntary_data.activo == 'true' %}
+											<option selected value="true">Voluntario en activo</option>
+										{% else %}
+											<option selected value="false">Voluntario de baja</option>
+										{% endif %}
+										<option value="false">Voluntario de baja</option>
+										<option value="true">SVoluntario en activo</option>
+									</select>
+								</div>
+
+							</div>
+							<br><br>
+							<div class="col-12">
+
+								<button type="submit" class="btn-outline-primary float-end ">Guardar datos</button>
+							</div>
+						</form>
+						<p>Los campos con <span style="color:red"> * </span> son obligatorios</p>
+					</div> 	<!-- end card body-->
+				</div> <!-- end card  -->
+			</div> <!-- end col-md-10 -->
+		</div> <!-- end row-->
+	</div> <!-- end container -->
+
+
+{% elif updated_data %}
+	<section class="light">
+		<div class="container md-8">
+			<h1 class="h1 text-center" id="pageHeaderTitle">Asignacion de cargos de voluntarios</h1>
+		</div>
+	</section>
+	<br><br><br>
+	<div class="container-md">
+		<div class="row g-3"">
+			<div class="col-md-10">
+				<div class="card">
+					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Datos actualizados del voluntario</h3></div>
+					<div class="card-body">
+						<h3 class="h1 text-center"> {{updated_data.name}}</h3>
+						<div class="col-md-10">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th colspan="2">Datos de grupo</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>Grupo</td>
+										<td>
+											{% if updated_data.group != '' %}
+												{{updated_data.group}}
+											{% else %}
+												Sin asignar
+											{% endif %}
+										</td>
+									</tr>
+									<tr>
+										<td>Parroquia</td>
+										<td>
+											{% if updated_data.parroquia != '' %}
+												{{updated_data.parroquia}}
+											{% else %}
+												Sin asignar
+											{% endif %}
+										</td>
+									</tr>
+									<tr>
+										<td>Diocesis</td>
+										<td>
+											{% if updated_data.diocesis != '' %}
+												{{updated_data.diocesis}}
+											{% else %}
+												Sin asignar
+											{% endif %}
+										</td>
+									</tr>
+									<tr>
+										<td>Delegación</td>
+										<td>
+											{% if updated_data.delegacion %}
+												{{updated_data.delegacion}}
+											{% else %}
+												Sin asignar
+											{% endif %}
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<br><br>
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th colspan="2">Cargos que tiene el voluntario</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>Tipo de Voluntario</td>
+										<td>
+											{% if updated_data.collaboration != '' %}
+												{{updated_data.collaboration}}
+											{% else %}
+												Sin asignar
+											{% endif %}
+										</td>
+									</tr>
+									<tr>
+										<td>Cargo</td>
+										<td>
+											{% if updated_data.responsability != '' %}
+												{{updated_data.responsability}}
+											{% else %}
+												Sin asignar
+											{% endif %}
+										</td>
+									</tr>
+									<tr>
+										<td>Proyecto </td>
+										<td>
+											{% if updated_data.project != '' %}
+												{{updated_data.project}}
+											{% else %}
+												Sin asignar
+											{% endif %}
+										</td>
+									</tr>
+
+									<tr>
+										<td>Actividad</td>
+										<td>
+											{% if updated_data.activity %}
+												{{updated_data.activity}}
+											{% else %}
+												Sin asignar
+											{% endif %}
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div> <!-- end col-md-10 -->
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+			</div> <!-- end col-md-10 -->
+		</div> <!-- end row-->
+	</div> <!-- end container -->
+
+{% else %}
+	<section class="light">
+		<div class="container md-8">
+			<h1 class="h1 text-center" id="pageHeaderTitle">Modificación de los datos de Personal</h1>
+
+	    </div>
+	</section>
+	<br><br><br>
+	<div class="container-md">
+	    <div class="row g-3"">
+	        <div class="col-md-10">
+	            <div class="card">
+					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Formulario para la busqueda de personal</h3></div>
+                    <div class="card-body">
+	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="busquedaPersonal" id="busquedaPersonal" >
+	                        {% csrf_token %}
+	                        <input type="hidden" name="action" value="busquedaPersonal"/>
+
+		                        <div class="col-md-5">
+		                            <label class="control-label " for="nombre">Nombre</label>
+		                            <input type="text"  class="form-control" id="nombre", name='nombre'>
+		                        </div>
+
+		                        <div class="col-md-5">
+		                            <label for="apellido"  class="control-label">Apellido</label>
+		                            <input type="text"  class="form-control" id="apellido" name='apellido'>
+		                        </div>
+		                        <div class="col-md-5">
+		                            <label for="nif"  class="control-label">NIF/NIE</label>
+		                            <input type="text"  class="form-control" id="nif" name='nif'>
+		                        </div>
+
+	                        <div class="col-12">
+	                            <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
+	                            <button type="submit" class="btn-outline-primary float-end ">Buscar personal</button>
+	                        </div>
+	                    </form>
+	                </div>
+	            </div>
+	        </div> <!-- end col-md-10 -->
+	    </div> <!-- end row-->
+	</div> <!-- end container -->
+{% endif %}
+{% endblock %}

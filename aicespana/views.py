@@ -320,6 +320,65 @@ def modificar_parroquia(request,parroquia_id):
         return render(request,'aicespana/modificarParroquia.html',{'confirmation_data':request.POST['parroquia_name']})
     return render(request,'aicespana/modificarParroquia.html',{'parroquia_data':parroquia_data})
 
+
+@login_required
+def modificacion_personal(request):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    if request.method == 'POST' and request.POST['action'] == 'busquedaPersonal':
+        if request.POST['nif'] == '' and request.POST['nombre'] == '' and request.POST['apellido'] == '':
+            return render(request, 'aicespana/modificacionPersonal.html')
+        if request.POST['nif'] != '':
+            if PersonalExterno.objects.filter(DNI__iexact = request.POST['nif']).exists():
+                personal_objs = PersonalIglesia.objects.filter(DNI__iexact = request.POST['nif'])
+                if len(personal_objs) > 1:
+                    error = ['Hay más de 1 persona que tiene el mismo NIF/NIE', reques.POST['nif']]
+                    return render(request, 'aicespana/modificacionPersonal.html',{'ERROR':error})
+                voluntary_data = get_defined_data_for_personal(personal_objs[0])
+                personal_available_settings.update(get_personal_responsability(personal_objs[0]))
+                personal_data['user_id'] = personal_objs[0].get_personal_id()
+                return render(request, 'aicespana/modificacionPersonal.html', {'personal_data':personal_data})
+            error = ['No hay nigún voluntario que tenga el NIF/NIE', request.POST['nif']]
+            return render(request, 'aicespana/modificacionPersonal.html',{'ERROR':error})
+        personal_objs = PersonalIglesia.objects.all()
+        if request.POST['apellido'] != '':
+            personal_objs = personal_objs.filter(apellido__iexact = request.POST['apellido'])
+        if request.POST['nombre'] != '':
+            personal_objs = personal_objs.filter(nombre__iexact = request.POST['nombre'])
+        if len(personal_objs) == 0 :
+            error = ['No hay nigún voluntario que cumpla los criterios de busqueda', str(request.POST['nombre']  + ' ' + request.POST['apellido']) ]
+            return render(request, 'aicespana/modificacionPersonal.html',{'ERROR':error})
+        if len(personal_objs) >1 :
+            personal_list = []
+            for personal_obj in personal_objs:
+                personal_list.append([personal_obj.get_personal_id(), personal_obj.get_personal_name(),personal_obj.get_personal_location()])
+            return render(request, 'aicespana/modificacionPersonal.html', {'personal_list':personal_list})
+        personal_data = personal_objs[0].get_all_data_from_personal()
+        personal_data['provincias'] = get_provincias()
+        #voluntary_data['grupo_lista'] = get_group_list_to_select_in_form()
+        #voluntary_data['tipo_colaboracion'] = get_volunteer_types()
+        #voluntary_data['proyecto_lista'] = get_project_group_diocesis()
+        #voluntary_data['proyecto_data_form'] = personal_objs[0].get_proyecto_data_for_form()
+        #voluntary_data['actividad_lista'] = get_activity_group_diocesis()
+        #voluntary_data['actividad_data_form'] = personal_objs[0].get_actividad_data_for_form()
+
+        return render(request, 'aicespana/modificacionPersonal.html', {'personal_data':personal_data})
+    if request.method == 'POST' and request.POST['action'] == 'actualizarCampos':
+        user_obj = get_user_obj_from_id(request.POST['user_id'])
+        data = {}
+        field_list = ['nombre', 'apellidos','dni','nacimiento','calle','poblacion', 'provincia', 'codigo', 'email', 'fijo', 'movil',
+                'alta', 'baja', 'colaboracion_id','grupoID', 'boletin','activo','actividadID','proyectoID']
+
+        for item in field_list:
+            data[item] = request.POST[item]
+
+        user_obj.update_all_data_for_voluntary(data)
+
+        return render(request,'aicespana/modificacionPersonal.html',{'confirmation_data':request.POST['nombre'] + ' ' + request.POST['apellidos']})
+    return render(request,'aicespana/modificacionPersonal.html')
+
+
+
 @login_required
 def modificacion_proyecto(request):
     if not is_manager(request):
