@@ -520,14 +520,14 @@ class PersonalExterno(models.Model):
     def get_personal_location(self):
         return '%s' %(self.poblacion)
 
-    def get_activity_belongs_to(self):
+    def get_actividad_belongs_to(self):
         if self.actividadAsociada:
-            return '%s' %(self.actividadAsociada.get_activity_name())
+            return '%s' %(self.actividadAsociada.get_actividad_name())
         return ''
 
-    def get_activity_id_belongs_to(self):
+    def get_actividad_id_belongs_to(self):
         if self.actividadAsociada:
-            return '%s' %(self.actividadAsociada.get_activity_id())
+            return '%s' %(self.actividadAsociada.get_actividad_id())
         return ''
     def get_actividad_data_for_form(self):
         if self.actividadAsociada is None:
@@ -652,8 +652,8 @@ class PersonalExterno(models.Model):
             actividad_id = ''
             actividad_name = ''
         else:
-            actividad_id = self.actividadAsociada.get_activity_id()
-            actividad_name = self.actividadAsociada.get_activity_name()
+            actividad_id = self.actividadAsociada.get_actividad_id()
+            actividad_name = self.actividadAsociada.get_actividad_name()
         data = {}
         data['user_id'] = self.pk
         data['nombre'] = self.nombre

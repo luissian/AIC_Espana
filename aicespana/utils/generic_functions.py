@@ -734,8 +734,8 @@ def get_external_personal_responsability(personal_obj):
     personal_responsability ={}
     personal_responsability['project'] = personal_obj.get_project_belongs_to()
     personal_responsability['project_id'] = personal_obj.get_project_id_belongs_to()
-    personal_responsability['activity'] = personal_obj.get_activity_belongs_to()
-    personal_responsability['activity_id'] = personal_obj.get_activity_id_belongs_to()
+    personal_responsability['activity'] = personal_obj.get_actividad_belongs_to()
+    personal_responsability['activity_id'] = personal_obj.get_actividad_id_belongs_to()
     personal_responsability['responsability'] = personal_obj.get_responability_belongs_to()
     personal_responsability['responsability_id'] = personal_obj.get_responability_id_belongs_to()
     personal_responsability['collaboration'] = personal_obj.get_collaboration_belongs_to()
