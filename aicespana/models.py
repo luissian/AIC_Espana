@@ -763,6 +763,11 @@ class PersonalExterno(models.Model):
             activo = True
         else:
             activo = False
+        if data['nacimiento'] != '':
+            #alta = datetime.strptime(data['alta'],"%Y-%m-%d").date()
+            nacimiento = data['nacimiento']
+        else:
+            alta = None
         if data['alta'] != '':
             #alta = datetime.strptime(data['alta'],"%Y-%m-%d").date()
             alta = data['alta']
@@ -793,7 +798,7 @@ class PersonalExterno(models.Model):
         self.provincia = data['provincia']
         self.codigoPostal = data['codigo']
         self.DNI = data['dni']
-        self.fechaNacimiento = data['nacimiento']
+        self.fechaNacimiento = nacimiento
         self.fechaAlta = alta
         self.fechaBaja = baja
         self.email = data['email']
@@ -817,7 +822,7 @@ class PersonalManager(models.Manager):
                 DNI = data['nif'], email = data['email'], telefonoFijo = data['fijo'],
                 telefonoMovil = data['movil'],calle = data['calle'],
                 poblacion = data['poblacion'], provincia = data['provincia'],
-                codigoPostal = data['codigo'],)
+                codigoPostal = data['codigo'],fechaNacimiento = data['nacimiento'])
         return new_personel
 
 
@@ -841,6 +846,7 @@ class PersonalIglesia(models.Model):
     email = models.CharField(max_length=40, null=True, blank = True)
     telefonoFijo = models.CharField(max_length=20, null=True, blank = True)
     telefonoMovil = models.CharField(max_length=40, null=True, blank = True)
+    fechaNacimiento = models.DateField(auto_now = False, null=True, blank = True)
     fechaAlta = models.DateField(auto_now = False, null=True, blank = True)
     fechaBaja = models.DateField(auto_now = False, null=True, blank = True)
     personalActivo = models.BooleanField(default= True)
@@ -984,7 +990,9 @@ class PersonalIglesia(models.Model):
             baja = data['baja']
         else:
             baja = None
-
+        if data['nacimiento'] != '':
+            #alta = datetime.strptime(data['alta'],"%Y-%m-%d").date()
+            nacimiento = data['nacimiento']
         self.nombre = data['nombre']
         self.apellido = data['apellidos']
         self.calle = data['calle']
@@ -992,6 +1000,7 @@ class PersonalIglesia(models.Model):
         self.provincia = data['provincia']
         self.codigoPostal = data['codigo']
         self.DNI = data['dni']
+        self.fechaNacimiento = nacimiento
         self.fechaAlta = alta
         self.fechaBaja = baja
         self.email = data['email']

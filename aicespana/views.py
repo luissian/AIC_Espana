@@ -119,7 +119,7 @@ def alta_personal_iglesia(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     if request.method == 'POST' and request.POST['action'] == 'altaPersonal':
         confirmation_data = ''
-        info_to_fetch = ['nombre', 'apellido','nif', 'email', 'fijo', 'movil' , 'calle', 'poblacion', 'provincia', 'codigo']
+        info_to_fetch = ['nombre', 'apellido','nif', 'email', 'fijo', 'movil' , 'calle', 'poblacion', 'provincia', 'codigo','nacimiento']
         personal_data = {}
         for field in info_to_fetch:
             personal_data[field] = request.POST[field]
@@ -367,7 +367,7 @@ def modificacion_personal(request):
         user_obj = get_personal_obj_from_id(request.POST['user_id'])
         data = {}
         field_list = ['nombre', 'apellidos','dni','calle','poblacion', 'provincia', 'codigo', 'email', 'fijo', 'movil',
-                'alta', 'baja', 'boletin' ,'activo']
+                'alta', 'baja', 'boletin' ,'activo','nacimiento']
 
         for item in field_list:
             data[item] = request.POST[item]
