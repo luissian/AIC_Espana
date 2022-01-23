@@ -334,6 +334,7 @@ def modificacion_personal(request):
         if request.POST['nif'] != '':
             if PersonalExterno.objects.filter(DNI__iexact = request.POST['nif']).exists():
                 personal_objs = PersonalIglesia.objects.filter(DNI__iexact = request.POST['nif'])
+                
                 if len(personal_objs) > 1:
                     error = ['Hay más de 1 persona que tiene el mismo NIF/NIE', reques.POST['nif']]
                     return render(request, 'aicespana/modificacionPersonal.html',{'ERROR':error})
@@ -341,7 +342,7 @@ def modificacion_personal(request):
                 personal_data['provincias'] = get_provincias()
 
                 return render(request, 'aicespana/modificacionPersonal.html', {'personal_data':personal_data})
-            error = ['No hay nigún voluntario que tenga el NIF/NIE', request.POST['nif']]
+            error = ['No hay nigún Personal de la Iglesia que tenga el NIF/NIE', request.POST['nif']]
             return render(request, 'aicespana/modificacionPersonal.html',{'ERROR':error})
         personal_objs = PersonalIglesia.objects.all()
         if request.POST['apellido'] != '':

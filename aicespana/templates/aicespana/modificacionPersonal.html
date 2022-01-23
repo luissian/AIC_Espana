@@ -13,7 +13,7 @@
 		<div class="row g-3"">
 			<div class="col-md-10">
 				<div class="card  border-danger">
-					<div class="card-header"><h2 style="text-align:center">El voluntario no se encuentra en la base de datos</h2> </div>
+					<div class="card-header"><h2 style="text-align:center">El Personal de la iglesia no se encuentra en la base de datos</h2> </div>
 					<div class="card-body">
 						{% for values in ERROR %}
 							<h4>{{values}}</h4>
@@ -327,7 +327,7 @@
 {% else %}
 	<section class="light">
 		<div class="container md-8">
-			<h1 class="h1 text-center" id="pageHeaderTitle">Modificación de los datos de Personal</h1>
+			<h1 class="h1 text-center" id="pageHeaderTitle">Modificación de los datos de Personal de Iglesia</h1>
 
 	    </div>
 	</section>
@@ -336,7 +336,7 @@
 	    <div class="row g-3">
 	        <div class="col-md-10">
 	            <div class="card">
-					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Formulario para la busqueda de personal</h3></div>
+					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Formulario para la busqueda de personal de Iglesia</h3></div>
                     <div class="card-body">
 	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="busquedaPersonal" id="busquedaPersonal" >
 	                        {% csrf_token %}
