@@ -337,9 +337,9 @@ def modificacion_personal(request):
                 if len(personal_objs) > 1:
                     error = ['Hay más de 1 persona que tiene el mismo NIF/NIE', reques.POST['nif']]
                     return render(request, 'aicespana/modificacionPersonal.html',{'ERROR':error})
-                voluntary_data = get_defined_data_for_personal(personal_objs[0])
-                personal_available_settings.update(get_personal_responsability(personal_objs[0]))
-                personal_data['user_id'] = personal_objs[0].get_personal_id()
+                personal_data = personal_objs[0].get_all_data_from_personal()
+                personal_data['provincias'] = get_provincias()
+
                 return render(request, 'aicespana/modificacionPersonal.html', {'personal_data':personal_data})
             error = ['No hay nigún voluntario que tenga el NIF/NIE', request.POST['nif']]
             return render(request, 'aicespana/modificacionPersonal.html',{'ERROR':error})
