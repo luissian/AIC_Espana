@@ -332,9 +332,9 @@ def modificacion_personal(request):
         if request.POST['nif'] == '' and request.POST['nombre'] == '' and request.POST['apellido'] == '':
             return render(request, 'aicespana/modificacionPersonal.html')
         if request.POST['nif'] != '':
-            if PersonalExterno.objects.filter(DNI__iexact = request.POST['nif']).exists():
+            if PersonalIglesia.objects.filter(DNI__iexact = request.POST['nif']).exists():
                 personal_objs = PersonalIglesia.objects.filter(DNI__iexact = request.POST['nif'])
-                
+
                 if len(personal_objs) > 1:
                     error = ['Hay más de 1 persona que tiene el mismo NIF/NIE', reques.POST['nif']]
                     return render(request, 'aicespana/modificacionPersonal.html',{'ERROR':error})
