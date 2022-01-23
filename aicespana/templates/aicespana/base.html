@@ -100,8 +100,18 @@
                                 </ul>
                             </li>
                         {% endif %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-danger" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                LISTADOS
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="nav-link active" aria-current="page" href="/listadoDelegaciones">Voluntarios</a></li>
+                                <li><a class="nav-link active" aria-current="page" href="/listadoBoletines">Boletines</a></li>
+                            </ul>
+                        </li>
                         <li class="nav-item">
-                          <a class="nav-link active" aria-current="page" href="/listadoDelegaciones">LISTADOS</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="nav-link active" aria-current="page" href="/listadoDelegaciones">LISTADOS</a></li>
                         </li>
 
                     </ul>
