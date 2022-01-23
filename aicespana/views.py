@@ -17,7 +17,8 @@ def alta_actividad(request):
     if not is_manager(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     actividad_data = {}
-    actividad_data['grupos_diocesis_id_name'] = get_id_grupo_diocesis_delegacion_name()
+    #actividad_data['grupos_diocesis_id_name'] = get_id_grupo_diocesis_delegacion_name()
+    actividad_data['grupos_diocesis_id_name'] =  = get_group_list_to_select_in_form()
     actividad_data['actividad_grupos_diocesis_name'] = get_id_actividad_grupos_diocesis_delegacion_name()
 
     if request.method == 'POST' and request.POST['action'] == 'altaActividad':
@@ -135,7 +136,8 @@ def alta_proyecto(request):
     if not is_manager(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     proyecto_data = {}
-    proyecto_data['grupos_diocesis_id_name'] = get_id_grupo_diocesis_delegacion_name()
+    # proyecto_data['grupos_diocesis_id_name'] = get_id_grupo_diocesis_delegacion_name()
+    proyecto_data['grupos_diocesis_id_name'] = get_group_list_to_select_in_form()
     proyecto_data['proyectos_grupos_diocesis_name'] = get_id_proyectos_grupos_diocesis_delegacion_name()
 
     if request.method == 'POST' and request.POST['action'] == 'altaProyecto':
@@ -173,7 +175,7 @@ def alta_voluntario(request):
 
         return render(request,'aicespana/altaVoluntario.html',{'confirmation_data': confirmation_data})
     new_volunteer_data = {'types':get_volunteer_types() ,'provincias':get_provincias()}
-    new_volunteer_data['grupos_diocesis_id_name'] =get_group_list_to_select_in_form()
+    new_volunteer_data['grupos_diocesis_id_name'] = get_group_list_to_select_in_form()
     #new_volunteer_data['grupos_diocesis_id_name'] = get_id_grupo_diocesis_name()
     return render(request,'aicespana/altaVoluntario.html',{'new_volunteer_data':new_volunteer_data})
 
