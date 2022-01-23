@@ -239,38 +239,38 @@
 								<div class="card">
 									<div class="card-header"><h2 style="text-align:center">Voluntarios menores de 80 años del grupo {{grupo_data.nombre_grupo}}</h2> </div>
 									<div class="card-body">
+										{% if grupo_data.lista_voluntarios.menor80|length > 0 %}
+											<div class="scrolling-wrapper">
+		                            			<div id="spreadsheet3"></div>
+		                        			</div>
+											<br>
+											<input type="button" value="Descarga listado" onclick="table3.download()"/>
+											<script>
+						                         var data3 = [{% for  nombre in grupo_data.lista_voluntarios.menor80 %} ['{{nombre}}'], {% endfor %}
+						                         ];
 
-										<div class="scrolling-wrapper">
-	                            			<div id="spreadsheet3"></div>
-	                        			</div>
-										<br>
-										<input type="button" value="Descarga listado" onclick="table3.download()"/>
-										<script>
-					                         var data3 = [{% for  nombre in grupo_data.lista_voluntarios.menor80 %} ['{{nombre}}'], {% endfor %}
-					                         ];
+						                        var table3 = jexcel(document.getElementById('spreadsheet3'), {
+						                            data:data3,
+						                            columns: [
+						                                { type: 'text', title:'Nombre del Voluntario', width:300 , readOnly:true},
+						                            ],
+						                            allowInsertColumn:false,
+						                            allowDeleteColumn:false,
+						                            allowRenameColumn:false,
+						                            csvFileName:'listado_voluntarios',
+						                            tableOverflow: false,
+						                            tableWidth: "700px",
+													search:true,
+													pagination:20,
 
-					                        var table3 = jexcel(document.getElementById('spreadsheet3'), {
-					                            data:data3,
-					                            columns: [
-					                                { type: 'text', title:'Nombre del Voluntario', width:300 , readOnly:true},
-					                            ],
-					                            allowInsertColumn:false,
-					                            allowDeleteColumn:false,
-					                            allowRenameColumn:false,
-					                            csvFileName:'cargos_grupos',
-					                            minDimensions:[1,2],
-					                            tableOverflow: false,
-					                            tableWidth: "700px",
-												search:true,
-												pagination:20,
-
-					                         });
-					                    </script>
+						                         });
+						                    </script>
+										{% endif %}
 									</div> <!-- end card body-->
 								</div> <!-- end card  -->
 							</div> <!-- end col-md-10 -->
 						</div> <!-- end row-->
-						{% if grupo_data.lista_voluntarios.mayor80|length > 0 %}
+						{% if grupo_data.lista_voluntarios.sin_edad|length > 0 %}
 							<div class="row mt-5">
 								<div class="col-md-6 offset-3">
 									<div class="card">
