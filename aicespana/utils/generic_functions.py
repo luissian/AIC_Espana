@@ -294,11 +294,14 @@ def get_grupo_voluntarios(grupo_obj):
         voluntario_list
     '''
     voluntario_list = {'mayor80':[], 'menor80':[]}
-    import pdb; pdb.set_trace()
+    
     if PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Voluntario').exists():
         personal_objs = PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Voluntario').order_by('apellido')
         for personal_obj in personal_objs:
-            if personal_obj.get_old() >= 80 :
+            old =  personal_obj.get_old()
+            if old == '' :
+                voluntario_list['sin_edad'].append(personal_obj.get_personal_name())
+            elif old  >= 80 :
                 voluntario_list['mayor80'].append(personal_obj.get_personal_name())
             else:
                 voluntario_list['menor80'].append(personal_obj.get_personal_name())
@@ -615,7 +618,7 @@ def fetch_proyecto_data_to_modify (data_form,file_form):
         data['memoria_file'] = store_file(file_form['uploadMemoria'])
     if 'uploadFotografia' in file_form:
         data['fotografia_file'] = store_file(file_form['uploadFotografia'])
-    import pdb; pdb.set_trace()
+
     return data
 
 

@@ -1,4 +1,4 @@
-{{% extends 'aicespana/base.html' %}
+{% extends 'aicespana/base.html' %}
 {% load static %}
 {% block content %}
 {%include 'aicespana/jexcel_funcionality.html' %}
@@ -222,6 +222,8 @@
 						                            tableOverflow: false,
 						                            tableWidth: "700px",
 													hideIndex:true,
+													search:true,
+                                                    pagination:20,
 						                         });
 						                    </script>
 										{% else %}
@@ -242,7 +244,7 @@
 	                            			<div id="spreadsheet3"></div>
 	                        			</div>
 										<br>
-										<input type="button" value="Descarga los cargos del grupo" onclick="table3.download()"/>
+										<input type="button" value="Descarga listado" onclick="table3.download()"/>
 										<script>
 					                         var data3 = [{% for  nombre in grupo_data.lista_voluntarios.menor80 %} ['{{nombre}}'], {% endfor %}
 					                         ];
@@ -259,31 +261,44 @@
 					                            minDimensions:[1,2],
 					                            tableOverflow: false,
 					                            tableWidth: "700px",
+												search:true,
+												pagination:20,
 
 					                         });
 					                    </script>
-
-
-
-										<div class="table-wrapper">
-											<table id="menor80" class="table table-hover mb-0">
-												<thead>
-													<tr>
-														<th>Nombre y  Apellidos del Voluntario</th>
-													</tr>
-												</thead>
-												<tbody>
-													{% for nombre in grupo_data.lista_voluntarios.menor80 %}
-														<tr>
-															<td>{{nombre}}</td>
-														</tr>
-													{% endfor %}
-												</tbody>
-											</table>
-										</div> <!--  end of table wrapper  -->
 									</div> <!-- end card body-->
 								</div> <!-- end card  -->
 							</div> <!-- end col-md-10 -->
+						</div> <!-- end row-->
+						{% if grupo_data.lista_voluntarios.mayor80|length > 0 %}
+							<div class="row mt-5">
+								<div class="col-md-6 offset-3">
+									<div class="card">
+										<div class="card-header"><h2 style="text-align:center">Voluntarios sin fecha de nacimiento grupo {{grupo_data.nombre_grupo}}</h2> </div>
+										<div class="card-body">
+
+											<div class="scrolling-wrapper">
+												<div class="table-wrapper">
+													<table id="sinedad" class="table table-hover mb-0">
+														<thead>
+															<tr>
+																<th>Nombre y  Apellidos del Voluntario</th>
+															</tr>
+														</thead>
+														<tbody>
+															{% for nombre in grupo_data.lista_voluntarios.sin_edad %}
+																<tr>
+																	<td>{{nombre}}</td>
+																</tr>
+															{% endfor %}
+														</tbody>
+													</table>
+												</div> <!--  end of table wrapper  -->
+											</div> <!-- end scrolling-->
+										</div> <!-- end card body-->
+									</div> <!-- end card  -->
+								</div> <!-- end col-md-6 -->
+							{% endif %}
 						</div> <!-- end row-->
 					</div> <!-- end container -->
 				</div>  <!-- end tab listaV -->

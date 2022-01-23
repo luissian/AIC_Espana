@@ -353,7 +353,7 @@ def modificacion_personal(request):
             personal_list = []
             for personal_obj in personal_objs:
                 personal_list.append([personal_obj.get_personal_name(),personal_obj.get_personal_location()])
-            import pdb; pdb.set_trace()
+            
             return render(request, 'aicespana/modificacionPersonal.html', {'personal_list':personal_list})
         personal_data = personal_objs[0].get_all_data_from_personal()
         personal_data['provincias'] = get_provincias()
