@@ -695,6 +695,7 @@ class PersonalExterno(models.Model):
         data.append(self.telefonoMovil)
         data.append(self.get_group_belongs_to())
         data.append(self.get_responability_belongs_to())
+        data.append(self.get_diocesis_belongs_to())
         return data
 
     def update_information(self, data):

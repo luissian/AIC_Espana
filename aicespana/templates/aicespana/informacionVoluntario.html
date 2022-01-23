@@ -33,11 +33,10 @@
 				<div class="card">
 					<div class="card-header"><h2 style="text-align:center">Información del Voluntario</h2> </div>
 					<div class="card-body">
-						<button onclick="exportTableToExcel('voluntario')" class="btn float-end">Guardar Tabla en Excel <i class="bi bi-download"></i></button>
 						<div class="table-wrapper">
 							<table id="voluntario" class="table table-hover mb-0">
 								<tbody>
-									{% for name, calle, pob, prov, cpostal, email, dni, movil, grupo, responsable in info_voluntario %}
+									{% for name, calle, pob, prov, cpostal, email, dni, movil, grupo, responsable, diocesis in info_voluntario %}
 										<tr>
 											<td class="col text-center">Nombre</td>
 											<td>{{name}}</td>
@@ -60,7 +59,7 @@
 										</tr>
 										<tr>
 											<td class="col text-center">Grupo</td>
-											<td >{{grupo}}</td>
+											<td >{{grupo}} en la diocesis de {{diocesis}}</td>
 										</tr>
 										<tr>
 											<td class="col text-center">Cargo</td>
