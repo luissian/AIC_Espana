@@ -44,7 +44,7 @@
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-body">
-						<p>Para asignar un cargo a otro personal de la AIC hacer click en el boton de abajo</p>
+						<p>Para asignar un cargo a otro personal de la Iglesia hacer click en el boton de abajo</p>
 						<br><br>
 						<div class="text-center">
 							<a href="/cargosPersonalIglesia"> <button type="button" class="btn btn-outline-secondary float-center" >Añadir un nuevo Cargo</button> </a>
@@ -76,7 +76,7 @@
 							{% endif %}
 						</div> <!-- end col-md-10 -->
 						<div class="col-md-10">
-							<p>Datos del personal de la AIC</p>
+							<p>Datos del personal de la Iglesia</p>
 							<table class="table table-hover">
 								<tbody>
 									<tr>
@@ -189,7 +189,7 @@
 {% elif updated_data %}
 	<section class="light">
 		<div class="container md-8">
-			<h1 class="h1 text-center" id="pageHeaderTitle">Asignacion de cargos del personal de la AIC</h1>
+			<h1 class="h1 text-center" id="pageHeaderTitle">Asignacion de cargos del personal de la Iglesia</h1>
 		</div>
 	</section>
 	<br><br><br>
@@ -197,7 +197,7 @@
 		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
-					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Datos actualizados del personal de la AIC</h3></div>
+					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Datos actualizados del personal de la Iglesia</h3></div>
 					<div class="card-body">
 						<h3 class="h1 text-center"> {{updated_data.name}}</h3>
 						<div class="col-md-10">
@@ -234,7 +234,7 @@
 							<table class="table table-hover">
 								<thead>
 									<tr>
-										<th colspan="2">Cargos que tiene el personal de la AIC</th>
+										<th colspan="2">Cargos que tiene el personal de la Iglesia</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -261,7 +261,7 @@
 {% else %}
 	<section class="light">
 		<div class="container md-8">
-			<h1 class="h1 text-center" id="pageHeaderTitle">Asignación de cargos del personal de la AIC</h1>
+			<h1 class="h1 text-center" id="pageHeaderTitle">Asignación de cargos del personal de la Iglesia</h1>
 
 	    </div>
 	</section>
@@ -270,7 +270,7 @@
 	    <div class="row g-3">
 	        <div class="col-md-10">
 	            <div class="card">
-					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Formulario para la busqueda del personal de la AIC</h3></div>
+					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Formulario para la busqueda del personal de la Iglesia</h3></div>
                     <div class="card-body">
 	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="busquedaPersonal" id="busquedaPersonal" >
 	                        {% csrf_token %}
@@ -292,7 +292,7 @@
 
 	                        <div class="col-12">
 	                            <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
-	                            <button type="submit" class="btn-outline-primary float-end ">Buscar personal AIC</button>
+	                            <button type="submit" class="btn-outline-primary float-end ">Buscar personal Iglesia</button>
 	                        </div>
 	                    </form>
 	                </div>
