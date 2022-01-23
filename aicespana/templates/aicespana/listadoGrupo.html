@@ -66,16 +66,16 @@
 		    		<button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#listaV" type="button" role="tab" aria-controls="listaVoluntarios" aria-selected="false">Listado de Voluntarios</button>
 		  		</li>
 		    {% endif %}
-		  	{% if grupo_data.lista_asesores.mayor80|length > 0  and grupo_data.lista_asesores.menor80|length > 0 %}
+		  	{% if grupo_data.lista_asesores.mayor80|length > 0  or grupo_data.lista_asesores.menor80|length > 0  or grupo_data.lista_asesores.sin_edad|length > 0 %}
 		  		<li class="nav-item" role="presentation">
 		    		<button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#listaA" type="button" role="tab" aria-controls="listaAsesores" aria-selected="false">Listado de Asesores</button>
 		  		</li>
 		  	{% endif %}
-
+			{% if grupo_data.lista_otros.mayor80|length > 0  or grupo_data.lista_otros.menor80|length > 0 or grupo_data.lista_otros.sin_edad|length > 0  %}
 		  		<li class="nav-item" role="presentation">
 		    		<button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#listaO" type="button" role="tab" aria-controls="listaOtros" aria-selected="false">Listado de Otros</button>
 		  		</li>
-		  
+		  	{% endif %}
 
 		</ul>
 		<div class="tab-content" id="myTabContent">
@@ -422,7 +422,7 @@
 					</div> <!-- end container -->
 				</div>  <!-- end tab listaV -->
 			{% endif %}
-			{% if grupo_data.lista_otros.mayor80|length > 0  and grupo_data.lista_otros.menor80|length > 0 %}
+			{% if grupo_data.lista_otros.mayor80|length > 0  or grupo_data.lista_otros.menor80|length > 0 or grupo_data.lista_otros.sin_edad|length > 0  %}
 				<div class="tab-pane fade" id="listaO" role="tabpanel" aria-labelledby="lista-tab">
 					<div class="container-md">
 						<div class="row mt-5">
