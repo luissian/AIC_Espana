@@ -293,7 +293,7 @@ def get_grupo_voluntarios(grupo_obj):
     Return:
         voluntario_list
     '''
-    voluntario_list = {'mayor80':[], 'menor80':[]}
+    voluntario_list = {'mayor80':[], 'menor80':[], 'sin_fecha':[]}
 
     if PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Voluntario').exists():
         personal_objs = PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Voluntario').order_by('apellido')
@@ -320,7 +320,9 @@ def get_grupo_colaboradores(grupo_obj):
     if PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Colaborador').exists():
         personal_objs = PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Colaborador').order_by('apellido')
         for personal_obj in personal_objs:
-            if personal_obj.get_old() >= 80 :
+            if old == '' :
+                colaborador_list['sin_edad'].append(personal_obj.get_personal_name())
+            elif old  >= 80 :
                 colaborador_list['mayor80'].append(personal_obj.get_personal_name())
             else:
                 colaborador_list['menor80'].append(personal_obj.get_personal_name())
@@ -339,7 +341,9 @@ def get_grupo_asesores(grupo_obj):
     if PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Asesor').exists():
         personal_objs = PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Asesor').order_by('apellido')
         for personal_obj in personal_objs:
-            if personal_obj.get_old() >= 80 :
+            if old == '' :
+                asesor_list['sin_edad'].append(personal_obj.get_personal_name())
+            elif old  >= 80 :
                 asesor_list['mayor80'].append(personal_obj.get_personal_name())
             else:
                 asesor_list['menor80'].append(personal_obj.get_personal_name())
