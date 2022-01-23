@@ -73,11 +73,10 @@
 		                            <label for="grupoID" class="form-label">Seleciona el grupo del que depende el proyecto</label>
 		                            <select id="grupoID" class="form-select" name='grupoID'>
 		                                <option selected value=''>Selecciona el grupo</option>
-										{% for delegacion, grupos in proyecto_data.grupos_diocesis_id_name.items %}
-											{% for id, grupo, diocesis in grupos %}
-		                                		<option value = {{id}}>{{grupo}} en diocesis {{diocesis}}</option>
-											{% endfor %}
+										{% for grupo_id, grupo_name , diocesis_name in proyecto_data.grupos_diocesis_id_name %}
+											<option value="{{grupo_id}}">{{grupo_name}} en la diocesis de {{diocesis_name}}</option>
 										{% endfor %}
+										
 		                            </select>
 		                        </div>
 								<br>
