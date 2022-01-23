@@ -18,7 +18,7 @@ def alta_actividad(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     actividad_data = {}
     #actividad_data['grupos_diocesis_id_name'] = get_id_grupo_diocesis_delegacion_name()
-    actividad_data['grupos_diocesis_id_name'] =  = get_group_list_to_select_in_form()
+    actividad_data['grupos_diocesis_id_name'] = get_group_list_to_select_in_form()
     actividad_data['actividad_grupos_diocesis_name'] = get_id_actividad_grupos_diocesis_delegacion_name()
 
     if request.method == 'POST' and request.POST['action'] == 'altaActividad':
