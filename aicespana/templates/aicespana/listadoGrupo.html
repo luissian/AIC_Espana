@@ -71,6 +71,11 @@
 		    		<button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#listaA" type="button" role="tab" aria-controls="listaAsesores" aria-selected="false">Listado de Asesores</button>
 		  		</li>
 		  	{% endif %}
+			{% if grupo_data.lista_otros.mayor80|length > 0  and grupo_data.lista_otros.menor80|length > 0 %}
+		  		<li class="nav-item" role="presentation">
+		    		<button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#listaO" type="button" role="tab" aria-controls="listaOtros" aria-selected="false">Listado de Otros</button>
+		  		</li>
+		  	{% endif %}
 
 		</ul>
 		<div class="tab-content" id="myTabContent">
@@ -79,7 +84,7 @@
 					<div class="row mt-5">
 						<div class="col-md-6">
 							<div class="card">
-								<div class="card-header"><h2 style="text-align:center">Información general del grupo{{grupo_data.nombre_grupo}}</h2> </div>
+								<div class="card-header"><h2 style="text-align:center">Información general del grupo {{grupo_data.nombre_grupo}}</h2> </div>
 								<div class="card-body">
 									<div class="table-wrapper">
 										<table id="infoData" class="table table-hover mb-0">
@@ -401,6 +406,117 @@
 														</thead>
 														<tbody>
 															{% for nombre in grupo_data.lista_asesores.sin_edad %}
+																<tr>
+																	<td>{{nombre}}</td>
+																</tr>
+															{% endfor %}
+														</tbody>
+													</table>
+												</div> <!--  end of table wrapper  -->
+											</div> <!-- end scrolling-->
+										</div> <!-- end card body-->
+									</div> <!-- end card  -->
+								</div> <!-- end col-md-6 -->
+							{% endif %}
+						</div> <!-- end row-->
+					</div> <!-- end container -->
+				</div>  <!-- end tab listaV -->
+			{% endif %}
+			{% if grupo_data.lista_otros.mayor80|length > 0  and grupo_data.lista_otros.menor80|length > 0 %}
+				<div class="tab-pane fade" id="listaO" role="tabpanel" aria-labelledby="lista-tab">
+					<div class="container-md">
+						<div class="row mt-5">
+							<div class="col-md-6">
+								<div class="card">
+									<div class="card-header"><h2 style="text-align:center">Otros mayores de 80 años del grupo {{grupo_data.nombre_grupo}}</h2> </div>
+									<div class="card-body">
+										{% if grupo_data.lista_otros.mayor80|length > 0 %}
+											<div class="scrolling-wrapper">
+		                            			<div id="spreadsheet40"></div>
+		                        			</div>
+											<br>
+											<input type="button" value="Descarga listado" onclick="table40.download()"/>
+											<script>
+						                         var data40 = [{% for  nombre in grupo_data.lista_otros.mayor80 %} ['{{nombre}}'], {% endfor %}
+						                         ];
+
+						                        var table40 = jexcel(document.getElementById('spreadsheet40'), {
+						                            data:data40,
+						                            columns: [
+						                                { type: 'text', title:'Nombre', width:350 , readOnly:true},
+
+						                            ],
+						                            allowInsertColumn:false,
+						                            allowDeleteColumn:false,
+						                            allowRenameColumn:false,
+						                            csvFileName:'listado_otros',
+						                            tableOverflow: false,
+						                            tableWidth: "700px",
+													hideIndex:true,
+													search:true,
+                                                    pagination:20,
+						                         });
+						                    </script>
+										{% else %}
+											<h5 style="text-align:center">No hay personas en este grupo que sean mayores de 80 años</h5>
+										{% endif %}
+										<br>
+
+
+									</div> <!-- end card body-->
+								</div> <!-- end card  -->
+							</div> <!-- end col-md-10 -->
+							<div class="col-md-6">
+								<div class="card">
+									<div class="card-header"><h2 style="text-align:center">Otros menores de 80 años del grupo {{grupo_data.nombre_grupo}}</h2> </div>
+									<div class="card-body">
+
+										<div class="scrolling-wrapper">
+	                            			<div id="spreadsheet41"></div>
+	                        			</div>
+										<br>
+										<input type="button" value="Descarga listado" onclick="table41.download()"/>
+										<script>
+					                         var data41 = [{% for  nombre in grupo_data.lista_otros.menor80 %} ['{{nombre}}'], {% endfor %}
+					                         ];
+
+					                        var table41 = jexcel(document.getElementById('spreadsheet41'), {
+					                            data:data41,
+					                            columns: [
+					                                { type: 'text', title:'Nombre', width:300 , readOnly:true},
+					                            ],
+					                            allowInsertColumn:false,
+					                            allowDeleteColumn:false,
+					                            allowRenameColumn:false,
+					                            csvFileName:'listado_otros',
+					                            tableOverflow: false,
+					                            tableWidth: "700px",
+												search:true,
+												pagination:20,
+
+					                         });
+					                    </script>
+									</div> <!-- end card body-->
+								</div> <!-- end card  -->
+							</div> <!-- end col-md-10 -->
+						</div> <!-- end row-->
+						{% if grupo_data.lista_otros.sin_fecha|length > 0 %}
+							<div class="row mt-5">
+								<div class="col-md-6 offset-3">
+									<div class="card">
+										<div class="card-header"><h2 style="text-align:center">Otros sin fecha de nacimiento grupo {{grupo_data.nombre_grupo}}</h2> </div>
+										<div class="card-body">
+
+											<div class="scrolling-wrapper">
+												<div class="table-wrapper">
+													<table id="sinedad" class="table table-hover mb-0">
+														<thead>
+															<tr>
+																<th>Nombre y  Apellidos del Voluntario</th>
+															</tr>
+														</thead>
+														<tbody>
+															{% for nombre in grupo_data.lista_otros.sin_edad %}
 																<tr>
 																	<td>{{nombre}}</td>
 																</tr>
