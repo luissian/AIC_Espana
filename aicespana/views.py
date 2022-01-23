@@ -173,7 +173,8 @@ def alta_voluntario(request):
 
         return render(request,'aicespana/altaVoluntario.html',{'confirmation_data': confirmation_data})
     new_volunteer_data = {'types':get_volunteer_types() ,'provincias':get_provincias()}
-    new_volunteer_data['grupos_diocesis_id_name'] = get_id_grupo_diocesis_name()
+    new_volunteer_data['grupos_diocesis_id_name'] =get_group_list_to_select_in_form()
+    #new_volunteer_data['grupos_diocesis_id_name'] = get_id_grupo_diocesis_name()
     return render(request,'aicespana/altaVoluntario.html',{'new_volunteer_data':new_volunteer_data})
 
 
@@ -353,7 +354,7 @@ def modificacion_personal(request):
             personal_list = []
             for personal_obj in personal_objs:
                 personal_list.append([personal_obj.get_personal_name(),personal_obj.get_personal_location()])
-            
+
             return render(request, 'aicespana/modificacionPersonal.html', {'personal_list':personal_list})
         personal_data = personal_objs[0].get_all_data_from_personal()
         personal_data['provincias'] = get_provincias()
