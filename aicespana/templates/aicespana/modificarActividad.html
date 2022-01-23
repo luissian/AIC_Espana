@@ -65,7 +65,7 @@
 								<div class="col-md-8">
 		                            <label class="control-label " for="nombre">Seleciona el Grupo del que depende</label>
 									<select id="grupoID" class="form-select" name="grupoID">
-										<option value="{{actividad_data.grupoID}}">{{actividad_data.grupo_name}}</option>
+										<option value="{{actividad_data.grupoID}}">{{actividad_data.grupo_name}} en la diocesis de {{diocesis_name}} </option>
 										{% for grupo_id, grupo_name , diocesis_name in actividad_data.grupos_diocesis_id_name %}
 		                                	<option value="{{grupo_id}}">{{grupo_name}} en la diocesis de {{diocesis_name}}</option>
 										{% endfor %}

@@ -305,6 +305,115 @@
 			{% endif %}
 
 			{% if grupo_data.lista_asesores|length > 0 %}
+				<div class="tab-pane fade" id="listaA" role="tabpanel" aria-labelledby="lista-tab">
+					<div class="container-md">
+						<div class="row mt-5">
+							<div class="col-md-6">
+								<div class="card">
+									<div class="card-header"><h2 style="text-align:center">Asesores mayores de 80 años del grupo {{grupo_data.nombre_grupo}}</h2> </div>
+									<div class="card-body">
+										{% if grupo_data.lista_asesores.mayor80|length > 0 %}
+											<div class="scrolling-wrapper">
+		                            			<div id="spreadsheet20"></div>
+		                        			</div>
+											<br>
+
+											<script>
+						                         var data2 = [{% for  nombre in grupo_data.lista_asesores.mayor80 %} ['{{nombre}}'], {% endfor %}
+						                         ];
+
+						                        var table2 = jexcel(document.getElementById('spreadsheet20'), {
+						                            data:data2,
+						                            columns: [
+						                                { type: 'text', title:'Nombre del Asesor', width:350 , readOnly:true},
+
+						                            ],
+						                            allowInsertColumn:false,
+						                            allowDeleteColumn:false,
+						                            allowRenameColumn:false,
+						                            csvFileName:'listado_asesores',
+						                            tableOverflow: false,
+						                            tableWidth: "700px",
+													hideIndex:true,
+													search:true,
+                                                    pagination:20,
+						                         });
+						                    </script>
+										{% else %}
+											<h5 style="text-align:center">No hay Asesores en este grupo que sean mayores de 80 años</h5>
+										{% endif %}
+										<br>
+
+
+									</div> <!-- end card body-->
+								</div> <!-- end card  -->
+							</div> <!-- end col-md-10 -->
+							<div class="col-md-6">
+								<div class="card">
+									<div class="card-header"><h2 style="text-align:center">Asesores menores de 80 años del grupo {{grupo_data.nombre_grupo}}</h2> </div>
+									<div class="card-body">
+
+										<div class="scrolling-wrapper">
+	                            			<div id="spreadsheet21"></div>
+	                        			</div>
+										<br>
+										<input type="button" value="Descarga listado" onclick="table3.download()"/>
+										<script>
+					                         var data3 = [{% for  nombre in grupo_data.lista_asesores.menor80 %} ['{{nombre}}'], {% endfor %}
+					                         ];
+
+					                        var table3 = jexcel(document.getElementById('spreadsheet21'), {
+					                            data:data3,
+					                            columns: [
+					                                { type: 'text', title:'Nombre del Asesor', width:300 , readOnly:true},
+					                            ],
+					                            allowInsertColumn:false,
+					                            allowDeleteColumn:false,
+					                            allowRenameColumn:false,
+					                            csvFileName:'listado_asesores',
+					                            tableOverflow: false,
+					                            tableWidth: "700px",
+												search:true,
+												pagination:20,
+
+					                         });
+					                    </script>
+									</div> <!-- end card body-->
+								</div> <!-- end card  -->
+							</div> <!-- end col-md-10 -->
+						</div> <!-- end row-->
+						{% if grupo_data.lista_asesores.mayor80|length > 0 %}
+							<div class="row mt-5">
+								<div class="col-md-6 offset-3">
+									<div class="card">
+										<div class="card-header"><h2 style="text-align:center">Asesores sin fecha de nacimiento grupo {{grupo_data.nombre_grupo}}</h2> </div>
+										<div class="card-body">
+
+											<div class="scrolling-wrapper">
+												<div class="table-wrapper">
+													<table id="sinedad" class="table table-hover mb-0">
+														<thead>
+															<tr>
+																<th>Nombre y  Apellidos del Voluntario</th>
+															</tr>
+														</thead>
+														<tbody>
+															{% for nombre in grupo_data.lista_asesores.sin_edad %}
+																<tr>
+																	<td>{{nombre}}</td>
+																</tr>
+															{% endfor %}
+														</tbody>
+													</table>
+												</div> <!--  end of table wrapper  -->
+											</div> <!-- end scrolling-->
+										</div> <!-- end card body-->
+									</div> <!-- end card  -->
+								</div> <!-- end col-md-6 -->
+							{% endif %}
+						</div> <!-- end row-->
+					</div> <!-- end container -->
+				</div>  <!-- end tab listaV -->
 
 			{% endif %}
 		</div>  <!-- end tab-content -->

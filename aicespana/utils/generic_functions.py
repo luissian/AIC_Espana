@@ -294,7 +294,7 @@ def get_grupo_voluntarios(grupo_obj):
         voluntario_list
     '''
     voluntario_list = {'mayor80':[], 'menor80':[]}
-    
+
     if PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Voluntario').exists():
         personal_objs = PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Voluntario').order_by('apellido')
         for personal_obj in personal_objs:
@@ -709,7 +709,7 @@ def get_activity_group_diocesis():
     if Actividad.objects.all().exists():
         actividad_objs = Actividad.objects.all().order_by('nombreActividad')
         for actividad_obj in actividad_objs:
-            activity_grupo_diocesis_list.append([actividad_obj.get_activity_id() , actividad_obj.get_activity_name() ,actividad_obj.get_grupo_name() , actividad_obj.get_diocesis_name()])
+            activity_grupo_diocesis_list.append([actividad_obj.get_actividad_id() , actividad_obj.get_actividad_name() ,actividad_obj.get_grupo_name() , actividad_obj.get_diocesis_name()])
     return activity_grupo_diocesis_list
 
 

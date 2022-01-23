@@ -569,7 +569,7 @@ class PersonalExterno(models.Model):
     def get_old(self):
         if self.fechaNacimiento != None:
             return relativedelta(date.today(), self.fechaNacimiento).years
-        return 0
+        return ''
 
     def get_parroquia_belongs_to(self):
         if self.grupoAsociado :
