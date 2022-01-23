@@ -316,7 +316,7 @@ def get_grupo_colaboradores(grupo_obj):
     Return:
         colaborador_list
     '''
-    colaborador_list = {'mayor80':[], 'menor80':[]}
+    colaborador_list = {'mayor80':[], 'menor80':[], 'sin_fecha':[]}
     if PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Colaborador').exists():
         personal_objs = PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Colaborador').order_by('apellido')
         for personal_obj in personal_objs:
@@ -335,7 +335,7 @@ def get_grupo_asesores(grupo_obj):
     Return:
         asesor_list
     '''
-    asesor_list = {'mayor80':[], 'menor80':[]}
+    asesor_list = {'mayor80':[], 'menor80':[], 'sin_fecha':[]}
     if PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Asesor').exists():
         personal_objs = PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Asesor').order_by('apellido')
         for personal_obj in personal_objs:
@@ -354,7 +354,7 @@ def get_grupo_otros(grupo_obj):
     Return:
         otros_list
     '''
-    otros_list = {'mayor80':[], 'menor80':[]}
+    otros_list = {'mayor80':[], 'menor80':[], 'sin_fecha':[]}
     colaboration_list = ['Voluntario', 'Asesor','Colaborador']
     if PersonalExterno.objects.filter(grupoAsociado = grupo_obj).exclude(tipoColaboracion__tipoColaboracion__in = colaboration_list).exists():
         personal_objs = PersonalExterno.objects.filter(grupoAsociado = grupo_obj).exclude(tipoColaboracion__tipoColaboracion__in = colaboration_list).order_by('apellido')

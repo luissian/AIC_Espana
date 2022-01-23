@@ -40,7 +40,7 @@ class ActividadAdmin(admin.ModelAdmin):
 
 class PersonalExternoAdmin(admin.ModelAdmin):
     list_display = ['nombre', 'apellido', 'DNI', 'fechaNacimiento']
-    search_fields = ('appellido__icontanins',)
+    search_fields = ('apellido__icontanins',)
 
 class TipoColaboracionAdmin(admin.ModelAdmin):
     list_display = ['tipoColaboracion']
