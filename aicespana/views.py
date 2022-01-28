@@ -122,7 +122,7 @@ def alta_personal_iglesia(request):
         info_to_fetch = ['nombre', 'apellido','nif', 'email', 'fijo', 'movil' , 'calle', 'poblacion', 'provincia', 'codigo','nacimiento']
         personal_data = {}
         for field in info_to_fetch:
-            personal_data[field] = request.POST[field]
+            personal_data[field] = request.POST[field].strip()
         PersonalExterno_obj = PersonalIglesia.objects.create_new_personel(personal_data)
         confirmation_data = {}
         confirmation_data['nombre'] = request.POST['nombre']
@@ -146,7 +146,7 @@ def alta_proyecto(request):
         data = {}
         data['grupo_obj'] = get_grupo_obj_from_id(request.POST['grupoID'])
         data['alta'] = request.POST['alta']
-        data['nombre'] = request.POST['nombre']
+        data['nombre'] = request.POST['nombre'].strip()
         data['observaciones'] = request.POST['observaciones']
         if 'uploadMemoria' in request.FILES:
             data['memoria_file'] = store_file(request.FILES['uploadMemoria'])
@@ -167,7 +167,7 @@ def alta_voluntario(request):
         info_to_fetch = ['nombre', 'apellidos','nif','nacimiento', 'alta' ,'calle','poblacion', 'provincia', 'codigo', 'email', 'fijo', 'movil', 'tipoColaboracion','grupoID', 'boletin']
         personal_data = {}
         for field in info_to_fetch:
-            personal_data[field] = request.POST[field]
+            personal_data[field] = request.POST[field].strip()
         PersonalExterno_obj = PersonalExterno.objects.create_new_external_personel(personal_data)
         confirmation_data = {}
         confirmation_data['nombre'] = request.POST['nombre']
@@ -346,9 +346,9 @@ def modificacion_personal(request):
             return render(request, 'aicespana/modificacionPersonal.html',{'ERROR':error})
         personal_objs = PersonalIglesia.objects.all()
         if request.POST['apellido'] != '':
-            personal_objs = personal_objs.filter(apellido__iexact = request.POST['apellido'])
+            personal_objs = personal_objs.filter(apellido__iexact = request.POST['apellido'].strip())
         if request.POST['nombre'] != '':
-            personal_objs = personal_objs.filter(nombre__iexact = request.POST['nombre'])
+            personal_objs = personal_objs.filter(nombre__iexact = request.POST['nombre'].strip())
         if len(personal_objs) == 0 :
             error = ['No hay nigún voluntario que cumpla los criterios de busqueda', str(request.POST['nombre']  + ' ' + request.POST['apellido']) ]
             return render(request, 'aicespana/modificacionPersonal.html',{'ERROR':error})
@@ -432,9 +432,9 @@ def modificacion_voluntario(request):
             return render(request, 'aicespana/modificacionVoluntario.html',{'ERROR':error})
         personal_objs = PersonalExterno.objects.all()
         if request.POST['apellido'] != '':
-            personal_objs = personal_objs.filter(apellido__iexact = request.POST['apellido'])
+            personal_objs = personal_objs.filter(apellido__iexact = request.POST['apellido'].strip())
         if request.POST['nombre'] != '':
-            personal_objs = personal_objs.filter(nombre__iexact = request.POST['nombre'])
+            personal_objs = personal_objs.filter(nombre__iexact = request.POST['nombre'].strip())
         if len(personal_objs) == 0 :
             error = ['No hay nigún voluntario que cumpla los criterios de busqueda', str(request.POST['nombre']  + ' ' + request.POST['apellido']) ]
             return render(request, 'aicespana/modificacionVoluntario.html',{'ERROR':error})
@@ -492,9 +492,9 @@ def cargos_personal(request):
             return render(request, 'aicespana/cargosPersonal.html',{'ERROR':error})
         personal_objs = PersonalIglesia.objects.all()
         if request.POST['apellido'] != '':
-            personal_objs = personal_objs.filter(apellido__iexact = request.POST['apellido'])
+            personal_objs = personal_objs.filter(apellido__iexact = request.POST['apellido'].strip())
         if request.POST['nombre'] != '':
-            personal_objs = personal_objs.filter(nombre__iexact = request.POST['nombre'])
+            personal_objs = personal_objs.filter(nombre__iexact = request.POST['nombre'].strip())
         if len(personal_objs) == 0:
             error = [ERROR_NOT_FIND_PERSONAl_CRITERIA, str(request.POST['nombre']  + ' ' + request.POST['apellido']) ]
             return render(request, 'aicespana/cargosPersonal.html',{'ERROR':error})
@@ -540,9 +540,9 @@ def cargos_voluntarios(request):
             return render(request, 'aicespana/cargosVoluntarios.html',{'ERROR':error})
         personal_objs = PersonalExterno.objects.all()
         if request.POST['apellido'] != '':
-            personal_objs = personal_objs.filter(apellido__iexact = request.POST['apellido'])
+            personal_objs = personal_objs.filter(apellido__iexact = request.POST['apellido'].strip())
         if request.POST['nombre'] != '':
-            personal_objs = personal_objs.filter(nombre__iexact = request.POST['nombre'])
+            personal_objs = personal_objs.filter(nombre__iexact = request.POST['nombre'].strip())
         if len(personal_objs) == 0 :
             error = ['No hay nigún voluntario que cumpla los criterios de busqueda', str(request.POST['nombre']  + ' ' + request.POST['apellido']) ]
             return render(request, 'aicespana/cargosVoluntarios.html',{'ERROR':error})
@@ -664,8 +664,7 @@ def listado_grupo(request, grupo_id):
     grupo_data['lista_colaboradores'] = get_grupo_colaboradores(grupo_obj)
     grupo_data['lista_asesores'] = get_grupo_asesores(grupo_obj)
     grupo_data['lista_otros'] = get_grupo_otros(grupo_obj)
-
-
+    
     return render(request,'aicespana/listadoGrupo.html', {'grupo_data': grupo_data})
 
 

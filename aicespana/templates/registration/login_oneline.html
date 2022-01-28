@@ -1,5 +1,5 @@
 <div class="container">
-    
+
     {% if user.is_authenticated %}
         <div class="col-sm-4 offset-8" >
             <form id="signin" class="navbar-form navbar-right" role="form" method="post" action="{% url 'logout' %}?next={{request.path}}">
@@ -13,8 +13,8 @@
            </form>
        </div>
     {% else %}
-            <div class="row justify-content-sm-center mt-4">
-                <div class="col-sm-6">
+        <div class="row justify-content-sm-center mt-4">
+            <div class="col-sm-6">
                 <form id="signin" class="navbar-form navbar-right" role="form" method="post" action="{% url 'login' %}">
                    {% csrf_token %}
 
@@ -31,5 +31,7 @@
                    </div>
                    <button type="submit" class="btn btn-primary"> Login </button>
                 </form>
-            {% endif %}
+            </div>
         </div>
+    {% endif %}
+</div>
