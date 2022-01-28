@@ -999,7 +999,34 @@ def allow_all_lists (request):
 def allow_own_delegation(request):
     return True
 
+def get_excel_user_request_boletin():
+    '''
+    Description:
+        The function get the user and their mail addres to send the boletin
+    Return:
+        Return the path for collecting the boletin
+    '''
+    import xlsxwriter
+    f_name =  'Listado_boletin.xlsx'
+    heading = ['Nombre', 'Apellidos', 'Calle','Población', 'Provincia', 'Código Postal']
+    lista = [heading]
+    if PersonalExterno.objects.filter(recibirBoletin = True).exists():
+        externo_objs = PersonalExterno.objects.filter(recibirBoletin = True)
+        for externo_obj in externo_objs:
+            lista.append(externo_obj.get_data_for_boletin())
 
+    if PersonalIglesia.objects.filter(recibirBoletin = True).exists():
+        externo_objs = PersonalIglesia.objects.filter(recibirBoletin = True)
+        for externo_obj in externo_objs:
+            lista.append(externo_obj.get_data_for_boletin())
+    excel_file = os.path.join(settings.MEDIA_ROOT, f_name)
+    if os.path.isfile(excel_file):
+        os.remove(excel_file)
+    with xlsxwriter.Workbook(excel_file) as workbook:
+        worksheet = workbook.add_worksheet()
+        for row_num, data in enumerate(lista):
+            worksheet.write_row(row_num, 0, data)
+    return os.path.join(settings.MEDIA_URL,f_name)
 
 def store_file (user_file):
     '''

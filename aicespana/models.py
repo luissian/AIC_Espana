@@ -683,6 +683,16 @@ class PersonalExterno(models.Model):
         data['activo'] = activo
         return data
 
+    def get_data_for_boletin(self):
+        data = []
+        data.append(self.nombre)
+        data.append(self.apellido)
+        data.append(self.calle)
+        data.append(self.poblacion)
+        data.append(self.provincia)
+        data.append(self.codigoPostal)
+        return data
+
     def get_voluntario_data(self):
         data = []
         data.append(str(self.nombre + ' ' + self.apellido))
@@ -942,6 +952,16 @@ class PersonalIglesia(models.Model):
         data['activo'] = activo
         return data
 
+    def get_data_for_boletin(self):
+        data = []
+        data.append(self.nombre)
+        data.append(self.apellido)
+        data.append(self.calle)
+        data.append(self.poblacion)
+        data.append(self.provincia)
+        data.append(self.codigoPostal)
+        return data
+        
     def update_information(self, data):
         if data['grupo'] != '':
             try:

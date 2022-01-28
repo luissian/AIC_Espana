@@ -106,7 +106,9 @@
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li><a class="nav-link active" aria-current="page" href="/listadoDelegaciones">Voluntarios</a></li>
-                                <li><a class="nav-link active" aria-current="page" href="/listadoBoletines">Boletines</a></li>
+                                {% if request.user|has_group:"administracion" %}
+                                    <li><a class="nav-link active" aria-current="page" href="/listadoBoletin">Boletin</a></li>
+                                {% endif %}
                             </ul>
                         </li>
                     </ul>
@@ -117,7 +119,10 @@
         <!-- Logging pannel -->
         {% include 'registration/login_oneline.html' %}
           <!-- End Loggin pannel -->
-
+          <div class="d-flex justify-content-center">
+          	<span><img src="{% static 'aicespana/images/Portada_aplicacion-ECA.gif' %}" alt="imagen AIC" title="AIC " height="100"></span>
+          </div>
+          <br><br>
         {% block content %}
 	       <!--========== HERE WILL BE THE INFORMATION FROM DJANGO CODE  ==========-->
         {% endblock %}

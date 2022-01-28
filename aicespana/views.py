@@ -602,6 +602,12 @@ def informacion_voluntario(request):
     return render(request,'aicespana/informacionVoluntario.html')
 
 @login_required
+def listado_boletin(request):
+    listado = get_excel_user_request_boletin()
+    return render(request,'aicespana/listadoBoletin.html',{'listado':listado})
+
+
+@login_required
 def listado_delegaciones(request):
     delegaciones = []
     if Delegacion.objects.all().exists():
@@ -664,7 +670,7 @@ def listado_grupo(request, grupo_id):
     grupo_data['lista_colaboradores'] = get_grupo_colaboradores(grupo_obj)
     grupo_data['lista_asesores'] = get_grupo_asesores(grupo_obj)
     grupo_data['lista_otros'] = get_grupo_otros(grupo_obj)
-    
+
     return render(request,'aicespana/listadoGrupo.html', {'grupo_data': grupo_data})
 
 
