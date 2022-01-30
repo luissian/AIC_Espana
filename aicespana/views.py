@@ -622,9 +622,9 @@ def listado_delegaciones(request):
 
 @login_required
 def listado_delegacion(request, delegacion_id):
-    if not allow_all_lists(request):
-        if not allow_own_delegation(request):
-            return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_ALLOW_TO_SEE_LISTADOS})
+    #if not allow_all_lists(request):
+    #    if not allow_own_delegation(request):
+    #        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_ALLOW_TO_SEE_LISTADOS})
     if not Delegacion.objects.filter(pk__exact = delegacion_id).exists():
         return render (request,'aicespana/errorPage.html', {'content': ERROR_DELEGACION_NOT_EXIST})
     delegacion_obj = get_delegation_obj_from_id(delegacion_id)
@@ -640,9 +640,9 @@ def listado_delegacion(request, delegacion_id):
 
 
 def listado_diocesis(request,diocesis_id):
-    if not allow_all_lists(request):
-        if not allow_own_delegation(request):
-            return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_ALLOW_TO_SEE_LISTADOS})
+    #if not allow_all_lists(request):
+    #    if not allow_own_delegation(request):
+    #        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_ALLOW_TO_SEE_LISTADOS})
     if not Diocesis.objects.filter(pk__exact = diocesis_id).exists():
         return render (request,'aicespana/errorPage.html', {'content': ERROR_DIOCESIS_NOT_EXIST})
     diocesis_obj = get_diocesis_obj_from_id(diocesis_id)
@@ -655,12 +655,11 @@ def listado_diocesis(request,diocesis_id):
     return render(request,'aicespana/listadoDiocesis.html', {'diocesis_data': diocesis_data})
 
 def listado_grupo(request, grupo_id):
-    if not allow_all_lists(request):
-        if not allow_own_delegation(request):
-            return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_ALLOW_TO_SEE_LISTADOS})
     if not Grupo.objects.filter(pk__exact = grupo_id).exists():
         return render (request,'aicespana/errorPage.html', {'content': ERROR_GRUPO_NOT_EXIST})
     grupo_obj = get_grupo_obj_from_id(grupo_id)
+    if not allow_see_group_information_voluntary(request, grupo_obj):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_ALLOW_TO_SEE_LISTADOS})
     grupo_data = {}
     grupo_data['nombre_grupo'] = grupo_obj.get_grupo_name()
     grupo_data['cargos'] = get_grupo_cargos(grupo_obj)

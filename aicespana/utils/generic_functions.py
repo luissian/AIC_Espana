@@ -976,27 +976,40 @@ def is_manager (request):
         return False
 
     return True
-def allow_all_lists (request):
+def allow_see_group_information_voluntary (request, group_obj):
     '''
     Description:
         The function will check if the logged user belongs to administracion or todasDelegaciones groups
     Input:
         request # contains the session information
+        group_obj   # object of the grouo
     Return:
-        Return True if the user can see all lists, False if not
+        Return True if the user can see group lists, False if not
     '''
     try:
         administracion_groups = Group.objects.get(name = 'administracion')
         if administracion_groups not in request.user.groups.all():
             todas_delegaciones = Group.objects.get(name = 'todasDelegaciones')
-            if todas_delegaciones not in request.usser.groups.all():
+            if todas_delegaciones not in request.user.groups.all():
+                own_delegacion = Group.objects.get(name = 'delegacionManager')
+                if own_delegacion not in request.user.groups.all():
+                    return False
+                nombre_usuario = request.user.first_name
+                apellido_usuario = request.user.last_name
+                import pdb; pdb.set_trace()
+                if not PersonalExterno.objects.filter(nombre__iexact = nombre_usuario, apellido__iexact = apellido_usuario).exists():
+                    if not PersonalIglesia.objects.filter(nombre__iexact = nombre_usuario, apellido__iexact = apellido_usuario).exists():
+                        return False
+                    usuario_obj = PersonalIglesia.objects.filter(nombre__iexact = nombre_usuario, apellido__iexact = apellido_usuario).last()
+                usuario_obj = PersonalExterno.objects.filter(nombre__iexact = nombre_usuario, apellido__iexact = apellido_usuario).last()
+                import pdb; pdb.set_trace()
+                if group_obj.get_delegacion_name() == usuario_obj.get_delegacion_belongs_to():
+                    return True
                 return False
+
     except:
         return False
-
-    return True
-
-def allow_own_delegation(request):
+    import pdb; pdb.set_trace()
     return True
 
 def get_excel_user_request_boletin():

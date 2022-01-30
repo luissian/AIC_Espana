@@ -217,8 +217,8 @@ class Grupo(models.Model):
         return 'No asignado'
 
     def get_delegacion_name(self):
-        if self.parroquiaDependiente :
-            return '%s' %(self.parroquiaDependiente.get_diocesis_name())
+        if self.diocesisDependiente :
+            return '%s' %(self.diocesisDependiente.get_delegacion_name())
         return 'No asignado'
 
     def get_grupo_full_data(self):
@@ -462,6 +462,10 @@ class PersonalExternoManager(models.Manager):
             boletin = True
         else:
             boletin = False
+        if data['nacimiento'] == '':
+            data['nacimiento'] = None
+        if data['alta'] == '':
+            data['alta'] = None
         new_ext_personel = self.create(nombre = data['nombre'], apellido = data['apellidos'], calle = data['calle'],
                 poblacion = data['poblacion'], provincia = data['provincia'], codigoPostal = data['codigo'],
                 DNI = data['nif'], fechaNacimiento = data['nacimiento'],fechaAlta = data['alta'], email = data['email'], telefonoFijo = data['fijo'],
@@ -777,7 +781,7 @@ class PersonalExterno(models.Model):
             #alta = datetime.strptime(data['alta'],"%Y-%m-%d").date()
             nacimiento = data['nacimiento']
         else:
-            alta = None
+            nacimiento = None
         if data['alta'] != '':
             #alta = datetime.strptime(data['alta'],"%Y-%m-%d").date()
             alta = data['alta']
@@ -961,7 +965,7 @@ class PersonalIglesia(models.Model):
         data.append(self.provincia)
         data.append(self.codigoPostal)
         return data
-        
+
     def update_information(self, data):
         if data['grupo'] != '':
             try:
