@@ -167,8 +167,8 @@
 										{% else %}
 											<option  selected value="">Sin determinar</option>
 										{% endif %}
-										{% for id, group, parroquia  in personal_available_settings.available_groups %}
-											<option value="{{id}}">{{group}} en la diocesis {{parroquia}}</option>
+										{% for id, group, diocesis  in personal_available_settings.available_groups %}
+											<option value="{{id}}">{{group}} en la diocesis {{diocesis}}</option>
 										{% endfor %}
 									</select>
 
@@ -232,7 +232,7 @@
 									</select>
 		                        </div>
 	                        <div class="col-12">
-	                           
+
 	                            <button type="submit" class="btn-outline-primary float-end ">Guardar cambios</button>
 	                        </div>
 	                    </form>

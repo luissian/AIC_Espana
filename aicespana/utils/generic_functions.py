@@ -823,7 +823,7 @@ def get_responsablity_data_for_voluntary(personal_obj):
     if Grupo.objects.all().exists():
         group_objs = Grupo.objects.all().order_by('nombreGrupo')
         for group_obj in group_objs:
-            responsability_optons['available_groups'].append([group_obj.get_grupo_id(), group_obj.get_grupo_name(), group_obj.get_parroquia_name()])
+            responsability_optons['available_groups'].append([group_obj.get_grupo_id(), group_obj.get_grupo_name(), group_obj.get_diocesis_name()])
     if Proyecto.objects.all().exists():
         project_objs = Proyecto.objects.all().order_by('nombreProyecto')
         for project_obj in project_objs:
