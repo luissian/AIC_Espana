@@ -945,7 +945,7 @@ class PersonalIglesia(models.Model):
         data['fijo'] = self.telefonoFijo
         data['movil'] = self.telefonoMovil
         data['baja'] = baja
-        data['alta'] = alta
+        #data['alta'] = alta
         data['calle'] = self.calle
         data['poblacion'] = self.poblacion
         data['provincia'] = self.provincia
@@ -1006,10 +1006,7 @@ class PersonalIglesia(models.Model):
             activo = True
         else:
             activo = False
-        if data['alta'] != '':
-            alta = data['alta']
-        else:
-            alta = None
+
         if data['baja'] != '':
             baja = data['baja']
         else:
@@ -1017,6 +1014,8 @@ class PersonalIglesia(models.Model):
         if data['nacimiento'] != '':
             #alta = datetime.strptime(data['alta'],"%Y-%m-%d").date()
             nacimiento = data['nacimiento']
+        else:
+            nacimiento = None
         self.nombre = data['nombre']
         self.apellido = data['apellidos']
         self.calle = data['calle']
@@ -1025,7 +1024,6 @@ class PersonalIglesia(models.Model):
         self.codigoPostal = data['codigo']
         self.DNI = data['dni']
         self.fechaNacimiento = nacimiento
-        self.fechaAlta = alta
         self.fechaBaja = baja
         self.email = data['email']
         self.telefonoFijo = data['fijo']

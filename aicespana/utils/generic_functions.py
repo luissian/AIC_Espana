@@ -1018,12 +1018,12 @@ def get_excel_user_request_boletin():
     heading = ['Nombre', 'Apellidos', 'Calle','Población', 'Provincia', 'Código Postal']
     lista = [heading]
     if PersonalExterno.objects.filter(recibirBoletin = True).exists():
-        externo_objs = PersonalExterno.objects.filter(recibirBoletin = True)
+        externo_objs = PersonalExterno.objects.filter(recibirBoletin = True).order_by('codigoPostal')
         for externo_obj in externo_objs:
             lista.append(externo_obj.get_data_for_boletin())
 
     if PersonalIglesia.objects.filter(recibirBoletin = True).exists():
-        externo_objs = PersonalIglesia.objects.filter(recibirBoletin = True)
+        externo_objs = PersonalIglesia.objects.filter(recibirBoletin = True).order_by('codigoPostal')
         for externo_obj in externo_objs:
             lista.append(externo_obj.get_data_for_boletin())
     excel_file = os.path.join(settings.MEDIA_ROOT, f_name)

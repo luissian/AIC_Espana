@@ -368,7 +368,7 @@ def modificacion_personal(request):
         user_obj = get_personal_obj_from_id(request.POST['user_id'])
         data = {}
         field_list = ['nombre', 'apellidos','dni','calle','poblacion', 'provincia', 'codigo', 'email', 'fijo', 'movil',
-                'alta', 'baja', 'boletin' ,'activo','nacimiento']
+                'baja', 'boletin' ,'activo','nacimiento']
 
         for item in field_list:
             data[item] = request.POST[item]
