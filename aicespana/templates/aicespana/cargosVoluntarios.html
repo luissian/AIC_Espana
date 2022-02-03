@@ -362,7 +362,41 @@
 			</div> <!-- end col-md-10 -->
 		</div> <!-- end row-->
 	</div> <!-- end container -->
-
+{% elif personal_list %}
+	<div class="container-md">
+		<div class="row g-3">
+			<div class="col-md-10">
+				<div class="card">
+					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Multiples coincidencias en la busqueda</h3></div>
+					<div class="card-body">
+						<h5 style="text-align:center">Se han encontrado varios Voluntarios.</h5>
+						<p>Añade más información para encontrar sólo a un Voluntario. </p>
+						<p>O haz click en el nombre del Voluntario para asignarle  cargos </p>
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<td>Nombre</td>
+									<td>Población</td>
+								</tr>
+							</thead>
+							<tbody>
+								{% for id, nombre, poblacion in personal_list %}
+									<tr>
+										<td><a href="cargoVoluntario={{id}}">{{nombre}}</a></td>
+										<td>{{poblacion}}</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+						<br><br>
+						<div class="text-center">
+							<a href="/modificacionVoluntario"> <button type="button" class="btn btn-outline-secondary float-center" >Buscar de nuevo</button> </a>
+						</div> <!-- end text center -->
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+			</div> <!-- end col-md-10 -->
+		</div> <!-- end row-->
+	</div> <!-- end container -->
 {% else %}
 	<section class="light">
 		<div class="container md-8">

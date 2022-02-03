@@ -60,7 +60,7 @@
 		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
-					<div class="card-header"><h2 style="text-align:center">Información de {{voluntary_data.nombre}} {{voluntary_data.apellido}}</h2> </div>
+					<div class="card-header"><h2 style="text-align:center">Modificación de datos de {{voluntary_data.nombre}} {{voluntary_data.apellido}}</h2> </div>
 					<div class="card-body">
 						<form class="row g-3" method="post" enctype="multipart/form-data" name="actualizarCampos" id="actualizarCampos" >
 							{% csrf_token %}
@@ -204,7 +204,7 @@
 											<option selected value="false">Voluntario de baja</option>
 										{% endif %}
 										<option value="false">Voluntario de baja</option>
-										<option value="true">SVoluntario en activo</option>
+										<option value="true">Voluntario en activo</option>
 									</select>
 								</div>
 
@@ -226,7 +226,7 @@
 {% elif updated_data %}
 	<section class="light">
 		<div class="container md-8">
-			<h1 class="h1 text-center" id="pageHeaderTitle">Asignacion de cargos de voluntarios</h1>
+			<h1 class="h1 text-center" id="pageHeaderTitle">Modificación de datos de voluntarios</h1>
 		</div>
 	</section>
 	<br><br><br>
@@ -352,7 +352,9 @@
 					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Multiples coincidencias en la busqueda</h3></div>
 					<div class="card-body">
 						<h5 style="text-align:center">Se han encontrado varios Voluntarios.</h5>
-						<p>Añade más información para encontrar sólo a un Voluntario para modificar sus datos.</p>
+						<p>Añade más información para encontrar sólo a un Voluntario.</p>
+
+						<p>O haz click en el nombre del Voluntario para modificar sus datos </p>
 						<table class="table table-hover">
 							<thead>
 								<tr>
@@ -361,9 +363,9 @@
 								</tr>
 							</thead>
 							<tbody>
-								{% for nombre, poblacion in personal_list %}
+								{% for id, nombre, poblacion in personal_list %}
 									<tr>
-										<td>{{nombre}}</td>
+										<td><a href="modificacionVoluntarioId={{id}}">{{nombre}}</a></td>
 										<td>{{poblacion}}</td>
 									</tr>
 								{% endfor %}

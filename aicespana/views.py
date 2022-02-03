@@ -346,9 +346,9 @@ def modificacion_personal(request):
             return render(request, 'aicespana/modificacionPersonal.html',{'ERROR':error})
         personal_objs = PersonalIglesia.objects.all()
         if request.POST['apellido'] != '':
-            personal_objs = personal_objs.filter(apellido__iexact = request.POST['apellido'].strip())
+            personal_objs = personal_objs.filter(apellido__icontains = request.POST['apellido'].strip())
         if request.POST['nombre'] != '':
-            personal_objs = personal_objs.filter(nombre__iexact = request.POST['nombre'].strip())
+            personal_objs = personal_objs.filter(nombre__icontains = request.POST['nombre'].strip())
         if len(personal_objs) == 0 :
             error = ['No hay nigún voluntario que cumpla los criterios de busqueda', str(request.POST['nombre']  + ' ' + request.POST['apellido']) ]
             return render(request, 'aicespana/modificacionPersonal.html',{'ERROR':error})
@@ -410,6 +410,20 @@ def modificar_proyecto(request,proyecto_id):
         return render(request,'aicespana/modificarProyecto.html',{'confirmation_data':request.POST['proyecto_name']})
     return render(request,'aicespana/modificarProyecto.html',{'proyecto_data':proyecto_data})
 
+@login_required
+def modificacion_voluntario_id(request, voluntario_id):
+
+    user_obj = get_user_obj_from_id(voluntario_id)
+    voluntary_data = user_obj.get_all_data_from_voluntario()
+    voluntary_data['provincias'] = get_provincias()
+    voluntary_data['grupo_lista'] = get_group_list_to_select_in_form()
+    voluntary_data['tipo_colaboracion'] = get_volunteer_types()
+    voluntary_data['proyecto_lista'] = get_project_group_diocesis()
+    voluntary_data['proyecto_data_form'] = user_obj.get_proyecto_data_for_form()
+    voluntary_data['actividad_lista'] = get_activity_group_diocesis()
+    voluntary_data['actividad_data_form'] = user_obj.get_actividad_data_for_form()
+
+    return render(request, 'aicespana/modificacionVoluntario.html', {'voluntary_data':voluntary_data})
 
 @login_required
 def modificacion_voluntario(request):
@@ -432,16 +446,16 @@ def modificacion_voluntario(request):
             return render(request, 'aicespana/modificacionVoluntario.html',{'ERROR':error})
         personal_objs = PersonalExterno.objects.all()
         if request.POST['apellido'] != '':
-            personal_objs = personal_objs.filter(apellido__iexact = request.POST['apellido'].strip())
+            personal_objs = personal_objs.filter(apellido__icontains = request.POST['apellido'].strip())
         if request.POST['nombre'] != '':
-            personal_objs = personal_objs.filter(nombre__iexact = request.POST['nombre'].strip())
+            personal_objs = personal_objs.filter(nombre__icontains = request.POST['nombre'].strip())
         if len(personal_objs) == 0 :
             error = ['No hay nigún voluntario que cumpla los criterios de busqueda', str(request.POST['nombre']  + ' ' + request.POST['apellido']) ]
             return render(request, 'aicespana/modificacionVoluntario.html',{'ERROR':error})
         if len(personal_objs) >1 :
             personal_list = []
             for personal_obj in personal_objs:
-                personal_list.append([personal_obj.get_personal_name(),personal_obj.get_personal_location()])
+                personal_list.append([personal_obj.get_personal_id(), personal_obj.get_personal_name(),personal_obj.get_personal_location()])
             return render(request, 'aicespana/modificacionVoluntario.html', {'personal_list':personal_list})
         voluntary_data = personal_objs[0].get_all_data_from_voluntario()
         voluntary_data['provincias'] = get_provincias()
@@ -492,9 +506,9 @@ def cargos_personal(request):
             return render(request, 'aicespana/cargosPersonal.html',{'ERROR':error})
         personal_objs = PersonalIglesia.objects.all()
         if request.POST['apellido'] != '':
-            personal_objs = personal_objs.filter(apellido__iexact = request.POST['apellido'].strip())
+            personal_objs = personal_objs.filter(apellido__icontains = request.POST['apellido'].strip())
         if request.POST['nombre'] != '':
-            personal_objs = personal_objs.filter(nombre__iexact = request.POST['nombre'].strip())
+            personal_objs = personal_objs.filter(nombre__icontains = request.POST['nombre'].strip())
         if len(personal_objs) == 0:
             error = [ERROR_NOT_FIND_PERSONAl_CRITERIA, str(request.POST['nombre']  + ' ' + request.POST['apellido']) ]
             return render(request, 'aicespana/cargosPersonal.html',{'ERROR':error})
@@ -523,6 +537,14 @@ def cargos_personal(request):
 
 
 @login_required
+def cargo_voluntario(request, voluntario_id):
+    user_obj = get_user_obj_from_id(voluntario_id)
+    personal_available_settings = get_responsablity_data_for_voluntary(user_obj)
+    personal_available_settings.update(get_external_personal_responsability(user_obj))
+    personal_available_settings['user_id'] = voluntario_id
+    return render(request, 'aicespana/cargosVoluntarios.html', {'personal_available_settings':personal_available_settings})
+
+@login_required
 def cargos_voluntarios(request):
     if request.method == 'POST' and request.POST['action'] == 'busquedaVoluntario':
         if request.POST['nif'] == '' and request.POST['nombre'] == '' and request.POST['apellido'] == '':
@@ -540,9 +562,9 @@ def cargos_voluntarios(request):
             return render(request, 'aicespana/cargosVoluntarios.html',{'ERROR':error})
         personal_objs = PersonalExterno.objects.all()
         if request.POST['apellido'] != '':
-            personal_objs = personal_objs.filter(apellido__iexact = request.POST['apellido'].strip())
+            personal_objs = personal_objs.filter(apellido__icontains = request.POST['apellido'].strip())
         if request.POST['nombre'] != '':
-            personal_objs = personal_objs.filter(nombre__iexact = request.POST['nombre'].strip())
+            personal_objs = personal_objs.filter(nombre__icontains = request.POST['nombre'].strip())
         if len(personal_objs) == 0 :
             error = ['No hay nigún voluntario que cumpla los criterios de busqueda', str(request.POST['nombre']  + ' ' + request.POST['apellido']) ]
             return render(request, 'aicespana/cargosVoluntarios.html',{'ERROR':error})
@@ -585,12 +607,12 @@ def informacion_voluntario(request):
             return render(request, 'aicespana/informacionVoluntario.html',{'ERROR':error})
         personal_objs = PersonalExterno.objects.all()
         if request.POST['apellidos'] != '':
-            personal_objs = personal_objs.filter(apellido__iexact = request.POST['apellidos'])
+            personal_objs = personal_objs.filter(apellido__icontains = request.POST['apellidos'])
             if len(personal_objs) == 0:
                 error = ['No hay nigún voluntario con el apellido', request.POST['apellidos']]
                 return render(request, 'aicespana/informacionVoluntario.html',{'ERROR':error})
         if request.POST['nombre'] != '':
-            personal_objs = personal_objs.filter(nombre__iexact = request.POST['nombre'])
+            personal_objs = personal_objs.filter(nombre__icontains = request.POST['nombre'])
             if len(personal_objs) == 0:
                 error = ['No hay nigún voluntario con el nombre', request.POST['nombre']]
                 return render(request, 'aicespana/informacionVoluntario.html',{'ERROR':error})
