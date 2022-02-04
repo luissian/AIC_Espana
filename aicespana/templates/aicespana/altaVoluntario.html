@@ -7,7 +7,24 @@
 	  color:red;
 	}
 </style>
+{% if ERROR %}
 
+	<div class="container-md">
+		<div class="row g-3"">
+			<div class="col-md-10">
+				<div class="card  border-danger">
+					<div class="card-header"><h2 style="text-align:center">El voluntario no se puede crear</h2> </div>
+					<div class="card-body">
+						{% for values in ERROR %}
+							<h4>{{values}}</h4>
+						{% endfor %}
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+		    </div> <!-- end col-md-10 -->
+		</div> <!-- end row-->
+	</div> <!-- end container -->
+
+{% endif %}
 {% if confirmation_data %}
 	<div class="container-md">
 		<div class="row g-3"">

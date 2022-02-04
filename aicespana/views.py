@@ -168,6 +168,8 @@ def alta_voluntario(request):
         personal_data = {}
         for field in info_to_fetch:
             personal_data[field] = request.POST[field].strip()
+        if PersonalExterno.objects.filter(nombre__iexact = personal_data['nombre'], apellido__iexact = personal_data['apellidos']).exists():
+            return render(request,'aicespana/altaVoluntario.html',{'ERROR': ERROR_VOLUNTARIO_ALREADY_IN_DATABASE})
         PersonalExterno_obj = PersonalExterno.objects.create_new_external_personel(personal_data)
         confirmation_data = {}
         confirmation_data['nombre'] = request.POST['nombre']
@@ -619,7 +621,9 @@ def informacion_voluntario(request):
         if len(personal_objs) >1 :
             error = ['Hay más de un voluntario que cumple los criterios de busqueda']
             return render(request, 'aicespana/informacionVoluntario.html', {'ERROR':error})
-        info_voluntario = [personal_objs[0].get_voluntario_data()]
+        info_voluntario = personal_objs[0].get_all_data_from_voluntario()
+        info_voluntario['cargos'] = personal_objs[0].get_responability_belongs_to()
+        #info_voluntario = [personal_objs[0].get_voluntario_data()]
         return render(request,'aicespana/informacionVoluntario.html',{'info_voluntario':info_voluntario})
     return render(request,'aicespana/informacionVoluntario.html')
 

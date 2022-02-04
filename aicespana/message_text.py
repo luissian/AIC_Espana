@@ -27,3 +27,5 @@ ERROR_ACTIVIDAD_NOT_EXIST = 'La Actividad no existe'
 ERROR_ACTIVIDAD_MODIFICATION_EXIST = 'La Actividad no se puede modificar porque ya existe una con el mismo nombre'
 
 ERROR_USER_NOT_ALLOW_TO_SEE_LISTADOS ='Usuario no está autorizado a acceder a los listados'
+
+ERROR_VOLUNTARIO_ALREADY_IN_DATABASE = 'El Voluntario que deseas dar de alta ya está almacenado en la base de datos'

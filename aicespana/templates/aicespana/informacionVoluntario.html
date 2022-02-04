@@ -27,54 +27,238 @@
 {% endif %}
 
 {% if info_voluntario %}
-	<div class="container-md">
-		<div class="row mt-5">
-			<div class="col-md-10">
-				<div class="card">
-					<div class="card-header"><h2 style="text-align:center">Información del Voluntario</h2> </div>
-					<div class="card-body">
-						<div class="table-wrapper">
-							<table id="voluntario" class="table table-hover mb-0">
-								<tbody>
-									{% for name, calle, pob, prov, cpostal, email, dni, movil, grupo, responsable, diocesis in info_voluntario %}
-										<tr>
-											<td class="col text-center">Nombre</td>
-											<td>{{name}}</td>
-										</tr>
-										<tr>
-											<td class="col text-center">Dirección</td>
-											<td>{{calle}}<br>{{pob}}<br>{{prov}}<br>{{cpostal}}</td>
-										</tr>
-										<tr>
-											<td class="col text-center">Tlf. Móvil</td>
-											<td>{{movil}}</td>
-										</tr>
-										<tr>
-											<td class="col text-center">Tlf. Fijo</td>
-											<td>{{telephone}}</td>
-										</tr>
-										<tr>
-											<td class="col text-center">email</td>
-											<td>{{email}}</td>
-										</tr>
-										<tr>
-											<td class="col text-center">Grupo</td>
-											<td >{{grupo}} en la diocesis de {{diocesis}}</td>
-										</tr>
-										<tr>
-											<td class="col text-center">Cargo</td>
-											<td >{{responsable}}</td>
-										</tr>
-									{% endfor %}
-								</tbody>
-							</table>
-						</div> <!--  end of table wrapper  -->
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-8 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+<div class="container sm-12">
+	<div class="row mt-5">
+		<div class="container sm-12">
+			<br><br><br>
+			<ul class="nav nav-tabs" id="myTab" role="tablist">
+			   <li class="nav-item" role="presentation">
+			    	<button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab" aria-controls="info" aria-selected="true">Información General</button>
+			</li>
+			<li class="nav-item" role="presentation">
+			   	<button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contacto" type="button" role="tab" aria-controls="contacto" aria-selected="false">Datos de Contacto</button>
+			</li>
+			<li class="nav-item" role="presentation">
+			   	<button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#grupo" type="button" role="tab" aria-controls="grupo" aria-selected="false">Grupo</button>
+			</li>
+			<li class="nav-item" role="presentation">
+			  	<button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#cargos" type="button" role="tab" aria-controls="cargos" aria-selected="false">Cargos</button>
+			</li>
+			<li class="nav-item" role="presentation">
+			  	<button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#proyecto" type="button" role="tab" aria-controls="proyecto" aria-selected="false">Proyecto/Actividad</button>
+			</li>
+		   </ul>
+		   <div class="tab-content" id="myTabContent">
+			   <div class="tab-pane fade show active" id="info" role="tabpanel" aria-labelledby="info-tab">
+				   <div class="container-md">
+					   <div class="row mt-4">
+						   <div class="col-md-10">
+							    <div class="card">
+								   	<div class="card-header"><h2 style="text-align:center">Información del Voluntario</h2> </div>
+   				  					<div class="card-body">
+										<div class="table-wrapper">
+											<table id="voluntario" class="table table-hover mb-0">
+												<tbody>
+													<tr>
+														<td class="col text-center">Nombre</td>
+														<td>{{info_voluntario.nombre}}  {{info_voluntario.apellido}}</td>
+													</tr>
+													<tr>
+														<td class="col text-center">Fecha Nacimiento</td>
+														<td>{{info_voluntario.nacimiento}}</td>
+													</tr>
+													<tr>
+														<td class="col text-center">Tipo de Colaboración</td>
+														<td>{{info_voluntario.colaboracion}}</td>
+													</tr>
+													<tr>
+														<td class="col text-center">Boletin</td>
+														<td>
+															{% if info_voluntario.boletin == 'True' %}
+																Si, Desea recibir el boletin
+															{% else %}
+																No desea recibir el boletin
+															{% endif %}
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div> <!--  end of table wrapper  -->
+									</div> <!-- end card body-->
+								</div> <!-- end card  -->
+								<div class="card">
+								   	<div class="card-header"><h2 style="text-align:center">Observaciones del Voluntario</h2> </div>
+   				  					<div class="card-body">
+										<p>{% if info_voluntario.observaciones %}
+												{{info_voluntario.observaciones}}
+											{% endif %}
+										</p>
+									</div> <!-- end card body-->
+								</div> <!-- end card  -->
+					  		</div> <!-- end col-md-10 -->
+					  	</div> <!-- end row-->
+					</div> <!-- end continer-->
+				</div>  <!-- end tab info -->
 
+				<div class="tab-pane fade" id="contacto" role="tabpanel" aria-labelledby="grupo-tab">
+					<div class="container-md">
+					    <div class="row mt-5">
+						  	<div class="col-md-10">
+						  		<div class="card">
+						  			<div class="card-header"><h2 style="text-align:center">Datos de contacto </h2> </div>
+						  			<div class="card-body">
+										<div class="table-wrapper">
+											<table id="contacto-table" class="table table-hover mb-0">
+												<tbody>
+													<tr>
+														<td class="col text-center">Dirección Postal</td>
+														<td>{{info_voluntario.calle}}
+															<br>{{info_voluntario.poblacion}}
+															<br>{{info_voluntario.provincia}}
+															<br>{{info_voluntario.codigo}}</td>
+													</tr>
+													<tr>
+														<td class="col text-center">Tlf. Móvil</td>
+														<td>
+															{% if  not info_voluntario.movil %}
+																No se ha proporcionado
+															{% else %}
+																{{info_voluntario.movil}}
+															{% endif %}
+														</td>
+													</tr>
+													<tr>
+														<td class="col text-center">Tlf. Fijo</td>
+														<td>
+															{% if not info_voluntario.telephone  %}
+															No se ha proporcionado
+															{% else%}
+																{{info_voluntario.telephone}}
+															{% endif%}
+														</td>
+													</tr>
+													<tr>
+														<td class="col text-center">correo electrónico</td>
+														<td>
+															{% if not info_voluntario.email %}
+																No se ha proporcionado
+															{% else%}
+																{{info_voluntario.email}}
+															{% endif%}
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div> <!--  end of table wrapper  -->
+									</div> <!-- end card body-->
+								</div> <!-- end card  -->
+					  		</div> <!-- end col-md-10 -->
+					  	</div> <!-- end row-->
+					</div> <!-- end continer-->
+				</div>  <!-- end tab contacto -->
+
+
+
+				<div class="tab-pane fade" id="grupo" role="tabpanel" aria-labelledby="grupo-tab">
+					<div class="container-md">
+					    <div class="row mt-5">
+						  	<div class="col-md-10">
+						  		<div class="card">
+						  			<div class="card-header"><h2 style="text-align:center">Grupo</h2> </div>
+						  			<div class="card-body">
+										<div class="table-wrapper">
+											<table id="grupo_table" class="table table-hover mb-0">
+												<tbody>
+													<tr>
+														<td class="col text-center">Nombre del grupo</td>
+														<td>
+															{% if not info_voluntario.grupo %}
+																El Voluntario no está asignado a ningún grupo
+															{% else %}
+																{{info_voluntario.grupo}} en la diocesis de {{info_voluntario.diocesis}}
+															{% endif%}
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div> <!--  end of table wrapper  -->
+									</div> <!-- end card body-->
+								</div> <!-- end card  -->
+					  		</div> <!-- end col-md-10 -->
+					  	</div> <!-- end row-->
+					</div> <!-- end continer-->
+				</div>  <!-- end tab grupo -->
+
+				<div class="tab-pane fade" id="cargos" role="tabpanel" aria-labelledby="cargos-tab">
+					<div class="container-md">
+					    <div class="row mt-5">
+						  	<div class="col-md-10">
+						  		<div class="card">
+						  			<div class="card-header"><h2 style="text-align:center">Cargos</h2> </div>
+						  			<div class="card-body">
+										<div class="table-wrapper">
+											<table id="cargos_table" class="table table-hover mb-0">
+												<tbody>
+
+													<tr>
+														<td class="col text-center">Cargo</td>
+														<td >
+															{% if not info_voluntario.cargos %}
+																El Voluntario no tiene ningún cargo
+															{% else %}
+																{{info_voluntario.cargos}} en la diocesis de {{info_voluntario.diocesis}}
+															{% endif%}
+															{{info_voluntario.cargos}}</td>
+													</tr>
+												</tbody>
+											</table>
+										</div> <!--  end of table wrapper  -->
+									</div> <!-- end card body-->
+								</div> <!-- end card  -->
+							</div> <!-- end col-md-8 -->
+						</div> <!-- end row-->
+					</div> <!-- end container -->
+				</div>  <!-- end tab cargos -->
+
+				<div class="tab-pane fade" id="proyecto" role="tabpanel" aria-labelledby="proyecto-tab">
+					<div class="container-md">
+					    <div class="row mt-5">
+						  	<div class="col-md-10">
+						  		<div class="card">
+						  			<div class="card-header"><h2 style="text-align:center">Proyecto o Actividad del Voluntario</h2> </div>
+						  			<div class="card-body">
+										{% if not info_voluntario.proyecto_name and not info_voluntario.actividad_name %}
+											<h5 style="text-align:center">No está asignado a ningún proyecto ni a ninguna actividad </h5>
+										{% else %}
+											<div class="table-wrapper">
+												<table id="cargos_table" class="table table-hover mb-0">
+													<tbody>
+														{% if info_voluntario.proyecto_name %}
+														<tr>
+															<td class="col text-center">Proyecto que participa el voluntario</td>
+															<td> {{info_voluntario.proyecto_name}}</td>
+														</tr>
+														{% endif %}
+														{% if  info_voluntario.actividad_name %}
+														<tr>
+															<td class="col text-center">Actividad que participa el voluntario</td>
+															<td> {{info_voluntario.actividad_name}}</td>
+														</tr>
+														{% endif %}
+													</tbody>
+												</table>
+											</div> <!--  end of table wrapper  -->
+										{% endif %}
+									</div> <!-- end card body-->
+								</div> <!-- end card  -->
+							</div> <!-- end col-md-8 -->
+						</div> <!-- end row-->
+					</div> <!-- end container -->
+				</div>  <!-- end tab grupo -->
+			</div>  <!-- end myTabContent -->
+		</div>  <!-- end container -->
+	</div> <!-- end row-->
+</div>  <!-- end container -->
 {% else %}
 	<br><br><br>
 	<div class="container-md">
