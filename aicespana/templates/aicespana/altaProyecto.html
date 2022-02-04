@@ -7,7 +7,13 @@
 	  color:red;
 	}
 </style>
-
+<style>
+.table-wrapper {
+    height: 550px;
+    overflow: auto;
+    display:inline-block;
+    width: 540px;
+</style>
 {% if ERROR %}
 	<div class="container-md">
 		<div class="row g-3"">
@@ -112,37 +118,39 @@
 	            <div class="card">
 					<div class="card-header"><h2 style="text-align:center">Listado de Proyectos</h2> </div>
 	                    <div class="card-body">
-							<table class="table table-hover">
-								<thead>
-									<tr>
-										<th>Delegación</th>
-										<th>Proyecto</th>
-										<th>Grupo</th>
-										<th>Diocesis</th>
-									</tr>
-
-								</thead>
-
-                            	<tbody>
-									{% for delegacion, diocesis_data in proyecto_data.proyectos_grupos_diocesis_name.items %}
+							<div class="table-wrapper">
+								<table class="table table-hover">
+									<thead>
 										<tr>
-											<td>{{delegacion}}</td>
-											<td></td>
-											<td></td>
+											<th>Delegación</th>
+											<th>Proyecto</th>
+											<th>Grupo</th>
+											<th>Diocesis</th>
 										</tr>
-										{% for diocesis, proyectos in diocesis_data.items %}
-											{% for id, proyecto, grupo in proyectos %}
-												<tr>
-													<td></td>
-													<td>{{proyecto}}</td>
-													<td>{{grupo}}</td>
-													<td>{{diocesis}}</td>
-												</tr>
+
+									</thead>
+
+	                            	<tbody>
+										{% for delegacion, diocesis_data in proyecto_data.proyectos_grupos_diocesis_name.items %}
+											<tr>
+												<td>{{delegacion}}</td>
+												<td></td>
+												<td></td>
+											</tr>
+											{% for diocesis, proyectos in diocesis_data.items %}
+												{% for id, proyecto, grupo in proyectos %}
+													<tr>
+														<td></td>
+														<td>{{proyecto}}</td>
+														<td>{{grupo}}</td>
+														<td>{{diocesis}}</td>
+													</tr>
+													{% endfor %}
 												{% endfor %}
-											{% endfor %}
-									{% endfor %}
-	                            </tbody>
-	                        </table>
+										{% endfor %}
+		                            </tbody>
+		                        </table>
+							<div> <!-- end table-wrapper -->
 						</div>  <!-- end card-body -->
 		            </div>  <!-- end card -->
 		        </div> <!-- end col-md-5 -->

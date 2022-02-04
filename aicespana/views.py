@@ -352,7 +352,7 @@ def modificacion_personal(request):
         if request.POST['nombre'] != '':
             personal_objs = personal_objs.filter(nombre__icontains = request.POST['nombre'].strip())
         if len(personal_objs) == 0 :
-            error = ['No hay nigún voluntario que cumpla los criterios de busqueda', str(request.POST['nombre']  + ' ' + request.POST['apellido']) ]
+            error = ['No hay nigún Personal de Iglesia que cumpla los criterios de busqueda:', str(request.POST['nombre']  + ' ' + request.POST['apellido']) ]
             return render(request, 'aicespana/modificacionPersonal.html',{'ERROR':error})
         if len(personal_objs) >1 :
 

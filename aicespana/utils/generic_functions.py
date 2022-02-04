@@ -1015,7 +1015,7 @@ def get_excel_user_request_boletin():
     '''
     import xlsxwriter
     f_name =  'Listado_boletin.xlsx'
-    heading = ['Nombre', 'Apellidos', 'Calle','Población', 'Provincia', 'Código Postal']
+    heading = ['Nombre', 'Apellidos', 'Tipo de colaboración' ,'Calle','Población', 'Provincia', 'Código Postal']
     lista = [heading]
     if PersonalExterno.objects.filter(recibirBoletin = True).exists():
         externo_objs = PersonalExterno.objects.filter(recibirBoletin = True).order_by('codigoPostal')

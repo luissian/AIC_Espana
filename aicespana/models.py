@@ -691,6 +691,7 @@ class PersonalExterno(models.Model):
         data = []
         data.append(self.nombre)
         data.append(self.apellido)
+        data.append(self.get_collaboration_belongs_to())
         data.append(self.calle)
         data.append(self.poblacion)
         data.append(self.provincia)
@@ -960,6 +961,7 @@ class PersonalIglesia(models.Model):
         data = []
         data.append(self.nombre)
         data.append(self.apellido)
+        data.append('Personal Iglesia')
         data.append(self.calle)
         data.append(self.poblacion)
         data.append(self.provincia)

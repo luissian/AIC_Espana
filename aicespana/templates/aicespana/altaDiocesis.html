@@ -7,7 +7,13 @@
 	  color:red;
 	}
 </style>
-
+<style>
+.table-wrapper {
+    height: 350px;
+    overflow: auto;
+    display:inline-block;
+    width: 440px;
+</style>
 {% if ERROR %}
 	<div class="container-md">
 		<div class="row g-3"">
@@ -83,28 +89,28 @@
 	                </div>  <!-- end card-body -->
 	            </div>  <!-- end card -->
 	        </div> <!-- end col-md-6 -->
-			<div class="col-md-4 offset-1">
+			<div class="col-md-5 offset-1">
 	            <div class="card">
 					<div class="card-header"><h2 style="text-align:center">Listado de Diocesises</h2> </div>
 	                    <div class="card-body">
-							<table class="table table-hover">
-								<thead>
-									<tr>
-										<th>Diocesis</th>
-										<th>Delegación</th>
-									</tr>
-
-								</thead>
-
-                            	<tbody>
-									{% for diocesis, delegacion in diocesis_data.diocesis_list %}
+							<div class="table-wrapper">
+								<table class="table table-hover">
+									<thead>
 										<tr>
-											<td>{{ diocesis }}</td>
-											<td>{{delegacion}}</td>
+											<th>Diocesis</th>
+											<th>Delegación</th>
 										</tr>
-										{% endfor %}
-	                            </tbody>
-	                        </table>
+									</thead>
+	                            	<tbody>
+										{% for diocesis, delegacion in diocesis_data.diocesis_list %}
+											<tr>
+												<td>{{ diocesis }}</td>
+												<td>{{delegacion}}</td>
+											</tr>
+											{% endfor %}
+		                            </tbody>
+		                        </table>
+							<div> <!-- end table-wrapper -->
 						</div>  <!-- end card-body -->
 		            </div>  <!-- end card -->
 		        </div> <!-- end col-md-5 -->

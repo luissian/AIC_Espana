@@ -7,7 +7,13 @@
 	  color:red;
 	}
 </style>
-
+<style>
+.table-wrapper {
+    height: 550px;
+    overflow: auto;
+    display:inline-block;
+    width: 540px;
+</style>
 {% if confirmation_data %}
 	<div class="container-md">
 		<div class="row g-3"">
@@ -98,7 +104,7 @@
 							<div class="form-group">
 		                        <div class="col-md-6">
 		                            <label for="observaciones" class="form-label">Observaciones</label>
-		                            <textarea name="observaciones" rows="8" cols="60" maxlength="500"></textarea>
+		                            <textarea name="observaciones" rows="8" cols="50" maxlength="500"></textarea>
 		                        </div>
 							</div>
 							<br><br>
@@ -115,33 +121,33 @@
 	            <div class="card">
 					<div class="card-header"><h2 style="text-align:center">Listado de Grupos</h2> </div>
 	                    <div class="card-body">
-							<table class="table table-hover">
-								<thead>
-									<tr>
-										<th>Delegación</th>
-										<th>Diocesis</th>
-										<th>Grupo</th>
-									</tr>
-
-								</thead>
-
-                            	<tbody>
-									{% for delegacion, grupos in grupo_data.grupos_diocesis_id_name.items %}
+							<div class="table-wrapper">
+								<table class="table table-hover">
+									<thead>
 										<tr>
-											<td>{{delegacion}}</td>
-											<td></td>
-											<td></td>
+											<th>Delegación</th>
+											<th>Diocesis</th>
+											<th>Grupo</th>
 										</tr>
-										{% for id, grupo, diocesis in grupos %}
-										<tr>
-											<td></td>
-											<td>{{ diocesis }}</td>
-											<td>{{grupo}}</td>
-										</tr>
+									</thead>
+	                            	<tbody>
+										{% for delegacion, grupos in grupo_data.grupos_diocesis_id_name.items %}
+											<tr>
+												<td>{{delegacion}}</td>
+												<td></td>
+												<td></td>
+											</tr>
+											{% for id, grupo, diocesis in grupos %}
+											<tr>
+												<td></td>
+												<td>{{ diocesis }}</td>
+												<td>{{grupo}}</td>
+											</tr>
+											{% endfor %}
 										{% endfor %}
-									{% endfor %}
-	                            </tbody>
-	                        </table>
+		                            </tbody>
+		                        </table>
+							<div> <!-- end table-wrapper -->
 						</div>  <!-- end card-body -->
 		            </div>  <!-- end card -->
 		        </div> <!-- end col-md-5 -->

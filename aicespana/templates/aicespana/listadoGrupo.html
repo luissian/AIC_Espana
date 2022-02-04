@@ -448,9 +448,9 @@
 											<h5 style="text-align:center">No hay Asesores en este grupo que sean mayores de 80 años</h5>
 										{% endif %}
 										<br>
-
-
 									</div> <!-- end card body-->
+
+
 								</div> <!-- end card  -->
 							</div> <!-- end col-md-10 -->
 							<div class="col-md-6">
@@ -564,32 +564,35 @@
 								<div class="card">
 									<div class="card-header"><h2 style="text-align:center">Otros menores de 80 años del grupo {{grupo_data.nombre_grupo}}</h2> </div>
 									<div class="card-body">
+										{% if grupo_data.lista_otros.menor80|length > 0 %}
+											<div class="scrolling-wrapper">
+		                            			<div id="spreadsheet33"></div>
+		                        			</div>
+											<br>
+											<input type="button" value="Descarga listado" onclick="table33.download()"/>
+											<script>
+						                         var data33 = [{% for  nombre in grupo_data.lista_otros.menor80 %} ['{{nombre}}'], {% endfor %}
+						                         ];
 
-										<div class="scrolling-wrapper">
-	                            			<div id="spreadsheet33"></div>
-	                        			</div>
-										<br>
-										<input type="button" value="Descarga listado" onclick="table33.download()"/>
-										<script>
-					                         var data33 = [{% for  nombre in grupo_data.lista_otros.menor80 %} ['{{nombre}}'], {% endfor %}
-					                         ];
+						                        var table33 = jexcel(document.getElementById('spreadsheet33'), {
+						                            data:data33,
+						                            columns: [
+						                                { type: 'text', title:'Nombre', width:300 , readOnly:true},
+						                            ],
+						                            allowInsertColumn:false,
+						                            allowDeleteColumn:false,
+						                            allowRenameColumn:false,
+						                            csvFileName:'listado_otros',
+						                            tableOverflow: false,
+						                            tableWidth: "700px",
+													search:true,
+													pagination:20,
 
-					                        var table33 = jexcel(document.getElementById('spreadsheet33'), {
-					                            data:data33,
-					                            columns: [
-					                                { type: 'text', title:'Nombre', width:300 , readOnly:true},
-					                            ],
-					                            allowInsertColumn:false,
-					                            allowDeleteColumn:false,
-					                            allowRenameColumn:false,
-					                            csvFileName:'listado_otros',
-					                            tableOverflow: false,
-					                            tableWidth: "700px",
-												search:true,
-												pagination:20,
-
-					                         });
-					                    </script>
+						                         });
+						                    </script>
+										{% else %}
+											<h5 style="text-align:center">No hay personas en este grupo que sean menores de 80 años</h5>
+										{% endif %}
 									</div> <!-- end card body-->
 								</div> <!-- end card  -->
 							</div> <!-- end col-md-10 -->
