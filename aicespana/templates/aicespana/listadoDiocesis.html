@@ -44,59 +44,77 @@
 
 	<div class="container-md">
 		<div class="row mt-4">
-			<div class="col-md-6 offset-3">
-				<div class="card">
-					<div class="card-body">
-						<div class="table-wrapper">
-			                <table id="dioGeneral" class="table table-hover mb-0">
-			                    <thead>
-			                        <tr>
-										<th>Grupos </th>
-									</tr>
-								</thead>
-								<tbody>
-									{% for id, grupo  in diocesis_data.grupos %}
-										<tr>
-											<td><h5>{{grupo}} &nbsp;&nbsp<a href="/listadoGrupo={{id}}"><i class="bi bi-journal-plus"></i></a></h5></td>
-										</tr>
-									{% endfor %}
-								</tbody>
-							</table>
-						</div> <!--  end of table wrapper  -->
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-8 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+			<div class="container sm-12">
+				<br>
+				<ul class="nav nav-tabs" id="myTab" role="tablist">
+				    <li class="nav-item" role="presentation">
+				    	<button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#grupo" type="button" role="tab" aria-controls="grupo" aria-selected="true">Grupos</button>
+				  	</li>
+				  	<li class="nav-item" role="presentation">
+				    	<button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#cargos" type="button" role="tab" aria-controls="cargos" aria-selected="false">Representantes Diocesis</button>
+				  	</li>
+				</ul>
+				<div class="tab-content" id="myTabContent">
+					<div class="tab-pane fade show active" id="grupo" role="tabpanel" aria-labelledby="info-tab">
+						<div class="container-md">
+							<div class="row mt-5">
+								<div class="col-md-6">
+									<div class="card">
+										<div class="card-body">
+							                <table id="dioGeneral" class="table table-hover mb-0">
+							                    <thead>
+							                        <tr>
+														<th>Grupos </th>
+													</tr>
+												</thead>
+												<tbody>
+													{% for id, grupo  in diocesis_data.grupos %}
+														<tr>
+															<td><h5>{{grupo}} &nbsp;&nbsp<a href="/listadoGrupo={{id}}"><i class="bi bi-journal-plus"></i></a></h5></td>
+														</tr>
+													{% endfor %}
+												</tbody>
+											</table>
+										</div> <!-- end card body-->
+									</div> <!-- end card  -->
+								</div> <!-- end col-md-8 -->
+							</div> <!-- end row-->
+						</div> <!-- end container -->
+					</div>  <!-- end tab grupo -->
 
-	<div class="container-md">
-		<div class="row mt-4">
-			<div class="col-md-6 offset-3">
-				<div class="card">
-					<div class="card-body">
-						<div class="table-wrapper">
-			                <table id="dioGeneral" class="table table-hover mb-0">
-			                    <thead>
-			                        <tr>
-										<th>Cargo</th>
-										<th>Nombre y apellidos</th>
-									</tr>
-								</thead>
-								<tbody>
-									{% for cargo, nombre  in diocesis_data.cargos.items %}
-										<tr>
-											<td>{{cargo}}</td>
-											<td>{{nombre}}</td>
+					<div class="tab-pane fade" id="cargos" role="tabpanel" aria-labelledby="cargos-tab">
+						<div class="container-md">
+							<div class="row mt-5">
+								<div class="col-md-8 offset 1">
+									<div class="card">
+										<div class="card-body">
+							                <table id="dioGeneral" class="table table-hover mb-0">
+							                    <thead>
+							                        <tr>
+														<th>Cargo</th>
+														<th>Nombre y apellidos</th>
+													</tr>
+												</thead>
+												<tbody>
+													{% for cargo, nombre  in diocesis_data.cargos.items %}
+														<tr>
+															<td>{{cargo}}</td>
+															<td>{{nombre}}</td>
 
-										</tr>
-									{% endfor %}
-								</tbody>
-							</table>
-						</div> <!--  end of table wrapper  -->
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-8 -->
+														</tr>
+													{% endfor %}
+												</tbody>
+											</table>
+										</div> <!--  end of table wrapper  -->
+									</div> <!-- end card body-->
+								</div> <!-- end card  -->
+							</div> <!-- end col-md-8 -->
+						</div> <!-- end row-->
+					</div>  <!-- end tab cargos -->
+				</div>  <!-- end myTabContent -->
+			</div>  <!-- end container -->
 		</div> <!-- end row-->
-	</div> <!-- end container -->
+	</div>  <!-- end container -->
+
 {% endif %}
 {% endblock %}

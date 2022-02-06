@@ -90,34 +90,36 @@
 								<div class="col-md-10">
 									<div class="card">
 										<div class="card-body">
-											<div class="table-wrapper">
-								                <table id="dioGeneral" class="table table-hover mb-0">
-								                    <thead>
-								                        <tr>
-															<th>Cargo</th>
-															<th>Nombre</th>
+							                <table id="dioGeneral" class="table table-hover mb-0">
+							                    <thead>
+							                        <tr>
+														<th>Cargo</th>
+														<th>Nombre</th>
+													</tr>
+												</thead>
+												<tbody>
+													{% for cargo , nombre   in delegacion_data.cargos %}
+														<tr>
+															<td>{{cargo}}</td>
+															<td>
+																{% if nombre != 'Puesto vacante' %}
+																	{{nombre}}
+																{% endif %}
+															</td>
 														</tr>
-													</thead>
-													<tbody>
-														{% for cargo , nombre   in delegacion_data.cargos %}
-															<tr>
-																<td>{{cargo}}</td>
-																<td>
-																	{% if nombre != 'Puesto vacante' %}
-																		{{nombre}}
-																	{% endif %}
-																</td>
-															</tr>
-														{% endfor %}
-													</tbody>
-												</table>
-											</div> <!--  end of table wrapper  -->
+													{% endfor %}
+												</tbody>
+											</table>
 										</div> <!-- end card body-->
 									</div> <!-- end card  -->
-								</div> <!-- end col-md-8 -->
+								</div> <!-- end col-md-10 -->
 							</div> <!-- end row-->
 						</div> <!-- end container -->
 					</div>  <!-- end tab cargos -->
+				</div>  <!-- end myTabContent -->
+			</div>  <!-- end container -->
+		</div> <!-- end row-->
+	</div>  <!-- end container -->
 
 {% else %}
 		<div class="row mt-5">
