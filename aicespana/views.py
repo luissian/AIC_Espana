@@ -414,7 +414,8 @@ def modificar_proyecto(request,proyecto_id):
 
 @login_required
 def modificacion_voluntario_id(request, voluntario_id):
-
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     user_obj = get_user_obj_from_id(voluntario_id)
     voluntary_data = user_obj.get_all_data_from_voluntario()
     voluntary_data['provincias'] = get_provincias()
@@ -484,16 +485,11 @@ def modificacion_voluntario(request):
     return render(request,'aicespana/modificacionVoluntario.html')
 
 
-@login_required
-def listado_voluntarios(request):
 
-    return render(request,'listadoVoluntarios.html')
-
-@login_required
-def busqueda_personal(request):
-    return render(request,'resultadoBusqueda.html')
 @login_required
 def cargos_personal(request):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     if request.method == 'POST' and request.POST['action'] == 'busquedaPersonal':
         if request.POST['nif'] == '' and request.POST['nombre'] == '' and request.POST['apellido'] == '':
             return render(request, 'aicespana/cargosPersonal.html')
@@ -531,6 +527,7 @@ def cargos_personal(request):
         data = {}
         data['cargo'] = request.POST['cargo']
         data['delegacion'] = request.POST['delegacion']
+        data['diocesis'] = request.POST['diocesis']
         data['grupo'] = request.POST['grupo']
         user_obj.update_information(data)
         updated_data = get_personal_responsability(user_obj)
@@ -540,6 +537,8 @@ def cargos_personal(request):
 
 @login_required
 def cargo_voluntario(request, voluntario_id):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     user_obj = get_user_obj_from_id(voluntario_id)
     personal_available_settings = get_responsablity_data_for_voluntary(user_obj)
     personal_available_settings.update(get_external_personal_responsability(user_obj))
@@ -548,6 +547,8 @@ def cargo_voluntario(request, voluntario_id):
 
 @login_required
 def cargos_voluntarios(request):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     if request.method == 'POST' and request.POST['action'] == 'busquedaVoluntario':
         if request.POST['nif'] == '' and request.POST['nombre'] == '' and request.POST['apellido'] == '':
             return render(request, 'aicespana/cargosVoluntarios.html')
@@ -594,6 +595,8 @@ def cargos_voluntarios(request):
     return render(request, 'aicespana/cargosVoluntarios.html')
 @login_required
 def informacion_voluntario(request):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     if request.method == 'POST' and request.POST['action'] == 'busquedaVoluntario':
         if request.POST['nif'] == '' and request.POST['nombre'] == '' and request.POST['apellidos'] == '':
             return render(request, 'aicespana/informacionVoluntario.html')
@@ -629,6 +632,8 @@ def informacion_voluntario(request):
 
 @login_required
 def listado_boletin(request):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     listado = get_excel_user_request_boletin()
     return render(request,'aicespana/listadoBoletin.html',{'listado':listado})
 
@@ -661,6 +666,7 @@ def listado_delegacion(request, delegacion_id):
     delegacion_data['summary'] = [get_summary_of_delegation(delegacion_obj)]
     delegacion_data['delegacion_name'] = delegacion_obj.get_delegacion_name()
     delegacion_data['delegacion_image'] = delegacion_obj.get_delegacion_image()
+    delegacion_data.update(get_delegation_data (delegacion_id))
     return render(request,'aicespana/listadoDelegacion.html', {'delegacion_data': delegacion_data})
 
 
@@ -712,3 +718,12 @@ def listado_voluntarios_grupo(request):
         return render(request, 'aicespana/listadoVoluntariosGrupo.html', {'voluntarios_data': voluntarios_data})
 
     return render(request,'aicespana/listadoVoluntariosGrupo.html', {'grupos':grupos})
+
+
+@login_required
+def listado_personal_iglesia(request):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    listado_pesonal = get_personal_list_order_by_delegacion()
+
+    return render(request,'aicespana/listadoPersonalIglesia.html',{'listado_pesonal': listado_pesonal})

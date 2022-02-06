@@ -851,6 +851,9 @@ class PersonalIglesia(models.Model):
     delegacion = models.ForeignKey(
                         Delegacion,
                         on_delete=models.CASCADE, null=True, blank = True)
+    diocesis = models.ForeignKey(
+                        Diocesis,
+                        on_delete=models.CASCADE, null=True, blank = True)
     nombre = models.CharField(max_length=40,null=True, blank = True)
     apellido = models.CharField(max_length=40,null=True, blank = True)
     DNI = models.CharField(max_length=20, null=True, blank = True)
@@ -890,7 +893,7 @@ class PersonalIglesia(models.Model):
             return '%s' %(self.delegacion.get_delegacion_id())
         return ''
 
-    def get_dicesis_belongs_to(self):
+    def get_diocesis_belongs_to(self):
         if self.grupoAsociado :
             return '%s' %(self.grupoAsociado.get_diocesis_name())
         return ''
@@ -983,6 +986,13 @@ class PersonalIglesia(models.Model):
                 delegacion_obj = None
         else:
             delegacion_obj = None
+        if data['diocesis'] != '':
+            try:
+                diocesis_obj = Diocesis.objects.get(pk__exact = data['diocesis'])
+            except:
+                diocesis_obj = None
+        else:
+            diocesis_obj = None
         if data['cargo'] != '':
             try:
                 cargo_obj = Cargo.objects.get(pk__exact = data['cargo'])
@@ -993,6 +1003,7 @@ class PersonalIglesia(models.Model):
 
         self.grupoAsociado = grupo_obj
         self.delegacion = delegacion_obj
+        self.diocesis = diocesis_obj
         self.cargo = cargo_obj
         self.save()
         return self

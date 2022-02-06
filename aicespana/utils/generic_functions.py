@@ -5,7 +5,7 @@ from django.conf import settings
 import collections
 
 
-def check_exists_grupo(grupo_name,dioceis_id ):
+def check_exists_grupo(grupo_name,diocesis_id ):
     '''
     Description:
         The function gets the information and the personal name and the responsability.
@@ -15,9 +15,9 @@ def check_exists_grupo(grupo_name,dioceis_id ):
     Return:
         True/False
     '''
-    return Grupo.objects.filter(nombreGrupo__iexact = grupo_name, diocesisDependiente__pk__exact = dioceis_id).exists()
+    return Grupo.objects.filter(nombreGrupo__iexact = grupo_name, diocesisDependiente__pk__exact = diocesis_id).exists()
 
-def check_exists_parroquia(parroquia_name,dioceis_id ):
+def check_exists_parroquia(parroquia_name,diocesis_id ):
     '''
     Description:
         The function gets the information and the personal name and the responsability.
@@ -27,7 +27,7 @@ def check_exists_parroquia(parroquia_name,dioceis_id ):
     Return:
         True/False
     '''
-    return Parroquia.objects.filter(nombreParroquia__iexact = parroquia_name, diocesisDependiente__pk__exact =dioceis_id).exists()
+    return Parroquia.objects.filter(nombreParroquia__iexact = parroquia_name, diocesisDependiente__pk__exact =diocesis_id).exists()
 
 def get_delegation_data(delegation_id):
     '''
@@ -226,7 +226,7 @@ def get_diocesis_in_delegation(delegacion_obj):
 def get_groups_in_diocesis(diocesis_obj):
     '''
     Description:
-        The function gets the grupos and their id from a dioceis
+        The function gets the grupos and their id from a diocesis
     Input:
         diocesis_obj  # object of diocesis
     Return:
@@ -761,7 +761,7 @@ def get_personal_responsability(personal_obj):
     personal_responsability ={}
     personal_responsability['group'] = personal_obj.get_group_belongs_to()
     personal_responsability['group_id'] = personal_obj.get_group_id_belongs_to()
-    personal_responsability['diocesis'] = personal_obj.get_dicesis_belongs_to()
+    personal_responsability['diocesis'] = personal_obj.get_diocesis_belongs_to()
     personal_responsability['responsability'] = personal_obj.get_responability_belongs_to()
     personal_responsability['responsability_id'] = personal_obj.get_responability_id_belongs_to()
     personal_responsability['delegacion'] = personal_obj.get_delegacion_belongs_to()
@@ -790,6 +790,7 @@ def get_responsablity_data_for_personel(personal_obj):
     responsability_options = {}
     responsability_options['available_groups'] = []
     responsability_options['available_delegacion'] = []
+    responsability_options['available_diocesis'] = []
     responsability_options['available_responsible'] = []
     if Grupo.objects.all().exists():
         group_objs = Grupo.objects.all().order_by('nombreGrupo')
@@ -803,6 +804,10 @@ def get_responsablity_data_for_personel(personal_obj):
         delegacion_objs = Delegacion.objects.all().order_by('nombreDelegacion')
         for delegacion_obj in delegacion_objs:
             responsability_options['available_delegacion'].append([delegacion_obj.get_delegacion_id(), delegacion_obj.get_delegacion_name()])
+    if Diocesis.objects.all().exists():
+        diocesis_objs = Diocesis.objects.all().order_by('nombreDiocesis')
+        for diocesis_obj in diocesis_objs:
+            responsability_options['available_diocesis'].append([diocesis_obj.get_diocesis_id(), diocesis_obj.get_diocesis_name()])
     return responsability_options
 
 def get_responsablity_data_for_voluntary(personal_obj):
@@ -1005,6 +1010,48 @@ def allow_see_group_information_voluntary (request, group_obj):
     except:
         return False
     return True
+
+def get_personal_list_order_by_delegacion():
+    '''
+    Description:
+        The function get the personel list ordered by delegation - Diocesis - grupo
+    Return:
+        Return personal_list
+    '''
+    personal_list = collections.OrderedDict()
+    if PersonalIglesia.objects.all().exists():
+        '''
+        delegation_objs = Delegacion.objects.all().order_by('nombreDelegacion')
+        for delegation_obj in delegation_objs:
+            delegation_name = delegation_obj.get_delegacion_name()
+            diocesis_objs = Diocesis.objects.filter(delegacionDependiente = delegation_obj).order_by('nombreDiocesis')
+            for diocesis_obj in diocesis_objs:
+                diocesis_name = diocesis_obj.get_diocesis_name()
+                grupo_objs = Grupo.objects.filter(diocesisDependiente = diocesis_obj).order_by('nombreGrupo')
+                for grupo_obj in grupo_objs:
+                    grupo_name = grupo_obj.get_grupo_name()
+                    for proyecto_obj in proyecto_objs:
+                        if not delegation_name in proyecto_grupo_diocesis_data:
+                            proyecto_grupo_diocesis_data[delegation_name] = collections.OrderedDict()
+                        if not diocesis_name in proyecto_grupo_diocesis_data[delegation_name]:
+                            proyecto_grupo_diocesis_data[delegation_name][diocesis_name] = []
+                        proyecto_grupo_diocesis_data[delegation_name][diocesis_name].append([proyecto_obj.get_proyecto_id(),proyecto_obj.get_proyecto_name(),grupo_name ])
+                        return proyecto_grupo_diocesis_data
+        '''
+
+
+        personal_objs = PersonalIglesia.objects.all().order_by('delegacion').order_by('grupoAsociado__diocesisDependiente').order_by('grupoAsociado').order_by('nombre')
+        for personal_obj in personal_objs:
+            delegation_name = personal_obj.get_delegacion_belongs_to()
+            diocesis_name = personal_obj.get_diocesis_belongs_to()
+            if not delegation_name in personal_list:
+                personal_list[delegation_name] = collections.OrderedDict()
+            if not diocesis_name in personal_list[delegation_name]:
+                personal_list[delegation_name][diocesis_name] = []
+            personal_list[delegation_name][diocesis_name].append([personal_obj.get_personal_id(),personal_obj.get_personal_name(),personal_obj.get_responability_belongs_to() ])
+
+    return personal_list
+
 
 def get_excel_user_request_boletin():
     '''

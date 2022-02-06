@@ -47,7 +47,7 @@
 						<p>Para asignar un cargo a otro personal de la Iglesia hacer click en el boton de abajo</p>
 						<br><br>
 						<div class="text-center">
-							<a href="/cargosPersonalIglesia"> <button type="button" class="btn btn-outline-secondary float-center" >Añadir un nuevo Cargo</button> </a>
+							<a href="/cargosPersonalIglesia"> <button type="button" class="btn btn-outline-secondary float-center" >Asignar un nuevo Cargo</button> </a>
 						</div> <!-- end text center -->
 					</div> <!-- end card body-->
 				</div> <!-- end card  -->
@@ -109,6 +109,16 @@
 											{% endif %}
 										</td>
 									</tr>
+									<tr>
+										<td>Diocesis</td>
+										<td>
+											{% if personal_available_settings.diocesis %}
+												{{personal_available_settings.diocesis}}
+											{% else %}
+												No se ha asignado a ninguna Diocesis
+											{% endif %}
+										</td>
+									</tr>
 								</tbody>
 							</table>
 						</div> <!-- end col-md-10 -->
@@ -159,6 +169,21 @@
 								</div>
 								<br>
 
+								<div class="col-md-10">
+		                            <label for="proyecto"  class="control-label col-md-3">Seleciona la diocesis</label>
+									<select name="diocesis" id="diocesis" class="col-md-6">
+										{% if personal_available_settings.diocesis_id != '' %}
+											<option selected value="{{personal_available_settings.diocesis_id}}">{{personal_available_settings.diocesis}}</option>
+										{% else %}
+											<option selected value="">Sin determinar</option>
+										{% endif %}
+										{% for id, dioce  in personal_available_settings.available_diocesis %}
+											<option value="{{id}}">{{dioce}} </option>
+										{% endfor %}
+									</select>
+								</div>
+								<br>
+
 
 								<br>
 								<div class="col-md-10">
@@ -177,7 +202,6 @@
 								<br>
 
 	                        <div class="col-12">
-	                            <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
 	                            <button type="submit" class="btn-outline-primary float-end ">Guardar cambios</button>
 	                        </div>
 	                    </form>

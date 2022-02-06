@@ -107,6 +107,8 @@
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li><a class="nav-link active" aria-current="page" href="/listadoDelegaciones">Voluntarios</a></li>
                                 {% if request.user|has_group:"administracion" %}
+                                    <li><a class="nav-link active" aria-current="page" href="/listadoDelegadosRegionales">Delegados Regionales</a></li>
+                                    <li><a class="nav-link active" aria-current="page" href="/listadoPersonalIglesia">Personal Iglesia</a></li>
                                     <li><a class="nav-link active" aria-current="page" href="/listadoBoletin">Boletin</a></li>
                                 {% endif %}
                             </ul>

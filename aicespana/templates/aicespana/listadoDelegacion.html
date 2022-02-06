@@ -46,30 +46,78 @@
 
 	<div class="container-md">
 		<div class="row mt-4">
-			<div class="col-md-6 offset-3">
-				<div class="card">
-					<div class="card-body">
-						<div class="table-wrapper">
-			                <table id="dioGeneral" class="table table-hover mb-0">
-			                    <thead>
-			                        <tr>
-										<th colspan="2">Diocesis </th>
-									</tr>
-								</thead>
-								<tbody>
-									{% for id, diocesis  in delegacion_data.diocesis_list %}
-										<tr>
-											<td><h5>{{diocesis}} &nbsp;&nbsp<a href="/listadoDiocesis={{id}}"><i class="bi bi-journal-plus"></i></a></h5></td>
-										</tr>
-									{% endfor %}
-								</tbody>
-							</table>
-						</div> <!--  end of table wrapper  -->
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-8 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+			<div class="container sm-12">
+				<br>
+				<ul class="nav nav-tabs" id="myTab" role="tablist">
+				    <li class="nav-item" role="presentation">
+				    	<button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#diocesis" type="button" role="tab" aria-controls="diocesis" aria-selected="true">Diocesis</button>
+				  	</li>
+				  	<li class="nav-item" role="presentation">
+				    	<button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#cargos" type="button" role="tab" aria-controls="cargos" aria-selected="false">Representantes Delegación</button>
+				  	</li>
+				</ul>
+				<div class="tab-content" id="myTabContent">
+					<div class="tab-pane fade show active" id="diocesis" role="tabpanel" aria-labelledby="info-tab">
+						<div class="container-md">
+							<div class="row mt-5">
+								<div class="col-md-6">
+									<div class="card">
+										<div class="card-body">
+								               <table id="dioGeneral" class="table table-hover mb-0">
+							                    <thead>
+							                        <tr>
+														<th colspan="2">Diocesis </th>
+													</tr>
+												</thead>
+												<tbody>
+													{% for id, diocesis  in delegacion_data.diocesis_list %}
+														<tr>
+															<td><h5>{{diocesis}} &nbsp;&nbsp<a href="/listadoDiocesis={{id}}"><i class="bi bi-journal-plus"></i></a></h5></td>
+														</tr>
+													{% endfor %}
+												</tbody>
+											</table>
+										</div> <!-- end card body-->
+									</div> <!-- end card  -->
+								</div> <!-- end col-md-8 -->
+							</div> <!-- end row-->
+						</div> <!-- end container -->
+					</div>  <!-- end tab diocesis -->
+
+					<div class="tab-pane fade" id="cargos" role="tabpanel" aria-labelledby="cargos-tab">
+						<div class="container-md">
+							<div class="row mt-5">
+								<div class="col-md-10">
+									<div class="card">
+										<div class="card-body">
+											<div class="table-wrapper">
+								                <table id="dioGeneral" class="table table-hover mb-0">
+								                    <thead>
+								                        <tr>
+															<th>Cargo</th>
+															<th>Nombre</th>
+														</tr>
+													</thead>
+													<tbody>
+														{% for cargo , nombre   in delegacion_data.cargos %}
+															<tr>
+																<td>{{cargo}}</td>
+																<td>
+																	{% if nombre != 'Puesto vacante' %}
+																		{{nombre}}
+																	{% endif %}
+																</td>
+															</tr>
+														{% endfor %}
+													</tbody>
+												</table>
+											</div> <!--  end of table wrapper  -->
+										</div> <!-- end card body-->
+									</div> <!-- end card  -->
+								</div> <!-- end col-md-8 -->
+							</div> <!-- end row-->
+						</div> <!-- end container -->
+					</div>  <!-- end tab cargos -->
 
 {% else %}
 		<div class="row mt-5">
