@@ -416,6 +416,8 @@ def modificar_proyecto(request,proyecto_id):
 def modificacion_voluntario_id(request, voluntario_id):
     if not is_manager(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    if PersonalExterno.objects.filte(pk__exact = voluntario_id).exists():
+        return render(request, 'aicespana/errorPage.html', {'content': ERROR_VOLUNTARIO_DOES_NOT_EXIST})
     user_obj = get_user_obj_from_id(voluntario_id)
     voluntary_data = user_obj.get_all_data_from_voluntario()
     voluntary_data['provincias'] = get_provincias()
@@ -593,6 +595,20 @@ def cargos_voluntarios(request):
 
         return render(request, 'aicespana/cargosVoluntarios.html', {'updated_data':updated_data})
     return render(request, 'aicespana/cargosVoluntarios.html')
+
+@login_required
+def informacion_voluntario_id(request,voluntario_id):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    if not PersonalExterno.objects.filter(pk__exact = voluntario_id).exists():
+        return render(request, 'aicespana/errorPage.html', {'content': ERROR_VOLUNTARIO_DOES_NOT_EXIST})
+    user_obj = get_user_obj_from_id(voluntario_id)
+
+    info_voluntario = user_obj.get_all_data_from_voluntario()
+    info_voluntario['cargos'] = user_obj.get_responability_belongs_to()
+
+    return render(request,'aicespana/informacionVoluntario.html',{'info_voluntario':info_voluntario})
+
 @login_required
 def informacion_voluntario(request):
     if not is_manager(request):
@@ -724,6 +740,13 @@ def listado_voluntarios_grupo(request):
 def listado_personal_iglesia(request):
     if not is_manager(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
-    listado_pesonal = get_personal_list_order_by_delegacion()
+    listado_personal = get_personal_list_order_by_delegacion()
 
-    return render(request,'aicespana/listadoPersonalIglesia.html',{'listado_pesonal': listado_pesonal})
+    return render(request,'aicespana/listadoPersonalIglesia.html',{'listado_personal': listado_personal})
+
+@login_required
+def listado_delegados_regionales(request):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    listado_delegados = get_delegados_regionales()
+    return render(request,'aicespana/listadoDelegadosRegionales.html',{'listado_delegados': listado_delegados})

@@ -607,6 +607,18 @@ class PersonalExterno(models.Model):
             return '%s' %(self.cargo.get_cargo_id())
         return ''
 
+    def get_movil_number(self):
+        if self.telefonoMovil:
+            return '%s' %(self.telefonoMovil)
+        else:
+            return ''
+
+    def get_email(self):
+        if self.email:
+            return '%s' %(self.email)
+        else:
+            return ''
+
     def get_all_data_from_voluntario(self):
         if self.fechaAlta is None:
             alta = ''
@@ -833,6 +845,8 @@ class PersonalExterno(models.Model):
 
 class PersonalManager(models.Manager):
     def create_new_personel(self, data):
+        if data['nacimiento'] == '':
+            data['nacimiento'] = None
         new_personel = self.create(nombre = data['nombre'], apellido = data['apellido'],
                 DNI = data['nif'], email = data['email'], telefonoFijo = data['fijo'],
                 telefonoMovil = data['movil'],calle = data['calle'],
@@ -917,6 +931,18 @@ class PersonalIglesia(models.Model):
         if self.cargo :
             return '%s' %(self.cargo.get_cargo_id())
         return ''
+
+    def get_movil_number(self):
+        if self.telefonoMovil:
+            return '%s' %(self.telefonoMovil)
+        else:
+            return ''
+
+    def get_email(self):
+        if self.email:
+            return '%s' %(self.email)
+        else:
+            return ''
 
     def get_all_data_from_personal(self):
         if self.fechaAlta is None:

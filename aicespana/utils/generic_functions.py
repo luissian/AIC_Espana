@@ -884,8 +884,8 @@ def get_responsibles_in_the_group(group_obj):
         cargo_objs = Cargo.objects.filter(entidadCargo__entidad__exact ='Grupo').order_by('nombreCargo')
         for cargo_obj in cargo_objs:
             p_data = []
-            if PersonalExterno.objects.filter(cargo = cargo_obj, grupoAsociado = group_obj).exists():
-                personal_obj = PersonalExterno.objects.filter(cargo = cargo_obj, grupoAsociado = group_obj).last()
+            if PersonalExterno.objects.filter(cargo = cargo_obj, grupoAsociado = group_obj).exclude(personalActivo = False).exists():
+                personal_obj = PersonalExterno.objects.filter(cargo = cargo_obj, grupoAsociado = group_obj).exclude(personalActivo = False).last()
                 responsible_data.append(personal_obj.get_voluntario_data())
             else:
                 empty_data = ['-']*9
@@ -911,10 +911,10 @@ def get_voluntarios_info_from_grupo(grupo_id):
     if Grupo.objects.filter(pk__exact = grupo_id).exists():
         group_obj = Grupo.objects.filter(pk__exact = grupo_id).last()
         voluntarios_data['cargos'] = get_responsibles_in_the_group(group_obj)
-        if PersonalExterno.objects.filter(grupoAsociado = group_obj).exists():
+        if PersonalExterno.objects.filter(grupoAsociado = group_obj).exclude(personalActivo = False).exists():
             voluntarios_data['older_than_80'] = []
             voluntarios_data['younger_than_80'] = []
-            personal_objs = PersonalExterno.objects.filter(grupoAsociado = group_obj).order_by('apellido')
+            personal_objs = PersonalExterno.objects.filter(grupoAsociado = group_obj).exclude(personalActivo = False).order_by('apellido')
             for personal_obj in personal_objs:
                 if personal_obj.get_old() > 80 :
                     voluntarios_data['older_than_80'].append(personal_obj.get_personal_name())
@@ -1019,28 +1019,8 @@ def get_personal_list_order_by_delegacion():
         Return personal_list
     '''
     personal_list = collections.OrderedDict()
-    if PersonalIglesia.objects.all().exists():
-        '''
-        delegation_objs = Delegacion.objects.all().order_by('nombreDelegacion')
-        for delegation_obj in delegation_objs:
-            delegation_name = delegation_obj.get_delegacion_name()
-            diocesis_objs = Diocesis.objects.filter(delegacionDependiente = delegation_obj).order_by('nombreDiocesis')
-            for diocesis_obj in diocesis_objs:
-                diocesis_name = diocesis_obj.get_diocesis_name()
-                grupo_objs = Grupo.objects.filter(diocesisDependiente = diocesis_obj).order_by('nombreGrupo')
-                for grupo_obj in grupo_objs:
-                    grupo_name = grupo_obj.get_grupo_name()
-                    for proyecto_obj in proyecto_objs:
-                        if not delegation_name in proyecto_grupo_diocesis_data:
-                            proyecto_grupo_diocesis_data[delegation_name] = collections.OrderedDict()
-                        if not diocesis_name in proyecto_grupo_diocesis_data[delegation_name]:
-                            proyecto_grupo_diocesis_data[delegation_name][diocesis_name] = []
-                        proyecto_grupo_diocesis_data[delegation_name][diocesis_name].append([proyecto_obj.get_proyecto_id(),proyecto_obj.get_proyecto_name(),grupo_name ])
-                        return proyecto_grupo_diocesis_data
-        '''
-
-
-        personal_objs = PersonalIglesia.objects.all().order_by('delegacion').order_by('grupoAsociado__diocesisDependiente').order_by('grupoAsociado').order_by('nombre')
+    if PersonalIglesia.objects.all().exclude(personalActivo = False).exists():
+        personal_objs = PersonalIglesia.objects.all().exclude(personalActivo = False).order_by('delegacion').order_by('grupoAsociado__diocesisDependiente').order_by('grupoAsociado').order_by('nombre')
         for personal_obj in personal_objs:
             delegation_name = personal_obj.get_delegacion_belongs_to()
             diocesis_name = personal_obj.get_diocesis_belongs_to()
@@ -1052,6 +1032,30 @@ def get_personal_list_order_by_delegacion():
 
     return personal_list
 
+def get_delegados_regionales():
+    '''
+    Description:
+        The function get the delegados regionales ordered by delegation
+    Return:
+        Return delegados_list
+    '''
+    delegados_list = collections.OrderedDict()
+    if PersonalIglesia.objects.filter(cargo__entidadCargo__entidad__exact = 'Delegación').exclude(personalActivo = False).exists():
+        personal_objs = PersonalIglesia.objects.filter(cargo__entidadCargo__entidad__exact = 'Delegación').exclude(personalActivo = False).order_by('delegacion').order_by('cargo__nombreCargo')
+        for personal_obj in personal_objs:
+            delegation_name = personal_obj.get_delegacion_belongs_to()
+            if not delegation_name in delegados_list:
+                delegados_list[delegation_name] = []
+            delegados_list[delegation_name].append(['iglesia'  , personal_obj.get_personal_id(),personal_obj.get_personal_name(),personal_obj.get_responability_belongs_to(),personal_obj.get_movil_number(),personal_obj.get_email() ])
+    if PersonalExterno.objects.filter(cargo__entidadCargo__entidad__exact = 'Delegación').exclude(personalActivo = False).exists():
+        personal_objs = PersonalExterno.objects.filter(cargo__entidadCargo__entidad__exact = 'Delegación').exclude(personalActivo = False).order_by('grupoAsociado__diocesisDependiente__delegacionDependiente').order_by('cargo__nombreCargo')
+        for personal_obj in personal_objs:
+            delegation_name = personal_obj.get_delegacion_belongs_to()
+            if not delegation_name in delegados_list:
+                delegados_list[delegation_name] = []
+            delegados_list[delegation_name].append(['externo' , personal_obj.get_personal_id(),personal_obj.get_personal_name(),personal_obj.get_responability_belongs_to(),personal_obj.get_movil_number(),personal_obj.get_email() ])
+
+    return delegados_list
 
 def get_excel_user_request_boletin():
     '''
@@ -1064,13 +1068,13 @@ def get_excel_user_request_boletin():
     f_name =  'Listado_boletin.xlsx'
     heading = ['Nombre', 'Apellidos', 'Tipo de colaboración' ,'Calle','Población', 'Provincia', 'Código Postal']
     lista = [heading]
-    if PersonalExterno.objects.filter(recibirBoletin = True).exists():
-        externo_objs = PersonalExterno.objects.filter(recibirBoletin = True).order_by('codigoPostal')
+    if PersonalExterno.objects.filter(recibirBoletin = True).exclude(personalActivo = False).exists():
+        externo_objs = PersonalExterno.objects.filter(recibirBoletin = True).exclude(personalActivo = False).order_by('codigoPostal')
         for externo_obj in externo_objs:
             lista.append(externo_obj.get_data_for_boletin())
 
     if PersonalIglesia.objects.filter(recibirBoletin = True).exists():
-        externo_objs = PersonalIglesia.objects.filter(recibirBoletin = True).order_by('codigoPostal')
+        externo_objs = PersonalIglesia.objects.filter(recibirBoletin = True).exclude(personalActivo = False).order_by('codigoPostal')
         for externo_obj in externo_objs:
             lista.append(externo_obj.get_data_for_boletin())
     excel_file = os.path.join(settings.MEDIA_ROOT, f_name)
