@@ -164,11 +164,12 @@ class Parroquia(models.Model):
 
 class GrupoManager(models.Manager):
     def create_new_group(self, data):
-
+        if data['fechaErecion'] == '':
+            data['fechaErecion'] = None
         new_group = self.create(diocesisDependiente = data['diocesis_obj'], nombreGrupo = data['nombre'],
                     calle = data['calle'],poblacion = data['poblacion'], codigoPostal = data['codigo'],
                     observaciones = data['observaciones'],registroNumero = data['registro'],
-                    fechaErecion =  datetime.strptime(data['fechaErecion'],"%Y-%m-%d").date())
+                    fechaErecion =  data['fechaErecion'])
 
         return new_group
 

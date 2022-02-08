@@ -203,7 +203,7 @@ def get_diocesis_id_name_list():
         diocesis_data
     '''
     diocesis_data = []
-    diocesis_objs = Diocesis.objects.all().order_by('delegacionDependiente')
+    diocesis_objs = Diocesis.objects.all().order_by('nombreDiocesis')
     for diocesis_obj in diocesis_objs:
         diocesis_data.append([diocesis_obj.get_diocesis_id(), diocesis_obj.get_diocesis_name()])
     return diocesis_data
