@@ -14,6 +14,26 @@
     display:inline-block;
     width: 540px;
 </style>
+{% if ERROR %}
+	<div class="container-md">
+		<div class="row g-3"">
+			<div class="col-md-6 offset-3">
+				<div class="card text-center border-danger">
+					<div class="card-header">
+						<h2 style="text-align:center">ERROR</h2>
+					</div>
+					<div class="card-body">
+						<p class="card-text">
+							{% for text in ERROR %}
+								{{text}}
+							{% endfor %}
+						</p>
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+			</div> <!-- end col-md-10 -->
+		</div> <!-- end row-->
+	</div> <!-- end container -->
+{% endif %}
 {% if confirmation_data %}
 	<div class="container-md">
 		<div class="row g-3"">
