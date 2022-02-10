@@ -23,7 +23,7 @@ def alta_actividad(request):
 
     if request.method == 'POST' and request.POST['action'] == 'altaActividad':
         if Actividad.objects.filter(nombreActividad__iexact = request.POST['nombre']).exists():
-            return render(request,'aicespana/altaActividad.html',{'actividad_data':actividad_data, 'ERROR': ERROR_ACTIVIDAD_EXIST})
+            return render(request,'aicespana/altaActividad.html',{'actividad_data':actividad_data, 'ERROR': [ERROR_ACTIVIDAD_EXIST]})
         data = {}
         data['grupo_obj'] = get_grupo_obj_from_id(request.POST['grupoID'])
         data['alta'] = request.POST['alta']
@@ -121,8 +121,11 @@ def alta_personal_iglesia(request):
         confirmation_data = ''
         info_to_fetch = ['nombre', 'apellido','nif', 'email', 'fijo', 'movil' , 'calle', 'poblacion', 'provincia', 'codigo','nacimiento']
         personal_data = {}
+
         for field in info_to_fetch:
             personal_data[field] = request.POST[field].strip()
+        if PersonalExterno.objects.filter(nombre__iexact = personal_data['nombre'], apellido__iexact = personal_data['apellidos']).exists():
+            return render(request,'aicespana/altaVoluntario.html',{'ERROR': [ERROR_PERSONAL_IGLESIA_ALREADY_IN_DATABASE]})
         PersonalExterno_obj = PersonalIglesia.objects.create_new_personel(personal_data)
         confirmation_data = {}
         confirmation_data['nombre'] = request.POST['nombre']
@@ -142,7 +145,7 @@ def alta_proyecto(request):
 
     if request.method == 'POST' and request.POST['action'] == 'altaProyecto':
         if Proyecto.objects.filter(nombreProyecto__iexact = request.POST['nombre']).exists():
-            return render(request,'aicespana/altaProyecto.html',{'proyecto_data':proyecto_data, 'ERROR': ERROR_PROYECTO_EXIST})
+            return render(request,'aicespana/altaProyecto.html',{'proyecto_data':proyecto_data, 'ERROR': [ERROR_PROYECTO_EXIST]})
         data = {}
         data['grupo_obj'] = get_grupo_obj_from_id(request.POST['grupoID'])
         data['alta'] = request.POST['alta']
@@ -169,7 +172,7 @@ def alta_voluntario(request):
         for field in info_to_fetch:
             personal_data[field] = request.POST[field].strip()
         if PersonalExterno.objects.filter(nombre__iexact = personal_data['nombre'], apellido__iexact = personal_data['apellidos']).exists():
-            return render(request,'aicespana/altaVoluntario.html',{'ERROR': ERROR_VOLUNTARIO_ALREADY_IN_DATABASE})
+            return render(request,'aicespana/altaVoluntario.html',{'ERROR': [ERROR_VOLUNTARIO_ALREADY_IN_DATABASE]})
         PersonalExterno_obj = PersonalExterno.objects.create_new_external_personel(personal_data)
         confirmation_data = {}
         confirmation_data['nombre'] = request.POST['nombre']
@@ -756,5 +759,5 @@ def listado_personal_externo(request):
     if not is_manager(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     listado_personal = get_personal_externo_por_delegacion()
-    
+
     return render(request,'aicespana/listadoPersonalExterno.html',{'listado_personal': listado_personal})
