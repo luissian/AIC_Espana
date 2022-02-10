@@ -124,7 +124,7 @@ def alta_personal_iglesia(request):
 
         for field in info_to_fetch:
             personal_data[field] = request.POST[field].strip()
-        if PersonalExterno.objects.filter(nombre__iexact = personal_data['nombre'], apellido__iexact = personal_data['apellido']).exists():
+        if PersonalIglesia.objects.filter(nombre__iexact = personal_data['nombre'], apellido__iexact = personal_data['apellido']).exists():
             return render(request,'aicespana/altaVoluntario.html',{'ERROR': [ERROR_PERSONAL_IGLESIA_ALREADY_IN_DATABASE]})
         PersonalExterno_obj = PersonalIglesia.objects.create_new_personel(personal_data)
         confirmation_data = {}
