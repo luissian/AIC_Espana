@@ -750,3 +750,11 @@ def listado_delegados_regionales(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     listado_delegados = get_delegados_regionales()
     return render(request,'aicespana/listadoDelegadosRegionales.html',{'listado_delegados': listado_delegados})
+
+@login_required
+def listado_personal_externo(request):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    listado_personal = get_personal_externo_por_delegacion()
+    
+    return render(request,'aicespana/listadoPersonalExterno.html',{'listado_personal': listado_personal})

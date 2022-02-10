@@ -1,0 +1,91 @@
+{% extends 'aicespana/base.html' %}
+{% load static %}
+{% block content %}
+{%include 'aicespana/jexcel_funcionality.html' %}
+<div class="container">
+    <div class="row">
+	    <div class="card">
+	        <div class="card-header"><h2 style="text-align:center">Listado de Voluntarios por Delegación</h2> </div>
+            <div class="card-body">
+				{% for delegacion, voluntarios in listado_personal.items %}
+                    <div class="col-md-6">
+                	    <div class="card">
+                            <div class="card-header"><h2 style="text-align:center">Voluntarios de {{delegacion}}</h2> </div>
+                            <div class="card-body">
+                                {% if voluntarios|length > 0 %}
+                                    <div id="spreadsheet{{forloop.counter}}"></div>
+                                    <br>
+                                    <input type="button" value="Descarga los voluntarios de la delegación" onclick="table{{forloop.counter}}.download()"/>
+                                    <script>
+                                        var data{{forloop.counter}} = [{% for  nombre in voluntarios %} ['{{nombre}}'], {% endfor %}
+                                        ];
+
+                                        var table{{forloop.counter}} = jexcel(document.getElementById('spreadsheet{{forloop.counter}}'), {
+                                            data:data{{forloop.counter}},
+                                            columns: [
+                                                { type: 'text', title:'Nombre del Voluntario', width:350 , readOnly:true},
+
+                                            ],
+                                            allowInsertColumn:false,
+                                            allowDeleteColumn:false,
+                                            allowRenameColumn:false,
+                                            csvFileName:'voluntario_delegacion',
+                                            tableOverflow: false,
+                                            tableWidth: "500px",
+                                            hideIndex:true,
+                                            search:true,
+                                            pagination:20,
+                                        });
+                                    </script>
+                                {% else %}
+                                    <h5 style="text-align:center">No hay voluntarios en esta Delegación</h5>
+                                {% endif %}
+                            </div>  <!-- end card-body -->
+                        </div>  <!-- end card -->
+                    </div> <!-- end col-md-6 -->
+
+
+                {% endfor %}
+
+            <br>
+            </div>  <!-- end card-body -->
+        </div>  <!-- end card -->
+    </div> <!-- end row -->
+</div> <!-- end container -->
+<div class="container">
+    <div class="row">
+
+            <div class="col-md-6">
+                <p>oooo</p>
+            </div> <!-- end col-md-6 -->
+
+            <div class="col-md-6">
+                <p>rrere</p>
+            </div> <!-- end col-md-6 -->
+
+            <div class="col-md-6">
+                <p>ooowewewo</p>
+            </div> <!-- end col-md-6 -->
+            <div class="col-md-6">
+                <p>rrwedddwere</p>
+            </div> <!-- end col-md-6 -->
+        </div> <!-- end col-md-6 -->
+    </div> <!-- end col-md-6 -->
+
+</div> <!-- end container -->
+<div class="container">
+    <div class="row">
+      <div class="col-md-4" >
+          <h1>Columna 1</h1>
+        <p>Esto es una prueba de bootstrap.</p>
+      </div>
+      <div class="col-md-4"  style="background-color:#bbb">
+        <h1>Columna 2</h1>
+        <p>Esto es una prueba de bootstrap.</p>
+      </div>
+      <div class="col-md-4"  style="background-color:#ccc">
+        <h1>Columna 3</h1>
+        <p>Esto es una prueba de bootstrap.</p>
+      </div>
+    </div>
+{% endblock %}

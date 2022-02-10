@@ -25,6 +25,7 @@ urlpatterns = [
     path('listadoDelegadosRegionales', views.listado_delegados_regionales, name = 'listado_delegados_regionales'),
     path('listadoDiocesis=<int:diocesis_id>', views.listado_diocesis, name = 'listado_diocesis'),
     path('listadoGrupo=<int:grupo_id>', views.listado_grupo, name = 'listado_grupo'),
+    path('listadoPersonalExterno', views.listado_personal_externo, name = 'listado_personal_externo'),
     path('listadoPersonalIglesia', views.listado_personal_iglesia, name ='listado_personal_iglesia'),
     path('listadoVoluntariosGrupo', views.listado_voluntarios_grupo, name='listado_voluntarios_grupo'),
     path('modificarActividad=<int:actividad_id>',views.modificar_actividad, name = 'modificar_actividad'),

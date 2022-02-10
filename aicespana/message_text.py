@@ -30,3 +30,4 @@ ERROR_USER_NOT_ALLOW_TO_SEE_LISTADOS ='Usuario no está autorizado a acceder a l
 
 ERROR_VOLUNTARIO_ALREADY_IN_DATABASE = 'El Voluntario que deseas dar de alta ya está almacenado en la base de datos'
 ERROR_VOLUNTARIO_DOES_NOT_EXIST = 'El Voluntario no existe'
+ERROR_GRUPO_EXISTS = ['No se puede crear el grupo porque ya existe el grupo para esta diocesis']

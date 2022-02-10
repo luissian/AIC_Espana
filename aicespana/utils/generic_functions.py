@@ -1057,6 +1057,29 @@ def get_delegados_regionales():
 
     return delegados_list
 
+def get_personal_externo_por_delegacion():
+    '''
+    Description:
+        The function get the Personal externo grouped by delegation
+    Return:
+        Return personal_externo
+    '''
+    personal_externo = collections.OrderedDict()
+    if PersonalExterno.objects.all().exists():
+        delegation_objs = Delegacion.objects.all().order_by('nombreDelegacion')
+        for delegation_obj in delegation_objs:
+            personal_externo[delegation_obj.get_delegacion_name()] = []
+        personal_objs = PersonalExterno.objects.all().order_by('apellido')
+        for personal_obj in personal_objs:
+            try:
+                personal_externo[personal_obj.get_delegacion_belongs_to()].append(personal_obj.get_personal_name())
+            except:
+                if not 'Sin delegacion' in personal_externo:
+                    personal_externo['Sin delegacion'] = []
+                personal_externo['Sin delegacion'].append(personal_obj.get_personal_name())
+    return personal_externo
+
+
 def get_excel_user_request_boletin():
     '''
     Description:
