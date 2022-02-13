@@ -48,7 +48,11 @@ def alta_delegacion(request):
         if Delegacion.objects.filter(nombreDelegacion__iexact = request.POST['nombre']).exists():
             error = [ERROR_DELEGACION_EXIST, request.POST['nombre']]
             return render(request,'aicespana/altaDelegacion.html',{'delegaciones':delegaciones, 'ERROR':error})
-        new_delegacion_obj = Delegacion.objects.create(nombreDelegacion = request.POST['nombre'])
+        imagen_file = None
+        if 'imagen' in request.FILES:
+            imagen_file = store_file(request.FILES['imagen'])
+        import pdb; pdb.set_trace()
+        new_delegacion_obj = Delegacion.objects.create(nombreDelegacion = request.POST['nombre'],imagenDelegacion = imagen_file)
         return render(request,'aicespana/altaDelegacion.html',{'delegaciones':delegaciones,'confirmation_data': request.POST['nombre']})
     return render(request,'aicespana/altaDelegacion.html',{'delegaciones':delegaciones})
 
@@ -744,7 +748,6 @@ def listado_personal_iglesia(request):
     if not is_manager(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     listado_personal = get_personal_list_order_by_delegacion()
-
     return render(request,'aicespana/listadoPersonalIglesia.html',{'listado_personal': listado_personal})
 
 @login_required
@@ -754,10 +757,21 @@ def listado_delegados_regionales(request):
     listado_delegados = get_delegados_regionales()
     return render(request,'aicespana/listadoDelegadosRegionales.html',{'listado_delegados': listado_delegados})
 
+
+@login_required
+def listado_presidentes_grupo(request):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    presidentes = presidentes_grupo()
+    return render(request,'aicespana/listadoPresidentesGrupo.html',{'presidentes': presidentes})
+
 @login_required
 def listado_personal_externo(request):
     if not is_manager(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
-    listado_personal = get_personal_externo_por_delegacion()
-
-    return render(request,'aicespana/listadoPersonalExterno.html',{'listado_personal': listado_personal})
+    if request.method == 'POST' and request.POST['action'] == 'listadoDelegacion':
+        listado_personal , excel_file = get_personal_externo_por_delegacion(request.POST['delegacion_id'])
+        delegacion = get_delegation_obj_from_id(request.POST['delegacion_id']).get_delegacion_name()
+        return render(request,'aicespana/listadoPersonalExterno.html',{'listado_personal': listado_personal, 'excel_file':excel_file, 'delegacion': delegacion})
+    delegation_data = delegation_id_and_name_list()
+    return render(request,'aicespana/listadoPersonalExterno.html',{'delegation_data': delegation_data})

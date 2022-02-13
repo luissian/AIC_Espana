@@ -39,7 +39,8 @@ class ActividadManager(models.Manager):
 
 class Delegacion(models.Model):
     nombreDelegacion = models.CharField(max_length=20)
-    imagenDelegacion = models.CharField(max_length=80, null=True, blank=True)
+    #imagenDelegacion = models.CharField(max_length=80, null=True, blank=True)
+    imagenDelegacion = models.FileField( storage= memory_project_path_location, null=True, blank = True)
 
 
     def __str__(self):

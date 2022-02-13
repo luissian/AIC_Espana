@@ -48,7 +48,7 @@ class TipoColaboracionAdmin(admin.ModelAdmin):
 
 class PersonalIglesiaAdmin(admin.ModelAdmin):
     list_display = ['nombre', 'apellido', 'DNI']
-    search_fields = ('appellido__icontains',)
+    search_fields = ('apellido__icontains',)
 
 admin.site.register(EntidadesConCargo , EntidadesConCargoAdmin)
 admin.site.register(Cargo, CargoAdmin)

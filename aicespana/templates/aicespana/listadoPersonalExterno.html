@@ -2,90 +2,95 @@
 {% load static %}
 {% block content %}
 {%include 'aicespana/jexcel_funcionality.html' %}
-<div class="container">
-    <div class="row">
-	    <div class="card">
-	        <div class="card-header"><h2 style="text-align:center">Listado de Voluntarios por Delegación</h2> </div>
-            <div class="card-body">
-				{% for delegacion, voluntarios in listado_personal.items %}
-                    <div class="col-md-6">
-                	    <div class="card">
-                            <div class="card-header"><h2 style="text-align:center">Voluntarios de {{delegacion}}</h2> </div>
-                            <div class="card-body">
-                                {% if voluntarios|length > 0 %}
-                                    <div id="spreadsheet{{forloop.counter}}"></div>
-                                    <br>
-                                    <input type="button" value="Descarga los voluntarios de la delegación" onclick="table{{forloop.counter}}.download()"/>
-                                    <script>
-                                        var data{{forloop.counter}} = [{% for  nombre in voluntarios %} ['{{nombre}}'], {% endfor %}
-                                        ];
-
-                                        var table{{forloop.counter}} = jexcel(document.getElementById('spreadsheet{{forloop.counter}}'), {
-                                            data:data{{forloop.counter}},
-                                            columns: [
-                                                { type: 'text', title:'Nombre del Voluntario', width:350 , readOnly:true},
-
-                                            ],
-                                            allowInsertColumn:false,
-                                            allowDeleteColumn:false,
-                                            allowRenameColumn:false,
-                                            csvFileName:'voluntario_delegacion',
-                                            tableOverflow: false,
-                                            tableWidth: "500px",
-                                            hideIndex:true,
-                                            search:true,
-                                            pagination:20,
-                                        });
-                                    </script>
-                                {% else %}
-                                    <h5 style="text-align:center">No hay voluntarios en esta Delegación</h5>
-                                {% endif %}
-                            </div>  <!-- end card-body -->
-                        </div>  <!-- end card -->
-                    </div> <!-- end col-md-6 -->
+{% if listado_personal %}
+    <div class="container">
+        <div class="row">
+    	    <div class="card">
+    	        <div class="card-header"><h2 style="text-align:center">Listado de Voluntarios de la Delegación de {{delegacion}}</h2> </div>
+                <div class="card-body">
 
 
-                {% endfor %}
+                    {% if listado_personal|length > 0 %}
+                        <div id="spreadsheet1"></div>
+                        <br>
 
-            <br>
-            </div>  <!-- end card-body -->
-        </div>  <!-- end card -->
-    </div> <!-- end row -->
-</div> <!-- end container -->
-<div class="container">
-    <div class="row">
+                        <script>
+                            var data1 = [{% for  row in listado_personal %} [{% for column  in row %}'{{column}}',{% endfor %}], {% endfor %}
+                            ];
 
-            <div class="col-md-6">
-                <p>oooo</p>
-            </div> <!-- end col-md-6 -->
+                            var table1 = jexcel(document.getElementById('spreadsheet1'), {
+                                data:data1,
+                                columns: [
+                                    { type: 'text', title:'Nombre', width:200 , readOnly:true},
+                                    { type: 'text', title:'Apellidos', width:300 , readOnly:true},
 
-            <div class="col-md-6">
-                <p>rrere</p>
-            </div> <!-- end col-md-6 -->
+                                ],
+                                allowInsertColumn:false,
+                                allowDeleteColumn:false,
+                                allowRenameColumn:false,
+                                csvFileName:'voluntario_delegacion',
+                                tableOverflow: false,
+                                tableWidth: "500px",
+                                hideIndex:true,
+                                search:true,
+                                pagination:20,
+                            });
+                        </script>
+                    {% else %}
+                        <h5 style="text-align:center">No hay voluntarios en esta Delegación</h5>
+                    {% endif %}
+                </div>  <!-- end card-body -->
+            </div>  <!-- end card -->
+        </div> <!-- end row -->
+    </div> <!-- end container -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 offset-2" >
+                <div class="card">
+                    <div class="card-header"><h4 style="text-align:center">Descarga el excel del listado de Voluntarios </h4> </div>
+                    <div class="card-body">
+                         <a href="{{excel_file}}">Excel con listado de Voluntarios de la Delegación {{delegacion}} <i class="bi bi-download"></i> </a>
+                     </div>  <!-- end card-body -->
+                </div>  <!-- end card -->
+            </div> <!-- end col-md-12 -->
+        </div> <!-- end row -->
+    </div> <!-- end container -->
 
-            <div class="col-md-6">
-                <p>ooowewewo</p>
-            </div> <!-- end col-md-6 -->
-            <div class="col-md-6">
-                <p>rrwedddwere</p>
-            </div> <!-- end col-md-6 -->
-        </div> <!-- end col-md-6 -->
-    </div> <!-- end col-md-6 -->
+{% else %}
+    <div class="container-md">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header"><h2 style="text-align:center">Listado de Voluntarios por Delegación</h2> </div>
+                    <div class="card-body">
+                        <form class="row g-3" method="post" enctype="multipart/form-data" name="listadoDelegacion" id="listadoDelegacion" >
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="listadoDelegacion"/>
+                            <div class="form-group required">
+                                <div class="col-md-6">
+                                    <label class="control-label " for="delegacion">Selecciona la Delegación</label>
+                                    <select id="delegacion_id" required class="form-select" name="delegacion_id">
+                                        <option value="">Selecciona la delegación</option>
+                                        {% for dele_id, dele_name in delegation_data %}
+                                            <option value = {{dele_id}}>{{dele_name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12">
 
-</div> <!-- end container -->
-<div class="container">
-    <div class="row">
-      <div class="col-md-4" >
-          <h1>Columna 1</h1>
-        <p>Esto es una prueba de bootstrap.</p>
-      </div>
-      <div class="col-md-4"  style="background-color:#bbb">
-        <h1>Columna 2</h1>
-        <p>Esto es una prueba de bootstrap.</p>
-      </div>
-      <div class="col-md-4"  style="background-color:#ccc">
-        <h1>Columna 3</h1>
-        <p>Esto es una prueba de bootstrap.</p>
-      </div>
-    </div>
+                                <button type="submit" class="btn-outline-primary float-end ">Enviar datos</button>
+                            </div>
+                        </form>
+                        <br><br>
+
+                        <br><br>
+                        <p>Los campos con  <span style="color:red"> * </span> son obligatorios</p>
+                    </div>  <!-- end card-body -->
+                </div>  <!-- end card -->
+            </div> <!-- end col-md-12 -->
+        </div> <!-- end row-->
+    </div> <!-- end container -->
+
+{%  endif %}
 {% endblock %}

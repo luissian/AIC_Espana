@@ -1057,28 +1057,46 @@ def get_delegados_regionales():
 
     return delegados_list
 
-def get_personal_externo_por_delegacion():
+def get_personal_externo_por_delegacion(delegacion_id):
     '''
     Description:
-        The function get the Personal externo grouped by delegation
+        The function get the Personal externo for the requested delegation and create the excel file
     Return:
         Return personal_externo
     '''
-    personal_externo = collections.OrderedDict()
-    if PersonalExterno.objects.all().exists():
-        delegation_objs = Delegacion.objects.all().order_by('nombreDelegacion')
-        for delegation_obj in delegation_objs:
-            personal_externo[delegation_obj.get_delegacion_name()] = []
-        personal_objs = PersonalExterno.objects.all().order_by('apellido')
+    personal_externo = []
+    f_name =  'Listado_por_delegacion.xlsx'
+    heading = ['Nombre', 'Apellidos', 'Tipo de colaboración' ,'Calle','Población', 'Provincia', 'Código Postal']
+    lista = [heading]
+    if PersonalExterno.objects.filter(grupoAsociado__diocesisDependiente__delegacionDependiente__pk__exact = delegacion_id).exists():
+        personal_objs = PersonalExterno.objects.filter(grupoAsociado__diocesisDependiente__delegacionDependiente__pk__exact = delegacion_id).order_by('apellido')
         for personal_obj in personal_objs:
-            try:
-                personal_externo[personal_obj.get_delegacion_belongs_to()].append(personal_obj.get_personal_name())
-            except:
-                if not 'Sin delegacion' in personal_externo:
-                    personal_externo['Sin delegacion'] = []
-                personal_externo['Sin delegacion'].append(personal_obj.get_personal_name())
-    return personal_externo
+            lista.append(personal_obj.get_data_for_boletin())
+            personal_externo.append([personal_obj.get_personal_only_name(), personal_obj.get_personal_only_apellido()])
+    import xlsxwriter
+    excel_file = os.path.join(settings.MEDIA_ROOT, f_name)
+    if os.path.isfile(excel_file):
+        os.remove(excel_file)
+    with xlsxwriter.Workbook(excel_file) as workbook:
+        worksheet = workbook.add_worksheet()
+        for row_num, data in enumerate(lista):
+            worksheet.write_row(row_num, 0, data)
+    return personal_externo, os.path.join(settings.MEDIA_URL,f_name)
 
+def presidentes_grupo():
+    '''
+    Description:
+        The function get the presidentes for each group
+    Return:
+        presidentes_data
+    '''
+    presidentes_data = []
+    if PersonalExterno.objects.filter(cargo__nombreCargo = 'Presidenta de Grupo').exists():
+        personal_objs = PersonalExterno.objects.filter(cargo__nombreCargo = 'Presidenta de Grupo').order_by('grupoAsociado__nombreGrupo')
+        for personal_obj in personal_objs:
+            presidentes_data.append([personal_obj.get_personal_name(), personal_obj.get_movil_number() , personal_obj.get_group_belongs_to() , personal_obj.get_diocesis_belongs_to() , personal_obj.get_delegacion_belongs_to()])
+        
+    return presidentes_data
 
 def get_excel_user_request_boletin():
     '''

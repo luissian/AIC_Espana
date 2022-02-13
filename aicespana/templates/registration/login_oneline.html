@@ -1,48 +1,45 @@
 {% load static %}
 <div class="container">
-
-    {% if user.is_authenticated %}
-
-
-        <div class="d-flex justify-content-end">
-            <span><img src="{% static 'aicespana/images/Portada_aplicacion-ECA.gif' %}" alt="imagen AIC" title="AIC " height="100"></span>
-
-                <br>
+    <div class="row">
+        <div class="col-sm-4" >
+            <span><img src="{% static 'aicespana/images/Portada_aplicacion-ECA.gif' %}" alt="imagen AIC" title="AIC " height="80"></span>
+        </div>
+        {% if user.is_authenticated %}
+            <div class="col-sm-5 offset-3 justify-content-end">
                 <form id="signin" class="navbar-form navbar-right" role="form" method="post" action="{% url 'logout' %}?next={{request.path}}">
                    {% csrf_token %}
-                    <div class="input-group">
+                   <div class="input-group">
                         <i class="bi bi-person-check"></i>
                         <label class="col-sm-6"> Usuario registrado : <strong>{{user.get_username}}</strong> </label>
                         <button type="submit" class="btn btn-primary float-end "> Cerrar sesión <i class="bi bi-box-arrow-right"></i></button>
 
                     </div>
-               </form>
+                </form>
+            </div>
 
-        </div>
-
-    {% else %}
-        <div class="row justify-content-sm-center mt-4">
+        {% else %}
             <div class="col-sm-6">
-                <span><img src="{% static 'aicespana/images/Portada_aplicacion-ECA.gif' %}" alt="imagen AIC" title="AIC " height="100"></span>
+
                 <br><br>
                 <form id="signin" class="navbar-form navbar-right" role="form" method="post" action="{% url 'login' %}">
                    {% csrf_token %}
-
+                   <h4>Por favor teclea tu Usuario y Contraseña.</h4>
                    <div class="input-group">
                         <span class="input-group-addon"><i class="bi bi-person-check"></i></span>
                        <label class="col-sm-6  control-label" for="nombre">Nombre de usuario</label>
                        <div class="col-sm-6"><input id="id_username" type="text" required class="form-control" name="username" value="" placeholder="Nombre de usuario"></div>
                    </div>
-                   <br><br>
+                   <br>
                    <div class="input-group">
                        <i class="bi bi-lock"></i>
                        <label class="col-sm-6 control-label " for="nombre">Contraseña</label>
                         <div class="col-sm-6"><input id="id_password" type="password" required class="form-control" name="password" value="" placeholder="Contraseña"></div>
                    </div>
                    <br><br>
-                   <button type="submit" class="btn btn-primary"> Login </button>
+                   <button type="submit" class="btn btn-primary"> Enviar datos </button>
                 </form>
+
             </div>
-        </div>
-    {% endif %}
+        {% endif %}
+    </div>
 </div>

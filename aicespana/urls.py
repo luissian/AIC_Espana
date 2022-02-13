@@ -27,6 +27,7 @@ urlpatterns = [
     path('listadoGrupo=<int:grupo_id>', views.listado_grupo, name = 'listado_grupo'),
     path('listadoPersonalExterno', views.listado_personal_externo, name = 'listado_personal_externo'),
     path('listadoPersonalIglesia', views.listado_personal_iglesia, name ='listado_personal_iglesia'),
+    path('listadoPresidentesGrupo', views.listado_presidentes_grupo, name = 'listado_presidentes_grupo'),
     path('listadoVoluntariosGrupo', views.listado_voluntarios_grupo, name='listado_voluntarios_grupo'),
     path('modificarActividad=<int:actividad_id>',views.modificar_actividad, name = 'modificar_actividad'),
     path('modificacionActividad', views.modificacion_actividad, name = "modificacion_actividad"),
