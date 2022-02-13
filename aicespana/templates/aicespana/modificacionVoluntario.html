@@ -62,7 +62,7 @@
 				<div class="card">
 					<div class="card-header"><h2 style="text-align:center">Modificación de datos de {{voluntary_data.nombre}} {{voluntary_data.apellido}}</h2> </div>
 					<div class="card-body">
-						<form class="row g-3" method="post" enctype="multipart/form-data" name="actualizarCampos" id="actualizarCampos" >
+						<form class="row g-3" method="post" enctype="multipart/form-data" action="modificacionVoluntario" name="actualizarCampos" id="actualizarCampos" >
 							{% csrf_token %}
 							<input type="hidden" name="action" value="actualizarCampos"/>
 							<input type="hidden" name="user_id" value="{{voluntary_data.user_id}}"/>
@@ -82,7 +82,7 @@
 							<div class="form-group">
 								<div class="col-md-5">
 									<label for="nif"  class="control-label">NIF/NIE</label>
-									<input type="text"  class="form-control" id="dni" name='dni', value="{{voluntary_data.dni}}">
+									<input type="text"  class="form-control" id="dni" name='dni' value="{{voluntary_data.dni}}">
 								</div>
 								<div class="col-md-5">
 									<label for="nacimiento" class="control-label">Fecha de Nacimiento</label>

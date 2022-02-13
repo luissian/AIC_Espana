@@ -62,7 +62,7 @@
 				<div class="card">
 					<div class="card-header"><h2 style="text-align:center">Información de {{personal_data.nombre}} {{personal_data.apellido}}</h2> </div>
 					<div class="card-body">
-						<form class="row g-3" method="post" enctype="multipart/form-data" name="actualizarCampos" id="actualizarCampos" >
+						<form class="row g-3" method="post" enctype="multipart/form-data" action="modificacionPersonal" name="actualizarCampos" id="actualizarCampos" >
 							{% csrf_token %}
 							<input type="hidden" name="action" value="actualizarCampos"/>
 							<input type="hidden" name="user_id" value="{{personal_data.user_id}}"/>
@@ -288,40 +288,41 @@
 			</div> <!-- end col-md-10 -->
 		</div> <!-- end row-->
 	</div> <!-- end container -->
-{% elif personal_list %}
-	<div class="container-md">
-		<div class="row g-3">
-			<div class="col-md-10">
-				<div class="card">
-					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Multiples coincidencias en la busqueda</h3></div>
-					<div class="card-body">
-						<h5 style="text-align:center">Se han encontrado varias Personal de Iglesia.</h5>
-						<p>Añade más información para encontrar sólo a un Personal de Iglesia para modificar sus datos.</p>
-						<table class="table table-hover">
-							<thead>
-								<tr>
-									<td>Nombre</td>
-									<td>Población</td>
-								</tr>
-							</thead>
-							<tbody>
-								{% for nombre, poblacion in personal_list %}
+	{% elif personal_list %}
+		<div class="container-md">
+			<div class="row g-3">
+				<div class="col-md-10">
+					<div class="card">
+						<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Multiples coincidencias en la busqueda</h3></div>
+						<div class="card-body">
+							<h5 style="text-align:center">Se han encontrado varios Personal de la Iglesia.</h5>
+							<p>Añade más información para encontrar sólo a una Persona de la Iglesia. </p>
+							<p>O haz click en el nombre de la persona de Iglesia para asignarle  cargos </p>
+							<table class="table table-hover">
+								<thead>
 									<tr>
-										<td>{{nombre}}</td>
-										<td>{{poblacion}}</td>
+										<td>Nombre</td>
+										<td>Población</td>
 									</tr>
-								{% endfor %}
-							</tbody>
-						</table>
-						<br><br>
-						<div class="text-center">
-							<a href="/modificacionPersonal"> <button type="button" class="btn btn-outline-secondary float-center" >Buscar de nuevo</button> </a>
-						</div> <!-- end text center -->
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+								</thead>
+								<tbody>
+									{% for id, nombre, poblacion in personal_list %}
+										<tr>
+											<td><a href="modificacionPersonalID={{id}}">{{nombre}}</a></td>
+											<td>{{poblacion}}</td>
+										</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+							<br><br>
+							<div class="text-center">
+								<a href="/cargosPersonal"> <button type="button" class="btn btn-outline-secondary float-center" >Buscar de nuevo</button> </a>
+							</div> <!-- end text center -->
+						</div> <!-- end card body-->
+					</div> <!-- end card  -->
+				</div> <!-- end col-md-10 -->
+			</div> <!-- end row-->
+		</div> <!-- end container -->
 
 
 {% else %}

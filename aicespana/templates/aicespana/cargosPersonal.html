@@ -134,7 +134,7 @@
 	            <div class="card">
 					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Formulario para asignar cargos</h3></div>
                     <div class="card-body">
-	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="asignarCargos" id="asignarCargos" >
+	                    <form class="row g-3" method="post" enctype="multipart/form-data" action="cargosPersonal" name="asignarCargos" id="asignarCargos" >
 	                        {% csrf_token %}
 	                        <input type="hidden" name="action" value="asignarCargos"/>
 							<input type="hidden" name="user_id" value="{{personal_available_settings.user_id}}"/>
@@ -168,7 +168,7 @@
 									</select>
 								</div>
 								<br>
-
+								<!-- Remove temporary diocesis
 								<div class="col-md-10">
 		                            <label for="proyecto"  class="control-label col-md-3">Seleciona la diocesis</label>
 									<select name="diocesis" id="diocesis" class="col-md-6">
@@ -183,6 +183,7 @@
 									</select>
 								</div>
 								<br>
+								 -->
 
 
 								<br>
@@ -281,7 +282,41 @@
 			</div> <!-- end col-md-10 -->
 		</div> <!-- end row-->
 	</div> <!-- end container -->
-
+{% elif personal_list %}
+	<div class="container-md">
+		<div class="row g-3">
+			<div class="col-md-10">
+				<div class="card">
+					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Multiples coincidencias en la busqueda</h3></div>
+					<div class="card-body">
+						<h5 style="text-align:center">Se han encontrado varios Personal de la Iglesia.</h5>
+						<p>Añade más información para encontrar sólo a una Persona de la Iglesia. </p>
+						<p>O haz click en el nombre de la persona de Iglesia para asignarle  cargos </p>
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<td>Nombre</td>
+									<td>Población</td>
+								</tr>
+							</thead>
+							<tbody>
+								{% for id, nombre, poblacion in personal_list %}
+									<tr>
+										<td><a href="cargosPersonalID={{id}}">{{nombre}}</a></td>
+										<td>{{poblacion}}</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+						<br><br>
+						<div class="text-center">
+							<a href="/cargosPersonal"> <button type="button" class="btn btn-outline-secondary float-center" >Buscar de nuevo</button> </a>
+						</div> <!-- end text center -->
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+			</div> <!-- end col-md-10 -->
+		</div> <!-- end row-->
+	</div> <!-- end container -->
 {% else %}
 	<section class="light">
 		<div class="container md-8">

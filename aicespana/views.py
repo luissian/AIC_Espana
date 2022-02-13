@@ -334,6 +334,17 @@ def modificar_parroquia(request,parroquia_id):
 
 
 @login_required
+def modificacion_personal_id(request, personal_id):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    if not PersonalIglesia.objects.filter(pk__exact = personal_id).exists():
+        return render(request, 'aicespana/errorPage.html', {'content': ERROR_PERSONAL_DOES_NOT_EXIST})
+    personal_obj = get_personal_obj_from_id(personal_id)
+    personal_data = personal_obj.get_all_data_from_personal()
+    personal_data['provincias'] = get_provincias()
+    return render(request, 'aicespana/modificacionPersonal.html', {'personal_data':personal_data})
+
+@login_required
 def modificacion_personal(request):
     if not is_manager(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
@@ -365,7 +376,7 @@ def modificacion_personal(request):
 
             personal_list = []
             for personal_obj in personal_objs:
-                personal_list.append([personal_obj.get_personal_name(),personal_obj.get_personal_location()])
+                personal_list.append([personal_obj.get_personal_id(), personal_obj.get_personal_name(),personal_obj.get_personal_location()])
 
             return render(request, 'aicespana/modificacionPersonal.html', {'personal_list':personal_list})
         personal_data = personal_objs[0].get_all_data_from_personal()
@@ -423,7 +434,7 @@ def modificar_proyecto(request,proyecto_id):
 def modificacion_voluntario_id(request, voluntario_id):
     if not is_manager(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
-    if PersonalExterno.objects.filte(pk__exact = voluntario_id).exists():
+    if not PersonalExterno.objects.filter(pk__exact = voluntario_id).exists():
         return render(request, 'aicespana/errorPage.html', {'content': ERROR_VOLUNTARIO_DOES_NOT_EXIST})
     user_obj = get_user_obj_from_id(voluntario_id)
     voluntary_data = user_obj.get_all_data_from_voluntario()
@@ -493,7 +504,16 @@ def modificacion_voluntario(request):
         return render(request,'aicespana/modificacionVoluntario.html',{'confirmation_data':request.POST['nombre'] + ' ' + request.POST['apellidos']})
     return render(request,'aicespana/modificacionVoluntario.html')
 
+@login_required
+def cargos_personal_id(request, personal_id):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    user_obj = get_personal_obj_from_id(personal_id)
+    personal_available_settings = get_responsablity_data_for_personel(user_obj)
+    personal_available_settings.update(get_personal_responsability(user_obj))
 
+    personal_available_settings['user_id'] = personal_id
+    return render(request, 'aicespana/cargosPersonal.html', {'personal_available_settings':personal_available_settings})
 
 @login_required
 def cargos_personal(request):
@@ -516,6 +536,7 @@ def cargos_personal(request):
             personal_objs = personal_objs.filter(apellido__icontains = request.POST['apellido'].strip())
         if request.POST['nombre'] != '':
             personal_objs = personal_objs.filter(nombre__icontains = request.POST['nombre'].strip())
+
         if len(personal_objs) == 0:
             error = [ERROR_NOT_FIND_PERSONAl_CRITERIA, str(request.POST['nombre']  + ' ' + request.POST['apellido']) ]
             return render(request, 'aicespana/cargosPersonal.html',{'ERROR':error})
@@ -536,7 +557,7 @@ def cargos_personal(request):
         data = {}
         data['cargo'] = request.POST['cargo']
         data['delegacion'] = request.POST['delegacion']
-        data['diocesis'] = request.POST['diocesis']
+        #data['diocesis'] = request.POST['diocesis']
         data['grupo'] = request.POST['grupo']
         user_obj.update_information(data)
         updated_data = get_personal_responsability(user_obj)

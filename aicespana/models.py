@@ -1014,6 +1014,7 @@ class PersonalIglesia(models.Model):
                 delegacion_obj = None
         else:
             delegacion_obj = None
+        '''
         if data['diocesis'] != '':
             try:
                 diocesis_obj = Diocesis.objects.get(pk__exact = data['diocesis'])
@@ -1021,6 +1022,7 @@ class PersonalIglesia(models.Model):
                 diocesis_obj = None
         else:
             diocesis_obj = None
+        '''
         if data['cargo'] != '':
             try:
                 cargo_obj = Cargo.objects.get(pk__exact = data['cargo'])
@@ -1031,7 +1033,7 @@ class PersonalIglesia(models.Model):
 
         self.grupoAsociado = grupo_obj
         self.delegacion = delegacion_obj
-        self.diocesis = diocesis_obj
+        #self.diocesis = diocesis_obj
         self.cargo = cargo_obj
         self.save()
         return self
