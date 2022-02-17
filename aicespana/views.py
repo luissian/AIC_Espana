@@ -51,7 +51,6 @@ def alta_delegacion(request):
         imagen_file = None
         if 'imagen' in request.FILES:
             imagen_file = store_file(request.FILES['imagen'])
-        import pdb; pdb.set_trace()
         new_delegacion_obj = Delegacion.objects.create(nombreDelegacion = request.POST['nombre'],imagenDelegacion = imagen_file)
         return render(request,'aicespana/altaDelegacion.html',{'delegaciones':delegaciones,'confirmation_data': request.POST['nombre']})
     return render(request,'aicespana/altaDelegacion.html',{'delegaciones':delegaciones})
@@ -625,16 +624,63 @@ def cargos_voluntarios(request):
     return render(request, 'aicespana/cargosVoluntarios.html')
 
 @login_required
+def informacion_personal_id(request,personal_id):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    if not PersonalIglesia.objects.filter(pk__exact = personal_id).exists():
+        return render(request, 'aicespana/errorPage.html', {'content': ERROR_PERSONAL_DOES_NOT_EXIST})
+    personal_obj = get_personal_obj_from_id(personal_id)
+    info_personal = personal_obj.get_all_data_from_personal()
+    info_personal['cargos'] = personal_obj.get_responability_belongs_to()
+    return render(request,'aicespana/informacionPersonal.html',{'info_personal':info_personal})
+
+@login_required
+def informacion_personal(request):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    if request.method == 'POST' and request.POST['action'] == 'busquedaVoluntario':
+        if request.POST['nif'] == '' and request.POST['nombre'] == '' and request.POST['apellidos'] == '':
+            return render(request, 'aicespana/informacionVoluntario.html')
+        if request.POST['nif'] != '':
+            if PersonalIglesia.objects.filter(DNI__iexact = request.POST['nif']).exists():
+                personal_objs = PersonalIglesia.objects.filter(DNI__iexact = request.POST['nif'])
+                if len(personal_objs) > 1:
+                    error = ['Hay más de 1 persona que tiene el mismo NIF/NIE', reques.POST['nif']]
+                    return render(request, 'aicespana/informacionPersonal.html',{'ERROR':error})
+                info_voluntario = personal_obj.get_all_data_from_personal()
+                info_voluntario['cargos'] = personal_obj.get_responability_belongs_to()
+                return render(request, 'aicespana/informacionPersonal.html',{'info_voluntario':info_voluntario})
+            error = ['No hay nigún Personal de la Iglesia que tenga el NIF/NIE', request.POST['nif']]
+            return render(request, 'aicespana/informacionPersonal.html',{'ERROR':error})
+        personal_objs = PersonalIglesia.objects.all()
+        if request.POST['apellidos'] != '':
+            personal_objs = personal_objs.filter(apellido__icontains = request.POST['apellidos'])
+            if len(personal_objs) == 0:
+                error = ['No hay nigún Personal de Iglesia que tenga el apellido', request.POST['apellidos']]
+                return render(request, 'aicespana/informacionPersonal.html',{'ERROR':error})
+        if request.POST['nombre'] != '':
+            personal_objs = personal_objs.filter(nombre__icontains = request.POST['nombre'])
+            if len(personal_objs) == 0:
+                error = ['No hay nigún Personal de Iglesia con el nombre', request.POST['nombre']]
+                return render(request, 'aicespana/informacionPersonal.html',{'ERROR':error})
+        if len(personal_objs) >1 :
+            error = ['Hay más de un Personal de Iglesia que cumple los criterios de busqueda']
+            return render(request, 'aicespana/informacionPersonal.html', {'ERROR':error})
+        info_voluntario = personal_obj.get_all_data_from_personal()
+        info_voluntario['cargos'] = personal_obj.get_responability_belongs_to()
+        return render(request,'aicespana/informacionPersonal.html',{'info_personal':info_personal})
+
+
+
+@login_required
 def informacion_voluntario_id(request,voluntario_id):
     if not is_manager(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     if not PersonalExterno.objects.filter(pk__exact = voluntario_id).exists():
         return render(request, 'aicespana/errorPage.html', {'content': ERROR_VOLUNTARIO_DOES_NOT_EXIST})
     user_obj = get_user_obj_from_id(voluntario_id)
-
     info_voluntario = user_obj.get_all_data_from_voluntario()
     info_voluntario['cargos'] = user_obj.get_responability_belongs_to()
-
     return render(request,'aicespana/informacionVoluntario.html',{'info_voluntario':info_voluntario})
 
 @login_required
@@ -650,7 +696,8 @@ def informacion_voluntario(request):
                 if len(personal_objs) > 1:
                     error = ['Hay más de 1 persona que tiene el mismo NIF/NIE', reques.POST['nif']]
                     return render(request, 'aicespana/informacionVoluntario.html',{'ERROR':error})
-                info_voluntario = personal_objs[0].get_voluntario_data()
+                info_voluntario = personal_objs[0].get_all_data_from_voluntario()
+                info_voluntario['cargos'] = personal_objs[0].get_responability_belongs_to()
                 return render(request, 'aicespana/informacionVoluntario.html',{'info_voluntario':info_voluntario})
             error = ['No hay nigún voluntario que tenga el NIF/NIE', request.POST['nif']]
             return render(request, 'aicespana/informacionVoluntario.html',{'ERROR':error})
@@ -783,8 +830,16 @@ def listado_delegados_regionales(request):
 def listado_presidentes_grupo(request):
     if not is_manager(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
-    presidentes = presidentes_grupo()
-    return render(request,'aicespana/listadoPresidentesGrupo.html',{'presidentes': presidentes})
+    if request.method == 'POST' and request.POST['action'] == 'listadoPresidentesGrupo':
+        presidentes = presidentes_grupo(request.POST['delegacion_id'])
+        if not presidentes:
+            error_message = ERROR_NO_PRESIDENTS_IN_DELEGATION
+            delegation_data = delegation_id_and_name_list()
+            return render(request,'aicespana/listadoPresidentesGrupo.html',{'delegation_data': delegation_data, 'ERROR':error_message})
+        return render(request,'aicespana/listadoPresidentesGrupo.html',{'presidentes': presidentes})
+
+    delegation_data = delegation_id_and_name_list()
+    return render(request,'aicespana/listadoPresidentesGrupo.html',{'delegation_data': delegation_data})
 
 @login_required
 def listado_personal_externo(request):

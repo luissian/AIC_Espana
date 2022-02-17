@@ -18,6 +18,8 @@ urlpatterns = [
     path('cargosPersonalID=<int:personal_id>', views.cargos_personal_id, name = 'cargos_personal_id'),
     path('cargoVoluntario=<int:voluntario_id>', views.cargo_voluntario, name= 'cargo_voluntario'),
     path('cargosVoluntarios', views.cargos_voluntarios, name = 'cargos_voluntarios'),
+    path('informacionPersonal',views.informacion_personal, name = 'informacion_personal'),
+    path('informacionPersonalID=<int:personal_id>',views.informacion_personal_id, name = 'informacion_personal_id'),
     path('informacionVoluntario',views.informacion_voluntario, name = 'informacion_voluntario'),
     path('informacionVoluntarioID=<int:voluntario_id>',views.informacion_voluntario_id, name = 'informacion_voluntario_id'),
     path('listadoBoletin', views.listado_boletin, name = 'listado_boletin'),

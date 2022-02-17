@@ -34,3 +34,5 @@ ERROR_GRUPO_EXISTS = ['No se puede crear el grupo porque ya existe el grupo para
 
 ERROR_PERSONAL_IGLESIA_ALREADY_IN_DATABASE = 'No se puede dar de alta al personal de la iglesia porque ya existe'
 ERROR_PERSONAL_DOES_NOT_EXIST = 'El Personal de iglesia no existe'
+
+ERROR_NO_PRESIDENTS_IN_DELEGATION = ['No se han asignado presidentes a esta delegación']

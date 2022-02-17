@@ -1083,19 +1083,19 @@ def get_personal_externo_por_delegacion(delegacion_id):
             worksheet.write_row(row_num, 0, data)
     return personal_externo, os.path.join(settings.MEDIA_URL,f_name)
 
-def presidentes_grupo():
+def presidentes_grupo(delegation_id):
     '''
     Description:
-        The function get the presidentes for each group
+        The function get the presidentes for each group for te given delegation
     Return:
         presidentes_data
     '''
     presidentes_data = []
-    if PersonalExterno.objects.filter(cargo__nombreCargo = 'Presidenta de Grupo').exists():
-        personal_objs = PersonalExterno.objects.filter(cargo__nombreCargo = 'Presidenta de Grupo').order_by('grupoAsociado__nombreGrupo')
+    if PersonalExterno.objects.filter(cargo__nombreCargo = 'Presidenta de Grupo', grupoAsociado__diocesisDependiente__delegacionDependiente__pk__exact = delegation_id).exists():
+        personal_objs = PersonalExterno.objects.filter(cargo__nombreCargo = 'Presidenta de Grupo',grupoAsociado__diocesisDependiente__delegacionDependiente__pk__exact = delegation_id).order_by('grupoAsociado__nombreGrupo')
         for personal_obj in personal_objs:
             presidentes_data.append([personal_obj.get_personal_name(), personal_obj.get_movil_number() , personal_obj.get_group_belongs_to() , personal_obj.get_diocesis_belongs_to() , personal_obj.get_delegacion_belongs_to()])
-        
+
     return presidentes_data
 
 def get_excel_user_request_boletin():
