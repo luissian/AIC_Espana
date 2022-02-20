@@ -5,9 +5,11 @@ from dateutil.relativedelta import relativedelta
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage, default_storage
-
-memory_project_path_location = FileSystemStorage(location='memorias_de_proyectos')
-
+from django.conf import settings
+documentacion_proyectos = settings.MEDIA_ROOT
+carpeta_imagenes= os.path.join(documentacion_proyectos, 'images')
+memory_project_path_location = FileSystemStorage(location=documentacion_proyectos)
+images_delegation = FileSystemStorage(location=carpeta_imagenes)
 
 class EntidadesConCargo(models.Model):
     entidad =models.CharField(max_length=20)
@@ -35,12 +37,15 @@ class ActividadManager(models.Manager):
 
         return new_actividad
 
-
+class DelegacionManager(models.Manager):
+    def create_new_delegacion(self, data):
+        new_delegacion = self.create(nombreDelegacion = data['nombre'],imagenDelegacion = data['imagen'] )
+        return new_delegacion
 
 class Delegacion(models.Model):
     nombreDelegacion = models.CharField(max_length=20)
     #imagenDelegacion = models.CharField(max_length=80, null=True, blank=True)
-    imagenDelegacion = models.FileField( storage= memory_project_path_location, null=True, blank = True)
+    imagenDelegacion = models.FileField( storage= images_delegation, null=True, blank = True)
 
 
     def __str__(self):
@@ -58,9 +63,11 @@ class Delegacion(models.Model):
 
     def update_delegacion_name_and_image(self, name,image):
         self.nombreDelegacion = name
-        self.imagenDelegacion = image
+        if image:
+            self.imagenDelegacion = image
         self.save()
         return self
+    objects = DelegacionManager()
 
 class DiocesisManager(models.Manager):
     def create_new_diocesis(self, data):
@@ -322,7 +329,15 @@ class Proyecto(models.Model):
             activo = 'true'
         else:
             activo = 'false'
-        return [self.nombreProyecto, self.pk, self.get_grupo_id(), self.get_grupo_name(), self.get_diocesis_name(), alta, baja, activo, self.memoriaProyecto, self.fotografiaProyecto ]
+        if self.memoriaProyecto :
+            memoria_proyecto = os.path.join(settings.MEDIA_URL, str(self.memoriaProyecto))
+        else:
+            memoria_proyecto = ''
+        if self.fotografiaProyecto :
+            fotografia_proyecto = os.path.join(settings.MEDIA_URL,str(self.fotografiaProyecto))
+        else:
+            fotografia_proyecto = ''
+        return [self.nombreProyecto, self.pk, self.get_grupo_id(), self.get_grupo_name(), self.get_diocesis_name(), alta, baja, activo, memoria_proyecto, fotografia_proyecto ]
 
     def update_proyecto_data(self, data):
         self.grupoAsociado = Grupo.objects.filter(pk__exact = data['grupoID']).last()
@@ -412,7 +427,15 @@ class Actividad(models.Model):
             activo = 'true'
         else:
             activo = 'false'
-        return [self.nombreActividad, self.pk, self.get_grupo_id(), self.get_grupo_name(), self.get_diocesis_name(), alta, baja, activo, self.memoriaActividad, self.fotografiaActividad ]
+        if self.memoriaActividad :
+            memoria_actividad = os.path.join(settings.MEDIA_URL, str(self.memoriaActividad))
+        else:
+            memoria_actividad = ''
+        if self.fotografiaActividad :
+            fotografia_actividad = os.path.join(settings.MEDIA_URL,str(self.fotografiaActividad))
+        else:
+            fotografia_actividad = ''
+        return [self.nombreActividad, self.pk, self.get_grupo_id(), self.get_grupo_name(), self.get_diocesis_name(), alta, baja, activo, memoria_actividad, fotografia_actividad ]
 
     def update_actividad_data(self, data):
         self.grupoAsociado = Grupo.objects.filter(pk__exact = data['grupoID']).last()

@@ -97,22 +97,23 @@
 								</div>
 								<div class="col-md-8">
 									{% if actividad_data.memoria != '' %}
-										<p>El nombre del fichero de la memoria de la memoria es {{actividad_data.memoria}}</p>
-										<label for="grupoID" class="form-label">Usa el boton para actualizar la Memoria de la actividad</label><br>
-									 	<input type="file" name="uploadMemoria" accept=".doc, .docx, .pdf, .txt">
+										<a href="{{actividad_data.memoria}}">Descarga la memoria de la actividad <i class="bi bi-download"></i> </a>
+										<br><br>
+										<label for="uploadMemoria" class="form-label">Usa el boton para actualizar la Memoria de la actividad</label><br>
+										<input type="file" name="uploadMemoria" accept=".doc, .docx, .pdf, .txt">
 									{% else %}
-										<label for="grupoID" class="form-label">Sube la Memoria de la actividad</label><br>
+										<label for="uploadMemoria" class="form-label">Sube la Memoria de la actividad</label><br>
 										<input type="file" name="uploadMemoria" accept=".doc, .docx, .pdf, .txt">
 									{% endif %}
 								</div>
 								<div class="col-md-8">
 									{% if actividad_data.fotografia != '' %}
-										<p>El nombre del fichero de la fotografia de la fotogafia es {{actividad_data.fotografia}}</p>
+										<a href="{{actividad_data.fotografia}}">Descarga la fotografia del Proyecto <i class="bi bi-download"></i> </a>
 										<label for="grupoID" class="form-label">Usa el boton para actualizar la fotografia de la actividad</label><br>
-									 	<input type="file" name="uploadMemoria" accept=".jpg, .gif, .pdf, .png">
+									 	<input type="file" name="uploadFotografia" accept=".jpg, .gif, .pdf, .png">
 									{% else %}
 										<label for="grupoID" class="form-label">Sube la fotografía de la actividad</label><br>
-										<input type="file" name="uploadMemoria" accept=".doc, .docx, .pdf, .txt">
+										<input type="file" name="uploadFotografia" accept=".jpg, .gif, .pdf, .png">
 									{% endif %}
 								</div>
 		                        <div class="col-md-6">

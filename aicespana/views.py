@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 from django.template import loader
 from django.contrib.auth.decorators import login_required
-
+from django.conf import settings
 from .models import *
 from .message_text import *
 from .utils.generic_functions import *
@@ -25,7 +25,7 @@ def alta_actividad(request):
         if Actividad.objects.filter(nombreActividad__iexact = request.POST['nombre']).exists():
             return render(request,'aicespana/altaActividad.html',{'actividad_data':actividad_data, 'ERROR': [ERROR_ACTIVIDAD_EXIST]})
         data = {}
-        data['grupo_obj'] = get_grupo_obj_from_id(request.POST['grupoID'])
+        data['grupo_obj'] = get_grupo_obj_from_id(request.POST['grupoID']) if request.POST['grupoID'] != '' else None
         data['alta'] = request.POST['alta']
         data['nombre'] = request.POST['nombre']
         data['observaciones'] = request.POST['observaciones']
@@ -49,9 +49,15 @@ def alta_delegacion(request):
             error = [ERROR_DELEGACION_EXIST, request.POST['nombre']]
             return render(request,'aicespana/altaDelegacion.html',{'delegaciones':delegaciones, 'ERROR':error})
         imagen_file = None
-        if 'imagen' in request.FILES:
-            imagen_file = store_file(request.FILES['imagen'])
-        new_delegacion_obj = Delegacion.objects.create(nombreDelegacion = request.POST['nombre'],imagenDelegacion = imagen_file)
+        if 'uploadImage' in request.FILES:
+            image_folder = os.path.join(settings.MEDIA_ROOT,'images')
+            os.makedirs(image_folder,exist_ok = True)
+            image_file = store_file(request.FILES['uploadImage'])
+            os.replace(os.path.join(settings.MEDIA_ROOT,image_file),os.path.join(image_folder,image_file))
+        else:
+            image_file = None
+        data = {'nombre': request.POST['nombre'], 'imagen': image_file}
+        new_delegacion_obj = Delegacion.objects.create_new_delegacion(data)
         return render(request,'aicespana/altaDelegacion.html',{'delegaciones':delegaciones,'confirmation_data': request.POST['nombre']})
     return render(request,'aicespana/altaDelegacion.html',{'delegaciones':delegaciones})
 
@@ -150,7 +156,7 @@ def alta_proyecto(request):
         if Proyecto.objects.filter(nombreProyecto__iexact = request.POST['nombre']).exists():
             return render(request,'aicespana/altaProyecto.html',{'proyecto_data':proyecto_data, 'ERROR': [ERROR_PROYECTO_EXIST]})
         data = {}
-        data['grupo_obj'] = get_grupo_obj_from_id(request.POST['grupoID'])
+        data['grupo_obj'] = get_grupo_obj_from_id(request.POST['grupoID']) if request.POST['grupoID'] != '' else None
         data['alta'] = request.POST['alta']
         data['nombre'] = request.POST['nombre'].strip()
         data['observaciones'] = request.POST['observaciones']
@@ -238,7 +244,14 @@ def modificar_delegacion(request,delegation_id):
         if Delegacion.objects.filter(nombreDelegacion__iexact = request.POST['nombre']).exclude(pk__exact =request.POST['delegacion_id'] ).exists():
             return render (request,'aicespana/modificarDelegacion.html', {'ERROR': ERROR_DELEGACION_MODIFICATION_EXIST, 'delegacion':delegacion})
         delegation_obj = get_delegation_obj_from_id(request.POST['delegacion_id'])
-        delegation_obj.update_delegacion_name_and_image(request.POST['nombre'], request.POST['image'])
+        if 'uploadImage' in request.FILES:
+            image_folder = os.path.join(settings.MEDIA_ROOT,'images')
+            os.makedirs(image_folder,exist_ok = True)
+            image_file = store_file(request.FILES['uploadImage'])
+            os.replace(os.path.join(settings.MEDIA_ROOT,image_file),os.path.join(image_folder,image_file))
+        else:
+            image_file = None
+        delegation_obj.update_delegacion_name_and_image(request.POST['nombre'],image_file)
         return render(request,'aicespana/modificarDelegacion.html',{'confirmation_data': request.POST['nombre']})
 
     return render(request,'aicespana/modificarDelegacion.html',{'delegacion':delegacion})
@@ -758,6 +771,7 @@ def listado_delegacion(request, delegacion_id):
     delegacion_data['delegacion_name'] = delegacion_obj.get_delegacion_name()
     delegacion_data['delegacion_image'] = delegacion_obj.get_delegacion_image()
     delegacion_data.update(get_delegation_data (delegacion_id))
+    #import pdb; pdb.set_trace()
     return render(request,'aicespana/listadoDelegacion.html', {'delegacion_data': delegacion_data})
 
 

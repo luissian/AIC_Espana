@@ -97,7 +97,8 @@
 								</div>
 								<div class="col-md-8">
 									{% if proyecto_data.memoria != '' %}
-										<p>El nombre del fichero de la memoria del projecto es {{proyecto_data.memoria}}</p>
+										<a href="{{proyecto_data.memoria}}">Descarga la memoria del Proyecto <i class="bi bi-download"></i> </a>
+										<br><br>
 										<label for="grupoID" class="form-label">Usa el boton para actualizar la Memoria del proyecto</label><br>
 									 	<input type="file" name="uploadMemoria" accept=".doc, .docx, .pdf, .txt">
 									{% else %}
@@ -105,16 +106,19 @@
 										<input type="file" name="uploadMemoria" accept=".doc, .docx, .pdf, .txt">
 									{% endif %}
 								</div>
+								<br><br>
 								<div class="col-md-8">
 									{% if proyecto_data.fotografia != '' %}
-										<p>El nombre del fichero de la fotografia del projecto es {{proyecto_data.fotografia}}</p>
+										<a href="{{proyecto_data.fotografia}}">Descarga la fotografia del Proyecto <i class="bi bi-download"></i> </a>
+										<br><br>
 										<label for="grupoID" class="form-label">Usa el boton para actualizar la fotografia del proyecto</label><br>
-									 	<input type="file" name="uploadMemoria" accept=".jpg, .gif, .pdf, .png">
+									 	<input type="file" name="uploadFotografia" accept=".jpg, .gif, .pdf, .png">
 									{% else %}
 										<label for="grupoID" class="form-label">Sube la fotografía del proyecto</label><br>
-										<input type="file" name="uploadMemoria" accept=".doc, .docx, .pdf, .txt">
+										<input type="file" name="uploadFotografia" accept=".jpg, .gif, .pdf, .png">
 									{% endif %}
 								</div>
+								<br>
 		                        <div class="col-md-6">
 		                            <label for="observaciones" class="form-label">Observaciones</label>
 		                            <textarea name="observaciones" rows="8" cols="70" maxlength="500">{{proyecto_data.observaciones}}</textarea>

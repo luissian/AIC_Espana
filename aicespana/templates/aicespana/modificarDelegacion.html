@@ -40,7 +40,7 @@
 	<br><br>
 	<div class="container-md">
 	    <div class="row g-3">
-	        <div class="col-md-9">
+	        <div class="col-md-8">
 	            <div class="card">
 					<div class="card-header"><h2 style="text-align:center">Formulario para cambiar el nombre de la Delegación {{delegacion.name}}</h2> </div>
 	                <div class="card-body">
@@ -52,14 +52,20 @@
 		                        <div class="col-md-6">
 		                            <label class="control-label " for="nombre">Escribe el nuevo nombre de la Delegación</label>
 		                            <input type="text" required class="form-control" id="nombre" name='nombre' value="{{delegacion.name}}">
-		                        </div>
+		                        </div> <!-- end col-md-6 -->
 								<br><br>
 								<div class="col-md-6">
-		                            <label class="control-label " for="nombre">Escribe el nombre de la imagen de la Delegación</label>
-		                            <input type="text" required class="form-control" id="image" name='image' value="{{delegacion.image}}" >
-		                        </div>
+									{% if delegacion.image != '' %}
+										<a href="{{delegacion.image}}">Descarga la fotografia de la Delegación &nbsp; <i class="bi bi-download"></i> </a>
+										<br><br>
+										<label for="grupoID" class="form-label">Usa el boton para actualizar la fotografia de la Delegación</label><br>
+									 	<input type="file" name="uploadImage" accept=".jpg, .gif, .pdf, .png">
+									{% else %}
+										<label for="grupoID" class="form-label">Sube la fotografía del proyecto</label><br>
+										<input type="file" name="uploadImage" accept=".doc, .docx, .pdf, .txt">
+									{% endif %}
+		                        </div> <!-- end col-md-7 -->
 							</div>
-
 							<br><br>
 	                        <div class="col-12">
 	                            <button type="submit" class="btn-outline-primary float-end ">Guardar datos</button>
@@ -69,7 +75,17 @@
 						<p>Los campos con  <span style="color:red"> * </span> son obligatorios</p>
 	                </div>  <!-- end card-body -->
 	            </div>  <!-- end card -->
+
 	        </div> <!-- end col-md-7 -->
+			{% if delegacion.image != '' %}
+				<div class="col-md-4">
+					<div class="card">
+						<div class="card-body">
+							<img src="memorias_de_proyectos/images/{{delegacion.image}}" alt="{{delegacion_data.delegacion_name}}" class="img-fluid">
+						</div> <!-- end card body-->
+					</div> <!-- end card  -->
+				 </div> <!-- end col-md-4 -->
+			{% endif %}
 	    </div> <!-- end row-->
 	</div> <!-- end container -->
 {% endif %}
