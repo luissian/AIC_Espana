@@ -55,15 +55,8 @@
 		                        </div> <!-- end col-md-6 -->
 								<br><br>
 								<div class="col-md-6">
-									{% if delegacion.image != '' %}
-										<a href="{{delegacion.image}}">Descarga la fotografia de la Delegación &nbsp; <i class="bi bi-download"></i> </a>
-										<br><br>
-										<label for="grupoID" class="form-label">Usa el boton para actualizar la fotografia de la Delegación</label><br>
-									 	<input type="file" name="uploadImage" accept=".jpg, .gif, .pdf, .png">
-									{% else %}
-										<label for="grupoID" class="form-label">Sube la fotografía del proyecto</label><br>
-										<input type="file" name="uploadImage" accept=".doc, .docx, .pdf, .txt">
-									{% endif %}
+									<label for="grupoID" class="form-label">Sube la fotografía del proyecto</label><br>
+									<input type="file" name="uploadImage" accept=".doc, .docx, .pdf, .txt">
 		                        </div> <!-- end col-md-7 -->
 							</div>
 							<br><br>

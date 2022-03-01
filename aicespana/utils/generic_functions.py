@@ -984,8 +984,9 @@ def is_manager (request):
 def allow_see_group_information_voluntary (request, group_obj):
     '''
     Description:
-        The function will check if the logged user belongs to administracion, todasDelegaciones groups
-        or has the presidenta diocesana responsability and belongs to the same delegacion
+        The function will check if the logged user belongs to administracion,
+        presidenta nacional to see all delegaciones  or has the
+        presidenta diocesana responsability and belongs to the same delegacion
     Input:
         request # contains the session information
         group_obj   # object of the grouo
@@ -1002,6 +1003,8 @@ def allow_see_group_information_voluntary (request, group_obj):
                 if not PersonalExterno.objects.filter(nombre__iexact = nombre_usuario, apellido__iexact = apellido_usuario).exists():
                     return False
                 usuario_obj = PersonalExterno.objects.filter(nombre__iexact = nombre_usuario, apellido__iexact = apellido_usuario).last()
+                if usuario_obj.get_responability_belongs_to() == 'Presidenta Nacional':
+                    return True
                 if usuario_obj.get_responability_belongs_to() != 'Presidenta Diocesana':
                     return False
                 if usuario_obj.get_delegacion_belongs_to() != group_obj.get_delegacion_name():
