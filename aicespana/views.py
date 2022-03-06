@@ -651,9 +651,9 @@ def informacion_personal_id(request,personal_id):
 def informacion_personal(request):
     if not is_manager(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
-    if request.method == 'POST' and request.POST['action'] == 'busquedaVoluntario':
+    if request.method == 'POST' and request.POST['action'] == 'busquedaPersonal':
         if request.POST['nif'] == '' and request.POST['nombre'] == '' and request.POST['apellidos'] == '':
-            return render(request, 'aicespana/informacionVoluntario.html')
+            return render(request, 'aicespana/informacionPersonal.html')
         if request.POST['nif'] != '':
             if PersonalIglesia.objects.filter(DNI__iexact = request.POST['nif']).exists():
                 personal_objs = PersonalIglesia.objects.filter(DNI__iexact = request.POST['nif'])
@@ -682,6 +682,7 @@ def informacion_personal(request):
         info_voluntario = personal_obj.get_all_data_from_personal()
         info_voluntario['cargos'] = personal_obj.get_responability_belongs_to()
         return render(request,'aicespana/informacionPersonal.html',{'info_personal':info_personal})
+    return render(request,'aicespana/informacionPersonal.html')
 
 
 
