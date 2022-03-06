@@ -716,12 +716,12 @@ def informacion_voluntario(request):
             return render(request, 'aicespana/informacionVoluntario.html',{'ERROR':error})
         personal_objs = PersonalExterno.objects.all()
         if request.POST['apellidos'] != '':
-            personal_objs = personal_objs.filter(apellido__icontains = request.POST['apellidos'])
+            personal_objs = personal_objs.filter(apellido__icontains = request.POST['apellidos'].strip())
             if len(personal_objs) == 0:
                 error = ['No hay nigún voluntario con el apellido', request.POST['apellidos']]
                 return render(request, 'aicespana/informacionVoluntario.html',{'ERROR':error})
         if request.POST['nombre'] != '':
-            personal_objs = personal_objs.filter(nombre__icontains = request.POST['nombre'])
+            personal_objs = personal_objs.filter(nombre__icontains = request.POST['nombre'].strip())
             if len(personal_objs) == 0:
                 error = ['No hay nigún voluntario con el nombre', request.POST['nombre']]
                 return render(request, 'aicespana/informacionVoluntario.html',{'ERROR':error})

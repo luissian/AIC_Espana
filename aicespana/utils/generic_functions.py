@@ -1005,7 +1005,7 @@ def allow_see_group_information_voluntary (request, group_obj):
                 usuario_obj = PersonalExterno.objects.filter(nombre__iexact = nombre_usuario, apellido__iexact = apellido_usuario).last()
                 if usuario_obj.get_responability_belongs_to() == 'Presidenta Nacional':
                     return True
-                if usuario_obj.get_responability_belongs_to() != 'Presidenta Diocesana':
+                if usuario_obj.get_responability_belongs_to() != 'Presidenta Regional':
                     return False
                 if usuario_obj.get_delegacion_belongs_to() != group_obj.get_delegacion_name():
                     return False
