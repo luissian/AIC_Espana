@@ -679,8 +679,8 @@ def informacion_personal(request):
         if len(personal_objs) >1 :
             error = ['Hay más de un Personal de Iglesia que cumple los criterios de busqueda']
             return render(request, 'aicespana/informacionPersonal.html', {'ERROR':error})
-        info_voluntario = personal_obj.get_all_data_from_personal()
-        info_voluntario['cargos'] = personal_obj.get_responability_belongs_to()
+        info_personal = personal_objs[0].get_all_data_from_personal()
+        info_personal['cargos'] = personal_objs[0].get_responability_belongs_to()
         return render(request,'aicespana/informacionPersonal.html',{'info_personal':info_personal})
     return render(request,'aicespana/informacionPersonal.html')
 
