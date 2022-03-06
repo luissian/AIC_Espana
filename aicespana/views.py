@@ -772,7 +772,6 @@ def listado_delegacion(request, delegacion_id):
     delegacion_data['delegacion_name'] = delegacion_obj.get_delegacion_name()
     delegacion_data['delegacion_image'] = delegacion_obj.get_delegacion_image()
     delegacion_data.update(get_delegation_data (delegacion_id))
-    #import pdb; pdb.set_trace()
     return render(request,'aicespana/listadoDelegacion.html', {'delegacion_data': delegacion_data})
 
 

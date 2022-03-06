@@ -1000,13 +1000,11 @@ def allow_see_group_information_voluntary (request, group_obj):
             if todas_delegaciones not in request.user.groups.all():
                 nombre_usuario = request.user.first_name
                 apellido_usuario = request.user.last_name
-                import pdb; pdb.set_trace()
                 if not PersonalExterno.objects.filter(nombre__iexact = nombre_usuario, apellido__iexact = apellido_usuario).exists():
                     return False
                 usuario_obj = PersonalExterno.objects.filter(nombre__iexact = nombre_usuario, apellido__iexact = apellido_usuario).last()
                 if usuario_obj.get_responability_belongs_to() == 'Presidenta Nacional':
                     return True
-                import pdb; pdb.set_trace()
                 if usuario_obj.get_responability_belongs_to() != 'Delegada Regional':
                     return False
                 if usuario_obj.get_delegacion_belongs_to() != group_obj.get_delegacion_name():
