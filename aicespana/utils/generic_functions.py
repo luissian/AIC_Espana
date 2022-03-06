@@ -46,8 +46,8 @@ def get_delegation_data(delegation_id):
             cargo_objs = Cargo.objects.filter(entidadCargo__entidad__iexact = 'delegación').order_by('nombreCargo')
             for cargo_obj in cargo_objs:
                 cargo_name = cargo_obj.get_cargo_name()
-                if PersonalExterno.objects.filter(cargo__nombreCargo__exact = cargo_name).exists():
-                    user_name = PersonalExterno.objects.filter(cargo__nombreCargo__exact = cargo_name).last().get_personal_name()
+                if PersonalExterno.objects.filter(cargo__nombreCargo__exact = cargo_name, grupoAsociado__diocesisDependiente__delegacionDependiente__pk__exact = delegation_id).exists():
+                    user_name = PersonalExterno.objects.filter(cargo__nombreCargo__exact = cargo_name, grupoAsociado__diocesisDependiente__delegacionDependiente__pk__exact = delegation_id).last().get_personal_name()
                 else:
                     user_name = 'Puesto vacante'
                 delegation_data['cargos'].append([cargo_name, user_name ])
