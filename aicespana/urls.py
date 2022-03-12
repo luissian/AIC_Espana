@@ -23,6 +23,8 @@ urlpatterns = [
     path('informacionVoluntario',views.informacion_voluntario, name = 'informacion_voluntario'),
     path('informacionVoluntarioID=<int:voluntario_id>',views.informacion_voluntario_id, name = 'informacion_voluntario_id'),
     path('listadoBoletin', views.listado_boletin, name = 'listado_boletin'),
+    path('listadoBajasExterno', views.listado_bajas_externo, name = 'listado_bajas_externo'),
+    path('listadoBajasIglesia', views.listado_bajas_iglesia, name = 'listado_bajas_iglesia'),
     path('listadoDelegacion=<int:delegacion_id>', views.listado_delegacion, name ='listado_delegacion'),
     path('listadoDelegaciones', views.listado_delegaciones, name ='listado_delegaciones'),
     path('listadoDelegadosRegionales', views.listado_delegados_regionales, name = 'listado_delegados_regionales'),

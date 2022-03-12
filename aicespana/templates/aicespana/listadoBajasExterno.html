@@ -1,0 +1,39 @@
+{% extends 'aicespana/base.html' %}
+{% load static %}
+{% block content %}
+<style>
+.table-wrapper {
+    height: 250px;
+    overflow: auto;
+    display:inline-block;
+    width: auto;
+</style>
+<div class="container-md">
+	<div class="col-md-9">
+	    <div class="card">
+	        <div class="card-header"><h2 style="text-align:center">Listado de Bajas del Personal Externo</h2> </div>
+	            <div class="card-body">
+					{% if bajas_externo|length > 0 %}
+                    <table class="table table-hover">
+		                <thead>
+                            <tr>
+                                <th>Nombre del personal externo</th>
+                            </tr>
+                        </thead>
+                    	<tbody>
+							{% for nombre in bajas_externo %}
+	                            <tr>
+	                                <td>{{nombre}}</td>
+	                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+					{% else %}
+						<h5 style="text-align:center">No hay ningún personal externo que este dado de baja</h5>
+					{% endif %}
+	            </div>  <!-- end card-body -->
+	        </div>  <!-- end card -->
+	    </div> <!-- end col-md-5 -->
+</div> <!-- end container -->
+
+{% endblock %}

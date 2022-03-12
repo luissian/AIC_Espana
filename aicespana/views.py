@@ -865,3 +865,17 @@ def listado_personal_externo(request):
         return render(request,'aicespana/listadoPersonalExterno.html',{'listado_personal': listado_personal, 'excel_file':excel_file, 'delegacion': delegacion})
     delegation_data = delegation_id_and_name_list()
     return render(request,'aicespana/listadoPersonalExterno.html',{'delegation_data': delegation_data})
+
+@login_required
+def listado_bajas_externo(request):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    bajas_externo = bajas_personal_externo_list()
+    return render(request,'aicespana/listadoBajasExterno.html',{'bajas_externo': bajas_externo})
+
+@login_required
+def listado_bajas_iglesia(request):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    bajas_iglesia = bajas_personal_iglesia_list()
+    return render(request,'aicespana/listadoBajasIglesia.html',{'bajas_iglesia': bajas_iglesia})

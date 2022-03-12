@@ -702,11 +702,6 @@ def get_project_group_diocesis():
             proyecto_grupo_diocesis_list.append([proyecto_obj.get_proyecto_id() , proyecto_obj.get_proyecto_name() ,proyecto_obj.get_grupo_name() , proyecto_obj.get_diocesis_name()])
     return proyecto_grupo_diocesis_list
 
-
-
-
-
-
 def get_activity_group_diocesis():
     '''
     Description:
@@ -866,9 +861,6 @@ def get_defined_data_for_voluntary(personal_obj):
     defined_data['apellido'] = personal_obj.get_personal_only_apellido()
     defined_data['user_id'] = personal_obj.get_personal_id()
     return_data
-
-
-
 
 def get_responsibles_in_the_group(group_obj):
     '''
@@ -1100,6 +1092,34 @@ def presidentes_grupo(delegation_id):
             presidentes_data.append([personal_obj.get_personal_name(), personal_obj.get_movil_number() , personal_obj.get_group_belongs_to() , personal_obj.get_diocesis_belongs_to() , personal_obj.get_delegacion_belongs_to()])
 
     return presidentes_data
+
+def  bajas_personal_externo_list():
+    '''
+    Description:
+        Get the list of personal externo whom are no longer belongs to AIC
+    Return:
+        bajas_externo
+    '''
+    bajas_externo = []
+    if PersonalExterno.objects.filter(personalActivo = False).exists():
+        personal_objs = PersonalExterno.objects.filter(personalActivo = False)
+        for personal_obj in personal_objs:
+            bajas_externo.append(personal_obj.get_personal_name())
+    return bajas_externo
+
+def  bajas_personal_iglesia_list():
+    '''
+    Description:
+        Get the list of iglesia personal whom are no longer belongs
+    Return:
+        bajas_igleisa
+    '''
+    bajas_iglesia = []
+    if PersonalIglesia.objects.filter(personalActivo = False).exists():
+        personal_objs = PersonalIglesia.objects.filter(personalActivo = False)
+        for personal_obj in personal_objs:
+            bajas_iglesia.append(personal_obj.get_personal_name())
+    return bajas_iglesia
 
 def get_excel_user_request_boletin():
     '''
