@@ -861,7 +861,7 @@ class PersonalExterno(models.Model):
         self.recibirBoletin = boletin
         self.proyectoAsociado = proyecto_obj
         self.actividadAsociada = actividad_obj
-        self.activo = activo
+        self.personalActivo = activo
         self.save()
         return self
 
@@ -1082,6 +1082,10 @@ class PersonalIglesia(models.Model):
             nacimiento = data['nacimiento']
         else:
             nacimiento = None
+        if data['activo'] == 'false':
+            activo = False
+        else:
+            activo = True
         self.nombre = data['nombre']
         self.apellido = data['apellidos']
         self.calle = data['calle']
@@ -1095,7 +1099,7 @@ class PersonalIglesia(models.Model):
         self.telefonoFijo = data['fijo']
         self.telefonoMovil = data['movil']
         self.recibirBoletin = boletin
-        self.activo = activo
+        self.personalActivo = activo
         self.save()
         return self
 
