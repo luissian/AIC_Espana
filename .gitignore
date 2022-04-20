@@ -7,7 +7,12 @@ aicespana/migrations/
 memorias_de_proyectos/
 #static/
 manage.py
-AIC_Espana/
+AIC_Espana/settings.py
+.well-known/
+index.wsgi
+static
+tmp/
+
 # C extensions
 *.so
 
