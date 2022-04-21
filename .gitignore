@@ -10,7 +10,7 @@ manage.py
 AIC_Espana/settings.py
 .well-known/
 index.wsgi
-static
+static/
 tmp/
 
 # C extensions
