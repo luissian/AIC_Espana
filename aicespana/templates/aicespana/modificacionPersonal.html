@@ -128,15 +128,18 @@
 
 								<br>
 								<div class="col-md-6">
-									<label for="boletin"  class="control-label">Desea recibir boletín</label>
-									<select id="boletin"  class="form-select" name='boletin'>
-										{% if personal_data.boletin == 'true' %}
-											<option selected value="true">Deseo recibir el boletin</option>
+									<label for="rec_boletin"  class="control-label">Desea recibir boletín</label>
+									<select id="rec_boletin"  class="form-select" name='rec_boletin'>
+										{% if voluntary_data.rec_boletin == '0' %}
+											<option selected value="0">No deseo recibir el boletin</option>
+										{% elif voluntary_data.rec_boletin == '1'%}
+											<option selected value="1">Si, Boletin online</option>
 										{% else %}
-											<option selected value="false">No deseo recibir el boletin</option>
+											<option selected value="2">Si, Boletin por correo postal</option>
 										{% endif %}
-										<option value="false">No deseo recibir el boletin</option>
-										<option value="true">Si, Deseo recibir el Boletin</option>
+										<option value="0">No deseo recibir el boletin</option>
+										<option value="1">Si, Boletin online</option>
+										<option value="2">Si, Boletin por correo postal</option>
 									</select>
 								</div>
 								<div class="col-md-6">

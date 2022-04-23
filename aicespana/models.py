@@ -495,10 +495,15 @@ class PersonalExternoManager(models.Manager):
             grupo_obj = Grupo.objects.filter(pk__exact = data['grupoID']).last()
         else:
             grupo_obj = None
-        if data['boletin'] == 'true':
-            boletin = True
-        else:
+        if data['rec_boletin'] == '0':
             boletin = False
+            online = False
+        else:
+            boletin = True
+            if data['rec_boletin'] == "1":
+                online = True
+            else:
+                online = False
         if data['nacimiento'] == '':
             data['nacimiento'] = None
         if data['alta'] == '':
@@ -507,7 +512,7 @@ class PersonalExternoManager(models.Manager):
                 poblacion = data['poblacion'], provincia = data['provincia'], codigoPostal = data['codigo'],
                 DNI = data['nif'], fechaNacimiento = data['nacimiento'],fechaAlta = data['alta'], email = data['email'], telefonoFijo = data['fijo'],
                 telefonoMovil = data['movil'],  tipoColaboracion = tipoColaboracion_obj, grupoAsociado = grupo_obj,
-                recibirBoletin = boletin)
+                recibirBoletin = boletin, boletinOnline = online)
         return new_ext_personel
 
 class PersonalExterno(models.Model):
@@ -678,20 +683,24 @@ class PersonalExterno(models.Model):
             boletin = 'true'
         else:
             boletin = 'false'
+        if self.boletinOnline:
+            online = "true"
+        else:
+            online = "false"
         if self.personalActivo:
             activo = 'true'
         else:
             activo = 'false'
         if self.tipoColaboracion is None:
             colaboracion = ''
-            colaboracion_id =''
+            colaboracion_id = ''
         else:
             colaboracion = self.tipoColaboracion.get_collaboration_name()
             colaboracion_id = self.tipoColaboracion.get_tipo_colaboracion_id()
         if self.grupoAsociado is None:
             grupo = ''
             grupo_id = ''
-            diocesis =  ''
+            diocesis = ''
         else:
             grupo = self.grupoAsociado.get_grupo_name()
             grupo_id = self.grupoAsociado.get_grupo_id()
@@ -708,6 +717,13 @@ class PersonalExterno(models.Model):
         else:
             actividad_id = self.actividadAsociada.get_actividad_id()
             actividad_name = self.actividadAsociada.get_actividad_name()
+        if boletin == 'true':
+            if online == 'true':
+                rec_boletin = '1'
+            else:
+                rec_boletin = '2'
+        else:
+            rec_boletin = "0"
         data = {}
         data['user_id'] = self.pk
         data['nombre'] = self.nombre
@@ -735,6 +751,8 @@ class PersonalExterno(models.Model):
         data['actividad_id'] = actividad_id
         data['actividad_name'] = actividad_name
         data['activo'] = activo
+        data['online'] = online
+        data['rec_boletin'] = rec_boletin
         return data
 
     def get_data_for_boletin(self):
@@ -820,10 +838,15 @@ class PersonalExterno(models.Model):
                 grupo_obj = None
         else:
             grupo_obj = None
-        if data['boletin'] == 'true':
-            boletin = True
-        else:
+        if data['rec_boletin'] == '0':
             boletin = False
+            online = False
+        else:
+            boletin = True
+            if data['rec_boletin'] == '1':
+                online = True
+            else:
+                online = False
         if data['activo'] == 'true':
             activo = True
         else:
@@ -872,6 +895,7 @@ class PersonalExterno(models.Model):
         self.tipoColaboracion = tipoColaboracion_obj
         self.grupoAsociado = grupo_obj
         self.recibirBoletin = boletin
+        self.boletinOnline = online
         self.proyectoAsociado = proyecto_obj
         self.actividadAsociada = actividad_obj
         self.personalActivo = activo
@@ -885,11 +909,21 @@ class PersonalManager(models.Manager):
     def create_new_personel(self, data):
         if data['nacimiento'] == '':
             data['nacimiento'] = None
+        if data['rec_boletin'] == '0':
+            boletin = False
+            online = False
+        else:
+            boletin = True
+            if data['rec_boletin'] == "1":
+                online = True
+            else:
+                online = False
         new_personel = self.create(nombre = data['nombre'], apellido = data['apellido'],
                 DNI = data['nif'], email = data['email'], telefonoFijo = data['fijo'],
                 telefonoMovil = data['movil'],calle = data['calle'],
                 poblacion = data['poblacion'], provincia = data['provincia'],
-                codigoPostal = data['codigo'],fechaNacimiento = data['nacimiento'])
+                codigoPostal = data['codigo'],fechaNacimiento = data['nacimiento'],
+                recibirBoletin = boletin, boletinOnline = online)
         return new_personel
 
 
@@ -1000,11 +1034,21 @@ class PersonalIglesia(models.Model):
             boletin = 'true'
         else:
             boletin = 'false'
+        if self.boletinOnline:
+            online = "true"
+        else:
+            online = "false"
         if self.personalActivo:
             activo = 'true'
         else:
             activo = 'false'
-
+        if boletin == 'true':
+            if online == 'true':
+                rec_boletin = '1'
+            else:
+                rec_boletin = '2'
+        else:
+            rec_boletin = "0"
         data = {}
         data['user_id'] = self.pk
         data['nombre'] = self.nombre
@@ -1023,6 +1067,8 @@ class PersonalIglesia(models.Model):
         data['observaciones'] = self.observaciones
         #data['diocesis'] = diocesis
         data['activo'] = activo
+        data['online'] = online
+        data['rec_boletin'] = rec_boletin
         return data
 
     def get_data_for_boletin(self):
@@ -1077,11 +1123,15 @@ class PersonalIglesia(models.Model):
 
 
     def update_all_data_for_personal(self, data):
-
-        if data['boletin'] == 'true':
-            boletin = True
-        else:
+        if data['rec_boletin'] == '0':
             boletin = False
+            online = False
+        else:
+            boletin = True
+            if data['rec_boletin'] == '1':
+                online = True
+            else:
+                online = False
         if data['activo'] == 'true':
             activo = True
         else:
@@ -1113,6 +1163,7 @@ class PersonalIglesia(models.Model):
         self.telefonoFijo = data['fijo']
         self.telefonoMovil = data['movil']
         self.recibirBoletin = boletin
+        self.boletinOnline = online
         self.personalActivo = activo
         self.save()
         return self

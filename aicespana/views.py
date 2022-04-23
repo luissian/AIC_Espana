@@ -128,7 +128,7 @@ def alta_personal_iglesia(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     if request.method == 'POST' and request.POST['action'] == 'altaPersonal':
         confirmation_data = ''
-        info_to_fetch = ['nombre', 'apellido','nif', 'email', 'fijo', 'movil' , 'calle', 'poblacion', 'provincia', 'codigo','nacimiento']
+        info_to_fetch = ['nombre', 'apellido','nif', 'email', 'fijo', 'movil' , 'calle', 'poblacion', 'provincia', 'codigo','nacimiento', 'rec_boletin']
         personal_data = {}
 
         for field in info_to_fetch:
@@ -176,7 +176,7 @@ def alta_voluntario(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     if request.method == 'POST' and request.POST['action'] == 'altaVoluntario':
         confirmation_data = ''
-        info_to_fetch = ['nombre', 'apellidos','nif','nacimiento', 'alta' ,'calle','poblacion', 'provincia', 'codigo', 'email', 'fijo', 'movil', 'tipoColaboracion','grupoID', 'boletin']
+        info_to_fetch = ['nombre', 'apellidos','nif','nacimiento', 'alta' ,'calle','poblacion', 'provincia', 'codigo', 'email', 'fijo', 'movil', 'tipoColaboracion','grupoID', 'rec_boletin']
         personal_data = {}
         for field in info_to_fetch:
             personal_data[field] = request.POST[field].strip()
@@ -401,7 +401,7 @@ def modificacion_personal(request):
         user_obj = get_personal_obj_from_id(request.POST['user_id'])
         data = {}
         field_list = ['nombre', 'apellidos','dni','calle','poblacion', 'provincia', 'codigo', 'email', 'fijo', 'movil',
-                'baja', 'boletin' ,'activo','nacimiento']
+                'baja', 'rec_boletin' ,'activo','nacimiento']
 
         for item in field_list:
             data[item] = request.POST[item]
@@ -478,7 +478,7 @@ def modificacion_voluntario(request):
                 personal_available_settings.update(get_external_personal_responsability(personal_objs[0]))
                 voluntary_data['user_id'] = personal_objs[0].get_personal_id()
                 return render(request, 'aicespana/modificacionVoluntario.html', {'voluntary_data':voluntary_data})
-            error = ['No hay nigún voluntario que tenga el NIF/NIE', request.POST['nif']]
+            error = ['No hay ningún voluntario que tenga el NIF/NIE', request.POST['nif']]
             return render(request, 'aicespana/modificacionVoluntario.html',{'ERROR':error})
         personal_objs = PersonalExterno.objects.all()
         if request.POST['apellido'] != '':
@@ -507,7 +507,7 @@ def modificacion_voluntario(request):
         user_obj = get_user_obj_from_id(request.POST['user_id'])
         data = {}
         field_list = ['nombre', 'apellidos','dni','nacimiento','calle','poblacion', 'provincia', 'codigo', 'email', 'fijo', 'movil',
-                'alta', 'baja', 'colaboracion_id','grupoID', 'boletin','activo','actividadID','proyectoID']
+                'alta', 'baja', 'colaboracion_id','grupoID', 'rec_boletin','activo','actividadID','proyectoID']
 
         for item in field_list:
             data[item] = request.POST[item]
