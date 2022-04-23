@@ -81,6 +81,7 @@ class Diocesis(models.Model):
                         Delegacion,
                         on_delete=models.CASCADE)
     nombreDiocesis = models.CharField(max_length=80)
+    diocesisActiva = models.BooleanField(default=True)
 
     def __str__ (self):
         return '%s' %(self.nombreDiocesis)
@@ -93,6 +94,13 @@ class Diocesis(models.Model):
             return '%s' %(self.delegacionDependiente.get_delegacion_id())
         return ''
 
+    def get_diocesis_status(self):
+        if self.diocesisActiva:
+            activo = 'true'
+        else:
+            activo = 'false'
+        return activo
+
     def get_delegacion_name (self):
         if self.delegacionDependiente :
             return '%s' %(self.delegacionDependiente.get_delegacion_name())
@@ -101,9 +109,13 @@ class Diocesis(models.Model):
     def get_diocesis_name (self):
         return '%s' %(self.nombreDiocesis)
 
-    def update_diocesis_data(self,nombre,delegacion):
+    def update_diocesis_data(self, nombre, delegacion, status):
         self.nombreDiocesis = nombre
         self.delegacionDependiente = delegacion
+        if status == 'false':
+            self.diocesisActiva = False
+        else:
+            self.diocesisActiva = True
         self.save()
         return self
 
@@ -526,6 +538,7 @@ class PersonalExterno(models.Model):
     telefonoFijo = models.CharField(max_length=20, null=True, blank = True)
     telefonoMovil = models.CharField(max_length=40, null=True, blank = True)
     recibirBoletin = models.BooleanField(default= False)
+    boletinOnline = models.BooleanField(default= False)
     fechaAlta = models.DateField(auto_now = False, null=True, blank = True)
     fechaBaja = models.DateField(auto_now = False, null=True, blank = True)
     personalActivo =  models.BooleanField(default= True)
@@ -908,6 +921,7 @@ class PersonalIglesia(models.Model):
     fechaBaja = models.DateField(auto_now = False, null=True, blank = True)
     personalActivo = models.BooleanField(default= True)
     recibirBoletin = models.BooleanField(default= False)
+    boletinOnline = models.BooleanField(default= False)
     observaciones = models.CharField(max_length=1000, null=True, blank=True)
 
     def __str__ (self):

@@ -46,7 +46,12 @@
 	<div class="container-md">
 	    <div class="row g-3"">
 	        <div class="col-md-8">
-	            <div class="card">
+				{% if diocesis_data.activo == "true" %}
+  	            	<div class="card">
+  			    {% else %}
+  					<div class="card border-danger text-danger">
+  			  	{% endif %}
+
 					<div class="card-header"><h2 style="text-align:center">Formulario para cambiar los datos de la diocesis {{diocesis_data.diocesis_name}}</h2> </div>
 	                <div class="card-body">
 	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="modificarDiocesis" id="modificarDiocesis" >
@@ -58,6 +63,7 @@
 		                            <label class="control-label " for="nombre">Modifica el nombre de la Diocesis</label>
 		                            <input type="text" required class="form-control" id="diocesisNombre", name='diocesisNombre' value="{{diocesis_data.diocesis_name}}">
 		                        </div>
+								<br>
 								<div class="col-md-">
 		                            <label class="control-label " for="nombre">Seleciona la Delegación de la que depende</label>
 									<select id="delegacion_id" class="form-select" name="delegacion_id">
@@ -66,6 +72,20 @@
 		                                	<option value = {{dele_id}}>{{dele_name}}</option>
 										{% endfor %}
 									</select>
+								</div>
+								<br>
+								<div class="col-md-6">
+									<label for="activo"  class="control-label">Estado de la Diocesis</label>
+									<select id="activo"  class="form-select" name='activo'>
+										{% if diocesis_data.activo == 'true' %}
+									   		<option selected value="true">Activa</option>
+										{% else %}
+											<option selected value="false">Cerrada</option>
+										{% endif %}
+										   <option value = "true">Activa</option>
+										   <option value = "false">Cerrada</option>
+								    </select>
+
 								</div>
 							</div>
 							<br><br>

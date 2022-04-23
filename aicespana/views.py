@@ -279,13 +279,14 @@ def modificar_diocesis(request,diocesis_id):
     diocesis_data['diocesis_id'] = diocesis_obj.get_diocesis_id()
     diocesis_data['diocesis_name'] = diocesis_obj.get_diocesis_name()
     diocesis_data['delegation_id_name_list'] = delegation_id_and_name_list()
+    diocesis_data['activo'] = diocesis_obj.get_diocesis_status()
 
     if request.method == 'POST' and request.POST['action'] == 'modificarDiocesis':
         if Diocesis.objects.filter(nombreDiocesis__iexact = request.POST['diocesisNombre']).exclude(pk__exact =request.POST['diocesisID'] ).exists():
             return render (request,'aicespana/modificarDiocesis.html', {'ERROR': ERROR_DIOCESIS_MODIFICATION_EXIST, 'diocesis_data':diocesis_data})
         delegation_obj = get_delegation_obj_from_id(request.POST['delegacion_id'])
         diocesis_obj = get_diocesis_obj_from_id(request.POST['diocesisID'])
-        diocesis_obj.update_diocesis_data(request.POST['diocesisNombre'],delegation_obj)
+        diocesis_obj.update_diocesis_data(request.POST['diocesisNombre'],delegation_obj, request.POST['activo'])
         return render(request,'aicespana/modificarDiocesis.html',{'confirmation_data': request.POST['diocesisNombre']})
 
     return render(request,'aicespana/modificarDiocesis.html',{'diocesis_data':diocesis_data})
