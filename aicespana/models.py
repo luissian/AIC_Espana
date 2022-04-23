@@ -766,6 +766,14 @@ class PersonalExterno(models.Model):
         data.append(self.codigoPostal)
         return data
 
+    def get_data_for_online_boletin(self):
+        data = []
+        data.append(self.nombre)
+        data.append(self.apellido)
+        data.append(self.get_collaboration_belongs_to())
+        data.append(self.email)
+        return data
+
     def get_voluntario_data(self):
         data = []
         data.append(str(self.nombre + ' ' + self.apellido))
@@ -1080,6 +1088,14 @@ class PersonalIglesia(models.Model):
         data.append(self.poblacion)
         data.append(self.provincia)
         data.append(self.codigoPostal)
+        return data
+
+    def get_data_for_online_boletin(self):
+        data = []
+        data.append(self.nombre)
+        data.append(self.apellido)
+        data.append('Personal Iglesia')
+        data.append(self.email)
         return data
 
     def update_information(self, data):

@@ -13,11 +13,20 @@
 								<span><img src="{% static 'aicespana/images/Portada_aplicacion-ECA.gif' %}" alt="imagen AIC" title="AIC " height="100"></span>
 			                </div>
 							<br><br>
-							<h5 style="text-align:center">Pincha en el enlace para descargar el fichero.</h5>
+							<h5 style="text-align:center">Pincha en el enlace para descargar los ficheros.</h5>
 							<br>
-							<div class="col-md-7 offset-3">
-								<a href="{{listado}}">Excel con listado de personas para recibir boletin &nbsp;<i class="bi bi-download"></i> </a>
-							</div> <!-- end col-md-10 -->
+							<table class="table table-bordered">
+								<thead>
+									<th>Por Correo Postal</th>
+									<th>Por Correo Eléctonico</th>
+								</thead>
+								<tbody>
+									<tr>
+										<td><a href="{{listado.mail}}">Descarga Excel &nbsp;<i class="bi bi-download"></i> </a></td>
+										<td><a href="{{listado.online}}">Descarga Excel &nbsp;<i class="bi bi-download"></i> </a></td>
+									</tr>
+								</tbody>
+							</table>
 						</div>  <!-- end card-body -->
 		            </div>  <!-- end card -->
 		    </div> <!-- end col-md-10 -->

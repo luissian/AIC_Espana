@@ -12,6 +12,7 @@ AIC_Espana/settings.py
 index.wsgi
 static/
 tmp
+.htaccess
 
 # C extensions
 *.so
