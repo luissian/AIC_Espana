@@ -1,0 +1,43 @@
+{% extends 'aicespana/base.html' %}
+{% load static %}
+{% block content %}
+<style>
+.table-wrapper {
+    height: 250px;
+    overflow: auto;
+    display:inline-block;
+    width: auto;
+</style>
+<div class="container-md">
+	<div class="col-md-9">
+	    <div class="card">
+	        <div class="card-header"><h2 style="text-align:center">Listado de Grupos que se han dado de Baja</h2> </div>
+	            <div class="card-body">
+					{% if bajas_grupo|length > 0 %}
+                    <table class="table table-hover">
+		                <thead>
+                            <tr>
+                                <th>Nombre del Grupo</th>
+                                <th>Diocesis</th>
+                                <th>Delegación</th>
+                            </tr>
+                        </thead>
+                    	<tbody>
+							{% for nombre, dio, deleg in bajas_grupo %}
+	                            <tr>
+	                                <td>{{nombre}}</td>
+                                    <td>{{dio}}</td>
+                                    <td>{{deleg}}</td>
+	                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+					{% else %}
+						<h5 style="text-align:center">No hay ningún grupo que se haya dado de baja</h5>
+					{% endif %}
+	            </div>  <!-- end card-body -->
+	        </div>  <!-- end card -->
+	    </div> <!-- end col-md-5 -->
+</div> <!-- end container -->
+
+{% endblock %}

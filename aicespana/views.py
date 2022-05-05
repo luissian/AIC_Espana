@@ -870,7 +870,7 @@ def listado_personal_externo(request):
 def listado_bajas_externo(request):
     if not is_manager(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
-    bajas_externo = bajas_personal_externo_list()
+    bajas_externo = bajas_personal_externo_excel()
     return render(request,'aicespana/listadoBajasExterno.html',{'bajas_externo': bajas_externo})
 
 @login_required
@@ -879,3 +879,10 @@ def listado_bajas_iglesia(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     bajas_iglesia = bajas_personal_iglesia_list()
     return render(request,'aicespana/listadoBajasIglesia.html',{'bajas_iglesia': bajas_iglesia})
+
+@login_required
+def listado_bajas_grupo(request):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    bajas_grupo = bajas_grupo_list()
+    return render(request, 'aicespana/listadoBajasGrupo.html', {'bajas_grupo': bajas_grupo})

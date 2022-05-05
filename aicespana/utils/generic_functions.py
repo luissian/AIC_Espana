@@ -1093,26 +1093,38 @@ def presidentes_grupo(delegation_id):
 
     return presidentes_data
 
-def  bajas_personal_externo_list():
+def bajas_personal_externo_excel():
     '''
     Description:
         Get the list of personal externo whom are no longer belongs to AIC
     Return:
         bajas_externo
     '''
-    bajas_externo = []
+    import xlsxwriter
+    f_name = 'Listado_bajas_voluntarios.xlsx'
+    heading = ['Nombre y Apellidos', 'Grupo', 'Población', 'Provincia']
+    lista = [heading]
     if PersonalExterno.objects.filter(personalActivo = False).exists():
         personal_objs = PersonalExterno.objects.filter(personalActivo = False)
         for personal_obj in personal_objs:
-            bajas_externo.append(personal_obj.get_personal_name())
-    return bajas_externo
+            lista.append([personal_obj.get_personal_name(), personal_obj.get_group_belongs_to(), personal_obj.get_personal_location(), personal_obj.get_personal_provincia()])
+    excel_file = os.path.join(settings.MEDIA_ROOT, f_name)
+    if os.path.isfile(excel_file):
+        os.remove(excel_file)
+    with xlsxwriter.Workbook(excel_file) as workbook:
+        worksheet = workbook.add_worksheet()
+        for row_num, data in enumerate(lista):
+            worksheet.write_row(row_num, 0, data)
+    baja_file = os.path.join(settings.MEDIA_URL, f_name)
 
-def  bajas_personal_iglesia_list():
+    return baja_file
+
+def bajas_personal_iglesia_list():
     '''
     Description:
         Get the list of iglesia personal whom are no longer belongs
     Return:
-        bajas_igleisa
+        bajas_iglesia
     '''
     bajas_iglesia = []
     if PersonalIglesia.objects.filter(personalActivo = False).exists():
@@ -1120,6 +1132,22 @@ def  bajas_personal_iglesia_list():
         for personal_obj in personal_objs:
             bajas_iglesia.append(personal_obj.get_personal_name())
     return bajas_iglesia
+
+
+def bajas_grupo_list():
+    '''
+    Description:
+        Get the list of groups that are no longer active
+    Return:
+        bajas_grupo
+    '''
+    bajas_grupo = []
+    if Grupo.objects.filter(grupoActivo = False).exists():
+        grupo_objs = Grupo.objects.filter(grupoActivo = False).order_by('nombreGrupo')
+        for grupo_obj in grupo_objs:
+            bajas_grupo.append([grupo_obj.get_grupo_name(), grupo_obj.get_diocesis_name(), grupo_obj.get_delegacion_name()])
+    return bajas_grupo
+
 
 def get_excel_user_request_boletin():
     '''

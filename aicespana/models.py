@@ -567,6 +567,9 @@ class PersonalExterno(models.Model):
     def get_personal_location(self):
         return '%s' %(self.poblacion)
 
+    def get_personal_provincia(self):
+        return '%s' %(self.provincia)
+
     def get_actividad_belongs_to(self):
         if self.actividadAsociada:
             return '%s' %(self.actividadAsociada.get_actividad_name())
