@@ -215,7 +215,8 @@ def modificar_actividad(request,actividad_id):
     actividad_data['grupos_diocesis_id_name'] = get_group_list_to_select_in_form()  #get_id_grupo_diocesis_name()
 
     if request.method == 'POST' and request.POST['action'] == 'modificarActividad':
-        if Actividad.objects.filter(nombreActividad__iexact = request.POST['actividad_name'], grupoAsociado__pk__exact = request.POST['grupoID']).exclude(pk__exact =request.POST['actividadID'] ).exists():
+        # if Actividad.objects.filter(nombreActividad__iexact = request.POST['actividad_name'], grupoAsociado__pk__exact = request.POST['grupoID']).exclude(pk__exact =request.POST['actividadID'] ).exists():
+        if Actividad.objects.filter(nombreActividad__iexact = request.POST['actividad_name']).exclude(pk__exact =request.POST['actividadID'] ).exists():
             return render (request,'aicespana/modificarActividad.html', {'ERROR': ERROR_ACTIVIDAD_MODIFICATION_EXIST, 'actividad_data':actividad_data})
         actividad_obj = get_actividad_obj_from_id(request.POST['actividadID'])
         actividad_obj.update_actividad_data(fetch_actividad_data_to_modify(request.POST, request.FILES))
@@ -279,8 +280,12 @@ def modificar_diocesis(request,diocesis_id):
     diocesis_data['diocesis_id'] = diocesis_obj.get_diocesis_id()
     diocesis_data['diocesis_name'] = diocesis_obj.get_diocesis_name()
     diocesis_data['delegation_id_name_list'] = delegation_id_and_name_list()
-    diocesis_data['activo'] = diocesis_obj.get_diocesis_status()
 
+    diocesis_data['activo'] = diocesis_obj.get_diocesis_status()
+    if len(diocesis_obj.get_diocesis_depending_groups()) > 0:
+        diocesis_data['allowed_close'] = False
+    else:
+        diocesis_data['allowed_close'] = True
     if request.method == 'POST' and request.POST['action'] == 'modificarDiocesis':
         if Diocesis.objects.filter(nombreDiocesis__iexact = request.POST['diocesisNombre']).exclude(pk__exact =request.POST['diocesisID'] ).exists():
             return render (request,'aicespana/modificarDiocesis.html', {'ERROR': ERROR_DIOCESIS_MODIFICATION_EXIST, 'diocesis_data':diocesis_data})

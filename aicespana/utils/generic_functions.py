@@ -435,7 +435,7 @@ def get_actividad_data_to_modify(actividad_id):
     actividad_data = {}
     actividad_obj = get_actividad_obj_from_id(actividad_id)
     data = actividad_obj.get_actividad_full_data()
-    extract_list = ['actividad_name', 'actividadID', 'grupoID', 'grupo_name', 'diocesis_name', 'alta', 'baja', 'activo', 'memoria', 'fotografia']
+    extract_list = ['actividad_name', 'actividadID', 'alta', 'baja', 'activo', 'memoria', 'fotografia']
     for index in range(len(extract_list)):
         actividad_data[extract_list[index]] = data[index]
     return actividad_data
@@ -626,7 +626,8 @@ def  get_grupo_data_to_modify(grupo_id):
 
     return grupo_data
 
-def fetch_actividad_data_to_modify (data_form,file_form):
+
+def fetch_actividad_data_to_modify(data_form, file_form):
     '''
     Description:
         The function extract the information from the user form and return a dictionnary.
@@ -637,7 +638,7 @@ def fetch_actividad_data_to_modify (data_form,file_form):
         data
     '''
     data = {}
-    extract_list = ['actividad_name','grupoID','alta', 'baja','activo', 'observaciones']
+    extract_list = ['actividad_name', 'alta', 'baja', 'activo', 'observaciones']
     for item in extract_list:
         data[item] = data_form[item]
     if 'uploadMemoria' in file_form:

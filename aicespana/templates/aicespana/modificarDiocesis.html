@@ -75,17 +75,23 @@
 								</div>
 								<br>
 								<div class="col-md-6">
-									<label for="activo"  class="control-label">Estado de la Diocesis</label>
-									<select id="activo"  class="form-select" name='activo'>
-										{% if diocesis_data.activo == 'true' %}
-									   		<option selected value="true">Activa</option>
-										{% else %}
-											<option selected value="false">Cerrada</option>
-										{% endif %}
-										   <option value = "true">Activa</option>
-										   <option value = "false">Cerrada</option>
-								    </select>
-
+									{% if diocesis_data.allowed_close %}
+										<label for="activo"  class="control-label">Estado de la Diocesis</label>
+										<select id="activo"  class="form-select" name='activo'>
+											{% if diocesis_data.activo == 'true' %}
+										   		<option selected value="true">Activa</option>
+											{% else %}
+												<option selected value="false">Cerrada</option>
+											{% endif %}
+											   <option value = "true">Activa</option>
+											   <option value = "false">Cerrada</option>
+									    </select>
+									{% else %}
+										<h5>Diocesis Activa </h5>
+										<br>
+										<p>Para cerrar la diocesis se han de cerrar primero los grupos que dependen de la Diocesis</p>
+										<input type="hidden" name="activo" value="activo"/>
+									{% endif %}
 								</div>
 							</div>
 							<br><br>

@@ -100,6 +100,12 @@ class Diocesis(models.Model):
             activo = 'false'
         return activo
 
+    def get_diocesis_depending_groups(self):
+        groups = ""
+        if Grupo.objects.filter(diocesisDependiente=self, grupoActivo=True).exists():
+            groups = Grupo.objects.filter(diocesisDependiente=self, grupoActivo=True).values("nombreGrupo")
+        return groups
+
     def get_delegacion_name (self):
         if self.delegacionDependiente :
             return '%s' %(self.delegacionDependiente.get_delegacion_name())
@@ -438,7 +444,7 @@ class Actividad(models.Model):
         if self.fechaBaja is None:
             baja = ''
         else:
-            baja = self.fechaBaja.strftime("%B %d, %Y")
+            baja = self.fechaBaja.strftime("%Y-%m-%d")
         if self.actividadActiva:
             activo = 'true'
         else:
@@ -451,10 +457,11 @@ class Actividad(models.Model):
             fotografia_actividad = os.path.join(settings.MEDIA_URL,str(self.fotografiaActividad))
         else:
             fotografia_actividad = ''
-        return [self.nombreActividad, self.pk, self.get_grupo_id(), self.get_grupo_name(), self.get_diocesis_name(), alta, baja, activo, memoria_actividad, fotografia_actividad ]
+        # return [self.nombreActividad, self.pk, self.get_grupo_id(), self.get_grupo_name(), self.get_diocesis_name(), alta, baja, activo, memoria_actividad, fotografia_actividad ]
+        return [self.nombreActividad, self.pk, alta, baja, activo, memoria_actividad, fotografia_actividad]
 
     def update_actividad_data(self, data):
-        self.grupoAsociado = Grupo.objects.filter(pk__exact = data['grupoID']).last()
+        # self.grupoAsociado = Grupo.objects.filter(pk__exact = data['grupoID']).last()
         self.nombreActividad = data['actividad_name']
         if data['activo'] == 'false':
             self.actividadActiva = False

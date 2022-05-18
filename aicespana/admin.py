@@ -14,7 +14,7 @@ class DelegacionAdmin(admin.ModelAdmin):
     search_fields = ('nombreDelegacion__icontains',)
 
 class DiocesisAdmin(admin.ModelAdmin):
-    list_display = ['nombreDiocesis', 'delegacionDependiente']
+    list_display = ['nombreDiocesis', 'delegacionDependiente', 'diocesisActiva']
     search_fields = ('nombreDiocesis__icontains',)
 
 class ParroquiaAdmin(admin.ModelAdmin):
@@ -22,7 +22,7 @@ class ParroquiaAdmin(admin.ModelAdmin):
     search_fields = ('nombreParroquia__icontains',)
 
 class GrupoAdmin(admin.ModelAdmin):
-    list_display = ['nombreGrupo', 'diocesisDependiente', 'provincia']
+    list_display = ['nombreGrupo', 'grupoActivo' , 'diocesisDependiente', 'provincia']
     search_fields = ('nombreGrupo__icontains',)
 
 class ProyectoAdmin(admin.ModelAdmin):

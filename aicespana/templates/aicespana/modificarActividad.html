@@ -49,7 +49,7 @@
 			  {% if actividad_data.activo == "true" %}
 	            <div class="card">
 			  {% else %}
-				<div class="card bg-danger">
+				<div class="card border-danger text-danger">
 			  {% endif %}
 					<div class="card-header"><h2 style="text-align:center">Formulario para cambiar los datos de la Actividad {{actividad_data.actividad_name}}</h2> </div>
 	                <div class="card-body">
@@ -62,15 +62,6 @@
 		                            <label class="control-label " for="actividad_name">Modifica el nombre de la actividad</label>
 		                            <input type="text" required class="form-control" id="actividad_name" name='actividad_name' value="{{actividad_data.actividad_name}}">
 		                        </div>
-								<div class="col-md-8">
-		                            <label class="control-label " for="nombre">Seleciona el Grupo del que depende</label>
-									<select id="grupoID" class="form-select" name="grupoID">
-										<option value="{{actividad_data.grupoID}}">{{actividad_data.grupo_name}} en la diocesis de {{diocesis_name}} </option>
-										{% for grupo_id, grupo_name , diocesis_name in actividad_data.grupos_diocesis_id_name %}
-		                                	<option value="{{grupo_id}}">{{grupo_name}} en la diocesis de {{diocesis_name}}</option>
-										{% endfor %}
-									</select>
-								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-6">
