@@ -1205,6 +1205,20 @@ def bajas_grupo_list():
             bajas_grupo.append([grupo_obj.get_grupo_name(), grupo_obj.get_diocesis_name(), grupo_obj.get_delegacion_name()])
     return bajas_grupo
 
+def bajas_diocesis_list():
+    '''
+    Description:
+        Get the list of diocesis that are no longer active
+    Return:
+        bajas_diocesis
+    '''
+    bajas_diocesis = []
+    if Diocesis.objects.filter(diocesisActiva = False).exists():
+        dio_objs = Diocesis.objects.filter(diocesisActiva = False).order_by('nombreDiocesis')
+        for dio_obj in dio_objs:
+            bajas_diocesis.append([dio_obj.get_diocesis_name(), dio_obj.get_delegacion_name()])
+    return bajas_diocesis
+
 
 def get_excel_user_request_boletin():
     '''

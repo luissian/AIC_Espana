@@ -889,7 +889,10 @@ def listado_actividad(request, actividad_id):
 
     #Get the delgacion which have the avtivity
     actividad_data = get_activity_data_in_delegations(actividad_id)
-    actividad_data["excel_file"] = store_excel_file(actividad_data["user_list"], actividad_data["heading"], "listado_voluntarios_actividad.xlsx")
+    if len(actividad_data["user_list"]) > 0:
+        actividad_data["excel_file"] = store_excel_file(actividad_data["user_list"], actividad_data["heading"], "listado_voluntarios_actividad.xlsx")
+    else:
+        actividad_data["excel_file"] = False
     return render(request, 'aicespana/listadoActividad.html', {'actividad_data': actividad_data})
 
 
@@ -913,3 +916,10 @@ def listado_bajas_grupo(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     bajas_grupo = bajas_grupo_list()
     return render(request, 'aicespana/listadoBajasGrupo.html', {'bajas_grupo': bajas_grupo})
+
+@login_required
+def listado_bajas_diocesis(request):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    bajas_diocesis = bajas_diocesis_list()
+    return render(request, 'aicespana/listadoBajasDiocesis.html', {'bajas_diocesis': bajas_diocesis})
