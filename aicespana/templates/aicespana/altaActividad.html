@@ -56,7 +56,7 @@
 	<br><br>
 	<div class="container-md">
 	    <div class="row g-3"">
-	        <div class="col-md-6">
+	        <div class="col-md-10">
 	            <div class="card">
 					<div class="card-header"><h2 style="text-align:center">Formulario alta Actividad</h2> </div>
 	                <div class="card-body">
@@ -68,23 +68,12 @@
 		                            <label class="control-label " for="nombre">Nombre de la Actividad</label>
 		                            <input type="text" required class="form-control" id="nombre", name='nombre'>
 		                        </div>
-
-							<br><br>
 							</div>
 							<div class="form-group">
 								<div class="col-md-5">
 									<label for="alta" class="control-label">Fecha de Alta</label>
 									<input type="date"  class="form-control" id="alta" name='alta'>
 								</div>
-								<div class="col-md-8">
-		                            <label for="grupoID" class="form-label">Seleciona el grupo del que depende la actividad</label>
-		                            <select id="grupoID" class="form-select" name='grupoID'>
-		                                <option selected value=''>Selecciona el grupo</option>
-										{% for grupo_id, grupo_name , diocesis_name in actividad_data.grupos_diocesis_id_name %}
-											<option value="{{grupo_id}}">{{grupo_name}} en la diocesis de {{diocesis_name}}</option>
-										{% endfor %}
-		                            </select>
-		                        </div>
 								<br>
 								<div class="col-md-8">
 									<label for="uploadMemoria" class="form-label">Memoria de la actividad</label><br>
@@ -97,9 +86,9 @@
 								</div>
 							</div>
 							<div class="form-group">
-		                        <div class="col-md-6">
+		                        <div class="col-md-10">
 		                            <label for="observaciones" class="form-label">Observaciones</label>
-		                            <textarea name="observaciones" rows="8" cols="50" maxlength="500"></textarea>
+		                            <textarea name="observaciones" rows="12" cols="100" maxlength="990"></textarea>
 		                        </div>
 							</div>
 							<br><br>
@@ -112,45 +101,7 @@
 						<p>Los campos con  <span style="color:red"> * </span> son obligatorios</p>
 	                </div>  <!-- end card-body -->
 	            </div>  <!-- end card -->
-	        </div> <!-- end col-md-7 -->
-			<div class="col-md-6">
-	            <div class="card">
-					<div class="card-header"><h2 style="text-align:center">Listado de Actividades </h2> </div>
-	                    <div class="card-body">
-							<div class="table-wrapper">
-								<table class="table table-hover">
-									<thead>
-										<tr>
-											<th>Delegación</th>
-											<th>Actividad</th>
-											<th>Grupo</th>
-											<th>Diocesis</th>
-										</tr>
-									</thead>
-	                            	<tbody>
-										{% for delegacion, diocesis_data in actividad_data.actividad_grupos_diocesis_name.items %}
-											<tr>
-												<td>{{delegacion}}</td>
-												<td></td>
-												<td></td>
-											</tr>
-											{% for diocesis, actividades in diocesis_data.items %}
-												{% for id, actividad, grupo in actividades %}
-													<tr>
-														<td></td>
-														<td>{{actividad}}</td>
-														<td>{{grupo}}</td>
-														<td>{{diocesis}}</td>
-													</tr>
-													{% endfor %}
-												{% endfor %}
-										{% endfor %}
-		                            </tbody>
-		                        </table>
-							<div> <!-- end table-wrapper -->
-						</div>  <!-- end card-body -->
-		            </div>  <!-- end card -->
-		        </div> <!-- end col-md-5 -->
+	        </div> <!-- end col-md-10 -->
 	    </div> <!-- end row-->
 	</div> <!-- end container -->
 {% endif %}

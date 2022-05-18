@@ -32,10 +32,9 @@ class Cargo(models.Model):
     def get_cargo_name(self):
         return '%s' %(self.nombreCargo)
 
-class ActividadManager(models.Manager):
-    def create_actividad(self,data):
-
-        return new_actividad
+# class ActividadManager(models.Manager):
+#    def create_actividad(self,data):
+#        return new_actividad
 
 class DelegacionManager(models.Manager):
     def create_new_delegacion(self, data):
@@ -379,16 +378,21 @@ class ActividadManager(models.Manager):
     def create_new_actividad(self,data):
 
         if data['alta'] != '':
-            alta =  datetime.strptime(data['alta'],"%Y-%m-%d").date()
+            alta = datetime.strptime(data['alta'], "%Y-%m-%d").date()
         else:
             alta = None
 
-        memoria = data['memoria_file'] if 'memoria_file' in  data != '' else None
+        memoria = data['memoria_file'] if 'memoria_file' in data != '' else None
         fotografia = data['fotografia_file'] if 'fotografia_file' in data != '' else None
 
-        new_actividad = self.create(nombreActividad = data['nombre'],grupoAsociado = data['grupo_obj'],
-                fechaAlta = alta, memoriaActividad = memoria, fotografiaActividad = fotografia )
+        new_actividad = self.create(
+            nombreActividad=data['nombre'],
+            # grupoAsociado = data['grupo_obj'],
+            fechaAlta=alta,
+            memoriaActividad=memoria,
+            fotografiaActividad=fotografia)
         return new_actividad
+
 
 class Actividad(models.Model):
     grupoAsociado = models.ForeignKey(
@@ -790,6 +794,15 @@ class PersonalExterno(models.Model):
         data.append(self.get_group_belongs_to())
         data.append(self.get_responability_belongs_to())
         data.append(self.get_diocesis_belongs_to())
+        return data
+
+    def get_data_for_actividad(self):
+        data = []
+        data.append(str(self.nombre + ' ' + self.apellido))
+        data.append(self.actividadAsociada.get_actividad_name())
+        data.append(self.get_group_belongs_to())
+        data.append(self.get_diocesis_belongs_to())
+        data.append(self.grupoAsociado.get_delegacion_name())
         return data
 
     def update_information(self, data):

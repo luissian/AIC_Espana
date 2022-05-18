@@ -29,6 +29,44 @@ def check_exists_parroquia(parroquia_name,diocesis_id ):
     '''
     return Parroquia.objects.filter(nombreParroquia__iexact = parroquia_name, diocesisDependiente__pk__exact =diocesis_id).exists()
 
+
+def get_summary_actividades():
+    '''
+    Description:
+        Get the list of activities
+    '''
+    data = []
+    if not Actividad.objects.filter(actividadActiva=True).exists():
+        return data
+    act_objs = Actividad.objects.filter(actividadActiva=True).order_by("nombreActividad")
+    for act_obj in act_objs:
+        data.append([act_obj.get_actividad_id(), act_obj.get_actividad_name()])
+    return data
+
+
+def get_activity_data_in_delegations(actividad_id):
+    '''
+    Description:
+        Get the delegaions and the summery information in the activity
+    '''
+    data = {"summary": [0, 0], "delegaciones": {}, "user_list": []}
+    actividad_obj = get_actividad_obj_from_id(actividad_id)
+    data["actividad_name"] = actividad_obj.get_actividad_name()
+
+    if not PersonalExterno.objects.filter(personalActivo=True, actividadAsociada=actividad_obj).exists():
+        return data
+    volunt_objs = PersonalExterno.objects.filter(personalActivo=True, actividadAsociada=actividad_obj).order_by("grupoAsociado__diocesisDependiente__delegacionDependiente")
+    data["summary"] = [len(volunt_objs)]
+    for volunt_obj in volunt_objs:
+        delegacion = volunt_obj.get_delegacion_belongs_to()
+        if delegacion not in data["delegaciones"]:
+            data["delegaciones"][delegacion] = 0
+        data["delegaciones"][delegacion] += 1
+        data["user_list"].append(volunt_obj.get_data_for_actividad())
+    data["summary"].append(len(data["delegaciones"]))
+    data["heading"] = ["Nombre Apellidos", "Actividad", "Grupo", "Diocesis", "Delegación"]
+    return data
+
 def get_delegation_data(delegation_id):
     '''
     Description:
@@ -50,7 +88,7 @@ def get_delegation_data(delegation_id):
                     user_name = PersonalExterno.objects.filter(cargo__nombreCargo__exact = cargo_name, grupoAsociado__diocesisDependiente__delegacionDependiente__pk__exact = delegation_id).last().get_personal_name()
                 else:
                     user_name = 'Puesto vacante'
-                delegation_data['cargos'].append([cargo_name, user_name ])
+                delegation_data['cargos'].append([cargo_name, user_name])
 
     return delegation_data
 
@@ -1118,6 +1156,24 @@ def bajas_personal_externo_excel():
     baja_file = os.path.join(settings.MEDIA_URL, f_name)
 
     return baja_file
+
+
+def store_excel_file(user_data, heading, f_name):
+    '''
+
+    '''
+    import xlsxwriter
+    user_data.insert(0, heading)
+    excel_file = os.path.join(settings.MEDIA_ROOT, f_name)
+    if os.path.isfile(excel_file):
+        os.remove(excel_file)
+    with xlsxwriter.Workbook(excel_file) as workbook:
+        worksheet = workbook.add_worksheet()
+        for row_num, data in enumerate(user_data):
+            worksheet.write_row(row_num, 0, data)
+    ex_file = os.path.join(settings.MEDIA_URL, f_name)
+    return ex_file
+
 
 def bajas_personal_iglesia_list():
     '''

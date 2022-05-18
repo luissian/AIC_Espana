@@ -18,14 +18,14 @@ def alta_actividad(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     actividad_data = {}
     #actividad_data['grupos_diocesis_id_name'] = get_id_grupo_diocesis_delegacion_name()
-    actividad_data['grupos_diocesis_id_name'] = get_group_list_to_select_in_form()
-    actividad_data['actividad_grupos_diocesis_name'] = get_id_actividad_grupos_diocesis_delegacion_name()
+    # actividad_data['grupos_diocesis_id_name'] = get_group_list_to_select_in_form()
+    # actividad_data['actividad_grupos_diocesis_name'] = get_id_actividad_grupos_diocesis_delegacion_name()
 
     if request.method == 'POST' and request.POST['action'] == 'altaActividad':
         if Actividad.objects.filter(nombreActividad__iexact = request.POST['nombre']).exists():
             return render(request,'aicespana/altaActividad.html',{'actividad_data':actividad_data, 'ERROR': [ERROR_ACTIVIDAD_EXIST]})
         data = {}
-        data['grupo_obj'] = get_grupo_obj_from_id(request.POST['grupoID']) if request.POST['grupoID'] != '' else None
+        # data['grupo_obj'] = get_grupo_obj_from_id(request.POST['grupoID']) if request.POST['grupoID'] != '' else None
         data['alta'] = request.POST['alta']
         data['nombre'] = request.POST['nombre']
         data['observaciones'] = request.POST['observaciones']
@@ -858,13 +858,35 @@ def listado_presidentes_grupo(request):
 @login_required
 def listado_personal_externo(request):
     if not is_manager(request):
-        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+        return render(request, 'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
     if request.method == 'POST' and request.POST['action'] == 'listadoDelegacion':
         listado_personal , excel_file = get_personal_externo_por_delegacion(request.POST['delegacion_id'])
         delegacion = get_delegation_obj_from_id(request.POST['delegacion_id']).get_delegacion_name()
         return render(request,'aicespana/listadoPersonalExterno.html',{'listado_personal': listado_personal, 'excel_file':excel_file, 'delegacion': delegacion})
     delegation_data = delegation_id_and_name_list()
     return render(request,'aicespana/listadoPersonalExterno.html',{'delegation_data': delegation_data})
+
+
+@login_required
+def listado_actividades(request):
+    if not is_manager(request):
+        return render(request, 'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    actividades = get_summary_actividades()
+    return render(request, 'aicespana/listadoActividades.html', {'actividades': actividades})
+
+
+@login_required
+def listado_actividad(request, actividad_id):
+    if not is_manager(request):
+        return render(request, 'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    if not Actividad.objects.filter(pk__exact=actividad_id).exists():
+        return render(request, 'aicespana/errorPage.html', {'content': ERROR_ACTIVIDAD_NOT_EXIST})
+
+    #Get the delgacion which have the avtivity
+    actividad_data = get_activity_data_in_delegations(actividad_id)
+    actividad_data["excel_file"] = store_excel_file(actividad_data["user_list"], actividad_data["heading"], "listado_voluntarios_actividad.xlsx")
+    return render(request, 'aicespana/listadoActividad.html', {'actividad_data': actividad_data})
+
 
 @login_required
 def listado_bajas_externo(request):

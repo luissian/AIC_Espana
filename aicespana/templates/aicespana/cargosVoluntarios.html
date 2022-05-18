@@ -164,6 +164,7 @@
 									<select name="grupo" id="grupo" class="col-md-6">
 										{% if personal_available_settings.group_id != '' %}
 											<option selected value="{{personal_available_settings.group_id}}">{{personal_available_settings.group}} en la dioecsis {{personal_available_settings.diocesis}}</option>
+											<option  selected value="">Elininar del Grupo</option>
 										{% else %}
 											<option  selected value="">Sin determinar</option>
 										{% endif %}
@@ -179,6 +180,7 @@
 									<select name="proyecto" id="proyecto" class="col-md-6">
 										{% if personal_available_settings.project_id != '' %}
 											<option value="{{personal_available_settings.project_id}}">{{personal_available_settings.project}}</option>
+											<option value="">Eliminar del proyecto</option>
 										{% else %}
 											<option value="">Sin determinar</option>
 										{% endif %}
@@ -195,6 +197,7 @@
 									<select name="actividad" id="actividad" class="col-md-6">
 										{% if personal_available_settings.activity_id != '' %}
 											<option value="{{personal_available_settings.activity_id}}">{{personal_available_settings.activity}}</option>
+											<option value="">Eliminar de la actividad</option>
 										{% else %}
 											<option value="">Sin determinar</option>
 										{% endif %}
@@ -209,6 +212,7 @@
 									<select name="cargo" id="cargo" class="col-md-6">
 										{% if personal_available_settings.responsability_id != '' %}
 											<option value="{{personal_available_settings.responsability_id}}">{{personal_available_settings.responsability}}</option>
+											<option value="">Eliminar Cargo</option>
 										{% else %}
 											<option value="">Sin determinar</option>
 										{% endif %}

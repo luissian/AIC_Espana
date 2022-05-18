@@ -1,0 +1,111 @@
+{% extends 'aicespana/base.html' %}
+{% load static %}
+{% block content %}
+{% if  actividad_data %}
+
+	<div class="container-md">
+		<div class="row mt-4">
+			<div class="col-md-8">
+				<div class="card">
+					<div class="card-header"><h2 style="text-align:center">Información de la Actividad  {{actividad_data.actividad_name}}</h2> </div>
+					<div class="card-body">
+						<table  class="table">
+							<thead>
+								<tr>
+									<th class="display-6">Voluntarios</th>
+									<th class="display-6">Delegaciones</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td class="display-4">{{actividad_data.summary.0}}</td>
+									<td class="display-4">{{actividad_data.summary.1}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div> <!-- end card body-->
+				</div> <!-- end card  -->
+			</div> <!-- end md-10-->
+			{% if actividad_data.fotografia %}
+				<div class="col-md-4">
+					<div class="card">
+						<div class="card-body">
+							<img src="memorias_de_proyectos/images/{{actividad_data.fotografia}}" alt="{{actividad_data.actividad_name}}" class="img-fluid">
+						</div> <!-- end card body-->
+					</div> <!-- end card  -->
+				</div> <!-- end md-4-->
+			{% endif %}
+		</div> <!-- end row  -->
+	</div> <!-- end container  -->
+
+	<div class="container-md">
+		<div class="row mt-4">
+			<div class="container sm-12">
+				<br>
+				<ul class="nav nav-tabs" id="myTab" role="tablist">
+				    <li class="nav-item" role="presentation">
+				    	<button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#delegaciones" type="button" role="tab" aria-controls="delegaciones" aria-selected="true">Delegaciones</button>
+				  	</li>
+				  	<li class="nav-item" role="presentation">
+				    	<button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#listado" type="button" role="tab" aria-controls="listado" aria-selected="false">Listado Voluntarios</button>
+				  	</li>
+				</ul>
+				<div class="tab-content" id="myTabContent">
+					<div class="tab-pane fade show active" id="delegaciones" role="tabpanel" aria-labelledby="info-tab">
+						<div class="container-md">
+							<div class="row mt-5">
+								<div class="col-md-6">
+									<div class="card">
+										<div class="card-body">
+								               <table id="dioGeneral" class="table table-hover mb-0">
+							                    <thead>
+							                        <tr>
+														<th colspan="2">Delegaciones donde se realiza la actividad</th>
+													</tr>
+												</thead>
+												<tbody>
+													{% for delegacion , value in actividad_data.delegaciones.items %}
+														<tr>
+															<td><h5>{{delegacion}}</h5></td>
+														</tr>
+													{% endfor %}
+												</tbody>
+											</table>
+										</div> <!-- end card body-->
+									</div> <!-- end card  -->
+								</div> <!-- end col-md-8 -->
+							</div> <!-- end row-->
+						</div> <!-- end container -->
+					</div>  <!-- end tab diocesis -->
+
+					<div class="tab-pane fade" id="listado" role="tabpanel" aria-labelledby="cargos-tab">
+						<div class="container-md">
+							<div class="row mt-5">
+								<div class="col-md-10">
+									<div class="card">
+										<div class="card-body">
+							                <table class="table table-hover mb-0">
+							                    <thead>
+							                        <tr>
+														<th>Listado de voluntarios asignados a esta actividad</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td><a href="{{actividad_data.excel_file}}">Descarga Excel &nbsp;<i class="bi bi-download"></i> </a></td>
+													</tr>
+												</tbody>
+											</table>
+										</div> <!-- end card body-->
+									</div> <!-- end card  -->
+								</div> <!-- end col-md-10 -->
+							</div> <!-- end row-->
+						</div> <!-- end container -->
+					</div>  <!-- end tab cargos -->
+				</div>  <!-- end myTabContent -->
+			</div>  <!-- end container -->
+		</div> <!-- end row-->
+	</div>  <!-- end container -->
+
+    {% endif %}
+    {% endblock %}

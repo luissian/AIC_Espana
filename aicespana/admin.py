@@ -35,8 +35,8 @@ class ProyectoAdmin(admin.ModelAdmin):
 
 
 class ActividadAdmin(admin.ModelAdmin):
-    list_display = ['nombreActividad',  'grupoAsociado', 'fechaAlta']
-    search_fields = ('mombreActividad__icontains',)
+    list_display = ['nombreActividad', 'grupoAsociado', 'fechaAlta']
+    search_fields = ('nombreActividad__icontains',)
 
 class PersonalExternoAdmin(admin.ModelAdmin):
     list_display = ['nombre', 'apellido', 'DNI', 'fechaNacimiento']
@@ -49,6 +49,7 @@ class TipoColaboracionAdmin(admin.ModelAdmin):
 class PersonalIglesiaAdmin(admin.ModelAdmin):
     list_display = ['nombre', 'apellido', 'DNI']
     search_fields = ('apellido__icontains',)
+
 
 admin.site.register(EntidadesConCargo , EntidadesConCargoAdmin)
 admin.site.register(Cargo, CargoAdmin)
