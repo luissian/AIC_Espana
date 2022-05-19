@@ -671,32 +671,20 @@ def fetch_proyecto_data_to_modify (data_form,file_form):
 
 
 
-def get_id_actividad_grupos_diocesis_delegacion_name():
+def get_id_actividad_name():
     '''
     Description:
         The function gets the actividad , grupo the diocesis name and the delegation belogs to
     Return:
         actividad_grupo_diocesis_data
     '''
-    actividad_grupo_diocesis_data = collections.OrderedDict()
+    actividad_data = []
     if Actividad.objects.all().exists():
-        delegation_objs = Delegacion.objects.all().order_by('nombreDelegacion')
-        for delegation_obj in delegation_objs:
-            delegation_name = delegation_obj.get_delegacion_name()
-            diocesis_objs = Diocesis.objects.filter(delegacionDependiente = delegation_obj).order_by('nombreDiocesis')
-            for diocesis_obj in diocesis_objs:
-                diocesis_name = diocesis_obj.get_diocesis_name()
-                grupo_objs = Grupo.objects.filter(diocesisDependiente = diocesis_obj).order_by('nombreGrupo')
-                for grupo_obj in grupo_objs:
-                    grupo_name = grupo_obj.get_grupo_name()
-                    actividad_objs = Actividad.objects.filter(grupoAsociado = grupo_obj).order_by('nombreActividad')
-                    for actividad_obj in actividad_objs:
-                        if not delegation_name in actividad_grupo_diocesis_data:
-                            actividad_grupo_diocesis_data[delegation_name] = collections.OrderedDict()
-                        if not diocesis_name in actividad_grupo_diocesis_data[delegation_name]:
-                            actividad_grupo_diocesis_data[delegation_name][diocesis_name] = []
-                        actividad_grupo_diocesis_data[delegation_name][diocesis_name].append([actividad_obj.get_actividad_id(),actividad_obj.get_actividad_name(),grupo_name ])
-    return actividad_grupo_diocesis_data
+        actividad_objs = Actividad.objects.all().order_by('nombreActividad')
+        for actividad_obj in actividad_objs:
+            actividad_data.append([actividad_obj.get_actividad_id(), actividad_obj.get_actividad_name()])
+
+    return actividad_data
 
 
 def get_id_proyectos_grupos_diocesis_delegacion_name():

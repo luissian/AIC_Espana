@@ -199,8 +199,7 @@ def modificacion_actividad(request):
     if not is_manager(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
 
-    actividad_data = {'actividad_grupos_diocesis_name': get_id_actividad_grupos_diocesis_delegacion_name() }
-
+    actividad_data = get_id_actividad_name()
     return render(request,'aicespana/modificacionActividad.html',{'actividad_data':actividad_data})
 
 
@@ -516,6 +515,7 @@ def modificacion_voluntario(request):
 
         for item in field_list:
             data[item] = request.POST[item]
+        import pdb; pdb.set_trace()
         user_obj.update_all_data_for_voluntary(data)
 
         return render(request,'aicespana/modificacionVoluntario.html',{'confirmation_data':request.POST['nombre'] + ' ' + request.POST['apellidos']})
