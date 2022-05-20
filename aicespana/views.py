@@ -515,7 +515,6 @@ def modificacion_voluntario(request):
 
         for item in field_list:
             data[item] = request.POST[item]
-        import pdb; pdb.set_trace()
         user_obj.update_all_data_for_voluntary(data)
 
         return render(request,'aicespana/modificacionVoluntario.html',{'confirmation_data':request.POST['nombre'] + ' ' + request.POST['apellidos']})
