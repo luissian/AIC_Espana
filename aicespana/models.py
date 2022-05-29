@@ -194,7 +194,7 @@ class GrupoManager(models.Manager):
         new_group = self.create(diocesisDependiente = data['diocesis_obj'], nombreGrupo = data['nombre'],
                     calle = data['calle'],poblacion = data['poblacion'], codigoPostal = data['codigo'],
                     observaciones = data['observaciones'],registroNumero = data['registro'],
-                    fechaErecion =  data['fechaErecion'])
+                    fechaErecion =  data['fechaErecion'], provincia=data["provincia"])
 
         return new_group
 
