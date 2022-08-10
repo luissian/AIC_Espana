@@ -138,9 +138,9 @@ def get_summary_of_delegation(delegation_obj):
     Return:
         summary_data
     '''
-    num_diocesis = Diocesis.objects.filter(delegacionDependiente = delegation_obj).count()
-    num_grupos = Grupo.objects.filter(diocesisDependiente__delegacionDependiente = delegation_obj).count()
-    num_voluntarios = PersonalExterno.objects.filter(grupoAsociado__diocesisDependiente__delegacionDependiente = delegation_obj).count()
+    num_diocesis = Diocesis.objects.filter(delegacionDependiente=delegation_obj, diocesisActiva=True).count()
+    num_grupos = Grupo.objects.filter(diocesisDependiente__delegacionDependiente = delegation_obj, grupoActivo=True).count()
+    num_voluntarios = PersonalExterno.objects.filter(grupoAsociado__diocesisDependiente__delegacionDependiente = delegation_obj, personalActivo=True).count()
     return [num_voluntarios ,num_grupos, num_diocesis]
 
 
@@ -153,8 +153,8 @@ def get_summary_of_diocesis(diocesis_obj):
     Return:
         summary_data
     '''
-    num_grupos = Grupo.objects.filter(diocesisDependiente = diocesis_obj).count()
-    num_voluntarios = PersonalExterno.objects.filter(grupoAsociado__diocesisDependiente = diocesis_obj).count()
+    num_grupos = Grupo.objects.filter(diocesisDependiente = diocesis_obj, grupoActivo=True).count()
+    num_voluntarios = PersonalExterno.objects.filter(grupoAsociado__diocesisDependiente = diocesis_obj, personalActivo=True).count()
     return [num_voluntarios ,num_grupos]
 
 
@@ -333,8 +333,8 @@ def get_grupo_voluntarios(grupo_obj):
     '''
     voluntario_list = {'mayor80':[], 'menor80':[], 'sin_edad':[]}
 
-    if PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Voluntario').exists():
-        personal_objs = PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Voluntario').order_by('apellido')
+    if PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Voluntario', personalActivo = 'True').exists():
+        personal_objs = PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Voluntario', personalActivo = 'True').order_by('apellido')
         for personal_obj in personal_objs:
             old =  personal_obj.get_old()
             if old == '' :
@@ -355,8 +355,8 @@ def get_grupo_colaboradores(grupo_obj):
         colaborador_list
     '''
     colaborador_list = {'mayor80':[], 'menor80':[], 'sin_edad':[]}
-    if PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Colaborador').exists():
-        personal_objs = PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Colaborador').order_by('apellido')
+    if PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Colaborador', personalActivo = 'True').exists():
+        personal_objs = PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Colaborador', personalActivo = 'True').order_by('apellido')
         for personal_obj in personal_objs:
             old =  personal_obj.get_old()
             if old == '' :
@@ -377,8 +377,8 @@ def get_grupo_asesores(grupo_obj):
         asesor_list
     '''
     asesor_list = {'mayor80':[], 'menor80':[], 'sin_edad':[]}
-    if PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Asesor').exists():
-        personal_objs = PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Asesor').order_by('apellido')
+    if PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Asesor', personalActivo = 'True').exists():
+        personal_objs = PersonalExterno.objects.filter(grupoAsociado = grupo_obj, tipoColaboracion__tipoColaboracion__exact = 'Asesor', personalActivo = 'True').order_by('apellido')
         for personal_obj in personal_objs:
             old =  personal_obj.get_old()
             if old == '' :
@@ -400,8 +400,8 @@ def get_grupo_otros(grupo_obj):
     '''
     otros_list = {'mayor80':[], 'menor80':[], 'sin_edad':[]}
     colaboration_list = ['Voluntario', 'Asesor','Colaborador']
-    if PersonalExterno.objects.filter(grupoAsociado = grupo_obj).exclude(tipoColaboracion__tipoColaboracion__in = colaboration_list).exists():
-        personal_objs = PersonalExterno.objects.filter(grupoAsociado = grupo_obj).exclude(tipoColaboracion__tipoColaboracion__in = colaboration_list).order_by('apellido')
+    if PersonalExterno.objects.filter(grupoAsociado = grupo_obj).exclude(tipoColaboracion__tipoColaboracion__in = colaboration_list, personalActivo = 'True').exists():
+        personal_objs = PersonalExterno.objects.filter(grupoAsociado = grupo_obj).exclude(tipoColaboracion__tipoColaboracion__in = colaboration_list, personalActivo = 'True').order_by('apellido')
         for personal_obj in personal_objs:
             old =  personal_obj.get_old()
             if old == '' :
