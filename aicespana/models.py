@@ -1057,6 +1057,10 @@ class PersonalIglesia(models.Model):
             baja = ''
         else:
             baja = self.fechaBaja.strftime("%B %d, %Y")
+        if self.fechaNacimiento is None:
+            nacimiento = ''
+        else:
+            nacimiento = self.fechaNacimiento.strftime("%Y-%m-%d")
         if self.personalActivo:
             activo = 'true'
         else:
@@ -1090,6 +1094,7 @@ class PersonalIglesia(models.Model):
         data['movil'] = self.telefonoMovil
         data['baja'] = baja
         #data['alta'] = alta
+        data['nacimiento'] = nacimiento
         data['calle'] = self.calle
         data['poblacion'] = self.poblacion
         data['provincia'] = self.provincia
