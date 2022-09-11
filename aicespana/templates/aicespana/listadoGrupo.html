@@ -194,7 +194,7 @@
 		                            			<div id="spreadsheet2"></div>
 		                        			</div>
 											<br>
-											<input type="button" value="Descarga los cargos del grupo" onclick="table2.download()"/>
+											<input type="button" value="Descarga listado mayores de 80" onclick="table2.download()"/>
 											<script>
 						                         var data2 = [{% for  nombre in grupo_data.lista_voluntarios.mayor80 %} ['{{nombre}}'], {% endfor %}
 						                         ];
@@ -208,8 +208,8 @@
 						                            allowInsertColumn:false,
 						                            allowDeleteColumn:false,
 						                            allowRenameColumn:false,
-						                            csvFileName:'cargos_grupos',
-						                            minDimensions:[2,5],
+						                            csvFileName:'listado_mayores_80',
+						                            minDimensions:[1,5],
 						                            tableOverflow: false,
 						                            tableWidth: "700px",
 													hideIndex:true,
@@ -235,7 +235,7 @@
 		                            			<div id="spreadsheet3"></div>
 		                        			</div>
 											<br>
-											<input type="button" value="Descarga listado" onclick="table3.download()"/>
+											<input type="button" value="Descarga listado menores de 80" onclick="table3.download()"/>
 											<script>
 						                         var data3 = [{% for  nombre in grupo_data.lista_voluntarios.menor80 %} ['{{nombre}}'], {% endfor %}
 						                         ];
@@ -248,7 +248,7 @@
 						                            allowInsertColumn:false,
 						                            allowDeleteColumn:false,
 						                            allowRenameColumn:false,
-						                            csvFileName:'listado_voluntarios',
+						                            csvFileName:'listado_voluntarios_menores_80',
 						                            tableOverflow: false,
 						                            tableWidth: "700px",
 													search:true,
