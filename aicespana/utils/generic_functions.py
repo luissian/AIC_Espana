@@ -291,11 +291,11 @@ def get_grupo_cargos(grupo_obj):
         cargo_objs = Cargo.objects.filter(entidadCargo__entidad__iexact = 'grupo').order_by('nombreCargo')
         for cargo_obj in cargo_objs:
             cargo_name = cargo_obj.get_cargo_name()
-            if PersonalExterno.objects.filter(cargo__nombreCargo__exact = cargo_name, grupoAsociado = grupo_obj).exists():
-                personal_obj = PersonalExterno.objects.filter(cargo__nombreCargo__exact = cargo_name, grupoAsociado = grupo_obj).last()
+            if PersonalExterno.objects.filter(cargo__nombreCargo__exact = cargo_name, grupoAsociado = grupo_obj).exclude(personalActivo=False).exists():
+                personal_obj = PersonalExterno.objects.filter(cargo__nombreCargo__exact = cargo_name, grupoAsociado = grupo_obj).exclude(personalActivo=False).last()
                 cargos_data[cargo_name] = personal_obj.get_personal_name()
-            elif PersonalIglesia.objects.filter(cargo__nombreCargo__exact = cargo_name, grupoAsociado = grupo_obj).exists():
-                personal_obj = PersonalIglesia.objects.filter(cargo__nombreCargo__exact = cargo_name, grupoAsociado = grupo_obj).last()
+            elif PersonalIglesia.objects.filter(cargo__nombreCargo__exact = cargo_name, grupoAsociado = grupo_obj).exclude(personalActivo=False).exists():
+                personal_obj = PersonalIglesia.objects.filter(cargo__nombreCargo__exact = cargo_name, grupoAsociado = grupo_obj).exclude(personalActivo=False).last()
                 cargos_data[cargo_name] = personal_obj.get_personal_name()
             else:
                 cargos_data[cargo_name] = 'Sin Asignar'
