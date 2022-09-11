@@ -310,7 +310,7 @@
 		                            			<div id="spreadsheet12"></div>
 		                        			</div>
 											<br>
-											<input type="button" value="Descarga los cargos del grupo" onclick="table12.download()"/>
+											<input type="button" value="Descarga listado mayores 80" onclick="table12.download()"/>
 											<script>
 						                         var data12 = [{% for  nombre in grupo_data.lista_colaboradores.mayor80 %} ['{{nombre}}'], {% endfor %}
 						                         ];
@@ -324,7 +324,7 @@
 						                            allowInsertColumn:false,
 						                            allowDeleteColumn:false,
 						                            allowRenameColumn:false,
-						                            csvFileName:'colaboradores',
+						                            csvFileName:'colaboradores_mayores_80',
 						                            minDimensions:[2,5],
 						                            tableOverflow: false,
 						                            tableWidth: "700px",
@@ -349,7 +349,7 @@
 		                            			<div id="spreadsheet13"></div>
 		                        			</div>
 											<br>
-											<input type="button" value="Descarga listado" onclick="table13.download()"/>
+											<input type="button" value="Descarga listado menores 80" onclick="table13.download()"/>
 											<script>
 						                         var data13 = [{% for  nombre in grupo_data.lista_colaboradores.menor80 %} ['{{nombre}}'], {% endfor %}
 						                         ];
@@ -362,7 +362,7 @@
 						                            allowInsertColumn:false,
 						                            allowDeleteColumn:false,
 						                            allowRenameColumn:false,
-						                            csvFileName:'listado_colaboradores',
+						                            csvFileName:'listado_colaboradores_menores_80',
 						                            tableOverflow: false,
 						                            tableWidth: "700px",
 													search:true,
@@ -422,7 +422,7 @@
 		                            			<div id="spreadsheet22"></div>
 		                        			</div>
 											<br>
-											<input type="button" value="Descarga listado" onclick="table22.download()"/>
+											<input type="button" value="Descarga listado mayores 80" onclick="table22.download()"/>
 											<script>
 						                         var data22 = [{% for  nombre in grupo_data.lista_asesores.mayor80 %} ['{{nombre}}'], {% endfor %}
 						                         ];
@@ -462,7 +462,7 @@
 	                            			<div id="spreadsheet23"></div>
 	                        			</div>
 										<br>
-										<input type="button" value="Descarga listado" onclick="table23.download()"/>
+										<input type="button" value="Descarga listado menores 80" onclick="table23.download()"/>
 										<script>
 					                         var data23 = [{% for  nombre in grupo_data.lista_asesores.menor80 %} ['{{nombre}}'], {% endfor %}
 					                         ];
@@ -531,7 +531,7 @@
 		                            			<div id="spreadsheet32"></div>
 		                        			</div>
 											<br>
-											<input type="button" value="Descarga listado" onclick="table32.download()"/>
+											<input type="button" value="Descarga listado mayores 80" onclick="table32.download()"/>
 											<script>
 						                         var data32 = [{% for  nombre in grupo_data.lista_otros.mayor80 %} ['{{nombre}}'], {% endfor %}
 						                         ];
@@ -569,7 +569,7 @@
 		                            			<div id="spreadsheet33"></div>
 		                        			</div>
 											<br>
-											<input type="button" value="Descarga listado" onclick="table33.download()"/>
+											<input type="button" value="Descarga listado menores 80" onclick="table33.download()"/>
 											<script>
 						                         var data33 = [{% for  nombre in grupo_data.lista_otros.menor80 %} ['{{nombre}}'], {% endfor %}
 						                         ];
