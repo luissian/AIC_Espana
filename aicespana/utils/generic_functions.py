@@ -1105,6 +1105,28 @@ def get_personal_externo_por_delegacion(delegacion_id):
             worksheet.write_row(row_num, 0, data)
     return personal_externo, os.path.join(settings.MEDIA_URL,f_name)
 
+
+def presidentas_diocesis():
+    '''
+    Description:
+        The function return the list of presidentas diocesis
+    Return :
+        presidentas_dioc_data
+    '''
+    presidentas_dioc_data = []
+    if PersonalExterno.objects.filter(cargo__nombreCargo='Presidenta Diocesana', personalActivo=True).exists():
+        presidenta_objs = PersonalExterno.objects.filter(cargo__nombreCargo='Presidenta Diocesana', personalActivo=True)
+        for presidenta_obj in presidenta_objs:
+            data = []
+            data.append(presidenta_obj.get_diocesis_belongs_to())
+            data.append(presidenta_obj.get_personal_id())
+            data.append(presidenta_obj.get_personal_name())
+            data.append(presidenta_obj.get_movil_number())
+            data.append(presidenta_obj.get_email())
+            presidentas_dioc_data.append(data)
+    return presidentas_dioc_data
+
+
 def presidentes_grupo(delegation_id):
     '''
     Description:

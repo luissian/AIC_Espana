@@ -845,6 +845,13 @@ def listado_delegados_regionales(request):
 
 
 @login_required
+def listado_presidentas_diocesis(request):
+    if not is_manager(request):
+        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
+    presidentas = presidentas_diocesis()
+    return render(request,'aicespana/listadoPresidentasDiocesis.html',{'presidentas': presidentas})
+
+@login_required
 def listado_presidentes_grupo(request):
     if not is_manager(request):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_MANAGER})
