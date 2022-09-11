@@ -1,0 +1,64 @@
+{% extends 'aicespana/base.html' %}
+{% load static %}
+{% block content %}
+{% include "aicespana/cdn_table_functionality.html" %}
+<style media="screen">
+	.form-group.required .control-label:after {
+	  content:"  *";
+	  color:red;
+	}
+</style>
+<style>
+.table-wrapper {
+    height: 250px;
+    overflow: auto;
+    display:inline-block;
+    width: auto;
+</style>
+
+<div class="container-md">
+	<div class="col-md-12">
+	    <div class="card">
+	        <div class="card-header"><h2 style="text-align:center">Listado de Presidentas de Diocesis</h2> </div>
+            <div class="card-body">
+
+					<table id="presidentas" class="table table-striped table-bordered">
+						<thead>
+							<tr>
+								<th>Diocesis</th>
+								<th>Nombre</th>
+								<th>Telefono Movil</th>
+								<th>email</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for dioc , id, nombre, movil, email in presidentas %}
+								<tr>
+									<td>{{dioc}}</td>
+									<td><a href="informacionVoluntarioID={{id}}">{{nombre}}</a></td>
+									<td>{{movil}}</td>
+									<td>{{email}}</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+
+					<br><br>
+			</div>  <!-- end card-body -->
+			<script type="text/javascript">
+                $(document).ready(function() {
+                    $('#presidentas').DataTable({
+                        dom: "fltirpB",
+                        responsive: true,
+                        buttons: [
+                            'excel'
+                        ]
+                    });
+                });
+            </script>
+		</div>  <!-- end card -->
+	</div> <!-- end col-md-5 -->
+
+</div> <!-- end container -->
+
+{% endblock %}
