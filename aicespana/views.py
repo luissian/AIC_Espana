@@ -771,13 +771,11 @@ def listado_delegacion(request, delegacion_id):
     #Get the diocesis bolongs to the delegation
     delegacion_data = {}
     delegacion_data['diocesis_list'] = get_diocesis_in_delegation(delegacion_obj)
-    #diocesis_data['cargos_diocesis'] = ''
     delegacion_data['summary'] = [get_summary_of_delegation(delegacion_obj)]
     delegacion_data['delegacion_name'] = delegacion_obj.get_delegacion_name()
     delegacion_data['delegacion_image'] = delegacion_obj.get_delegacion_image()
     delegacion_data.update(get_delegation_data (delegacion_id))
     return render(request,'aicespana/listadoDelegacion.html', {'delegacion_data': delegacion_data})
-
 
 
 def listado_diocesis(request,diocesis_id):
