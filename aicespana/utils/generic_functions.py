@@ -400,8 +400,8 @@ def get_grupo_otros(grupo_obj):
     '''
     otros_list = {'mayor80':[], 'menor80':[], 'sin_edad':[]}
     colaboration_list = ['Voluntario', 'Asesor','Colaborador']
-    if PersonalExterno.objects.filter(grupoAsociado = grupo_obj).exclude(tipoColaboracion__tipoColaboracion__in = colaboration_list, personalActivo = 'True').exists():
-        personal_objs = PersonalExterno.objects.filter(grupoAsociado = grupo_obj).exclude(tipoColaboracion__tipoColaboracion__in = colaboration_list, personalActivo = 'True').order_by('apellido')
+    if PersonalExterno.objects.filter(grupoAsociado = grupo_obj).exclude(tipoColaboracion__tipoColaboracion__in = colaboration_list).exclude(personalActivo=False).exists():
+        personal_objs = PersonalExterno.objects.filter(grupoAsociado = grupo_obj).exclude(tipoColaboracion__tipoColaboracion__in = colaboration_list).exclude(personalActivo=False).order_by('apellido')
         for personal_obj in personal_objs:
             old =  personal_obj.get_old()
             if old == '' :
