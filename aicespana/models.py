@@ -255,7 +255,7 @@ class Grupo(models.Model):
         if self.fechaBaja is None:
             baja = ''
         else:
-            baja = self.fechaBaja.strftime("%B %d, %Y")
+            baja = self.fechaBaja.strftime("%Y-%m-%d")
         if self.grupoActivo:
             activo = 'true'
         else:
@@ -275,7 +275,7 @@ class Grupo(models.Model):
         else:
             self.grupoActivo = True
         if data['baja'] != '':
-            self.baja = datetime.strptime(data['baja'],"%Y-%m-%d").date()
+            self.fechaBaja = datetime.strptime(data['baja'],"%Y-%m-%d").date()
         self.observaciones = data['observaciones']
         self.save()
         return self
