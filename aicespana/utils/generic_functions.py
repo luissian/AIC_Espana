@@ -261,18 +261,20 @@ def get_diocesis_in_delegation(delegacion_obj):
         diocesis_data.append([diocesis_obj.get_diocesis_id(), diocesis_obj.get_diocesis_name()])
     return diocesis_data
 
-def get_groups_in_diocesis(diocesis_obj):
+
+def get_groups_in_diocesis(diocesis_obj, situation):
     '''
     Description:
         The function gets the grupos and their id from a diocesis
     Input:
         diocesis_obj  # object of diocesis
+        situation True or False for getting active or close
     Return:
         groups_data
     '''
     groups_data = []
-    if Grupo.objects.filter(diocesisDependiente = diocesis_obj).exists():
-        grupo_objs = Grupo.objects.filter(diocesisDependiente = diocesis_obj).order_by('nombreGrupo')
+    if Grupo.objects.filter(diocesisDependiente = diocesis_obj, grupoActivo=situation).exists():
+        grupo_objs = Grupo.objects.filter(diocesisDependiente = diocesis_obj, grupoActivo=situation).order_by('nombreGrupo')
         for grupo_obj in grupo_objs:
             groups_data.append([grupo_obj.get_grupo_id(), grupo_obj.get_grupo_name()])
     return groups_data

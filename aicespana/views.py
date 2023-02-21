@@ -786,7 +786,7 @@ def listado_diocesis(request,diocesis_id):
         return render (request,'aicespana/errorPage.html', {'content': ERROR_DIOCESIS_NOT_EXIST})
     diocesis_obj = get_diocesis_obj_from_id(diocesis_id)
     diocesis_data = {}
-    diocesis_data['grupos'] = get_groups_in_diocesis(diocesis_obj)
+    diocesis_data['grupos'] = get_groups_in_diocesis(diocesis_obj, True)
     diocesis_data['cargos'] = get_diocesis_cargos(diocesis_obj)
     diocesis_data['summary'] = [get_summary_of_diocesis(diocesis_obj)]
     diocesis_data['diocesis_name'] = diocesis_obj.get_diocesis_name()
