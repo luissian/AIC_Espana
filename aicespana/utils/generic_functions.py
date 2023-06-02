@@ -1089,13 +1089,13 @@ def get_personal_externo_por_delegacion(delegacion_id):
         Return personal_externo
     '''
     personal_externo = []
-    f_name =  'Listado_por_delegacion.xlsx'
-    heading = ['Nombre', 'Apellidos', 'Tipo de colaboración' ,'Calle','Población', 'Provincia', 'Código Postal']
+    f_name = 'Listado_por_delegacion.xlsx'
+    heading = ['Nombre', 'Apellidos', 'Tipo de colaboración', 'Situación', 'Fecha Alta', 'Fecha Baja', 'Grupo', 'Diocesis', 'Delegación', 'Proyecto', 'Actividad', 'Calle', 'Población', 'Provincia', 'Código Postal']
     lista = [heading]
-    if PersonalExterno.objects.filter(grupoAsociado__diocesisDependiente__delegacionDependiente__pk__exact = delegacion_id).exists():
-        personal_objs = PersonalExterno.objects.filter(grupoAsociado__diocesisDependiente__delegacionDependiente__pk__exact = delegacion_id).order_by('apellido')
+    if PersonalExterno.objects.filter(grupoAsociado__diocesisDependiente__delegacionDependiente__pk__exact=delegacion_id).exists():
+        personal_objs = PersonalExterno.objects.filter(grupoAsociado__diocesisDependiente__delegacionDependiente__pk__exact=delegacion_id).order_by('apellido')
         for personal_obj in personal_objs:
-            lista.append(personal_obj.get_data_for_boletin())
+            lista.append(personal_obj.get_data_for_voluntary_list())
             personal_externo.append([personal_obj.get_personal_only_name(), personal_obj.get_personal_only_apellido()])
     import xlsxwriter
     excel_file = os.path.join(settings.MEDIA_ROOT, f_name)

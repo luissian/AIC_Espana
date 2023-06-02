@@ -780,6 +780,57 @@ class PersonalExterno(models.Model):
         data.append(self.codigoPostal)
         return data
 
+    def get_data_for_voluntary_list(self):
+        if self.personalActivo:
+            estado = 'Activo'
+        else:
+            estado = 'Baja'
+        if self.tipoColaboracion is None:
+            colaboracion = 'No definida'
+        else:
+            colaboracion = self.tipoColaboracion.get_collaboration_name()
+        if self.grupoAsociado is None:
+            grupo = 'No asignado'
+            diocesis = 'No asignado'
+            delegacion = "No asignado"
+        else:
+            grupo = self.grupoAsociado.get_grupo_name()
+            diocesis = self.grupoAsociado.get_diocesis_name()
+            delegacion = self.grupoAsociado.get_delegacion_name()
+        if self.proyectoAsociado is None:
+            proyecto_name = 'No asignado'
+        else:
+            proyecto_name = self.proyectoAsociado.get_proyecto_name()
+        if self.actividadAsociada is None:
+            actividad = 'No asignado'
+        else:
+            actividad = self.actividadAsociada.get_actividad_name()
+        if self.fechaAlta is None:
+            alta = ''
+        else:
+            alta = self.fechaAlta.strftime("%Y-%m-%d")
+        if self.fechaBaja is None:
+            baja = ''
+        else:
+            baja = self.fechaBaja.strftime("%B %d, %Y")
+        data = []
+        data.append(self.nombre)
+        data.append(self.apellido)
+        data.append(self.get_collaboration_belongs_to())
+        data.append(estado)
+        data.append(alta)
+        data.append(baja)
+        data.append(grupo)
+        data.append(diocesis)
+        data.append(delegacion)
+        data.append(proyecto_name)
+        data.append(actividad)
+        data.append(self.calle)
+        data.append(self.poblacion)
+        data.append(self.provincia)
+        data.append(self.codigoPostal)
+        return data
+
     def get_data_for_online_boletin(self):
         data = []
         data.append(self.nombre)
