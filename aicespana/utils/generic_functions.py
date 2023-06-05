@@ -796,7 +796,7 @@ def get_personal_responsability(personal_obj):
 def get_provincias():
 
     list_provincias =['Albacete', 'Alicante','Almería','Álava','Asturias','Ávila','Badajoz','Baleares','Barcelona','Bizkaia','Burgos',
-        'Cáceres','Cádiz','Cantabria','Castellón','Ciudad Real','Córdoba','Coruña','Cuenca','Gipuzkoa','Girona','Granada','Guadalajara',
+        'Cáceres','Cádiz','Cantabria','Castellón','Ciudad Real','Córdoba','Coruña','Cuenca','Guipuzkoa','Girona','Granada','Guadalajara',
         'Huelva', 'Huesca','Jaén','León','Lleida','Lugo','Madrid','Málaga','Murcia','Navarra','Ourense','Palencia','Palmas, Las',
         'Pontevedra','Rioja, La','Salamanca','Santa Cruz de Tenerife','Segovia','Sevilla','Soria','Tarragona','Teruel','Toledo',
         'Valencia','Valladolid','Zamora','Zaragoza','Ceuta','Melilla']
