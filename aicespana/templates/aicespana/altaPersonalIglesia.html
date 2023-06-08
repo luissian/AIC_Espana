@@ -102,7 +102,7 @@
 								   <select id="provincia" class="form-select" name='provincia'>
 									   <option selected value=''>Selecionar</option>
 									   {% for prov in personel_data.provincias %}
-										   <option value = {{prov}}>{{prov}}</option>
+										   <option value ="{{forloop.counter0}}">{{prov}}</option>
 									   {% endfor %}
 								   </select>
 							   </div>

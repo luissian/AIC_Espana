@@ -86,7 +86,7 @@ DATABASES = {
         'USER': 'django',
         'PASSWORD':'django77',
         'PORT':'3306',
-        'NAME': 'AIC_Espana',
+        'NAME': 'aic_espana',
         'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
     }
 }

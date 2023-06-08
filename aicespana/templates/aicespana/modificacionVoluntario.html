@@ -105,11 +105,11 @@
 									<input type="text" class="form-control" id="poblacion" name='poblacion' value="{{voluntary_data.poblacion}}">
 								</div>
 								<div class="col-md-4">
-									<label for="provincia" class="form-label">Provincia</label>
+									<label for="provincia" class="form-label">Provincias</label>
 									<select id="provincia" class="form-select" name='provincia'>
-										<option selected value="{{voluntary_data.provincia}}">{{voluntary_data.provincia}}</option>
+										<option selected value="{{voluntary_data.provincia_index}}">{{voluntary_data.provincia}}</option>
 										{% for prov in voluntary_data.provincias %}
-											<option value = {{prov}}>{{prov}}</option>
+											<option value = {{forloop.counter0}}>{{prov}}</option>
 										{% endfor %}
 									</select>
 								</div>

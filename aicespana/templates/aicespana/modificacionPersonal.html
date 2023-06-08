@@ -105,7 +105,7 @@
 									<select id="provincia" class="form-select" name='provincia'>
 										<option selected value="{{personal_data.nombre}}">{{personal_data.provincia}}</option>
 										{% for prov in personal_data.provincias %}
-											<option value = {{prov}}>{{prov}}</option>
+											<option value ="{{forloop.counter0}}">{{prov}}</option>
 										{% endfor %}
 									</select>
 								</div>
