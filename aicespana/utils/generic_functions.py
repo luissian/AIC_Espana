@@ -1656,11 +1656,17 @@ def get_personal_externo_por_delegacion(delegacion_id):
     heading = [
         "Nombre",
         "Apellidos",
+        "DNI",
+        "email",
+        "Telefono fijo",
+        "Telefono movil",
+        "Fecha nacimiento",
         "Tipo de colaboración",
         "Situación",
         "Fecha Alta",
         "Fecha Baja",
         "Grupo",
+        "Parroquia",
         "Diocesis",
         "Delegación",
         "Proyecto",
@@ -1669,13 +1675,14 @@ def get_personal_externo_por_delegacion(delegacion_id):
         "Población",
         "Provincia",
         "Código Postal",
+        "Recibir boletin"
     ]
     lista = [heading]
     if aicespana.models.PersonalExterno.objects.filter(
         grupoAsociado__diocesisDependiente__delegacionDependiente__pk__exact=delegacion_id
     ).exists():
         personal_objs = aicespana.models.PersonalExterno.objects.filter(
-            grupoAsociado__diocesisDependiente__delegacionDependiente__pk__exact=delegacion_id
+            grupoAsociado__diocesisDependiente__delegacionDependiente__pk__exact=delegacion_id, personalActivo=True
         ).order_by("apellido")
         for personal_obj in personal_objs:
             lista.append(personal_obj.get_data_for_voluntary_list())

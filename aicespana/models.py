@@ -913,10 +913,12 @@ class PersonalExterno(models.Model):
             colaboracion = self.tipoColaboracion.get_collaboration_name()
         if self.grupoAsociado is None:
             grupo = "No asignado"
+            parroquia = "No asignado"
             diocesis = "No asignado"
             delegacion = "No asignado"
         else:
             grupo = self.grupoAsociado.get_grupo_name()
+            parroquia = self.grupoAsociado.get_parroquia_name()
             diocesis = self.grupoAsociado.get_diocesis_name()
             delegacion = self.grupoAsociado.get_delegacion_name()
         if self.proyectoAsociado is None:
@@ -930,19 +932,36 @@ class PersonalExterno(models.Model):
         if self.fechaAlta is None:
             alta = ""
         else:
-            alta = self.fechaAlta.strftime("%Y-%m-%d")
+            alta = self.fechaAlta.strftime("%d-%m-%Y")
         if self.fechaBaja is None:
             baja = ""
         else:
-            baja = self.fechaBaja.strftime("%B %d, %Y")
+            baja = self.fechaBaja.strftime("%d-%m-%Y")
+        if self.fechaNacimiento is None:
+            nacimiento = ""
+        else:
+            nacimiento = self.fechaNacimiento .strftime("%d-%m-%Y")
+        if self.recibirBoletin:
+            if self.boletinOnline:
+                rec_boletin = "Por email"
+            else:
+                rec_boletin = "Si"
+        else:
+            rec_boletin = "No"
         data = []
         data.append(self.nombre)
         data.append(self.apellido)
+        data.append(self.DNI)
+        data.append(self.email)
+        data.append(self.telefonoFijo)
+        data.append(self.telefonoMovil)
+        data.append(nacimiento)
         data.append(self.get_collaboration_belongs_to())
         data.append(estado)
         data.append(alta)
         data.append(baja)
         data.append(grupo)
+        data.append(parroquia)
         data.append(diocesis)
         data.append(delegacion)
         data.append(proyecto_name)
@@ -951,6 +970,8 @@ class PersonalExterno(models.Model):
         data.append(self.poblacion)
         data.append(self.provincia)
         data.append(self.codigoPostal)
+        data.append(rec_boletin)
+
         return data
 
     def get_data_for_online_boletin(self):
