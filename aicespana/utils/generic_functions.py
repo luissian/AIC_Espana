@@ -1560,6 +1560,7 @@ def get_personal_list_order_by_delegacion():
             .order_by("grupoAsociado")
             .order_by("nombre")
         )
+
         for personal_obj in personal_objs:
             delegation_name = personal_obj.get_delegacion_belongs_to()
             diocesis_name = personal_obj.get_diocesis_belongs_to()
@@ -1572,6 +1573,7 @@ def get_personal_list_order_by_delegacion():
                     personal_obj.get_personal_id(),
                     personal_obj.get_personal_name(),
                     personal_obj.get_responability_belongs_to(),
+                    personal_obj.get_group_belongs_to(),
                 ]
             )
 

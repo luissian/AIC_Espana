@@ -347,6 +347,7 @@ def alta_voluntario(request):
         personal_data = {}
         for field in info_to_fetch:
             personal_data[field] = request.POST[field].strip()
+        personal_data["provincia"] = aicespana.utils.generic_functions.get_provincia_name_from_index(personal_data["provincia"])
         if aicespana.models.PersonalExterno.objects.filter(
             nombre__iexact=personal_data["nombre"],
             apellido__iexact=personal_data["apellidos"],
