@@ -1714,9 +1714,26 @@ def listado_presidentes_grupo(request):
 @login_required
 def listado_personal_externo(request):
     if not aicespana.utils.generic_functions.is_manager(request):
-        return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
-        )
+        if not aicespana.utils.generic_functions.check_delegada_regional(request.user):
+            return render(
+                request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            )
+        delegacion_id = aicespana.utils.generic_functions.get_delegacion_id_from_name(request.user.username)
+        if delegacion_id is not None:
+            listado_personal, excel_file = aicespana.utils.generic_functions.get_personal_externo_por_delegacion(delegacion_id)
+            return render(
+                request,
+                "aicespana/listadoPersonalExterno.html",
+                {
+                    "listado_personal": listado_personal,
+                    "excel_file": excel_file,
+                    "delegacion": request.user.username,
+                },
+            )
+        else:
+            return render(
+                request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_DELEGACION_NOT_EXIST}
+            )
     if request.method == "POST" and request.POST["action"] == "listadoDelegacion":
         listado_personal, excel_file = aicespana.utils.generic_functions.get_personal_externo_por_delegacion(
             request.POST["delegacion_id"]

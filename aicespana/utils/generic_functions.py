@@ -3,6 +3,7 @@ from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 import collections
 import os
+import xlsxwriter
 
 import aicespana.models
 
@@ -227,6 +228,20 @@ def delegation_id_and_name_list():
             [delegacion_obj.get_delegacion_id(), delegacion_obj.get_delegacion_name()]
         )
     return delegation_id_name_list
+
+
+def get_delegacion_id_from_name(delegation_name):
+    """
+    Description:
+        The function return the delegation id from their name.
+    Input:
+        delegation_name   # name of the delegation
+    Return:
+        id of delegation
+    """
+    if aicespana.models.Delegacion.objects.filter(nombreDelegacion__iexact=delegation_name).exists():
+        return aicespana.models.Delegacion.objects.filter(nombreDelegacion__iexact=delegation_name).last().get_delegacion_id()
+    return None
 
 
 def get_delegation_obj_from_id(delegation_id):
@@ -1715,7 +1730,6 @@ def get_personal_externo_por_delegacion(delegacion_id):
                     personal_obj.get_personal_only_apellido(),
                 ]
             )
-    import xlsxwriter
 
     excel_file = os.path.join(settings.MEDIA_ROOT, f_name)
     if os.path.isfile(excel_file):

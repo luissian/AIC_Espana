@@ -1,54 +1,44 @@
 {% extends 'aicespana/base.html' %}
 {% load static %}
 {% block content %}
-{%include 'aicespana/jexcel_funcionality.html' %}
+{% include "aicespana/cdn_table_functionality.html" %}
 {% if listado_personal %}
     <div class="container">
         <div class="row">
-    	    <div class="card">
-    	        <div class="card-header"><h2 style="text-align:center">Listado de Voluntarios de la Delegación de {{delegacion}}</h2> </div>
-                <div class="card-body">
-
-
-                    {% if listado_personal|length > 0 %}
-                        <div id="spreadsheet1"></div>
-                        <br>
-
-                        <script>
-                            var data1 = [{% for  row in listado_personal %} [{% for column  in row %}'{{column}}',{% endfor %}], {% endfor %}
-                            ];
-
-                            var table1 = jexcel(document.getElementById('spreadsheet1'), {
-                                data:data1,
-                                columns: [
-                                    { type: 'text', title:'Nombre', width:200 , readOnly:true},
-                                    { type: 'text', title:'Apellidos', width:300 , readOnly:true},
-
-                                ],
-                                allowInsertColumn:false,
-                                allowDeleteColumn:false,
-                                allowRenameColumn:false,
-                                csvFileName:'voluntario_delegacion',
-                                tableOverflow: false,
-                                tableWidth: "500px",
-                                hideIndex:true,
-                                pagination:20,
-                            });
-                        </script>
-                    {% else %}
-                        <h5 style="text-align:center">No hay voluntarios en esta Delegación</h5>
-                    {% endif %}
-                </div>  <!-- end card-body -->
-            </div>  <!-- end card -->
-        </div> <!-- end row -->
-    </div> <!-- end container -->
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8 offset-2" >
-                <div class="card">
-                    <div class="card-header"><h4 style="text-align:center">Descarga el excel del listado de Voluntarios </h4> </div>
+            <div class="col-md-8">
+        	    <div class="card">
+        	        <div class="card-header text-center"><h3>Listado de Voluntarios de la Delegación de {{delegacion}}</h3> </div>
                     <div class="card-body">
-                         <a href="{{excel_file}}">Excel con listado de Voluntarios de la Delegación {{delegacion}} <i class="bi bi-download"></i> </a>
+                        <div class="container">
+                            {% if listado_personal|length > 0 %}
+                                <table class="table table-hover" id="list_voluntarios_table">
+                                    <thead>
+                                        <tr>
+                                            <th>Nombre</th>
+                                            <th>Apellidos</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for name, surname in listado_personal %}
+                                            <tr>
+                                                <td>{{name}}</td>
+                                                <td>{{surname}}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <h5 class="text-center">No hay voluntarios en esta Delegación</h5>
+                            {% endif %}
+                        </div>
+                    </div>  <!-- end card-body -->
+                </div>  <!-- end card -->
+            </div>
+            <div class="col-md-4" >
+                <div class="card">
+                    <div class="card-header text-center"><h3>Descarga fichero excel </h3> </div>
+                    <div class="card-body">
+                         <a href="{{excel_file}}">Descarga listado de voluntarios de la delegación  de {{delegacion}} <i class="bi bi-download"></i> </a>
                      </div>  <!-- end card-body -->
                 </div>  <!-- end card -->
             </div> <!-- end col-md-12 -->
@@ -92,4 +82,11 @@
     </div> <!-- end container -->
 
 {%  endif %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#list_voluntarios_table').DataTable({
+            responsive: true,
+        });
+    });
+</script>
 {% endblock %}
