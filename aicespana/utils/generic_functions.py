@@ -7,6 +7,47 @@ import os
 import aicespana.models
 
 
+def allow_see_group_information_voluntary(request, group_obj):
+    """
+    Description:
+        The function will check if the logged user belongs to administracion,
+        presidenta nacional to see all delegaciones  or has the
+        presidenta diocesana responsability and belongs to the same delegacion
+    Input:
+        request # contains the session information
+        group_obj   # object of the grouo
+    Return:
+        Return True if the user can see group lists, False if not
+    """
+    try:
+        administracion_groups = Group.objects.get(name="administracion")
+        if administracion_groups not in request.user.groups.all():
+            todas_delegaciones = Group.objects.get(name="todasDelegaciones")
+            if todas_delegaciones not in request.user.groups.all():
+                nombre_usuario = request.user.first_name
+                apellido_usuario = request.user.last_name
+                if not aicespana.models.PersonalExterno.objects.filter(
+                    nombre__iexact=nombre_usuario, apellido__iexact=apellido_usuario
+                ).exists():
+                    return False
+                usuario_obj = aicespana.models.PersonalExterno.objects.filter(
+                    nombre__iexact=nombre_usuario, apellido__iexact=apellido_usuario
+                ).last()
+                if usuario_obj.get_responability_belongs_to() == "Presidenta Nacional":
+                    return True
+                if usuario_obj.get_responability_belongs_to() != "Delegada Regional":
+                    return False
+                if (
+                    usuario_obj.get_delegacion_belongs_to()
+                    != group_obj.get_delegacion_name()
+                ):
+                    return False
+                return True
+    except Exception:
+        return False
+    return True
+
+
 def check_exists_grupo(grupo_name, diocesis_id):
     """
     Description:
@@ -36,6 +77,29 @@ def check_exists_parroquia(parroquia_name, diocesis_id):
         nombreParroquia__iexact=parroquia_name,
         diocesisDependiente__pk__exact=diocesis_id,
     ).exists()
+
+
+def check_delegada_regional(user):
+    """
+    Description:
+        The function return if user is delegada regional.
+    Input:
+        user
+    Return:
+        True/False
+    """
+    nombre_usuario = user.first_name
+    apellido_usuario = user.last_name
+    if not aicespana.models.PersonalExterno.objects.filter(
+        nombre__iexact=nombre_usuario, apellido__iexact=apellido_usuario
+    ).exists():
+        return False
+    usuario_obj = aicespana.models.PersonalExterno.objects.filter(
+        nombre__iexact=nombre_usuario, apellido__iexact=apellido_usuario
+    ).last()
+    if usuario_obj.get_responability_belongs_to() == "Delegada Regional":
+        return True
+    return False
 
 
 def get_summary_actividades():
@@ -1502,48 +1566,7 @@ def is_manager(request):
     return False
 
 
-def allow_see_group_information_voluntary(request, group_obj):
-    """
-    Description:
-        The function will check if the logged user belongs to administracion,
-        presidenta nacional to see all delegaciones  or has the
-        presidenta diocesana responsability and belongs to the same delegacion
-    Input:
-        request # contains the session information
-        group_obj   # object of the grouo
-    Return:
-        Return True if the user can see group lists, False if not
-    """
-    try:
-        administracion_groups = Group.objects.get(name="administracion")
-        if administracion_groups not in request.user.groups.all():
-            todas_delegaciones = Group.objects.get(name="todasDelegaciones")
-            if todas_delegaciones not in request.user.groups.all():
-                nombre_usuario = request.user.first_name
-                apellido_usuario = request.user.last_name
-                if not aicespana.models.PersonalExterno.objects.filter(
-                    nombre__iexact=nombre_usuario, apellido__iexact=apellido_usuario
-                ).exists():
-                    return False
-                usuario_obj = aicespana.models.PersonalExterno.objects.filter(
-                    nombre__iexact=nombre_usuario, apellido__iexact=apellido_usuario
-                ).last()
-                if usuario_obj.get_responability_belongs_to() == "Presidenta Nacional":
-                    return True
-                if usuario_obj.get_responability_belongs_to() != "Delegada Regional":
-                    return False
-                if (
-                    usuario_obj.get_delegacion_belongs_to()
-                    != group_obj.get_delegacion_name()
-                ):
-                    return False
-                return True
-    except Exception:
-        return False
-    return True
-
-
-def get_personal_list_order_by_delegacion():
+def get_list_personal_iglesia(delegacion=None):
     """
     Description:
         The function get the personel list ordered by delegation - Diocesis - grupo
@@ -1551,31 +1574,29 @@ def get_personal_list_order_by_delegacion():
         Return personal_list
     """
     personal_list = collections.OrderedDict()
-    if aicespana.models.PersonalIglesia.objects.all().exclude(personalActivo=False).exists():
+    if delegacion is not None:
+        personal_objs = aicespana.models.PersonalIglesia.objects.filter(delegacion__nombreDelegacion__iexact=delegacion).exclude(personalActivo=False)
+    else:
         personal_objs = (
             aicespana.models.PersonalIglesia.objects.all()
             .exclude(personalActivo=False)
-            .order_by("delegacion")
-            .order_by("grupoAsociado__diocesisDependiente")
-            .order_by("grupoAsociado")
-            .order_by("nombre")
         )
 
-        for personal_obj in personal_objs:
-            delegation_name = personal_obj.get_delegacion_belongs_to()
-            diocesis_name = personal_obj.get_diocesis_belongs_to()
-            if delegation_name not in personal_list:
-                personal_list[delegation_name] = collections.OrderedDict()
-            if diocesis_name not in personal_list[delegation_name]:
-                personal_list[delegation_name][diocesis_name] = []
-            personal_list[delegation_name][diocesis_name].append(
-                [
-                    personal_obj.get_personal_id(),
-                    personal_obj.get_personal_name(),
-                    personal_obj.get_responability_belongs_to(),
-                    personal_obj.get_group_belongs_to(),
-                ]
-            )
+    for personal_obj in personal_objs:
+        delegation_name = personal_obj.get_delegacion_belongs_to()
+        diocesis_name = personal_obj.get_diocesis_belongs_to()
+        if delegation_name not in personal_list:
+            personal_list[delegation_name] = collections.OrderedDict()
+        if diocesis_name not in personal_list[delegation_name]:
+            personal_list[delegation_name][diocesis_name] = []
+        personal_list[delegation_name][diocesis_name].append(
+            [
+                personal_obj.get_personal_id(),
+                personal_obj.get_personal_name(),
+                personal_obj.get_responability_belongs_to(),
+                personal_obj.get_group_belongs_to(),
+            ]
+        )
 
     return personal_list
 

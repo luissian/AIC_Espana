@@ -1638,11 +1638,14 @@ def listado_voluntarios_grupo(request):
 
 @login_required
 def listado_personal_iglesia(request):
+    delegacion = None
     if not aicespana.utils.generic_functions.is_manager(request):
-        return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
-        )
-    listado_personal = aicespana.utils.generic_functions.get_personal_list_order_by_delegacion()
+        if not aicespana.utils.generic_functions.check_delegada_regional(request.user):
+            return render(
+                request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            )
+        delegacion = request.user.username
+    listado_personal = aicespana.utils.generic_functions.get_list_personal_iglesia(delegacion)
     return render(
         request,
         "aicespana/listadoPersonalIglesia.html",
