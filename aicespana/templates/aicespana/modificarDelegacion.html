@@ -8,7 +8,7 @@
 			<div class="col-md-6 offset-3">
 				<div class="card text-center bg-danger">
 					<div class="card-header">
-						<h2 style="text-align:center">ERROR</h2>
+						<h2 classe="text-center">ERROR</h2>
 					</div>
 					<div class="card-body">
 						<p class="card-text">
@@ -39,24 +39,24 @@
 {% else %}
 	<br><br>
 	<div class="container-md">
-	    <div class="row g-3">
+	    <div class="row g-2">
 	        <div class="col-md-8">
 	            <div class="card">
-					<div class="card-header"><h2 style="text-align:center">Formulario para cambiar el nombre de la Delegación {{delegacion.name}}</h2> </div>
+					<div class="card-header"><h2 class="text-center">Formulario para cambiar el nombre de la Delegación {{delegacion.name}}</h2> </div>
 	                <div class="card-body">
-	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="modificarDelegacion" id="modificarDelegacion" >
+	                    <form method="post" enctype="multipart/form-data" name="modificarDelegacion" id="modificarDelegacion" >
 	                        {% csrf_token %}
 	                        <input type="hidden" name="action" value="modificarDelegacion"/>
 							<input type="hidden" name="delegacion_id" value="{{delegacion.id}}"/>
-							<div class="form-group required">
+							<div class="form-group">
 		                        <div class="col-md-6">
-		                            <label class="control-label " for="nombre">Escribe el nuevo nombre de la Delegación</label>
+		                            <label  class="form-label " for="nombre">Escribe el nuevo nombre de la Delegación</label>
 		                            <input type="text" required class="form-control" id="nombre" name='nombre' value="{{delegacion.name}}">
 		                        </div> <!-- end col-md-6 -->
 								<br><br>
 								<div class="col-md-6">
-									<label for="grupoID" class="form-label">Sube la fotografía del proyecto</label><br>
-									<input type="file" name="uploadImage" accept=".doc, .docx, .pdf, .txt">
+									<label for="grupoID" class="form-label">Sube la fotografía de la delegación</label><br>
+									<input type="file" name="uploadImage" accept=".png, .gif, .jpg">
 		                        </div> <!-- end col-md-7 -->
 							</div>
 							<br><br>

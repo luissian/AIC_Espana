@@ -1644,7 +1644,11 @@ def listado_personal_iglesia(request):
             return render(
                 request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
             )
-        delegacion = request.user.username
+        delegacion = aicespana.utils.generic_functions.delegacion_name_from_loged_user(request.user.username)
+        if delegacion is None:
+            return render(
+                request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            )
     listado_personal = aicespana.utils.generic_functions.get_list_personal_iglesia(delegacion)
     return render(
         request,
@@ -1718,7 +1722,8 @@ def listado_personal_externo(request):
             return render(
                 request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
             )
-        delegacion_id = aicespana.utils.generic_functions.get_delegacion_id_from_name(request.user.username)
+        delegacion_name = aicespana.utils.generic_functions.delegacion_name_from_loged_user(request.user.username)
+        delegacion_id = aicespana.utils.generic_functions.get_delegacion_id_from_name(delegacion_name)
         if delegacion_id is not None:
             listado_personal, excel_file = aicespana.utils.generic_functions.get_personal_externo_por_delegacion(delegacion_id)
             return render(
@@ -1727,7 +1732,7 @@ def listado_personal_externo(request):
                 {
                     "listado_personal": listado_personal,
                     "excel_file": excel_file,
-                    "delegacion": request.user.username,
+                    "delegacion": delegacion_name,
                 },
             )
         else:

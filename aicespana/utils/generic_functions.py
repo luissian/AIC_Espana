@@ -214,6 +214,12 @@ def delegation_name_list():
     return delegation_name_list
 
 
+def delegacion_name_from_loged_user(username):
+    if aicespana.models.Delegacion.objects.filter(login_user__iexact=username).exists():
+        return aicespana.models.Delegacion.objects.filter(login_user__iexact=username).last().get_delegacion_name()
+    return None
+
+
 def delegation_id_and_name_list():
     """
     Description:
