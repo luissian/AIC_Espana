@@ -53,6 +53,7 @@ class Delegacion(models.Model):
     imagenDelegacion = models.FileField(
         storage=images_delegation, null=True, blank=True
     )
+    login_user = models.CharField(max_length=20, null=True, blank=True)
 
     def __str__(self):
         return "%s" % (self.nombreDelegacion)
@@ -907,10 +908,6 @@ class PersonalExterno(models.Model):
             estado = "Activo"
         else:
             estado = "Baja"
-        if self.tipoColaboracion is None:
-            colaboracion = "No definida"
-        else:
-            colaboracion = self.tipoColaboracion.get_collaboration_name()
         if self.grupoAsociado is None:
             grupo = "No asignado"
             parroquia = "No asignado"
