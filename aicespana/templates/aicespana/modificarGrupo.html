@@ -82,7 +82,7 @@
 								<div class="col-md-8">
 									<label for="provincia" class="control-label">Provincia</label>
 								    <select id="provincia"  required class="form-select" name='provincia'>
-									   <option selected value="{{grupo_data.provincia}}">{{grupo_data.provincia}}</option>
+									   <option selected value="{{grupo_data.provincia_index}}">{{grupo_data.provincia}}</option>
 									   {% for prov in grupo_data.provincias %}
 										   <option value = {{ forloop.counter0}}>{{prov}}</option>
 									   {% endfor %}

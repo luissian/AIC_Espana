@@ -606,6 +606,7 @@ def modificar_grupo(request, grupo_id):
     grupo_data = aicespana.utils.generic_functions.get_grupo_data_to_modify(grupo_id)
     grupo_data["diocesis_id_name_list"] = aicespana.utils.generic_functions.get_diocesis_id_name_list()
     grupo_data["provincias"] = aicespana.utils.generic_functions.get_provincias()
+    grupo_data["provincia_index"] = grupo_data["provincias"].index(grupo_data["provincia"])
     if request.method == "POST" and request.POST["action"] == "modificarGrupo":
         if (
             aicespana.models.Grupo.objects.filter(
