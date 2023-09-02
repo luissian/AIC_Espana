@@ -606,7 +606,7 @@ def modificar_grupo(request, grupo_id):
     grupo_data = aicespana.utils.generic_functions.get_grupo_data_to_modify(grupo_id)
     grupo_data["diocesis_id_name_list"] = aicespana.utils.generic_functions.get_diocesis_id_name_list()
     grupo_data["provincias"] = aicespana.utils.generic_functions.get_provincias()
-    grupo_data["provincia_index"] = grupo_data["provincias"].index(grupo_data["provinciap"])
+    grupo_data["provincia_index"] = grupo_data["provincias"].index(grupo_data["provincia"])
     if request.method == "POST" and request.POST["action"] == "modificarGrupo":
         if (
             aicespana.models.Grupo.objects.filter(
@@ -790,6 +790,7 @@ def modificacion_personal(request):
             )
         personal_data = personal_objs[0].get_all_data_from_personal()
         personal_data["provincias"] = aicespana.utils.generic_functions.get_provincias()
+        personal_data["provincia_index"] = aicespana.utils.generic_functions.get_provincia_index_from_name(personal_data["provincia"])
 
         return render(
             request,
@@ -820,7 +821,6 @@ def modificacion_personal(request):
             data[item] = request.POST[item]
         data["provincia"] = aicespana.utils.generic_functions.get_provincia_name_from_index(data["provincia"])
         user_obj.update_all_data_for_personal(data)
-
         return render(
             request,
             "aicespana/modificacionPersonal.html",
