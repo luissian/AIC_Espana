@@ -170,7 +170,9 @@ def get_delegation_data(delegation_id):
             .last()
             .get_delegacion_name()
         )
-        if aicespana.models.Cargo.objects.filter(entidadCargo__entidad__iexact="delegación").exists():
+        if aicespana.models.Cargo.objects.filter(
+            entidadCargo__entidad__iexact="delegación"
+        ).exists():
             cargo_objs = aicespana.models.Cargo.objects.filter(
                 entidadCargo__entidad__iexact="delegación"
             ).order_by("nombreCargo")
@@ -208,7 +210,9 @@ def delegation_name_list():
         delegation_name_list
     """
     delegation_name_list = []
-    delegacion_objs = aicespana.models.Delegacion.objects.all().order_by("nombreDelegacion")
+    delegacion_objs = aicespana.models.Delegacion.objects.all().order_by(
+        "nombreDelegacion"
+    )
     for delegacion_obj in delegacion_objs:
         delegation_name_list.append(delegacion_obj.get_delegacion_name())
     return delegation_name_list
@@ -216,7 +220,11 @@ def delegation_name_list():
 
 def delegacion_name_from_loged_user(username):
     if aicespana.models.Delegacion.objects.filter(login_user__iexact=username).exists():
-        return aicespana.models.Delegacion.objects.filter(login_user__iexact=username).last().get_delegacion_name()
+        return (
+            aicespana.models.Delegacion.objects.filter(login_user__iexact=username)
+            .last()
+            .get_delegacion_name()
+        )
     return None
 
 
@@ -228,7 +236,9 @@ def delegation_id_and_name_list():
         delegation_id_name_list
     """
     delegation_id_name_list = []
-    delegacion_objs = aicespana.models.Delegacion.objects.all().order_by("nombreDelegacion")
+    delegacion_objs = aicespana.models.Delegacion.objects.all().order_by(
+        "nombreDelegacion"
+    )
     for delegacion_obj in delegacion_objs:
         delegation_id_name_list.append(
             [delegacion_obj.get_delegacion_id(), delegacion_obj.get_delegacion_name()]
@@ -245,8 +255,16 @@ def get_delegacion_id_from_name(delegation_name):
     Return:
         id of delegation
     """
-    if aicespana.models.Delegacion.objects.filter(nombreDelegacion__iexact=delegation_name).exists():
-        return aicespana.models.Delegacion.objects.filter(nombreDelegacion__iexact=delegation_name).last().get_delegacion_id()
+    if aicespana.models.Delegacion.objects.filter(
+        nombreDelegacion__iexact=delegation_name
+    ).exists():
+        return (
+            aicespana.models.Delegacion.objects.filter(
+                nombreDelegacion__iexact=delegation_name
+            )
+            .last()
+            .get_delegacion_id()
+        )
     return None
 
 
@@ -355,7 +373,9 @@ def get_diocesis_cargos(diocesis_obj):
         cargos_data
     """
     cargos_data = {}
-    if aicespana.models.Cargo.objects.filter(entidadCargo__entidad__iexact="diocesis").exists():
+    if aicespana.models.Cargo.objects.filter(
+        entidadCargo__entidad__iexact="diocesis"
+    ).exists():
         cargo_objs = aicespana.models.Cargo.objects.filter(
             entidadCargo__entidad__iexact="diocesis"
         ).order_by("nombreCargo")
@@ -384,7 +404,9 @@ def get_diocesis_id_name_and_delegation_name():
         diocesis_data
     """
     diocesis_data = []
-    diocesis_objs = aicespana.models.Diocesis.objects.all().order_by("delegacionDependiente")
+    diocesis_objs = aicespana.models.Diocesis.objects.all().order_by(
+        "delegacionDependiente"
+    )
     for diocesis_obj in diocesis_objs:
         diocesis_data.append(
             [
@@ -404,7 +426,9 @@ def get_diocesis_name_and_delegation_name():
         diocesis_data
     """
     diocesis_data = []
-    diocesis_objs = aicespana.models.Diocesis.objects.all().order_by("delegacionDependiente")
+    diocesis_objs = aicespana.models.Diocesis.objects.all().order_by(
+        "delegacionDependiente"
+    )
     for diocesis_obj in diocesis_objs:
         diocesis_data.append(
             [diocesis_obj.get_diocesis_name(), diocesis_obj.get_delegacion_name()]
@@ -480,7 +504,9 @@ def get_grupo_cargos(grupo_obj):
         cargos_data
     """
     cargos_data = {}
-    if aicespana.models.Cargo.objects.filter(entidadCargo__entidad__iexact="grupo").exists():
+    if aicespana.models.Cargo.objects.filter(
+        entidadCargo__entidad__iexact="grupo"
+    ).exists():
         cargo_objs = aicespana.models.Cargo.objects.filter(
             entidadCargo__entidad__iexact="grupo"
         ).order_by("nombreCargo")
@@ -531,7 +557,9 @@ def get_grupo_cargos_personal(grupo_obj):
         cargos_data
     """
     cargos_data = {}
-    if aicespana.models.Cargo.objects.filter(entidadCargo__entidad__iexact="grupo").exists():
+    if aicespana.models.Cargo.objects.filter(
+        entidadCargo__entidad__iexact="grupo"
+    ).exists():
         cargo_objs = aicespana.models.Cargo.objects.filter(
             entidadCargo__entidad__iexact="grupo"
         ).order_by("nombreCargo")
@@ -758,7 +786,9 @@ def get_id_parroquia_diocesis_delegacion_name():
     """
     diocesis_data = collections.OrderedDict()
     if aicespana.models.Parroquia.objects.all().exists():
-        delegation_objs = aicespana.models.Delegacion.objects.all().order_by("nombreDelegacion")
+        delegation_objs = aicespana.models.Delegacion.objects.all().order_by(
+            "nombreDelegacion"
+        )
         for delegation_obj in delegation_objs:
             delegation_name = delegation_obj.get_delegacion_name()
             diocesis_objs = aicespana.models.Diocesis.objects.filter(
@@ -908,7 +938,9 @@ def get_id_grupo_diocesis_delegacion_name():
     """
     group_diocesis_data = collections.OrderedDict()
     if aicespana.models.Grupo.objects.all().exists():
-        delegation_objs = aicespana.models.Delegacion.objects.all().order_by("nombreDelegacion")
+        delegation_objs = aicespana.models.Delegacion.objects.all().order_by(
+            "nombreDelegacion"
+        )
         for delegation_obj in delegation_objs:
             delegation_name = delegation_obj.get_delegacion_name()
             diocesis_objs = aicespana.models.Diocesis.objects.filter(
@@ -963,7 +995,9 @@ def get_id_grupo_diocesis_name():
     """
     group_diocesis_data = []
     if aicespana.models.Grupo.objects.all().exists():
-        diocesis_objs = aicespana.models.Diocesis.objects.all().order_by("nombreDiocesis")
+        diocesis_objs = aicespana.models.Diocesis.objects.all().order_by(
+            "nombreDiocesis"
+        )
         for diocesis_obj in diocesis_objs:
             diocesis_name = diocesis_obj.get_diocesis_name()
             grupo_objs = aicespana.models.Grupo.objects.filter(
@@ -1008,6 +1042,21 @@ def get_grupo_data_to_modify(grupo_id):
         grupo_data[extract_list[index]] = data[index]
 
     return grupo_data
+
+
+def get_projects_information(user_type, region=None):
+    if user_type == "manager":
+        proj_objs = aicespana.models.Proyecto.objects.all()
+    elif user_type == "user" and region is not None:
+        proj_objs = aicespana.models.Proyecto.objects.filter(
+            grupoAsociado__diocesisDependiente__delegacionDependiente__nombreDelegacion__iexact=region
+        )
+    else:
+        return
+    data = []
+    for proj_obj in proj_objs:
+        data.append(proj_obj.get_proyecto_full_data(delegacion=True))
+    return data
 
 
 def fetch_actividad_data_to_modify(data_form, file_form):
@@ -1069,7 +1118,9 @@ def get_id_actividad_name():
     """
     actividad_data = []
     if aicespana.models.Actividad.objects.all().exists():
-        actividad_objs = aicespana.models.Actividad.objects.all().order_by("nombreActividad")
+        actividad_objs = aicespana.models.Actividad.objects.all().order_by(
+            "nombreActividad"
+        )
         for actividad_obj in actividad_objs:
             actividad_data.append(
                 [actividad_obj.get_actividad_id(), actividad_obj.get_actividad_name()]
@@ -1087,7 +1138,9 @@ def get_id_proyectos_grupos_diocesis_delegacion_name():
     """
     proyecto_grupo_diocesis_data = collections.OrderedDict()
     if aicespana.models.Proyecto.objects.all().exists():
-        delegation_objs = aicespana.models.Delegacion.objects.all().order_by("nombreDelegacion")
+        delegation_objs = aicespana.models.Delegacion.objects.all().order_by(
+            "nombreDelegacion"
+        )
         for delegation_obj in delegation_objs:
             delegation_name = delegation_obj.get_delegacion_name()
             diocesis_objs = aicespana.models.Diocesis.objects.filter(
@@ -1136,7 +1189,9 @@ def get_project_group_diocesis():
     """
     proyecto_grupo_diocesis_list = []
     if aicespana.models.Proyecto.objects.all().exists():
-        proyecto_objs = aicespana.models.Proyecto.objects.all().order_by("nombreProyecto")
+        proyecto_objs = aicespana.models.Proyecto.objects.all().order_by(
+            "nombreProyecto"
+        )
         for proyecto_obj in proyecto_objs:
             proyecto_grupo_diocesis_list.append(
                 [
@@ -1158,7 +1213,9 @@ def get_activity_group_diocesis():
     """
     activity_grupo_diocesis_list = []
     if aicespana.models.Actividad.objects.all().exists():
-        actividad_objs = aicespana.models.Actividad.objects.all().order_by("nombreActividad")
+        actividad_objs = aicespana.models.Actividad.objects.all().order_by(
+            "nombreActividad"
+        )
         for actividad_obj in actividad_objs:
             activity_grupo_diocesis_list.append(
                 [
@@ -1341,7 +1398,9 @@ def get_responsablity_data_for_personel(personal_obj):
                 [responsible_obj.get_cargo_id(), responsible_obj.get_cargo_name()]
             )
     if aicespana.models.Delegacion.objects.all().exists():
-        delegacion_objs = aicespana.models.Delegacion.objects.all().order_by("nombreDelegacion")
+        delegacion_objs = aicespana.models.Delegacion.objects.all().order_by(
+            "nombreDelegacion"
+        )
         for delegacion_obj in delegacion_objs:
             responsability_options["available_delegacion"].append(
                 [
@@ -1350,7 +1409,9 @@ def get_responsablity_data_for_personel(personal_obj):
                 ]
             )
     if aicespana.models.Diocesis.objects.all().exists():
-        diocesis_objs = aicespana.models.Diocesis.objects.all().order_by("nombreDiocesis")
+        diocesis_objs = aicespana.models.Diocesis.objects.all().order_by(
+            "nombreDiocesis"
+        )
         for diocesis_obj in diocesis_objs:
             responsability_options["available_diocesis"].append(
                 [diocesis_obj.get_diocesis_id(), diocesis_obj.get_diocesis_name()]
@@ -1384,13 +1445,17 @@ def get_responsablity_data_for_voluntary(personal_obj):
                 ]
             )
     if aicespana.models.Proyecto.objects.all().exists():
-        project_objs = aicespana.models.Proyecto.objects.all().order_by("nombreProyecto")
+        project_objs = aicespana.models.Proyecto.objects.all().order_by(
+            "nombreProyecto"
+        )
         for project_obj in project_objs:
             responsability_optons["available_projects"].append(
                 [project_obj.get_proyecto_id(), project_obj.get_proyecto_name()]
             )
     if aicespana.models.Actividad.objects.all().exists():
-        activity_objs = aicespana.models.Actividad.objects.all().order_by("nombreActividad")
+        activity_objs = aicespana.models.Actividad.objects.all().order_by(
+            "nombreActividad"
+        )
         for activity_obj in activity_objs:
             responsability_optons["available_actitvities"].append(
                 [activity_obj.get_actividad_id(), activity_obj.get_actividad_name()]
@@ -1402,7 +1467,9 @@ def get_responsablity_data_for_voluntary(personal_obj):
                 [responsible_obj.get_cargo_id(), responsible_obj.get_cargo_name()]
             )
     if aicespana.models.TipoColaboracion.objects.all().exists():
-        collaboration_objs = aicespana.models.TipoColaboracion.objects.all().order_by("tipoColaboracion")
+        collaboration_objs = aicespana.models.TipoColaboracion.objects.all().order_by(
+            "tipoColaboracion"
+        )
         for collaboration_obj in collaboration_objs:
             responsability_optons["available_collaboration"].append(
                 [
@@ -1453,13 +1520,17 @@ def get_responsibles_in_the_group(group_obj):
         responsible_data
     """
     responsible_data = []
-    if aicespana.models.Cargo.objects.filter(entidadCargo__entidad__exact="Grupo").exists():
+    if aicespana.models.Cargo.objects.filter(
+        entidadCargo__entidad__exact="Grupo"
+    ).exists():
         cargo_objs = aicespana.models.Cargo.objects.filter(
             entidadCargo__entidad__exact="Grupo"
         ).order_by("nombreCargo")
         for cargo_obj in cargo_objs:
             if (
-                aicespana.models.PersonalExterno.objects.filter(cargo=cargo_obj, grupoAsociado=group_obj)
+                aicespana.models.PersonalExterno.objects.filter(
+                    cargo=cargo_obj, grupoAsociado=group_obj
+                )
                 .exclude(personalActivo=False)
                 .exists()
             ):
@@ -1529,7 +1600,9 @@ def get_volunteer_types():
     """
     volunteer_types = []
     if aicespana.models.TipoColaboracion.objects.all().exists():
-        colaboracion_objs = aicespana.models.TipoColaboracion.objects.all().order_by("tipoColaboracion")
+        colaboracion_objs = aicespana.models.TipoColaboracion.objects.all().order_by(
+            "tipoColaboracion"
+        )
         for colaboracion_obj in colaboracion_objs:
             volunteer_types.append(
                 [
@@ -1596,11 +1669,12 @@ def get_list_personal_iglesia(delegacion=None):
     """
     personal_list = collections.OrderedDict()
     if delegacion is not None:
-        personal_objs = aicespana.models.PersonalIglesia.objects.filter(delegacion__nombreDelegacion__iexact=delegacion).exclude(personalActivo=False)
+        personal_objs = aicespana.models.PersonalIglesia.objects.filter(
+            delegacion__nombreDelegacion__iexact=delegacion
+        ).exclude(personalActivo=False)
     else:
-        personal_objs = (
-            aicespana.models.PersonalIglesia.objects.all()
-            .exclude(personalActivo=False)
+        personal_objs = aicespana.models.PersonalIglesia.objects.all().exclude(
+            personalActivo=False
         )
 
     for personal_obj in personal_objs:
@@ -1631,7 +1705,9 @@ def get_delegados_regionales():
     """
     delegados_list = collections.OrderedDict()
     if (
-        aicespana.models.PersonalIglesia.objects.filter(cargo__entidadCargo__entidad__exact="Delegación")
+        aicespana.models.PersonalIglesia.objects.filter(
+            cargo__entidadCargo__entidad__exact="Delegación"
+        )
         .exclude(personalActivo=False)
         .exists()
     ):
@@ -1658,7 +1734,9 @@ def get_delegados_regionales():
                 ]
             )
     if (
-        aicespana.models.PersonalExterno.objects.filter(cargo__entidadCargo__entidad__exact="Delegación")
+        aicespana.models.PersonalExterno.objects.filter(
+            cargo__entidadCargo__entidad__exact="Delegación"
+        )
         .exclude(personalActivo=False)
         .exists()
     ):
@@ -1719,14 +1797,15 @@ def get_personal_externo_por_delegacion(delegacion_id):
         "Población",
         "Provincia",
         "Código Postal",
-        "Recibir boletin"
+        "Recibir boletin",
     ]
     lista = [heading]
     if aicespana.models.PersonalExterno.objects.filter(
         grupoAsociado__diocesisDependiente__delegacionDependiente__pk__exact=delegacion_id
     ).exists():
         personal_objs = aicespana.models.PersonalExterno.objects.filter(
-            grupoAsociado__diocesisDependiente__delegacionDependiente__pk__exact=delegacion_id, personalActivo=True
+            grupoAsociado__diocesisDependiente__delegacionDependiente__pk__exact=delegacion_id,
+            personalActivo=True,
         ).order_by("apellido")
         for personal_obj in personal_objs:
             lista.append(personal_obj.get_data_for_voluntary_list())
@@ -1815,7 +1894,9 @@ def bajas_personal_externo_excel():
     heading = ["Nombre y Apellidos", "Grupo", "Población", "Provincia"]
     lista = [heading]
     if aicespana.models.PersonalExterno.objects.filter(personalActivo=False).exists():
-        personal_objs = aicespana.models.PersonalExterno.objects.filter(personalActivo=False)
+        personal_objs = aicespana.models.PersonalExterno.objects.filter(
+            personalActivo=False
+        )
         for personal_obj in personal_objs:
             lista.append(
                 [
@@ -1862,7 +1943,9 @@ def bajas_personal_iglesia_list():
     """
     bajas_iglesia = []
     if aicespana.models.PersonalIglesia.objects.filter(personalActivo=False).exists():
-        personal_objs = aicespana.models.PersonalIglesia.objects.filter(personalActivo=False)
+        personal_objs = aicespana.models.PersonalIglesia.objects.filter(
+            personalActivo=False
+        )
         for personal_obj in personal_objs:
             bajas_iglesia.append(personal_obj.get_personal_name())
     return bajas_iglesia
@@ -1877,7 +1960,9 @@ def bajas_grupo_list():
     """
     bajas_grupo = []
     if aicespana.models.Grupo.objects.filter(grupoActivo=False).exists():
-        grupo_objs = aicespana.models.Grupo.objects.filter(grupoActivo=False).order_by("nombreGrupo")
+        grupo_objs = aicespana.models.Grupo.objects.filter(grupoActivo=False).order_by(
+            "nombreGrupo"
+        )
         for grupo_obj in grupo_objs:
             bajas_grupo.append(
                 [
@@ -1898,9 +1983,9 @@ def bajas_diocesis_list():
     """
     bajas_diocesis = []
     if aicespana.models.Diocesis.objects.filter(diocesisActiva=False).exists():
-        dio_objs = aicespana.models.Diocesis.objects.filter(diocesisActiva=False).order_by(
-            "nombreDiocesis"
-        )
+        dio_objs = aicespana.models.Diocesis.objects.filter(
+            diocesisActiva=False
+        ).order_by("nombreDiocesis")
         for dio_obj in dio_objs:
             bajas_diocesis.append(
                 [dio_obj.get_diocesis_name(), dio_obj.get_delegacion_name()]
@@ -1931,12 +2016,16 @@ def get_excel_user_request_boletin():
     ]
     lista = [heading]
     if (
-        aicespana.models.PersonalExterno.objects.filter(recibirBoletin=True, boletinOnline=False)
+        aicespana.models.PersonalExterno.objects.filter(
+            recibirBoletin=True, boletinOnline=False
+        )
         .exclude(personalActivo=False)
         .exists()
     ):
         externo_objs = (
-            aicespana.models.PersonalExterno.objects.filter(recibirBoletin=True, boletinOnline=False)
+            aicespana.models.PersonalExterno.objects.filter(
+                recibirBoletin=True, boletinOnline=False
+            )
             .exclude(personalActivo=False)
             .order_by("codigoPostal")
         )
@@ -1944,12 +2033,16 @@ def get_excel_user_request_boletin():
             lista.append(externo_obj.get_data_for_boletin())
 
     if (
-        aicespana.models.PersonalIglesia.objects.filter(recibirBoletin=True, boletinOnline=False)
+        aicespana.models.PersonalIglesia.objects.filter(
+            recibirBoletin=True, boletinOnline=False
+        )
         .exclude(personalActivo=False)
         .exists()
     ):
         externo_objs = (
-            aicespana.models.PersonalIglesia.objects.filter(recibirBoletin=True, boletinOnline=False)
+            aicespana.models.PersonalIglesia.objects.filter(
+                recibirBoletin=True, boletinOnline=False
+            )
             .exclude(personalActivo=False)
             .order_by("codigoPostal")
         )
@@ -1968,12 +2061,16 @@ def get_excel_user_request_boletin():
     lista = [heading]
 
     if (
-        aicespana.models.PersonalExterno.objects.filter(recibirBoletin=True, boletinOnline=True)
+        aicespana.models.PersonalExterno.objects.filter(
+            recibirBoletin=True, boletinOnline=True
+        )
         .exclude(personalActivo=False)
         .exists()
     ):
         externo_objs = (
-            aicespana.models.PersonalExterno.objects.filter(recibirBoletin=True, boletinOnline=True)
+            aicespana.models.PersonalExterno.objects.filter(
+                recibirBoletin=True, boletinOnline=True
+            )
             .exclude(personalActivo=False)
             .order_by("codigoPostal")
         )
@@ -1981,12 +2078,16 @@ def get_excel_user_request_boletin():
             lista.append(externo_obj.get_data_for_online_boletin())
 
     if (
-        aicespana.models.PersonalIglesia.objects.filter(recibirBoletin=True, boletinOnline=True)
+        aicespana.models.PersonalIglesia.objects.filter(
+            recibirBoletin=True, boletinOnline=True
+        )
         .exclude(personalActivo=False)
         .exists()
     ):
         externo_objs = (
-            aicespana.models.PersonalIglesia.objects.filter(recibirBoletin=True, boletinOnline=True)
+            aicespana.models.PersonalIglesia.objects.filter(
+                recibirBoletin=True, boletinOnline=True
+            )
             .exclude(personalActivo=False)
             .order_by("codigoPostal")
         )

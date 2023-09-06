@@ -402,7 +402,12 @@ class Proyecto(models.Model):
             return "%s" % (self.grupoAsociado.get_grupo_id())
         return ""
 
-    def get_proyecto_full_data(self):
+    def get_proyecto_full_data(self, delegacion=False):
+        if delegacion:
+            if self.grupoAsociado:
+                delegacion_name = self.grupoAsociado.diocesisDependiente.get_delegacion_name()
+            else:
+                delegacion_name = ""
         if self.fechaAlta is None:
             alta = ""
         else:
@@ -427,7 +432,7 @@ class Proyecto(models.Model):
             )
         else:
             fotografia_proyecto = ""
-        return [
+        data = [
             self.nombreProyecto,
             self.pk,
             self.get_grupo_id(),
@@ -439,6 +444,9 @@ class Proyecto(models.Model):
             memoria_proyecto,
             fotografia_proyecto,
         ]
+        if delegacion:
+            data.insert(5, delegacion_name)
+        return data
 
     def update_proyecto_data(self, data):
         self.grupoAsociado = Grupo.objects.filter(pk__exact=data["grupoID"]).last()

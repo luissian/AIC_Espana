@@ -1,5 +1,6 @@
 # import statistics
 import os
+
 # from django.contrib.auth.models import User
 from django.shortcuts import render
 
@@ -7,6 +8,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 import aicespana.models
+
 # from .message_text import *
 # from .utils.generic_functions import *
 import aicespana.utils.generic_functions
@@ -21,7 +23,9 @@ def index(request):
 def alta_actividad(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     actividad_data = {}
     # actividad_data['grupos_diocesis_id_name'] = get_id_grupo_diocesis_delegacion_name()
@@ -35,7 +39,10 @@ def alta_actividad(request):
             return render(
                 request,
                 "aicespana/altaActividad.html",
-                {"actividad_data": actividad_data, "ERROR": [aicespana.message_text.ERROR_ACTIVIDAD_EXIST]},
+                {
+                    "actividad_data": actividad_data,
+                    "ERROR": [aicespana.message_text.ERROR_ACTIVIDAD_EXIST],
+                },
             )
         data = {}
         # data['grupo_obj'] = get_grupo_obj_from_id(request.POST['grupoID']) if request.POST['grupoID'] != '' else None
@@ -43,9 +50,13 @@ def alta_actividad(request):
         data["nombre"] = request.POST["nombre"]
         data["observaciones"] = request.POST["observaciones"]
         if "uploadMemoria" in request.FILES:
-            data["memoria_file"] = aicespana.utils.generic_functions.store_file(request.FILES["uploadMemoria"])
+            data["memoria_file"] = aicespana.utils.generic_functions.store_file(
+                request.FILES["uploadMemoria"]
+            )
         if "uploadFotografia" in request.FILES:
-            data["fotografia_file"] = aicespana.utils.generic_functions.store_file(request.FILES["uploadFotografia"])
+            data["fotografia_file"] = aicespana.utils.generic_functions.store_file(
+                request.FILES["uploadFotografia"]
+            )
 
         aicespana.models.Actividad.objects.create_new_actividad(data)
         return render(
@@ -62,14 +73,19 @@ def alta_actividad(request):
 def alta_delegacion(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     delegaciones = aicespana.utils.generic_functions.delegation_name_list()
     if request.method == "POST" and request.POST["action"] == "altaDelegacion":
         if aicespana.models.Delegacion.objects.filter(
             nombreDelegacion__iexact=request.POST["nombre"]
         ).exists():
-            error = [aicespana.message_text.ERROR_DELEGACION_EXIST, request.POST["nombre"]]
+            error = [
+                aicespana.message_text.ERROR_DELEGACION_EXIST,
+                request.POST["nombre"],
+            ]
             return render(
                 request,
                 "aicespana/altaDelegacion.html",
@@ -78,7 +94,9 @@ def alta_delegacion(request):
         if "uploadImage" in request.FILES:
             image_folder = os.path.join(settings.MEDIA_ROOT, "images")
             os.makedirs(image_folder, exist_ok=True)
-            image_file = aicespana.utils.generic_functions.store_file(request.FILES["uploadImage"])
+            image_file = aicespana.utils.generic_functions.store_file(
+                request.FILES["uploadImage"]
+            )
             os.replace(
                 os.path.join(settings.MEDIA_ROOT, image_file),
                 os.path.join(image_folder, image_file),
@@ -101,17 +119,26 @@ def alta_delegacion(request):
 def alta_diocesis(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     diocesis_data = {}
-    diocesis_data["delegation_data"] = aicespana.utils.generic_functions.delegation_id_and_name_list()
-    diocesis_data["diocesis_list"] = aicespana.utils.generic_functions.get_diocesis_name_and_delegation_name()
+    diocesis_data[
+        "delegation_data"
+    ] = aicespana.utils.generic_functions.delegation_id_and_name_list()
+    diocesis_data[
+        "diocesis_list"
+    ] = aicespana.utils.generic_functions.get_diocesis_name_and_delegation_name()
 
     if request.method == "POST" and request.POST["action"] == "altaDiocesis":
         if aicespana.models.Diocesis.objects.filter(
             nombreDiocesis__iexact=request.POST["nombre"]
         ).exists():
-            error = [aicespana.message_text.ERROR_DIOCESIS_EXIST, request.POST["nombre"]]
+            error = [
+                aicespana.message_text.ERROR_DIOCESIS_EXIST,
+                request.POST["nombre"],
+            ]
             return render(
                 request,
                 "aicespana/altaDiocesis.html",
@@ -139,22 +166,33 @@ def alta_diocesis(request):
 def alta_parroquia(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     parroquia_data = {}
     parroquia_data[
         "parroquia_diocesis_name"
     ] = aicespana.utils.generic_functions.get_id_parroquia_diocesis_delegacion_name()
-    parroquia_data["diocesis_id_name_list"] = aicespana.utils.generic_functions.get_diocesis_id_name_list()
+    parroquia_data[
+        "diocesis_id_name_list"
+    ] = aicespana.utils.generic_functions.get_diocesis_id_name_list()
     parroquia_data["provincias"] = aicespana.utils.generic_functions.get_provincias()
     if request.method == "POST" and request.POST["action"] == "altaParroquia":
-        if aicespana.utils.generic_functions.check_exists_parroquia(request.POST["nombre"], request.POST["diocesis_id"]):
+        if aicespana.utils.generic_functions.check_exists_parroquia(
+            request.POST["nombre"], request.POST["diocesis_id"]
+        ):
             return render(
                 request,
                 "aicespana/altaParroquia.html",
-                {"parroquia_data": parroquia_data, "ERROR": aicespana.message_text.ERROR_PARROQUIA_EXISTS},
+                {
+                    "parroquia_data": parroquia_data,
+                    "ERROR": aicespana.message_text.ERROR_PARROQUIA_EXISTS,
+                },
             )
-        diocesis_obj = aicespana.utils.generic_functions.get_diocesis_obj_from_id(request.POST["diocesis_id"])
+        diocesis_obj = aicespana.utils.generic_functions.get_diocesis_obj_from_id(
+            request.POST["diocesis_id"]
+        )
         parroquia_data = {"diocesis_obj": diocesis_obj}
         list_of_data = [
             "nombre",
@@ -182,20 +220,33 @@ def alta_parroquia(request):
 def alta_grupo(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     grupo_data = {}
-    grupo_data["diocesis_id_name_list"] = aicespana.utils.generic_functions.get_diocesis_id_name_list()
+    grupo_data[
+        "diocesis_id_name_list"
+    ] = aicespana.utils.generic_functions.get_diocesis_id_name_list()
     grupo_data["provincias"] = aicespana.utils.generic_functions.get_provincias()
-    grupo_data["grupos_diocesis_id_name"] = aicespana.utils.generic_functions.get_id_grupo_diocesis_delegacion_name()
+    grupo_data[
+        "grupos_diocesis_id_name"
+    ] = aicespana.utils.generic_functions.get_id_grupo_diocesis_delegacion_name()
     if request.method == "POST" and request.POST["action"] == "altaGrupo":
-        if aicespana.utils.generic_functions.check_exists_grupo(request.POST["nombre"], request.POST["diocesis_id"]):
+        if aicespana.utils.generic_functions.check_exists_grupo(
+            request.POST["nombre"], request.POST["diocesis_id"]
+        ):
             return render(
                 request,
                 "aicespana/altaGrupo.html",
-                {"grupo_data": grupo_data, "ERROR": aicespana.message_text.ERROR_GRUPO_EXISTS},
+                {
+                    "grupo_data": grupo_data,
+                    "ERROR": aicespana.message_text.ERROR_GRUPO_EXISTS,
+                },
             )
-        diocesis_obj = aicespana.utils.generic_functions.get_diocesis_obj_from_id(request.POST["diocesis_id"])
+        diocesis_obj = aicespana.utils.generic_functions.get_diocesis_obj_from_id(
+            request.POST["diocesis_id"]
+        )
         data = {"diocesis_obj": diocesis_obj}
         list_of_data = [
             "nombre",
@@ -209,7 +260,11 @@ def alta_grupo(request):
         ]
         for item in list_of_data:
             data[item] = request.POST[item]
-        data["provincia"] = aicespana.utils.generic_functions.get_provincia_name_from_index(data["provincia"])
+        data[
+            "provincia"
+        ] = aicespana.utils.generic_functions.get_provincia_name_from_index(
+            data["provincia"]
+        )
         aicespana.models.Grupo.objects.create_new_group(data)
         return render(
             request,
@@ -224,7 +279,9 @@ def alta_grupo(request):
 def alta_personal_iglesia(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     if request.method == "POST" and request.POST["action"] == "altaPersonal":
         confirmation_data = ""
@@ -246,7 +303,11 @@ def alta_personal_iglesia(request):
 
         for field in info_to_fetch:
             personal_data[field] = request.POST[field].strip()
-        personal_data["provincia"] = aicespana.utils.generic_functions.get_provincia_name_from_index(personal_data["provincia"])
+        personal_data[
+            "provincia"
+        ] = aicespana.utils.generic_functions.get_provincia_name_from_index(
+            personal_data["provincia"]
+        )
         if aicespana.models.PersonalIglesia.objects.filter(
             nombre__iexact=personal_data["nombre"],
             apellido__iexact=personal_data["apellido"],
@@ -254,9 +315,15 @@ def alta_personal_iglesia(request):
             return render(
                 request,
                 "aicespana/altaVoluntario.html",
-                {"ERROR": [aicespana.message_text.ERROR_PERSONAL_IGLESIA_ALREADY_IN_DATABASE]},
+                {
+                    "ERROR": [
+                        aicespana.message_text.ERROR_PERSONAL_IGLESIA_ALREADY_IN_DATABASE
+                    ]
+                },
             )
-        aicespana.models.PersonalExterno_obj = aicespana.models.PersonalIglesia.objects.create_new_personel(personal_data)
+        aicespana.models.PersonalExterno_obj = (
+            aicespana.models.PersonalIglesia.objects.create_new_personel(personal_data)
+        )
         confirmation_data = {}
         confirmation_data["nombre"] = request.POST["nombre"]
         confirmation_data["apellido"] = request.POST["apellido"]
@@ -275,14 +342,20 @@ def alta_personal_iglesia(request):
 def alta_proyecto(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     proyecto_data = {}
     # proyecto_data['grupos_diocesis_id_name'] = get_id_grupo_diocesis_delegacion_name()
-    proyecto_data["grupos_diocesis_id_name"] = aicespana.utils.generic_functions.get_group_list_to_select_in_form()
+    proyecto_data[
+        "grupos_diocesis_id_name"
+    ] = aicespana.utils.generic_functions.get_group_list_to_select_in_form()
     proyecto_data[
         "proyectos_grupos_diocesis_name"
-    ] = aicespana.utils.generic_functions.get_id_proyectos_grupos_diocesis_delegacion_name()
+    ] = (
+        aicespana.utils.generic_functions.get_id_proyectos_grupos_diocesis_delegacion_name()
+    )
 
     if request.method == "POST" and request.POST["action"] == "altaProyecto":
         if aicespana.models.Proyecto.objects.filter(
@@ -291,11 +364,16 @@ def alta_proyecto(request):
             return render(
                 request,
                 "aicespana/altaProyecto.html",
-                {"proyecto_data": proyecto_data, "ERROR": [aicespana.message_text.ERROR_PROYECTO_EXIST]},
+                {
+                    "proyecto_data": proyecto_data,
+                    "ERROR": [aicespana.message_text.ERROR_PROYECTO_EXIST],
+                },
             )
         data = {}
         data["grupo_obj"] = (
-            aicespana.utils.generic_functions.get_grupo_obj_from_id(request.POST["grupoID"])
+            aicespana.utils.generic_functions.get_grupo_obj_from_id(
+                request.POST["grupoID"]
+            )
             if request.POST["grupoID"] != ""
             else None
         )
@@ -303,9 +381,13 @@ def alta_proyecto(request):
         data["nombre"] = request.POST["nombre"].strip()
         data["observaciones"] = request.POST["observaciones"]
         if "uploadMemoria" in request.FILES:
-            data["memoria_file"] = aicespana.utils.generic_functions.store_file(request.FILES["uploadMemoria"])
+            data["memoria_file"] = aicespana.utils.generic_functions.store_file(
+                request.FILES["uploadMemoria"]
+            )
         if "uploadFotografia" in request.FILES:
-            data["fotografia_file"] = aicespana.utils.generic_functions.store_file(request.FILES["uploadFotografia"])
+            data["fotografia_file"] = aicespana.utils.generic_functions.store_file(
+                request.FILES["uploadFotografia"]
+            )
 
         aicespana.models.Proyecto.objects.create_new_proyecto(data)
         return render(
@@ -323,7 +405,9 @@ def alta_proyecto(request):
 def alta_voluntario(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     if request.method == "POST" and request.POST["action"] == "altaVoluntario":
         confirmation_data = ""
@@ -347,7 +431,11 @@ def alta_voluntario(request):
         personal_data = {}
         for field in info_to_fetch:
             personal_data[field] = request.POST[field].strip()
-        personal_data["provincia"] = aicespana.utils.generic_functions.get_provincia_name_from_index(personal_data["provincia"])
+        personal_data[
+            "provincia"
+        ] = aicespana.utils.generic_functions.get_provincia_name_from_index(
+            personal_data["provincia"]
+        )
         if aicespana.models.PersonalExterno.objects.filter(
             nombre__iexact=personal_data["nombre"],
             apellido__iexact=personal_data["apellidos"],
@@ -355,9 +443,15 @@ def alta_voluntario(request):
             return render(
                 request,
                 "aicespana/altaVoluntario.html",
-                {"ERROR": [aicespana.message_text.ERROR_VOLUNTARIO_ALREADY_IN_DATABASE]},
+                {
+                    "ERROR": [
+                        aicespana.message_text.ERROR_VOLUNTARIO_ALREADY_IN_DATABASE
+                    ]
+                },
             )
-        aicespana.models.PersonalExterno.objects.create_new_external_personel(personal_data)
+        aicespana.models.PersonalExterno.objects.create_new_external_personel(
+            personal_data
+        )
         confirmation_data = {}
         confirmation_data["nombre"] = request.POST["nombre"]
         confirmation_data["apellidos"] = request.POST["apellidos"]
@@ -371,7 +465,9 @@ def alta_voluntario(request):
         "types": aicespana.utils.generic_functions.get_volunteer_types(),
         "provincias": aicespana.utils.generic_functions.get_provincias(),
     }
-    new_volunteer_data["grupos_diocesis_id_name"] = aicespana.utils.generic_functions.get_group_list_to_select_in_form()
+    new_volunteer_data[
+        "grupos_diocesis_id_name"
+    ] = aicespana.utils.generic_functions.get_group_list_to_select_in_form()
     # new_volunteer_data['grupos_diocesis_id_name'] = get_id_grupo_diocesis_name()
     return render(
         request,
@@ -384,7 +480,9 @@ def alta_voluntario(request):
 def modificacion_actividad(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
 
     actividad_data = aicespana.utils.generic_functions.get_id_actividad_name()
@@ -399,13 +497,19 @@ def modificacion_actividad(request):
 def modificar_actividad(request, actividad_id):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     if not aicespana.models.Actividad.objects.filter(pk__exact=actividad_id).exists():
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_ACTIVIDAD_NOT_EXIST}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_ACTIVIDAD_NOT_EXIST},
         )
-    actividad_data = aicespana.utils.generic_functions.get_actividad_data_to_modify(actividad_id)
+    actividad_data = aicespana.utils.generic_functions.get_actividad_data_to_modify(
+        actividad_id
+    )
 
     actividad_data[
         "grupos_diocesis_id_name"
@@ -428,9 +532,13 @@ def modificar_actividad(request, actividad_id):
                     "actividad_data": actividad_data,
                 },
             )
-        actividad_obj = aicespana.utils.generic_functions.get_actividad_obj_from_id(request.POST["actividadID"])
+        actividad_obj = aicespana.utils.generic_functions.get_actividad_obj_from_id(
+            request.POST["actividadID"]
+        )
         actividad_obj.update_actividad_data(
-            aicespana.utils.generic_functions.fetch_actividad_data_to_modify(request.POST, request.FILES)
+            aicespana.utils.generic_functions.fetch_actividad_data_to_modify(
+                request.POST, request.FILES
+            )
         )
         return render(
             request,
@@ -446,7 +554,9 @@ def modificar_actividad(request, actividad_id):
 def modificacion_delegacion(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     delegacion_data = aicespana.utils.generic_functions.delegation_id_and_name_list()
     return render(
@@ -460,20 +570,28 @@ def modificacion_delegacion(request):
 def modificar_delegacion(request, delegation_id):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     if not aicespana.models.Delegacion.objects.filter(pk__exact=delegation_id).exists():
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_DELEGACION_NOT_EXIST}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_DELEGACION_NOT_EXIST},
         )
-    delegacion_obj = aicespana.utils.generic_functions.get_delegation_obj_from_id(delegation_id)
+    delegacion_obj = aicespana.utils.generic_functions.get_delegation_obj_from_id(
+        delegation_id
+    )
     delegacion = {}
     delegacion["id"] = delegation_id
     delegacion["name"] = delegacion_obj.get_delegacion_name()
     delegacion["image"] = delegacion_obj.get_delegacion_image()
     if request.method == "POST" and request.POST["action"] == "modificarDelegacion":
         if (
-            aicespana.models.Delegacion.objects.filter(nombreDelegacion__iexact=request.POST["nombre"])
+            aicespana.models.Delegacion.objects.filter(
+                nombreDelegacion__iexact=request.POST["nombre"]
+            )
             .exclude(pk__exact=request.POST["delegacion_id"])
             .exists()
         ):
@@ -485,11 +603,15 @@ def modificar_delegacion(request, delegation_id):
                     "delegacion": delegacion,
                 },
             )
-        delegation_obj = aicespana.utils.generic_functions.get_delegation_obj_from_id(request.POST["delegacion_id"])
+        delegation_obj = aicespana.utils.generic_functions.get_delegation_obj_from_id(
+            request.POST["delegacion_id"]
+        )
         if "uploadImage" in request.FILES:
             image_folder = os.path.join(settings.MEDIA_ROOT, "images")
             os.makedirs(image_folder, exist_ok=True)
-            image_file = aicespana.utils.generic_functions.store_file(request.FILES["uploadImage"])
+            image_file = aicespana.utils.generic_functions.store_file(
+                request.FILES["uploadImage"]
+            )
             os.replace(
                 os.path.join(settings.MEDIA_ROOT, image_file),
                 os.path.join(image_folder, image_file),
@@ -514,11 +636,15 @@ def modificar_delegacion(request, delegation_id):
 def modificacion_diocesis(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     diocesis_data = {}
     # diocesis_data['delegation_data'] = delegation_id_and_name_list()
-    diocesis_data["diocesis_list"] = aicespana.utils.generic_functions.get_diocesis_id_name_and_delegation_name()
+    diocesis_data[
+        "diocesis_list"
+    ] = aicespana.utils.generic_functions.get_diocesis_id_name_and_delegation_name()
 
     return render(
         request, "aicespana/modificacionDiocesis.html", {"diocesis_data": diocesis_data}
@@ -529,19 +655,27 @@ def modificacion_diocesis(request):
 def modificar_diocesis(request, diocesis_id):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     if not aicespana.models.Diocesis.objects.filter(pk__exact=diocesis_id).exists():
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_DIOCESIS_NOT_EXIST}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_DIOCESIS_NOT_EXIST},
         )
-    diocesis_obj = aicespana.utils.generic_functions.get_diocesis_obj_from_id(diocesis_id)
+    diocesis_obj = aicespana.utils.generic_functions.get_diocesis_obj_from_id(
+        diocesis_id
+    )
     diocesis_data = {}
     diocesis_data["delegation_id"] = diocesis_obj.get_delegacion_id()
     diocesis_data["delegation_name"] = diocesis_obj.get_delegacion_name()
     diocesis_data["diocesis_id"] = diocesis_obj.get_diocesis_id()
     diocesis_data["diocesis_name"] = diocesis_obj.get_diocesis_name()
-    diocesis_data["delegation_id_name_list"] = aicespana.utils.generic_functions.delegation_id_and_name_list()
+    diocesis_data[
+        "delegation_id_name_list"
+    ] = aicespana.utils.generic_functions.delegation_id_and_name_list()
 
     diocesis_data["activo"] = diocesis_obj.get_diocesis_status()
     if len(diocesis_obj.get_diocesis_depending_groups()) > 0:
@@ -564,8 +698,12 @@ def modificar_diocesis(request, diocesis_id):
                     "diocesis_data": diocesis_data,
                 },
             )
-        delegation_obj = aicespana.utils.generic_functions.get_delegation_obj_from_id(request.POST["delegacion_id"])
-        diocesis_obj = aicespana.utils.generic_functions.get_diocesis_obj_from_id(request.POST["diocesisID"])
+        delegation_obj = aicespana.utils.generic_functions.get_delegation_obj_from_id(
+            request.POST["delegacion_id"]
+        )
+        diocesis_obj = aicespana.utils.generic_functions.get_diocesis_obj_from_id(
+            request.POST["diocesisID"]
+        )
         diocesis_obj.update_diocesis_data(
             request.POST["diocesisNombre"], delegation_obj, request.POST["activo"]
         )
@@ -584,9 +722,13 @@ def modificar_diocesis(request, diocesis_id):
 def modificacion_grupo(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
-    grupo_data = {"grupos_diocesis_name": aicespana.utils.generic_functions.get_id_grupo_diocesis_delegacion_name()}
+    grupo_data = {
+        "grupos_diocesis_name": aicespana.utils.generic_functions.get_id_grupo_diocesis_delegacion_name()
+    }
 
     return render(
         request, "aicespana/modificacionGrupo.html", {"grupo_data": grupo_data}
@@ -597,16 +739,24 @@ def modificacion_grupo(request):
 def modificar_grupo(request, grupo_id):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     if not aicespana.models.Grupo.objects.filter(pk__exact=grupo_id).exists():
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_GRUPO_NOT_EXIST}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_GRUPO_NOT_EXIST},
         )
     grupo_data = aicespana.utils.generic_functions.get_grupo_data_to_modify(grupo_id)
-    grupo_data["diocesis_id_name_list"] = aicespana.utils.generic_functions.get_diocesis_id_name_list()
+    grupo_data[
+        "diocesis_id_name_list"
+    ] = aicespana.utils.generic_functions.get_diocesis_id_name_list()
     grupo_data["provincias"] = aicespana.utils.generic_functions.get_provincias()
-    grupo_data["provincia_index"] = grupo_data["provincias"].index(grupo_data["provincia"])
+    grupo_data["provincia_index"] = grupo_data["provincias"].index(
+        grupo_data["provincia"]
+    )
     if request.method == "POST" and request.POST["action"] == "modificarGrupo":
         if (
             aicespana.models.Grupo.objects.filter(
@@ -619,10 +769,17 @@ def modificar_grupo(request, grupo_id):
             return render(
                 request,
                 "aicespana/modificarGrupo.html",
-                {"ERROR": aicespana.message_text.ERROR_GRUPO_MODIFICATION_EXIST, "grupo_data": grupo_data},
+                {
+                    "ERROR": aicespana.message_text.ERROR_GRUPO_MODIFICATION_EXIST,
+                    "grupo_data": grupo_data,
+                },
             )
-        grupo_obj = aicespana.utils.generic_functions.get_grupo_obj_from_id(request.POST["grupoID"])
-        grupo_obj.update_grupo_data(aicespana.utils.generic_functions.fetch_grupo_data_to_modify(request.POST))
+        grupo_obj = aicespana.utils.generic_functions.get_grupo_obj_from_id(
+            request.POST["grupoID"]
+        )
+        grupo_obj.update_grupo_data(
+            aicespana.utils.generic_functions.fetch_grupo_data_to_modify(request.POST)
+        )
         return render(
             request,
             "aicespana/modificarGrupo.html",
@@ -635,7 +792,9 @@ def modificar_grupo(request, grupo_id):
 def modificacion_parroquia(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     parroquia_data = {
         "parroquia_diocesis_name": aicespana.utils.generic_functions.get_id_parroquia_diocesis_delegacion_name()
@@ -652,14 +811,22 @@ def modificacion_parroquia(request):
 def modificar_parroquia(request, parroquia_id):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     if not aicespana.models.Parroquia.objects.filter(pk__exact=parroquia_id).exists():
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_DIOCESIS_NOT_EXIST}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_DIOCESIS_NOT_EXIST},
         )
-    parroquia_data = aicespana.utils.generic_functions.get_parroquia_data_to_modify(parroquia_id)
-    parroquia_data["diocesis_id_name_list"] = aicespana.utils.generic_functions.get_diocesis_id_name_list()
+    parroquia_data = aicespana.utils.generic_functions.get_parroquia_data_to_modify(
+        parroquia_id
+    )
+    parroquia_data[
+        "diocesis_id_name_list"
+    ] = aicespana.utils.generic_functions.get_diocesis_id_name_list()
     parroquia_data["provincias"] = aicespana.utils.generic_functions.get_provincias()
     if request.method == "POST" and request.POST["action"] == "modificarParroquia":
         if (
@@ -678,9 +845,13 @@ def modificar_parroquia(request, parroquia_id):
                     "parroquia_data": parroquia_data,
                 },
             )
-        parroquia_obj = aicespana.utils.generic_functions.get_parroquia_obj_from_id(request.POST["parroquiaID"])
+        parroquia_obj = aicespana.utils.generic_functions.get_parroquia_obj_from_id(
+            request.POST["parroquiaID"]
+        )
         parroquia_obj.update_parroquia_data(
-            aicespana.utils.generic_functions.fetch_parroquia_data_to_modify(request.POST)
+            aicespana.utils.generic_functions.fetch_parroquia_data_to_modify(
+                request.POST
+            )
         )
         return render(
             request,
@@ -696,15 +867,21 @@ def modificar_parroquia(request, parroquia_id):
 def modificacion_personal_id(request, personal_id):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
-    if not aicespana.models.PersonalIglesia.objects.filter(pk__exact=personal_id).exists():
+    if not aicespana.models.PersonalIglesia.objects.filter(
+        pk__exact=personal_id
+    ).exists():
         return render(
             request,
             "aicespana/errorPage.html",
             {"content": aicespana.message_text.ERROR_PERSONAL_DOES_NOT_EXIST},
         )
-    personal_obj = aicespana.utils.generic_functions.get_personal_obj_from_id(personal_id)
+    personal_obj = aicespana.utils.generic_functions.get_personal_obj_from_id(
+        personal_id
+    )
     personal_data = personal_obj.get_all_data_from_personal()
     personal_data["provincias"] = aicespana.utils.generic_functions.get_provincias()
     return render(
@@ -716,7 +893,9 @@ def modificacion_personal_id(request, personal_id):
 def modificacion_personal(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     if request.method == "POST" and request.POST["action"] == "busquedaPersonal":
         if (
@@ -726,7 +905,9 @@ def modificacion_personal(request):
         ):
             return render(request, "aicespana/modificacionPersonal.html")
         if request.POST["nif"] != "":
-            if aicespana.models.PersonalIglesia.objects.filter(DNI__iexact=request.POST["nif"]).exists():
+            if aicespana.models.PersonalIglesia.objects.filter(
+                DNI__iexact=request.POST["nif"]
+            ).exists():
                 personal_objs = aicespana.models.PersonalIglesia.objects.filter(
                     DNI__iexact=request.POST["nif"]
                 )
@@ -740,7 +921,9 @@ def modificacion_personal(request):
                         request, "aicespana/modificacionPersonal.html", {"ERROR": error}
                     )
                 personal_data = personal_objs[0].get_all_data_from_personal()
-                personal_data["provincias"] = aicespana.utils.generic_functions.get_provincias()
+                personal_data[
+                    "provincias"
+                ] = aicespana.utils.generic_functions.get_provincias()
 
                 return render(
                     request,
@@ -790,7 +973,11 @@ def modificacion_personal(request):
             )
         personal_data = personal_objs[0].get_all_data_from_personal()
         personal_data["provincias"] = aicespana.utils.generic_functions.get_provincias()
-        personal_data["provincia_index"] = aicespana.utils.generic_functions.get_provincia_index_from_name(personal_data["provincia"])
+        personal_data[
+            "provincia_index"
+        ] = aicespana.utils.generic_functions.get_provincia_index_from_name(
+            personal_data["provincia"]
+        )
 
         return render(
             request,
@@ -798,7 +985,9 @@ def modificacion_personal(request):
             {"personal_data": personal_data},
         )
     if request.method == "POST" and request.POST["action"] == "actualizarCampos":
-        user_obj = aicespana.utils.generic_functions.get_personal_obj_from_id(request.POST["user_id"])
+        user_obj = aicespana.utils.generic_functions.get_personal_obj_from_id(
+            request.POST["user_id"]
+        )
         data = {}
         field_list = [
             "nombre",
@@ -819,7 +1008,11 @@ def modificacion_personal(request):
 
         for item in field_list:
             data[item] = request.POST[item]
-        data["provincia"] = aicespana.utils.generic_functions.get_provincia_name_from_index(data["provincia"])
+        data[
+            "provincia"
+        ] = aicespana.utils.generic_functions.get_provincia_name_from_index(
+            data["provincia"]
+        )
         user_obj.update_all_data_for_personal(data)
         return render(
             request,
@@ -837,14 +1030,18 @@ def modificacion_personal(request):
 def modificacion_proyecto(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
 
     proyecto_data = {}
     # proyecto_data['grupos_diocesis_id_name'] = get_id_grupo_diocesis_delegacion_name()
     proyecto_data[
         "proyectos_grupos_diocesis_name"
-    ] = aicespana.utils.generic_functions.get_id_proyectos_grupos_diocesis_delegacion_name()
+    ] = (
+        aicespana.utils.generic_functions.get_id_proyectos_grupos_diocesis_delegacion_name()
+    )
 
     return render(
         request, "aicespana/modificacionProyecto.html", {"proyecto_data": proyecto_data}
@@ -855,17 +1052,25 @@ def modificacion_proyecto(request):
 def modificar_proyecto(request, proyecto_id):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     if not aicespana.models.Proyecto.objects.filter(pk__exact=proyecto_id).exists():
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_PROYECTO_NOT_EXIST}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_PROYECTO_NOT_EXIST},
         )
-    proyecto_data = aicespana.utils.generic_functions.get_proyecto_data_to_modify(proyecto_id)
+    proyecto_data = aicespana.utils.generic_functions.get_proyecto_data_to_modify(
+        proyecto_id
+    )
 
     proyecto_data[
         "grupos_diocesis_id_name"
-    ] = aicespana.utils.generic_functions.get_group_list_to_select_in_form()  # get_id_grupo_diocesis_name()
+    ] = (
+        aicespana.utils.generic_functions.get_group_list_to_select_in_form()
+    )  # get_id_grupo_diocesis_name()
 
     if request.method == "POST" and request.POST["action"] == "modificarProyecto":
         if (
@@ -884,9 +1089,13 @@ def modificar_proyecto(request, proyecto_id):
                     "proyecto_data": proyecto_data,
                 },
             )
-        proyecto_obj = aicespana.utils.generic_functions.get_proyecto_obj_from_id(request.POST["proyectoID"])
+        proyecto_obj = aicespana.utils.generic_functions.get_proyecto_obj_from_id(
+            request.POST["proyectoID"]
+        )
         proyecto_obj.update_proyecto_data(
-            aicespana.utils.generic_functions.fetch_proyecto_data_to_modify(request.POST, request.FILES)
+            aicespana.utils.generic_functions.fetch_proyecto_data_to_modify(
+                request.POST, request.FILES
+            )
         )
         return render(
             request,
@@ -902,9 +1111,13 @@ def modificar_proyecto(request, proyecto_id):
 def modificacion_voluntario_id(request, voluntario_id):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
-    if not aicespana.models.PersonalExterno.objects.filter(pk__exact=voluntario_id).exists():
+    if not aicespana.models.PersonalExterno.objects.filter(
+        pk__exact=voluntario_id
+    ).exists():
         return render(
             request,
             "aicespana/errorPage.html",
@@ -912,13 +1125,25 @@ def modificacion_voluntario_id(request, voluntario_id):
         )
     user_obj = aicespana.utils.generic_functions.get_user_obj_from_id(voluntario_id)
     voluntary_data = user_obj.get_all_data_from_voluntario()
-    voluntary_data["provincia_index"] = aicespana.utils.generic_functions.get_provincia_index_from_name(voluntary_data["provincia"])
+    voluntary_data[
+        "provincia_index"
+    ] = aicespana.utils.generic_functions.get_provincia_index_from_name(
+        voluntary_data["provincia"]
+    )
     voluntary_data["provincias"] = aicespana.utils.generic_functions.get_provincias()
-    voluntary_data["grupo_lista"] = aicespana.utils.generic_functions.get_group_list_to_select_in_form()
-    voluntary_data["tipo_colaboracion"] = aicespana.utils.generic_functions.get_volunteer_types()
-    voluntary_data["proyecto_lista"] = aicespana.utils.generic_functions.get_project_group_diocesis()
+    voluntary_data[
+        "grupo_lista"
+    ] = aicespana.utils.generic_functions.get_group_list_to_select_in_form()
+    voluntary_data[
+        "tipo_colaboracion"
+    ] = aicespana.utils.generic_functions.get_volunteer_types()
+    voluntary_data[
+        "proyecto_lista"
+    ] = aicespana.utils.generic_functions.get_project_group_diocesis()
     voluntary_data["proyecto_data_form"] = user_obj.get_proyecto_data_for_form()
-    voluntary_data["actividad_lista"] = aicespana.utils.generic_functions.get_activity_group_diocesis()
+    voluntary_data[
+        "actividad_lista"
+    ] = aicespana.utils.generic_functions.get_activity_group_diocesis()
     voluntary_data["actividad_data_form"] = user_obj.get_actividad_data_for_form()
 
     return render(
@@ -932,7 +1157,9 @@ def modificacion_voluntario_id(request, voluntario_id):
 def modificacion_voluntario(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     if request.method == "POST" and request.POST["action"] == "busquedaVoluntario":
         if (
@@ -942,7 +1169,9 @@ def modificacion_voluntario(request):
         ):
             return render(request, "aicespana/modificacionVoluntario.html")
         if request.POST["nif"] != "":
-            if aicespana.models.PersonalExterno.objects.filter(DNI__iexact=request.POST["nif"]).exists():
+            if aicespana.models.PersonalExterno.objects.filter(
+                DNI__iexact=request.POST["nif"]
+            ).exists():
                 personal_objs = aicespana.models.PersonalExterno.objects.filter(
                     DNI__iexact=request.POST["nif"]
                 )
@@ -956,9 +1185,15 @@ def modificacion_voluntario(request):
                         "aicespana/modificacionVoluntario.html",
                         {"ERROR": error},
                     )
-                voluntary_data = aicespana.utils.generic_functions.get_defined_data_for_voluntary(personal_objs[0])
+                voluntary_data = (
+                    aicespana.utils.generic_functions.get_defined_data_for_voluntary(
+                        personal_objs[0]
+                    )
+                )
                 voluntary_data.update(
-                    aicespana.utils.generic_functions.get_external_personal_responsability(personal_objs[0])
+                    aicespana.utils.generic_functions.get_external_personal_responsability(
+                        personal_objs[0]
+                    )
                 )
                 voluntary_data["user_id"] = personal_objs[0].get_personal_id()
                 return render(
@@ -1006,15 +1241,29 @@ def modificacion_voluntario(request):
                 {"personal_list": personal_list},
             )
         voluntary_data = personal_objs[0].get_all_data_from_voluntario()
-        voluntary_data["provincia_index"] = aicespana.utils.generic_functions.get_provincia_index_from_name(voluntary_data["provincia"])
-        voluntary_data["provincias"] = aicespana.utils.generic_functions.get_provincias()
-        voluntary_data["grupo_lista"] = aicespana.utils.generic_functions.get_group_list_to_select_in_form()
-        voluntary_data["tipo_colaboracion"] = aicespana.utils.generic_functions.get_volunteer_types()
-        voluntary_data["proyecto_lista"] = aicespana.utils.generic_functions.get_project_group_diocesis()
+        voluntary_data[
+            "provincia_index"
+        ] = aicespana.utils.generic_functions.get_provincia_index_from_name(
+            voluntary_data["provincia"]
+        )
+        voluntary_data[
+            "provincias"
+        ] = aicespana.utils.generic_functions.get_provincias()
+        voluntary_data[
+            "grupo_lista"
+        ] = aicespana.utils.generic_functions.get_group_list_to_select_in_form()
+        voluntary_data[
+            "tipo_colaboracion"
+        ] = aicespana.utils.generic_functions.get_volunteer_types()
+        voluntary_data[
+            "proyecto_lista"
+        ] = aicespana.utils.generic_functions.get_project_group_diocesis()
         voluntary_data["proyecto_data_form"] = personal_objs[
             0
         ].get_proyecto_data_for_form()
-        voluntary_data["actividad_lista"] = aicespana.utils.generic_functions.get_activity_group_diocesis()
+        voluntary_data[
+            "actividad_lista"
+        ] = aicespana.utils.generic_functions.get_activity_group_diocesis()
         voluntary_data["actividad_data_form"] = personal_objs[
             0
         ].get_actividad_data_for_form()
@@ -1025,7 +1274,9 @@ def modificacion_voluntario(request):
             {"voluntary_data": voluntary_data},
         )
     if request.method == "POST" and request.POST["action"] == "actualizarCampos":
-        user_obj = aicespana.utils.generic_functions.get_user_obj_from_id(request.POST["user_id"])
+        user_obj = aicespana.utils.generic_functions.get_user_obj_from_id(
+            request.POST["user_id"]
+        )
         data = {}
         field_list = [
             "nombre",
@@ -1051,7 +1302,11 @@ def modificacion_voluntario(request):
 
         for item in field_list:
             data[item] = request.POST[item]
-        data["provincia"] = aicespana.utils.generic_functions.get_provincia_name_from_index(data["provincia"])
+        data[
+            "provincia"
+        ] = aicespana.utils.generic_functions.get_provincia_name_from_index(
+            data["provincia"]
+        )
         user_obj.update_all_data_for_voluntary(data)
 
         return render(
@@ -1070,11 +1325,17 @@ def modificacion_voluntario(request):
 def cargos_personal_id(request, personal_id):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     user_obj = aicespana.utils.generic_functions.get_personal_obj_from_id(personal_id)
-    personal_available_settings = aicespana.utils.generic_functions.get_responsablity_data_for_personel(user_obj)
-    personal_available_settings.update(aicespana.utils.generic_functions.get_personal_responsability(user_obj))
+    personal_available_settings = (
+        aicespana.utils.generic_functions.get_responsablity_data_for_personel(user_obj)
+    )
+    personal_available_settings.update(
+        aicespana.utils.generic_functions.get_personal_responsability(user_obj)
+    )
 
     personal_available_settings["user_id"] = personal_id
     return render(
@@ -1088,7 +1349,9 @@ def cargos_personal_id(request, personal_id):
 def cargos_personal(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     if request.method == "POST" and request.POST["action"] == "busquedaPersonal":
         if (
@@ -1098,7 +1361,9 @@ def cargos_personal(request):
         ):
             return render(request, "aicespana/cargosPersonal.html")
         if request.POST["nif"] != "":
-            if aicespana.models.PersonalIglesia.objects.filter(DNI__iexact=request.POST["nif"]).exists():
+            if aicespana.models.PersonalIglesia.objects.filter(
+                DNI__iexact=request.POST["nif"]
+            ).exists():
                 personal_objs = aicespana.models.PersonalIglesia.objects.filter(
                     DNI__iexact=request.POST["nif"]
                 )
@@ -1118,7 +1383,10 @@ def cargos_personal(request):
                     "aicespana/cargosPersonal.html",
                     {"personal_available_settings": personal_available_settings},
                 )
-            error = [aicespana.message_text.ERROR_NOT_FIND_PERSONAL_NIF, request.POST["nif"]]
+            error = [
+                aicespana.message_text.ERROR_NOT_FIND_PERSONAL_NIF,
+                request.POST["nif"],
+            ]
             return render(request, "aicespana/cargosPersonal.html", {"ERROR": error})
         personal_objs = aicespana.models.PersonalIglesia.objects.all()
         if request.POST["apellido"] != "":
@@ -1151,11 +1419,15 @@ def cargos_personal(request):
                 "aicespana/cargosPersonal.html",
                 {"personal_list": personal_list},
             )
-        personal_available_settings = aicespana.utils.generic_functions.get_responsablity_data_for_personel(
-            personal_objs[0]
+        personal_available_settings = (
+            aicespana.utils.generic_functions.get_responsablity_data_for_personel(
+                personal_objs[0]
+            )
         )
         personal_available_settings.update(
-            aicespana.utils.generic_functions.get_personal_responsability(personal_objs[0])
+            aicespana.utils.generic_functions.get_personal_responsability(
+                personal_objs[0]
+            )
         )
 
         personal_available_settings["user_id"] = personal_objs[0].get_personal_id()
@@ -1166,7 +1438,9 @@ def cargos_personal(request):
         )
 
     if request.method == "POST" and request.POST["action"] == "asignarCargos":
-        user_obj = aicespana.utils.generic_functions.get_personal_obj_from_id(request.POST["user_id"])
+        user_obj = aicespana.utils.generic_functions.get_personal_obj_from_id(
+            request.POST["user_id"]
+        )
 
         data = {}
         data["cargo"] = request.POST["cargo"]
@@ -1174,7 +1448,9 @@ def cargos_personal(request):
         # data['diocesis'] = request.POST['diocesis']
         data["grupo"] = request.POST["grupo"]
         user_obj.update_information(data)
-        updated_data = aicespana.utils.generic_functions.get_personal_responsability(user_obj)
+        updated_data = aicespana.utils.generic_functions.get_personal_responsability(
+            user_obj
+        )
         return render(
             request, "aicespana/cargosPersonal.html", {"updated_data": updated_data}
         )
@@ -1185,11 +1461,17 @@ def cargos_personal(request):
 def cargo_voluntario(request, voluntario_id):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     user_obj = aicespana.utils.generic_functions.get_user_obj_from_id(voluntario_id)
-    personal_available_settings = aicespana.utils.generic_functions.get_responsablity_data_for_voluntary(user_obj)
-    personal_available_settings.update(aicespana.utils.generic_functions.get_external_personal_responsability(user_obj))
+    personal_available_settings = (
+        aicespana.utils.generic_functions.get_responsablity_data_for_voluntary(user_obj)
+    )
+    personal_available_settings.update(
+        aicespana.utils.generic_functions.get_external_personal_responsability(user_obj)
+    )
     personal_available_settings["user_id"] = voluntario_id
     return render(
         request,
@@ -1202,7 +1484,9 @@ def cargo_voluntario(request, voluntario_id):
 def cargos_voluntarios(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     if request.method == "POST" and request.POST["action"] == "busquedaVoluntario":
         if (
@@ -1212,7 +1496,9 @@ def cargos_voluntarios(request):
         ):
             return render(request, "aicespana/cargosVoluntarios.html")
         if request.POST["nif"] != "":
-            if aicespana.models.PersonalExterno.objects.filter(DNI__iexact=request.POST["nif"]).exists():
+            if aicespana.models.PersonalExterno.objects.filter(
+                DNI__iexact=request.POST["nif"]
+            ).exists():
                 personal_objs = aicespana.models.PersonalExterno.objects.filter(
                     DNI__iexact=request.POST["nif"]
                 )
@@ -1228,7 +1514,9 @@ def cargos_voluntarios(request):
                     personal_objs[0]
                 )
                 personal_available_settings.update(
-                    aicespana.utils.generic_functions.get_external_personal_responsability(personal_objs[0])
+                    aicespana.utils.generic_functions.get_external_personal_responsability(
+                        personal_objs[0]
+                    )
                 )
                 return render(
                     request,
@@ -1270,11 +1558,15 @@ def cargos_voluntarios(request):
                 "aicespana/cargosVoluntarios.html",
                 {"personal_list": personal_list},
             )
-        personal_available_settings = aicespana.utils.generic_functions.get_responsablity_data_for_voluntary(
-            personal_objs[0]
+        personal_available_settings = (
+            aicespana.utils.generic_functions.get_responsablity_data_for_voluntary(
+                personal_objs[0]
+            )
         )
         personal_available_settings.update(
-            aicespana.utils.generic_functions.get_external_personal_responsability(personal_objs[0])
+            aicespana.utils.generic_functions.get_external_personal_responsability(
+                personal_objs[0]
+            )
         )
         personal_available_settings["user_id"] = personal_objs[0].get_personal_id()
         return render(
@@ -1283,7 +1575,9 @@ def cargos_voluntarios(request):
             {"personal_available_settings": personal_available_settings},
         )
     if request.method == "POST" and request.POST["action"] == "asignarCargos":
-        user_obj = aicespana.utils.generic_functions.get_user_obj_from_id(request.POST["user_id"])
+        user_obj = aicespana.utils.generic_functions.get_user_obj_from_id(
+            request.POST["user_id"]
+        )
         data = {}
         data["cargo"] = request.POST["cargo"]
         data["actividad"] = request.POST["actividad"]
@@ -1291,7 +1585,11 @@ def cargos_voluntarios(request):
         data["proyecto"] = request.POST["proyecto"]
         data["colaboracion"] = request.POST["colaboracion"]
         user_obj.update_information(data)
-        updated_data = aicespana.utils.generic_functions.get_external_personal_responsability(user_obj)
+        updated_data = (
+            aicespana.utils.generic_functions.get_external_personal_responsability(
+                user_obj
+            )
+        )
 
         return render(
             request, "aicespana/cargosVoluntarios.html", {"updated_data": updated_data}
@@ -1303,15 +1601,21 @@ def cargos_voluntarios(request):
 def informacion_personal_id(request, personal_id):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
-    if not aicespana.models.PersonalIglesia.objects.filter(pk__exact=personal_id).exists():
+    if not aicespana.models.PersonalIglesia.objects.filter(
+        pk__exact=personal_id
+    ).exists():
         return render(
             request,
             "aicespana/errorPage.html",
             {"content": aicespana.message_text.ERROR_PERSONAL_DOES_NOT_EXIST},
         )
-    personal_obj = aicespana.utils.generic_functions.get_personal_obj_from_id(personal_id)
+    personal_obj = aicespana.utils.generic_functions.get_personal_obj_from_id(
+        personal_id
+    )
     info_personal = personal_obj.get_all_data_from_personal()
     info_personal["cargos"] = personal_obj.get_responability_belongs_to()
     return render(
@@ -1323,7 +1627,9 @@ def informacion_personal_id(request, personal_id):
 def informacion_personal(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     if request.method == "POST" and request.POST["action"] == "busquedaPersonal":
         if (
@@ -1333,7 +1639,9 @@ def informacion_personal(request):
         ):
             return render(request, "aicespana/informacionPersonal.html")
         if request.POST["nif"] != "":
-            if aicespana.models.PersonalIglesia.objects.filter(DNI__iexact=request.POST["nif"]).exists():
+            if aicespana.models.PersonalIglesia.objects.filter(
+                DNI__iexact=request.POST["nif"]
+            ).exists():
                 personal_objs = aicespana.models.PersonalIglesia.objects.filter(
                     DNI__iexact=request.POST["nif"]
                 )
@@ -1346,7 +1654,9 @@ def informacion_personal(request):
                         request, "aicespana/informacionPersonal.html", {"ERROR": error}
                     )
                 info_voluntario = personal_objs[0].get_all_data_from_personal()
-                info_voluntario["cargos"] = personal_objs[0].get_responability_belongs_to()
+                info_voluntario["cargos"] = personal_objs[
+                    0
+                ].get_responability_belongs_to()
                 return render(
                     request,
                     "aicespana/informacionPersonal.html",
@@ -1405,9 +1715,13 @@ def informacion_personal(request):
 def informacion_voluntario_id(request, voluntario_id):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
-    if not aicespana.models.PersonalExterno.objects.filter(pk__exact=voluntario_id).exists():
+    if not aicespana.models.PersonalExterno.objects.filter(
+        pk__exact=voluntario_id
+    ).exists():
         return render(
             request,
             "aicespana/errorPage.html",
@@ -1427,7 +1741,9 @@ def informacion_voluntario_id(request, voluntario_id):
 def informacion_voluntario(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     if request.method == "POST" and request.POST["action"] == "busquedaVoluntario":
         if (
@@ -1437,7 +1753,9 @@ def informacion_voluntario(request):
         ):
             return render(request, "aicespana/informacionVoluntario.html")
         if request.POST["nif"] != "":
-            if aicespana.models.PersonalExterno.objects.filter(DNI__iexact=request.POST["nif"]).exists():
+            if aicespana.models.PersonalExterno.objects.filter(
+                DNI__iexact=request.POST["nif"]
+            ).exists():
                 personal_objs = aicespana.models.PersonalExterno.objects.filter(
                     DNI__iexact=request.POST["nif"]
                 )
@@ -1493,9 +1811,13 @@ def informacion_voluntario(request):
                     request, "aicespana/informacionVoluntario.html", {"ERROR": error}
                 )
         if len(personal_objs) > 1:
-            lista_voluntarios = aicespana.utils.generic_functions.get_info_of_voluntarios(personal_objs)
+            lista_voluntarios = (
+                aicespana.utils.generic_functions.get_info_of_voluntarios(personal_objs)
+            )
             return render(
-                request, "aicespana/informacionVoluntario.html", {"lista_voluntarios": lista_voluntarios}
+                request,
+                "aicespana/informacionVoluntario.html",
+                {"lista_voluntarios": lista_voluntarios},
             )
         info_voluntario = personal_objs[0].get_all_data_from_voluntario()
         info_voluntario["cargos"] = personal_objs[0].get_responability_belongs_to()
@@ -1512,7 +1834,9 @@ def informacion_voluntario(request):
 def listado_boletin(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     listado = aicespana.utils.generic_functions.get_excel_user_request_boletin()
     return render(request, "aicespana/listadoBoletin.html", {"listado": listado})
@@ -1522,7 +1846,9 @@ def listado_boletin(request):
 def listado_delegaciones(request):
     delegaciones = []
     if aicespana.models.Delegacion.objects.all().exists():
-        delegacion_objs = aicespana.models.Delegacion.objects.all().order_by("nombreDelegacion")
+        delegacion_objs = aicespana.models.Delegacion.objects.all().order_by(
+            "nombreDelegacion"
+        )
         for delegacion_obj in delegacion_objs:
             delegaciones.append(
                 [
@@ -1531,7 +1857,9 @@ def listado_delegaciones(request):
                 ]
             )
     if request.method == "POST" and request.POST["action"] == "informacionDelegacion":
-        delegacion_data = aicespana.utils.generic_functions.get_delegation_data(request.POST["delegacion"])
+        delegacion_data = aicespana.utils.generic_functions.get_delegation_data(
+            request.POST["delegacion"]
+        )
         return render(
             request,
             "aicespana/listadoDelegaciones.html",
@@ -1550,16 +1878,26 @@ def listado_delegacion(request, delegacion_id):
     #        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_ALLOW_TO_SEE_LISTADOS})
     if not aicespana.models.Delegacion.objects.filter(pk__exact=delegacion_id).exists():
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_DELEGACION_NOT_EXIST}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_DELEGACION_NOT_EXIST},
         )
-    delegacion_obj = aicespana.utils.generic_functions.get_delegation_obj_from_id(delegacion_id)
+    delegacion_obj = aicespana.utils.generic_functions.get_delegation_obj_from_id(
+        delegacion_id
+    )
     # Get the diocesis bolongs to the delegation
     delegacion_data = {}
-    delegacion_data["diocesis_list"] = aicespana.utils.generic_functions.get_diocesis_in_delegation(delegacion_obj)
-    delegacion_data["summary"] = [aicespana.utils.generic_functions.get_summary_of_delegation(delegacion_obj)]
+    delegacion_data[
+        "diocesis_list"
+    ] = aicespana.utils.generic_functions.get_diocesis_in_delegation(delegacion_obj)
+    delegacion_data["summary"] = [
+        aicespana.utils.generic_functions.get_summary_of_delegation(delegacion_obj)
+    ]
     delegacion_data["delegacion_name"] = delegacion_obj.get_delegacion_name()
     delegacion_data["delegacion_image"] = delegacion_obj.get_delegacion_image()
-    delegacion_data.update(aicespana.utils.generic_functions.get_delegation_data(delegacion_id))
+    delegacion_data.update(
+        aicespana.utils.generic_functions.get_delegation_data(delegacion_id)
+    )
     return render(
         request,
         "aicespana/listadoDelegacion.html",
@@ -1573,13 +1911,23 @@ def listado_diocesis(request, diocesis_id):
     #        return render (request,'aicespana/errorPage.html', {'content': ERROR_USER_NOT_ALLOW_TO_SEE_LISTADOS})
     if not aicespana.models.Diocesis.objects.filter(pk__exact=diocesis_id).exists():
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_DIOCESIS_NOT_EXIST}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_DIOCESIS_NOT_EXIST},
         )
-    diocesis_obj = aicespana.utils.generic_functions.get_diocesis_obj_from_id(diocesis_id)
+    diocesis_obj = aicespana.utils.generic_functions.get_diocesis_obj_from_id(
+        diocesis_id
+    )
     diocesis_data = {}
-    diocesis_data["grupos"] = aicespana.utils.generic_functions.get_groups_in_diocesis(diocesis_obj, True)
-    diocesis_data["cargos"] = aicespana.utils.generic_functions.get_diocesis_cargos(diocesis_obj)
-    diocesis_data["summary"] = [aicespana.utils.generic_functions.get_summary_of_diocesis(diocesis_obj)]
+    diocesis_data["grupos"] = aicespana.utils.generic_functions.get_groups_in_diocesis(
+        diocesis_obj, True
+    )
+    diocesis_data["cargos"] = aicespana.utils.generic_functions.get_diocesis_cargos(
+        diocesis_obj
+    )
+    diocesis_data["summary"] = [
+        aicespana.utils.generic_functions.get_summary_of_diocesis(diocesis_obj)
+    ]
     diocesis_data["diocesis_name"] = diocesis_obj.get_diocesis_name()
 
     return render(
@@ -1590,10 +1938,14 @@ def listado_diocesis(request, diocesis_id):
 def listado_grupo(request, grupo_id):
     if not aicespana.models.Grupo.objects.filter(pk__exact=grupo_id).exists():
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_GRUPO_NOT_EXIST}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_GRUPO_NOT_EXIST},
         )
     grupo_obj = aicespana.utils.generic_functions.get_grupo_obj_from_id(grupo_id)
-    if not aicespana.utils.generic_functions.allow_see_group_information_voluntary(request, grupo_obj):
+    if not aicespana.utils.generic_functions.allow_see_group_information_voluntary(
+        request, grupo_obj
+    ):
         return render(
             request,
             "aicespana/errorPage.html",
@@ -1603,13 +1955,50 @@ def listado_grupo(request, grupo_id):
     grupo_data["nombre_grupo"] = grupo_obj.get_grupo_name()
     grupo_data["cargos"] = aicespana.utils.generic_functions.get_grupo_cargos(grupo_obj)
     grupo_data["informacion"] = grupo_obj.get_grupo_full_data()
-    grupo_data["summary"] = [aicespana.utils.generic_functions.get_summary_of_group(grupo_obj)]
-    grupo_data["lista_voluntarios"] = aicespana.utils.generic_functions.get_grupo_voluntarios(grupo_obj)
-    grupo_data["lista_colaboradores"] = aicespana.utils.generic_functions.get_grupo_colaboradores(grupo_obj)
-    grupo_data["lista_asesores"] = aicespana.utils.generic_functions.get_grupo_asesores(grupo_obj)
-    grupo_data["lista_otros"] = aicespana.utils.generic_functions.get_grupo_otros(grupo_obj)
+    grupo_data["summary"] = [
+        aicespana.utils.generic_functions.get_summary_of_group(grupo_obj)
+    ]
+    grupo_data[
+        "lista_voluntarios"
+    ] = aicespana.utils.generic_functions.get_grupo_voluntarios(grupo_obj)
+    grupo_data[
+        "lista_colaboradores"
+    ] = aicespana.utils.generic_functions.get_grupo_colaboradores(grupo_obj)
+    grupo_data["lista_asesores"] = aicespana.utils.generic_functions.get_grupo_asesores(
+        grupo_obj
+    )
+    grupo_data["lista_otros"] = aicespana.utils.generic_functions.get_grupo_otros(
+        grupo_obj
+    )
 
     return render(request, "aicespana/listadoGrupo.html", {"grupo_data": grupo_data})
+
+
+@login_required
+def listado_proyectos(request):
+    region = None
+    user_type = "user"
+    if not aicespana.utils.generic_functions.is_manager(request):
+        if not aicespana.utils.generic_functions.check_delegada_regional(request.user):
+            return render(
+                request,
+                "aicespana/errorPage.html",
+                {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
+            )
+        delegacion_name = (
+            aicespana.utils.generic_functions.delegacion_name_from_loged_user(
+                request.user.username
+            )
+        )
+        region = delegacion_name
+    else:
+        user_type = "manager"
+    project_data = aicespana.utils.generic_functions.get_projects_information(
+        user_type, region
+    )
+    return render(
+        request, "aicespana/listadoProyectos.html", {"project_data": project_data}
+    )
 
 
 @login_required
@@ -1626,7 +2015,11 @@ def listado_voluntarios_grupo(request):
                 ]
             )
     if request.method == "POST" and request.POST["action"] == "nombreGrupo":
-        voluntarios_data = aicespana.utils.generic_functions.get_voluntarios_info_from_grupo(request.POST["grupo_id"])
+        voluntarios_data = (
+            aicespana.utils.generic_functions.get_voluntarios_info_from_grupo(
+                request.POST["grupo_id"]
+            )
+        )
 
         return render(
             request,
@@ -1643,14 +2036,22 @@ def listado_personal_iglesia(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         if not aicespana.utils.generic_functions.check_delegada_regional(request.user):
             return render(
-                request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+                request,
+                "aicespana/errorPage.html",
+                {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
             )
-        delegacion = aicespana.utils.generic_functions.delegacion_name_from_loged_user(request.user.username)
+        delegacion = aicespana.utils.generic_functions.delegacion_name_from_loged_user(
+            request.user.username
+        )
         if delegacion is None:
             return render(
-                request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+                request,
+                "aicespana/errorPage.html",
+                {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
             )
-    listado_personal = aicespana.utils.generic_functions.get_list_personal_iglesia(delegacion)
+    listado_personal = aicespana.utils.generic_functions.get_list_personal_iglesia(
+        delegacion
+    )
     return render(
         request,
         "aicespana/listadoPersonalIglesia.html",
@@ -1662,7 +2063,9 @@ def listado_personal_iglesia(request):
 def listado_delegados_regionales(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     listado_delegados = aicespana.utils.generic_functions.get_delegados_regionales()
     return render(
@@ -1676,7 +2079,9 @@ def listado_delegados_regionales(request):
 def listado_presidentas_diocesis(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     presidentas = aicespana.utils.generic_functions.presidentas_diocesis()
     return render(
@@ -1690,13 +2095,19 @@ def listado_presidentas_diocesis(request):
 def listado_presidentes_grupo(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     if request.method == "POST" and request.POST["action"] == "listadoPresidentesGrupo":
-        presidentes = aicespana.utils.generic_functions.presidentes_grupo(request.POST["delegacion_id"])
+        presidentes = aicespana.utils.generic_functions.presidentes_grupo(
+            request.POST["delegacion_id"]
+        )
         if not presidentes:
             error_message = aicespana.message_text.ERROR_NO_PRESIDENTS_IN_DELEGATION
-            delegation_data = aicespana.utils.generic_functions.delegation_id_and_name_list()
+            delegation_data = (
+                aicespana.utils.generic_functions.delegation_id_and_name_list()
+            )
             return render(
                 request,
                 "aicespana/listadoPresidentesGrupo.html",
@@ -1721,12 +2132,25 @@ def listado_personal_externo(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         if not aicespana.utils.generic_functions.check_delegada_regional(request.user):
             return render(
-                request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+                request,
+                "aicespana/errorPage.html",
+                {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
             )
-        delegacion_name = aicespana.utils.generic_functions.delegacion_name_from_loged_user(request.user.username)
-        delegacion_id = aicespana.utils.generic_functions.get_delegacion_id_from_name(delegacion_name)
+        delegacion_name = (
+            aicespana.utils.generic_functions.delegacion_name_from_loged_user(
+                request.user.username
+            )
+        )
+        delegacion_id = aicespana.utils.generic_functions.get_delegacion_id_from_name(
+            delegacion_name
+        )
         if delegacion_id is not None:
-            listado_personal, excel_file = aicespana.utils.generic_functions.get_personal_externo_por_delegacion(delegacion_id)
+            (
+                listado_personal,
+                excel_file,
+            ) = aicespana.utils.generic_functions.get_personal_externo_por_delegacion(
+                delegacion_id
+            )
             return render(
                 request,
                 "aicespana/listadoPersonalExterno.html",
@@ -1738,10 +2162,15 @@ def listado_personal_externo(request):
             )
         else:
             return render(
-                request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_DELEGACION_NOT_EXIST}
+                request,
+                "aicespana/errorPage.html",
+                {"content": aicespana.message_text.ERROR_DELEGACION_NOT_EXIST},
             )
     if request.method == "POST" and request.POST["action"] == "listadoDelegacion":
-        listado_personal, excel_file = aicespana.utils.generic_functions.get_personal_externo_por_delegacion(
+        (
+            listado_personal,
+            excel_file,
+        ) = aicespana.utils.generic_functions.get_personal_externo_por_delegacion(
             request.POST["delegacion_id"]
         )
         delegacion = aicespana.utils.generic_functions.get_delegation_obj_from_id(
@@ -1768,7 +2197,9 @@ def listado_personal_externo(request):
 def listado_actividades(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     actividades = aicespana.utils.generic_functions.get_summary_actividades()
     return render(
@@ -1780,17 +2211,25 @@ def listado_actividades(request):
 def listado_actividad(request, actividad_id):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     if not aicespana.models.Actividad.objects.filter(pk__exact=actividad_id).exists():
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_ACTIVIDAD_NOT_EXIST}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_ACTIVIDAD_NOT_EXIST},
         )
 
     # Get the delgacion which have the avtivity
-    actividad_data = aicespana.utils.generic_functions.get_activity_data_in_delegations(actividad_id)
+    actividad_data = aicespana.utils.generic_functions.get_activity_data_in_delegations(
+        actividad_id
+    )
     if len(actividad_data["user_list"]) > 0:
-        actividad_data["excel_file"] = aicespana.utils.generic_functions.store_excel_file(
+        actividad_data[
+            "excel_file"
+        ] = aicespana.utils.generic_functions.store_excel_file(
             actividad_data["user_list"],
             actividad_data["heading"],
             "listado_voluntarios_actividad.xlsx",
@@ -1806,7 +2245,9 @@ def listado_actividad(request, actividad_id):
 def listado_bajas_externo(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     bajas_externo = aicespana.utils.generic_functions.bajas_personal_externo_excel()
     return render(
@@ -1818,7 +2259,9 @@ def listado_bajas_externo(request):
 def listado_bajas_iglesia(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     bajas_iglesia = aicespana.utils.generic_functions.bajas_personal_iglesia_list()
     return render(
@@ -1830,7 +2273,9 @@ def listado_bajas_iglesia(request):
 def listado_bajas_grupo(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     bajas_grupo = aicespana.utils.generic_functions.bajas_grupo_list()
     return render(
@@ -1842,7 +2287,9 @@ def listado_bajas_grupo(request):
 def listado_bajas_diocesis(request):
     if not aicespana.utils.generic_functions.is_manager(request):
         return render(
-            request, "aicespana/errorPage.html", {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER}
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     bajas_diocesis = aicespana.utils.generic_functions.bajas_diocesis_list()
     return render(

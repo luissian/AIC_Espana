@@ -104,6 +104,7 @@ urlpatterns = [
         views.listado_presidentes_grupo,
         name="listado_presidentes_grupo",
     ),
+    path("listadoProyectos", views.listado_proyectos, name="listado_proyectos"),
     path(
         "listadoVoluntariosGrupo",
         views.listado_voluntarios_grupo,
