@@ -10,7 +10,7 @@
 
 {% if ERROR %}
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-6 offset-3">
 				<div class="card text-center bg-danger">
 					<div class="card-header">
@@ -20,29 +20,29 @@
 						<p class="card-text">
 							{{ERROR}}
 						</p>
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+	</div> 
 {% endif %}
 
 {% if confirmation_data %}
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-header"><h2 style="text-align:center">Datos Guardados</h2> </div>
 					<div class="card-body">
 						<p style="text-align:center">Los cambios de la Parroquia {{confirmation_data}} se ha guardado correctamente</p>
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-		    </div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+					</div> 
+				</div> 
+		    </div> 
+		</div> 
+	</div> 
 
 {% else %}
-	<br><br>
+	
 	<div class="container-md">
 	    <div class="row g-3">
 	        <div class="col-md-8">
@@ -95,17 +95,17 @@
 		                            <textarea name="observaciones" rows="8" cols="70" maxlength="500">{{parroquia_data.observaciones}}</textarea>
 		                        </div>
 							</div>
-							<br><br>
+							
 	                        <div class="col-12">
 	                            <button type="submit" class="btn-outline-primary float-end ">Guardar datos</button>
 	                        </div>
 	                    </form>
-						<br><br>
+						
 						<p>Los campos con  <span style="color:red"> * </span> son obligatorios</p>
-	                </div>  <!-- end card-body -->
-	            </div>  <!-- end card -->
-	        </div> <!-- end col-md-6 -->
-	    </div> <!-- end row-->
-	</div> <!-- end container -->
+	                </div>  
+	            </div> 
+	        </div>
+	    </div> 
+	</div> 
 {% endif %}
 {% endblock %}

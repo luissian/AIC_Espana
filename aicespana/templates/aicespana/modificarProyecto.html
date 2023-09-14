@@ -1,16 +1,10 @@
 {% extends 'aicespana/base.html' %}
 {% load static %}
 {% block content %}
-<style media="screen">
-	.form-group.required .control-label:after {
-	  content:"  *";
-	  color:red;
-	}
-</style>
 
 {% if ERROR %}
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-6 offset-3">
 				<div class="card text-center bg-danger">
 					<div class="card-header">
@@ -20,121 +14,143 @@
 						<p class="card-text">
 							{{ERROR}}
 						</p>
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+	</div> 
 {% endif %}
 
 {% if confirmation_data %}
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-header"><h2 style="text-align:center">Datos Guardados</h2> </div>
 					<div class="card-body">
 						<p style="text-align:center">Los cambios del Proyecto {{confirmation_data}} se ha guardado correctamente</p>
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-		    </div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+					</div> 
+				</div> 
+		    </div> 
+		</div> 
+	</div> 
 
 {% else %}
-	<br><br>
 	<div class="container-md">
-	    <div class="row g-3">
-	        <div class="col-md-8">
-			  {% if proyecto_data.activo == "true" %}
-	            <div class="card">
-			  {% else %}
-				<div class="card bg-danger">
-			  {% endif %}
-					<div class="card-header"><h2 style="text-align:center">Formulario para cambiar los datos del proyecto {{proyecto_data.proyecto_name}}</h2> </div>
-	                <div class="card-body">
-	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="modificarProyecto" id="modificarProyecto" >
-	                        {% csrf_token %}
-	                        <input type="hidden" name="action" value="modificarProyecto"/>
-							<input type="hidden" name="proyectoID" value="{{proyecto_data.proyectoID}}"/>
-							<div class="form-group required">
-		                        <div class="col-md-8">
-		                            <label class="control-label " for="proyecto_name">Modifica el nombre del Proyecto</label>
-		                            <input type="text" required class="form-control" id="proyecto_name" name='proyecto_name' value="{{proyecto_data.proyecto_name}}">
-		                        </div>
-								<div class="col-md-8">
-		                            <label class="control-label " for="nombre">Seleciona el Grupo del que depende</label>
-									<select id="grupoID" class="form-select" name="grupoID">
-										<option value="{{proyecto_data.grupoID}}">{{proyecto_data.grupo_name}}</option>
-										{% for grupo_id, grupo_name , diocesis_name in proyecto_data.grupos_diocesis_id_name %}
-		                                	<option value="{{grupo_id}}">{{grupo_name}} en la diocesis de {{diocesis_name}}</option>
-										{% endfor %}
-									</select>
-								</div>
-							</div>
-							<div class="form-group">
-								<div class="col-md-6">
-									<label for="alta"  class="control-label">Fecha Alta</label>
-									<input type="date"  class="form-control" id="alta" name='alta' value="{{proyecto_data.alta}}">
-								</div>
+	    <div class="row mt-3">
+	        <div class="col">
+			    {% if proyecto_data.activo == "true" %}
+	                <div class="card">
+			     {% else %}
+				    <div class="card bg-danger">
+			     {% endif %}
+                <div class="card-header"><h2 style="text-align:center">Formulario para cambiar los datos del proyecto {{proyecto_data.proyecto_name}}</h2> </div>
+                <div class="card-body">
+                    
+                    <form class="row g-2" method="post" enctype="multipart/form-data" name="modificarProyecto" id="modificarProyecto" >
+                        <input type="hidden" name="action" value="modificarProyecto"/>
+                        <input type="hidden" name="proyectoID" value="{{proyecto_data.proyectoID}}"/>
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-floating my-3">
+                                    <input type="text" required class="form-control" id="proyecto_name" name='proyecto_name' value="{{proyecto_data.proyecto_name}}">
+                                    <label  for="proyecto_name" class="text-danger" >Modifica el nombre del Proyecto</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <select  class="form-select" name="grupoID" id="grupoID">
+                                        <option value="{{proyecto_data.grupoID}}" selected>{{proyecto_data.grupo_name}}</option>
+                                        {% for grupo_id, grupo_name , diocesis_name in proyecto_data.grupos_diocesis_id_name %}
+                                            <option value="{{grupo_id}}">{{grupo_name}} en la diocesis de {{diocesis_name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="grupoID">Seleciona el Grupo del que depende</label>
+                                </div>
+                                <div class="row g-2 mb-3">
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="date" class="form-control" id="alta" name="alta" value="{{proyecto_data.alta}}" placeholder="Fecha alta del proyecto" >
+                                            <label for="alta">Fecha de alta</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="date" class="form-control" id="baja" name="baja" value="{{proyecto_data.baja}}" placeholder="Fecha de baja del proyecto" >
+                                            <label for="baja">Fecha de baja</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row g-2 mb-3">
+                                    <div class="col-md">
+                                        <div class="form-floating mt-4 mb-3">
+                                            <select id="activo"  class="form-select" name='activo'>
+                                                {% if proyecto_data.activo == 'true' %}
+                                                    <option selected value="true">Activo</option>
+                                                {% else %}
+                                                    <option selected value="false">Cerrado</option>
+                                                {% endif %}
+                                                    <option value = "true">Activo</option>
+                                                    <option value = "false">Cerrado</option>
+                                            </select>
+                                            <label for="activo">Estado del Proyecto</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md">
+                                        {% if proyecto_data.memoria != '' %}  
+                                            <div class="mb-3">                         
+                                                <label for="memoria" class="form-label">Actualiza la Memoria del proyecto</label>
+                                                <input type="file"  class="form-control" id="memoria" name="uploadMemoria" accept=".doc, .docx, .pdf, .txt">
+                                            </div>
+                                        {% else %}
+                                            <div class="mb-3">
+                                                <label for="memoria" class="form-label">Sube la Memoria del proyecto</label>
+                                                <input type="file" class="form-control"  id="memoria" name="uploadMemoria" accept=".doc, .docx, .pdf, .txt">
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                {% if proyecto_data.fotografia != '' %}
+                                    <img src="{{proyecto_data.fotografia}}" style="width:375px;" alt="Fotografia del proyecto">
+                                    <div class="mb-3">
+                                    
+                                        <label for="foto" class="form-label">Actualiza la fotografia del proyecto</label>
+                                        <input type="file" class="form-control"  id="foto" name="uploadFotografia" accept=".jpg, .gif, .pdf, .png">
+                                    </div>
+                                {% else %}
+                                    <div class="mb-3">
+                                        <label for="foto" class="form-label">Sube la fotografía del proyecto</label>
+                                        <input type="file" class="form-control"  id="foto" name="uploadFotografia" accept=".jpg, .gif, .pdf, .png">
+                                    </div>
+                                {% endif %}
 
-								<div class="col-md-6">
-									<label for="baja"  class="control-label">Fecha Baja</label>
-									<input type="date"  class="form-control" id="baja" name="baja" value="{{proyecto_data.baja}}">
-								</div>
-								<div class="col-md-6">
-									<label for="activo"  class="control-label">Estado del Proyecto</label>
-									<select id="activo"  class="form-select" name='activo'>
-										{% if proyecto_data.activo == 'true' %}
-									   		<option selected value="true">Activo</option>
-										{% else %}
-											<option selected value="false">Cerrado</option>
-										{% endif %}
-										   <option value = "true">Activo</option>
-										   <option value = "false">Cerrado</option>
-								    </select>
-
-								</div>
-								<div class="col-md-8">
-									{% if proyecto_data.memoria != '' %}
-										<a href="{{proyecto_data.memoria}}">Descarga la memoria del Proyecto <i class="bi bi-download"></i> </a>
-										<br><br>
-										<label for="grupoID" class="form-label">Usa el boton para actualizar la Memoria del proyecto</label><br>
-									 	<input type="file" name="uploadMemoria" accept=".doc, .docx, .pdf, .txt">
-									{% else %}
-										<label for="grupoID" class="form-label">Sube la Memoria del proyecto</label><br>
-										<input type="file" name="uploadMemoria" accept=".doc, .docx, .pdf, .txt">
-									{% endif %}
-								</div>
-								<br><br>
-								<div class="col-md-8">
-									{% if proyecto_data.fotografia != '' %}
-										<a href="{{proyecto_data.fotografia}}">Descarga la fotografia del Proyecto <i class="bi bi-download"></i> </a>
-										<br><br>
-										<label for="grupoID" class="form-label">Usa el boton para actualizar la fotografia del proyecto</label><br>
-									 	<input type="file" name="uploadFotografia" accept=".jpg, .gif, .pdf, .png">
-									{% else %}
-										<label for="grupoID" class="form-label">Sube la fotografía del proyecto</label><br>
-										<input type="file" name="uploadFotografia" accept=".jpg, .gif, .pdf, .png">
-									{% endif %}
-								</div>
-								<br>
-		                        <div class="col-md-6">
-		                            <label for="observaciones" class="form-label">Observaciones</label>
-		                            <textarea name="observaciones" rows="8" cols="70" maxlength="500">{{proyecto_data.observaciones}}</textarea>
-		                        </div>
-							</div>
-							<br><br>
-	                        <div class="col-12">
-	                            <button type="submit" class="btn-outline-primary float-end ">Guardar datos</button>
-	                        </div>
-	                    </form>
-						<br><br>
-						<p>Los campos con  <span style="color:red"> * </span> son obligatorios</p>
-	                </div>  <!-- end card-body -->
-	            </div>  <!-- end card -->
-	        </div> <!-- end col-md-6 -->
-	    </div> <!-- end row-->
-	</div> <!-- end container -->
+                                {% if proyecto_data.memoria != '' %}
+                                    <div class="row mt-3">
+                                        <div class="col">
+                                            <a href="{{proyecto_data.memoria}}">Descarga la memoria del Proyecto <i class="bi bi-download"></i> </a>
+                                        </div>
+                                    </div>
+                                    
+                                {% endif %}
+                                            
+                            </div>
+                        </div>
+                        <div class="row my-3">
+                            <div class="col">
+                                <div class="input-group">
+                                    <span class="input-group-text">Observaciones</span>
+                                    <textarea class="form-control" name="observaciones" rows="8" cols="80" maxlength="500">{{proyecto_data.observaciones}}</textarea>
+                                </div>
+                                <input class="btn float-end btn-outline-primary my-3" type="submit" value="Guardar datos">
+                            </div>
+                       
+                    </form>
+                    
+                    <p>Los campos en <span style="color:red"> rojo </span> son obligatorios</p>
+                </div> 
+            </div>  
+	    </div> 
+	</div> 
 {% endif %}
 {% endblock %}

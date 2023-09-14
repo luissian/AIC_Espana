@@ -1,58 +1,50 @@
 {% extends 'aicespana/base.html' %}
 {% load static %}
 {% block content %}
-<style media="screen">
-	.form-group.required .control-label:after {
-	  content:"  *";
-	  color:red;
-	}
-</style>
 {% if ERROR %}
-
 	<div class="container-md">
-		<div class="row g-3"">
-			<div class="col-md-10">
+		<div class="row g-3">
+			<div class="col-md-12">
 				<div class="card  border-danger">
 					<div class="card-header"><h2 style="text-align:center">El voluntario no se puede crear</h2> </div>
 					<div class="card-body">
 						{% for values in ERROR %}
 							<h4>{{values}}</h4>
 						{% endfor %}
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-		    </div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
-
+					</div> 
+				</div> 
+		    </div> 
+		</div> 
+	</div> 
 {% endif %}
 {% if confirmation_data %}
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-header"><h2 style="text-align:center">Datos Guardados</h2> </div>
 					<div class="card-body">
 						<p style="text-align:center">Los datos de {{confirmation_data.nombre}} {{confirmation_data.apellidos}} se han guardado correctamente</p>
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-		    </div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+					</div> 
+				</div> 
+		    </div> 
+		</div> 
+	</div> 
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-body">
 						<p>Para dar de alta un nuevo voluntario hacer click en el boton de abajo</p>
-						<br><br>
+						
 						<div class="text-center">
 							<a href="/altaVoluntario"> <button type="button" class="btn btn-outline-secondary float-center" >Añadir un nuevo Voluntario</button> </a>
-						</div> <!-- end text center -->
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+						</div> 
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+	</div> 
 
 {% else %}
 	<section class="light">
@@ -62,112 +54,142 @@
 	</section>
 	<div class="container-md">
 	    <div class="row g-3">
-	        <div class="col-md-10">
+	        <div class="col-md-12">
 	            <div class="card">
 	                    <div class="card-body">
-	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="altaVoluntario" id="altaVoluntario" >
+	                    <form class="row" method="post" enctype="multipart/form-data" name="altaVoluntario" id="altaVoluntario" >
 	                        {% csrf_token %}
 	                        <input type="hidden" name="action" value="altaVoluntario"/>
-							<div class="form-group required">
-		                        <div class="col-md-5">
-		                            <label class="control-label " for="nombre">Nombre</label>
-		                            <input type="text" required class="form-control" id="nombre" name='nombre'>
-		                        </div>
-		                        <div class="col-md-5">
-		                            <label for="apellidos"  class="control-label">Apellidos</label>
-		                            <input type="text" required class="form-control" id="apellidos" name='apellidos'>
-		                        </div>
-
+                            <div class="row g-2 mt-3">
+		                        <div class="col">
+		                            <div class="form-floating">
+                                        <input type="text" required class="form-control" id="nombre" name='nombre' placeholder="Nombre">
+                                        <label class="text-danger " for="nombre">Nombre</label>
+		                            </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-floating">
+                                        <input type="text" required class="form-control" id="apellidos" name='apellidos' placeholder="Apellidos">
+                                        <label for="apellidos"  class="text-danger">Apellidos</label>
+                                </div>
 							</div>
-							<div class="form-group">
-								<div class="col-md-5">
-		                            <label for="nif"  class="control-label">NIF/NIE</label>
-		                            <input type="text"  class="form-control" id="nif" name='nif'>
-		                        </div>
-		                        <div class="col-md-5">
-		                            <label for="nacimiento" class="control-label">Fecha de Nacimiento</label>
-		                            <input type="date"  class="form-control" id="nacimiento" name='nacimiento'>
-		                        </div>
-								<div class="col-md-5">
-		                            <label for="alta" class="control-label">Fecha de Alta</label>
-		                            <input type="date"  class="form-control" id="alta" name='alta'>
-		                        </div>
-		                        <div class="col-md-12">
-		                            <label for="calle" class="form-label">Calle</label>
-		                            <input type="text" class="form-control" id="calle" name='calle' placeholder="Indicar la calle">
-		                        </div>
-		                        <div class="col-md-6">
-		                            <label for="poblacion" class="form-label">Población</label>
-		                            <input type="text" class="form-control" id="poblacion" name='poblacion'>
-		                        </div>
-		                        <div class="col-md-4">
-		                            <label for="provincia" class="form-label">Provincia</label>
-		                            <select id="provincia" class="form-select" name='provincia'>
-		                                <option selected value=''>Selecionar</option>
-										{% for prov in new_volunteer_data.provincias %}
-		                                	<option value = {{forloop.counter0}}>{{prov}}</option>
-										{% endfor %}
-		                            </select>
-		                        </div>
-		                        <div class="col-md-2">
-		                            <label for="codigo" class="form-label">Código Postal</label>
-		                            <input type="text" class="form-control" id="codigo" name='codigo'>
-		                        </div>
-		                        <div class="col-12">
-		                            <label for="email" class="form-label">email</label>
-		                            <input type="email" class="form-control" id="email" name='email'>
-		                        </div>
-		                        <div class="col-md-6">
-		                            <label for="fijo" class="form-label">Telefono Fijo</label>
-		                            <input type="text" class="form-control" id="fijo" name='fijo'>
-		                        </div>
-		                        <div class="col-md-6">
-		                            <label for="movil" class="form-label">Telefono Movil</label>
-		                            <input type="tel" class="form-control" id="movil" name='movil'>
-		                        </div>
-							</div>
-							<div class="form-group required">
-								<div class="col-md-4">
-		                            <label for="tipoColaboracion" class="control-label">Tipo de Colaboración</label>
-		                            <select id="tipoColaboracion" required class="form-select" name='tipoColaboracion'>
-		                                <option selected value=''>Selecionar</option>
-										{% for id,val in new_volunteer_data.types %}
-		                                	<option value="{{id}}">{{val}}</option>
-										{% endfor %}
-		                            </select>
-		                        </div>
-							</div>
-							<div class="form-group">
-								<div class="col-md-8">
-									<label class="control-label " for="nombre">Seleciona el Grupo del que depende</label>
-									<select id="grupoID" class="form-select" name="grupoID">
-										 <option selected value=''>Selecionar</option>
-										{% for grupo_id, grupo_name , diocesis_name in new_volunteer_data.grupos_diocesis_id_name %}
-											<option value="{{grupo_id}}">{{grupo_name}} en la diocesis de {{diocesis_name}}</option>
-										{% endfor %}
-									</select>
+                            <div class="row g-1 mt-3">
+		                        <div class="col">
+		                            <div class="form-floating">
+                                        <input type="text"  class="form-control" id="nif" name='nif' placeholder="NIF">
+                                        <label for="nif">NIF/NIE</label>
+		                            </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-floating">
+                                        <input type="date"  class="form-control" id="nacimiento" name='nacimiento' placeholder="Nacimiento">
+                                        <label for="nacimiento">Fecha de Nacimiento</label>
+		                            </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-floating">
+                                        <input type="date"  class="form-control" id="alta" name='alta' placeholder="Alta">
+                                        <label for="alta">Fecha de Alta</label>
+		                            </div>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="calle" name='calle' placeholder="Indicar la calle">
+                                        <label for="calle">Calle</label>
+                            </div>
+                            <div class="row g-1 mt-3">
+                                <div class="col">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="poblacion" name='poblacion' placeholder="Poblacion">
+                                        <label for="poblacion">Población</label>
+		                            </div>
+                                </div>
+		                        <div class="col">
+		                            <div class="form-floating">
+                                        <select id="provincia" class="form-select" name='provincia'>
+                                            <option selected value=''>Selecionar</option>
+                                            {% for prov in new_volunteer_data.provincias %}
+                                                <option value = {{forloop.counter0}}>{{prov}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label for="provincia">Provincia</label>
+		                            </div>
+                                </div>
+		                        <div class="col-md-3">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="codigo" name='codigo' placeholder="codigo">
+                                            <label for="codigo" >Código Postal</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row g-1 mt-3">
+                                <div class="col">
+                                    <div class="form-floating">
+                                        <input type="email" class="form-control" id="email" name='email' placeholder="email">
+                                        <label for="email">email</label>
+                                    </div>
+                                </div>
+		                        <div class="col-md-3">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="fijo" name='fijo' placeholder="Telefono fijo">
+                                        <label for="fijo" >Telefono Fijo</label>
+                                    </div>
+                                </div>
+		                        <div class="col-md-3">
+                                    <div class="form-floating">
+                                        <input type="tel" class="form-control" id="movil" name='movil' placeholder="Telefono movil">
+                                        <label for="movil">Telefono Movil</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row g-1 mt-3">
+                                <div class="col-md-3">
+                                    <div class="form-floating">
+                                        <select id="tipoColaboracion" required class="form-select" name='tipoColaboracion'>
+                                            <option selected value=''>Selecionar</option>
+                                            {% for id,val in new_volunteer_data.types %}
+                                                <option value="{{id}}">{{val}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label for="tipoColaboracion">Tipo de Colaboración</label>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-floating">
+                                        <select id="grupoID" class="form-select" name="grupoID">
+                                            <option selected value=''>Selecionar</option>
+                                            {% for grupo_id, grupo_name , diocesis_name in new_volunteer_data.grupos_diocesis_id_name %}
+                                                <option value="{{grupo_id}}">{{grupo_name}} en la diocesis de {{diocesis_name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label for="nombre">Seleciona el Grupo del que depende</label>
+								    </div>
 								</div>
-								<br>
-								<div class="col-md-6">
-									<label for="rec_boletin"  class="control-label">Desea recibir boletín</label>
-									<select id="rec_boletin"  class="form-select" name='rec_boletin'>
-										<option value="0">No deseo recibir el boletin</option>
-										<option value="1">Si, Boletin online</option>
-										<option value="2">Si, Boletin por correo postal</option>
-									</select>
-								</div>
+                                <div class="col-md-3">
+                                    <div class="form-floating">
+                                        <select id="rec_boletin"  class="form-select" name='rec_boletin'>
+                                            <option value="0">No deseo recibir el boletin</option>
+                                            <option value="1">Si, Boletin online</option>
+                                            <option value="2">Si, Boletin por correo postal</option>
+                                        </select>
+                                        <label for="rec_boletin">Desea recibir boletín</label>
+                                    </div>
+                                </div>
 							</div>
-							<br><br>
-	                        <div class="col-12">
-	                            <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
-	                            <button type="submit" class="btn-outline-primary float-end ">Guardar datos</button>
+	                        <div class="row my-3">
+	                            <div class="col">
+                                    <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
+                                    <input class="btn float-end btn-outline-primary" type="submit" value="Guardar datos">
+                                </div>
 	                        </div>
 	                    </form>
-						<p>Los campos con <span style="color:red"> * </span> son obligatorios</p>
+						<p>Los campos en <span style="color:red"> rojo </span> son obligatorios</p>
 	                </div>
 	            </div>
-	        </div> <!-- end col-md-10 -->
-	    </div> <!-- end row-->
-	</div> <!-- end container -->
+	        </div> 
+	    </div> 
+	</div> 
 {% endif %}
 {% endblock %}

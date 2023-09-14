@@ -729,7 +729,6 @@ def modificacion_grupo(request):
     grupo_data = {
         "grupos_diocesis_name": aicespana.utils.generic_functions.get_id_grupo_diocesis_delegacion_name()
     }
-
     return render(
         request, "aicespana/modificacionGrupo.html", {"grupo_data": grupo_data}
     )
@@ -757,6 +756,7 @@ def modificar_grupo(request, grupo_id):
     grupo_data["provincia_index"] = grupo_data["provincias"].index(
         grupo_data["provincia"]
     )
+
     if request.method == "POST" and request.POST["action"] == "modificarGrupo":
         if (
             aicespana.models.Grupo.objects.filter(
@@ -1579,11 +1579,22 @@ def cargos_voluntarios(request):
             request.POST["user_id"]
         )
         data = {}
+        
         data["cargo"] = request.POST["cargo"]
-        data["actividad"] = request.POST["actividad"]
-        data["grupo"] = request.POST["grupo"]
-        data["proyecto"] = request.POST["proyecto"]
+        if "eliminar_grupo" in request.POST:
+            data["actividad"] = ""
+        else:
+            data["actividad"] = request.POST["actividad"]
+        if "eliminar_grupo" in request.POST:
+            data["grupo"] = ""
+        else:
+            data["grupo"] = request.POST["grupo"]
+        if "eliminar_proyecto" in request.POST:
+            data["proyecto"] = ""
+        else:
+            data["proyecto"] = request.POST["proyecto"]
         data["colaboracion"] = request.POST["colaboracion"]
+        import pdb; pdb.set_trace()
         user_obj.update_information(data)
         updated_data = (
             aicespana.utils.generic_functions.get_external_personal_responsability(

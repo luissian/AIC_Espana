@@ -1,22 +1,10 @@
 {% extends 'aicespana/base.html' %}
 {% load static %}
 {% block content %}
-<style media="screen">
-	.form-group.required .control-label:after {
-	  content:"  *";
-	  color:red;
-	}
-</style>
-<style>
-.table-wrapper {
-    height: 550px;
-    overflow: auto;
-    display:inline-block;
-    width: 540px;
-</style>
+{% include "aicespana/cdn_table_functionality.html" %}
 {% if ERROR %}
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-6 offset-3">
 				<div class="card text-center border-danger">
 					<div class="card-header">
@@ -28,40 +16,40 @@
 								{{text}}
 							{% endfor %}
 						</p>
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+	</div> 
 {% endif %}
 {% if confirmation_data %}
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
-					<div class="card-header"><h2 style="text-align:center">Datos Guardados</h2> </div>
+					<div class="card-header"><h2 class"text-center">Datos Guardados</h2> </div>
 					<div class="card-body">
-						<p style="text-align:center">Los datos del grupo {{confirmation_data}} se han guardado correctamente</p>
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-		    </div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+						<p class="text-center">Los datos del grupo {{confirmation_data}} se han guardado correctamente</p>
+					</div> 
+				</div> 
+		    </div> 
+		</div> 
+	</div> 
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-body">
-						<p>Para dar de alta una nueo grupo hacer click en el boton de abajo</p>
-						<br><br>
+						<p>Para dar de alta una nuevo grupo hacer click en el boton de abajo</p>
+						
 						<div class="text-center">
-							<a href="/altaGrupo"> <button type="button" class="btn btn-outline-secondary float-center" >Añadir un nueva grupo</button> </a>
-						</div> <!-- end text center -->
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+							<a href="/altaGrupo"> <button type="button" class="btn btn-outline-secondary float-center" >Añadir un nuevo grupo</button> </a>
+						</div> 
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+	</div> 
 
 {% else %}
 	<section class="light">
@@ -70,83 +58,112 @@
 	    </div>
 	</section>
 	<div class="container-md">
-	    <div class="row g-3">
+	    <div class="row g-2">
 	        <div class="col-md-6">
 	            <div class="card">
-	                    <div class="card-body">
+	                <div class="card-body">
 	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="altaGrupo" id="altaGrupo" >
 	                        {% csrf_token %}
 	                        <input type="hidden" name="action" value="altaGrupo"/>
-							<div class="form-group required">
-		                        <div class="col-md-12">
-		                            <label class="control-label " for="nombre">Nombre del Grupo</label>
-		                            <input type="text" required class="form-control" id="nombre" name='nombre'>
+                            <div class="row">
+		                        <div class="col">
+		                            <div class="form-floating mt-3">
+                                        <input type="text" required class="form-control" id="nombre", name='nombre' placeholder="Nombre del grupo">
+                                        <label for="nombre" class="text-danger">Nombre del grupo</label>
+                                    </div>
 		                        </div>
-								<div class="col-md-8">
-		                            <label class="control-label " for="nombre">Seleciona la Diocesis de la que depende el Grupo</label>
-									<select id="diocesis_id" required class="form-select" name="diocesis_id">
-										<option value="">Selecciona la diocesis</option>
-										{% for diocesis_id, diocesis in grupo_data.diocesis_id_name_list %}
-		                                	<option value = {{diocesis_id}}>{{diocesis}}</option>
-										{% endfor %}
-									</select>
+                            </div>
+							<div class="row">
+		                        <div class="col">
+		                            <div class="form-floating mt-3">
+                                        <select id="diocesis_id" required class="form-select" name="diocesis_id">
+                                            <option value="">Selecciona la diocesis</option>
+                                            {% for diocesis_id, diocesis in grupo_data.diocesis_id_name_list %}
+                                                <option value = {{diocesis_id}}>{{diocesis}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label class="text-danger" for="nombre">Seleciona la Diocesis de la que depende el Grupo</label>
+                                    </div>
 								</div>
 							</div>
-							<div class="form-group">
-								<div class="col-md-8">
-		                            <label for="registro"  class="control-label">Número de Registro</label>
-		                            <input type="text"  class="form-control" id="registro" name='registro'>
+							<div class="row">
+		                        <div class="col">
+		                            <div class="form-floating mt-3">
+                                        <input type="text"  class="form-control" id="registro" name='registro' placeholder="Numero registro">
+                                        <label for="registro">Número de Registro</label>
+                                    </div>
 		                        </div>
-								<div class="col-md-8">
-		                            <label for="fechaErecion"  class="control-label">Fecha Ereción</label>
-		                            <input type="date"  class="form-control" id="fechaErecion" name='fechaErecion'>
+                            </div>
+							<div class="row">
+		                        <div class="col">
+		                            <div class="form-floating mt-3">
+                                        <input type="date"  class="form-control" id="fechaErecion" name='fechaErecion'>
+                                        <label for="fechaErecion">Fecha Ereción</label>
+                                    </div>
+                                </div>
+                            </div>
+							<div class="row">
+		                        <div class="col">
+		                            <div class="form-floating mt-4">
+                                        <input type="text" required class="form-control" id="calle" name='calle' placeholder="Calle">
+                                        <label for="calle" class="text-danger">Calle</label>
+		                            </div>
 		                        </div>
-							</div>
-							<div class="form-group required">
-		                        <div class="col-md-8">
-		                            <label for="calle"  class="control-label">Calle</label>
-		                            <input type="text" required class="form-control" id="calle" name='calle'>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-floating mt-3">
+                                        <input type="text" required class="form-control" id="poblacion" name='poblacion' placeholder="Poblacion">
+                                        <label for="poblacion"  class="text-danger">Población</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-floating mt-3">
+                                        <select id="provincia"  required class="form-select" name='provincia'>
+                                        <option selected value=''>Selecionar</option>
+                                        {% for prov in grupo_data.provincias %}
+                                            <option value ="{{forloop.counter0}}">{{prov}}</option>
+                                        {% endfor %}
+                                        </select>
+                                        <label for="provincia" class="text-danger">Provincia</label>
+                                    </div>
 		                        </div>
-		                        <div class="col-md-8">
-		                            <label for="poblacion"  class="control-label">Población</label>
-		                            <input type="text" required class="form-control" id="poblacion" name='poblacion'>
-		                        </div>
-								<div class="col-md-8">
-									<label for="provincia" class="control-label">Provincia</label>
-								    <select id="provincia"  required class="form-select" name='provincia'>
-									   <option selected value=''>Selecionar</option>
-									   {% for prov in grupo_data.provincias %}
-										   <option value ="{{forloop.counter0}}">{{prov}}</option>
-									   {% endfor %}
-								    </select>
-		                        </div>
-		                        <div class="col-md-6">
-		                            <label for="codigo" class="control-label">Código Postal</label>
-		                            <input type="text" required class="form-control" id="codigo" name='codigo'>
-		                        </div>
-							</div>
-							<div class="form-group">
-		                        <div class="col-md-6">
-		                            <label for="observaciones" class="form-label">Observaciones</label>
-		                            <textarea name="observaciones" rows="8" cols="50" maxlength="500"></textarea>
-		                        </div>
-							</div>
-							<br><br>
-	                        <div class="col-12">
-	                            <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
-	                            <button type="submit" class="btn-outline-primary float-end ">Guardar datos</button>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-floating mt-3">
+                                        <input type="text" required class="form-control" id="codigo" name='codigo' placeholder="Codigo postal">
+                                        <label for="codigo" class="text-danger">Código Postal</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Observaciones</span>
+                                        <textarea class="form-control" name="observaciones" rows="8" cols="50" maxlength="500"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+							<div class="row my-3">
+	                            <div class="col">
+                                    <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
+                                    <input class="btn float-end btn-outline-primary" type="submit" value="Guardar datos">
+                                </div>
 	                        </div>
 	                    </form>
-						<p>Los campos con  <span style="color:red"> * </span> son obligatorios</p>
+						<p>Los campos en <span style="color:red"> rojo </span> son obligatorios</p>
 	                </div>
 	            </div>
-	        </div> <!-- end col-md-7 -->
+	        </div>
 			<div class="col-md-6">
 	            <div class="card">
 					<div class="card-header"><h2 style="text-align:center">Listado de Grupos</h2> </div>
 	                    <div class="card-body">
 							<div class="table-wrapper">
-								<table class="table table-hover">
+								<table class="table table-hover" id="grupo_tabla">
 									<thead>
 										<tr>
 											<th>Delegación</th>
@@ -155,27 +172,31 @@
 										</tr>
 									</thead>
 	                            	<tbody>
-										{% for delegacion, grupos in grupo_data.grupos_diocesis_id_name.items %}
+										{% for delegacion, diocesis, gr_id, grupo in grupo_data.grupos_diocesis_id_name %}
 											<tr>
 												<td>{{delegacion}}</td>
-												<td></td>
-												<td></td>
-											</tr>
-											{% for id, grupo, diocesis in grupos %}
-											<tr>
-												<td></td>
 												<td>{{ diocesis }}</td>
-												<td>{{grupo}}</td>
+												<td><a href="modificarGrupo={{gr_id}}">{{grupo}}</a></td>
 											</tr>
-											{% endfor %}
 										{% endfor %}
 		                            </tbody>
 		                        </table>
 							<div> <!-- end table-wrapper -->
-						</div>  <!-- end card-body -->
-		            </div>  <!-- end card -->
-		        </div> <!-- end col-md-5 -->
-	    </div> <!-- end row-->
-	</div> <!-- end container -->
+						</div>  
+		            </div> 
+		        </div> 
+	    </div> 
+	</div> 
 {% endif %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#grupo_tabla').DataTable({
+            dom: "fltirpB",
+            responsive: true,
+            buttons: [
+                'excel'
+            ]
+        });
+    });
+</script>
 {% endblock %}

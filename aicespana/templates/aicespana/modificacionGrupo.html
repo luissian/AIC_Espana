@@ -1,15 +1,16 @@
 {% extends 'aicespana/base.html' %}
 {% load static %}
 {% block content %}
-<br><br>
+{% include "aicespana/cdn_table_functionality.html" %}
+
 <div class="container-md">
-    <div class="row g-3"">
-        <div class="col-md-7">
+    <div class="row g-3 mt-3">
+        <div class="col mt-3">
             <div class="card">
                 <div class="card-header"><h2 style="text-align:center">Listado de Grupos</h2> </div>
                     <div class="card-body">
                         <h5 class="card-title">Seleciona el Grupo que deseas modificar</h5>
-                        <table class="table table-hover">
+                        <table class="table table-hover" id="grupo_tabla">
                             <thead>
                                 <tr>
                                     <th>Delegación</th>
@@ -18,26 +19,30 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for delegacion, grupos in grupo_data.grupos_diocesis_name.items %}
+                                {% for delegacion, diocesis, gr_id, grupo in grupo_data.grupos_diocesis_name %}
                                     <tr>
                                         <td>{{delegacion}}</td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    {% for id, grupo, diocesis in grupos %}
-                                    <tr>
-                                        <td></td>
                                         <td>{{ diocesis }}</td>
-                                        <td>{{grupo}}&nbsp;&nbsp;<a href="/modificarGrupo={{id}}"><i class="bi bi-pen"></i></a></td>
+                                        <td>{{grupo}}&nbsp;&nbsp;<a href="/modificarGrupo={{gr_id}}"><i class="bi bi-pen"></i></a></td>
                                     </tr>
-                                    {% endfor %}
                                 {% endfor %}
                             </tbody>
                         </table>
-                    </div>  <!-- end card-body -->
-	            </div>  <!-- end card -->
-	        </div> <!-- end col-md-5 -->
-    </div> <!-- end row-->
-</div> <!-- end container -->
+                    </div>  
+	            </div> 
+	        </div> 
+    </div> 
+</div> 
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#grupo_tabla').DataTable({
+            dom: "fltirpB",
+            responsive: true,
+            buttons: [
+                'excel'
+            ]
+        });
+    });
+</script>
 
 {% endblock %}

@@ -10,7 +10,7 @@
 {% if ERROR %}
 
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card  border-danger">
 					<div class="card-header"><h2 style="text-align:center">El voluntario no se encuentra en la base de datos</h2> </div>
@@ -18,11 +18,11 @@
 						{% for values in ERROR %}
 							<h4>{{values}}</h4>
 						{% endfor %}
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-		    </div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+					</div> 
+				</div> 
+		    </div> 
+		</div> 
+	</div> 
 
 {% endif %}
 
@@ -34,26 +34,26 @@
 					<div class="card-header"><h2 style="text-align:center">Datos Guardados</h2> </div>
 					<div class="card-body">
 						<p style="text-align:center">Los datos de {{confirmation_data.nombre}} {{confirmation_data.apellidos}} se han guardado correctamente</p>
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-		    </div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+					</div> 
+				</div> 
+		    </div> 
+		</div> 
+	</div> 
 	<div class="container-md">
 		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-body">
 						<p>Para modificar datos de otro voluntario hacer click en el boton de abajo</p>
-						<br><br>
+						
 						<div class="text-center">
 							<a href="/modificacionVoluntario"> <button type="button" class="btn btn-outline-secondary float-center" >Modificar datos otro  Voluntario</button> </a>
-						</div> <!-- end text center -->
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+						</div> 
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+	</div> 
 
 {% elif voluntary_data %}
 	<div class="container-md">
@@ -66,7 +66,7 @@
 							{% csrf_token %}
 							<input type="hidden" name="action" value="actualizarCampos"/>
 							<input type="hidden" name="user_id" value="{{voluntary_data.user_id}}"/>
-							<br>
+							
 							<div class="form-group required">
 								<div class="col-md-5">
 									<label class="control-label" for="nombre">Nombre</label>
@@ -166,7 +166,7 @@
 											{% endfor %}
 										</select>
 									</div>
-								<br>
+								
 								<div class="form-group">
 									<div class="col-md-8">
 										<label class="control-label" for="actividadID">Seleciona la Actividad del que depende</label>
@@ -182,7 +182,7 @@
 											{% endfor %}
 										</select>
 									</div>
-								<br>
+								
 								<div class="col-md-6">
 									<label for="rec_boletin"  class="control-label">Desea recibir boletín</label>
 									<select id="rec_boletin"  class="form-select" name='rec_boletin'>
@@ -212,18 +212,18 @@
 								</div>
 
 							</div>
-							<br><br>
+							
 							<div class="col-12">
 
 								<button type="submit" class="btn-outline-primary float-end ">Guardar datos</button>
 							</div>
 						</form>
 						<p>Los campos con <span style="color:red"> * </span> son obligatorios</p>
-					</div> 	<!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+					</div> 	
+				</div> 
+			</div> 
+		</div> 
+	</div> 
 
 
 {% elif updated_data %}
@@ -232,9 +232,9 @@
 			<h1 class="h1 text-center" id="pageHeaderTitle">Modificación de datos de voluntarios</h1>
 		</div>
 	</section>
-	<br><br><br>
+	
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Datos actualizados del voluntario</h3></div>
@@ -290,7 +290,7 @@
 									</tr>
 								</tbody>
 							</table>
-							<br><br>
+							
 							<table class="table table-hover">
 								<thead>
 									<tr>
@@ -341,12 +341,12 @@
 									</tr>
 								</tbody>
 							</table>
-						</div> <!-- end col-md-10 -->
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+						</div> 
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+	</div> 
 {% elif personal_list %}
 	<div class="container-md">
 		<div class="row g-3">
@@ -374,15 +374,15 @@
 								{% endfor %}
 							</tbody>
 						</table>
-						<br><br>
+						
 						<div class="text-center">
 							<a href="/modificacionVoluntario"> <button type="button" class="btn btn-outline-secondary float-center" >Buscar de nuevo</button> </a>
-						</div> <!-- end text center -->
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+						</div> 
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+	</div> 
 
 {% else %}
 	<section class="light">
@@ -391,9 +391,9 @@
 
 	    </div>
 	</section>
-	<br><br><br>
+	
 	<div class="container-md">
-	    <div class="row g-3"">
+	    <div class="row g-3">
 	        <div class="col-md-10">
 	            <div class="card">
 					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Formulario para la busqueda de voluntario</h3></div>
@@ -423,8 +423,8 @@
 	                    </form>
 	                </div>
 	            </div>
-	        </div> <!-- end col-md-10 -->
-	    </div> <!-- end row-->
-	</div> <!-- end container -->
+	        </div> 
+	    </div> 
+	</div> 
 {% endif %}
 {% endblock %}

@@ -4,7 +4,7 @@
 
 {% if ERROR %}
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-6 offset-3">
 				<div class="card text-center bg-danger">
 					<div class="card-header">
@@ -14,11 +14,11 @@
 						<p class="card-text">
 							{{ERROR}}
 						</p>
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+	</div> 
 {% endif %}
 
 {% if confirmation_data %}
@@ -30,56 +30,57 @@
 					<div class="card-body">
 						<p style="text-align:center">Los cambios de la delegación {{confirmation_data}} se han guardado correctamente</p>
 
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-		    </div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+					</div> 
+				</div> 
+		    </div> 
+		</div> 
+	</div> 
 
 {% else %}
-	<br><br>
+	
 	<div class="container-md">
-	    <div class="row g-2">
+	    <div class="row g-2 mt-3">
 	        <div class="col-md-8">
 	            <div class="card">
-					<div class="card-header"><h2 class="text-center">Formulario para cambiar el nombre de la Delegación {{delegacion.name}}</h2> </div>
+					<div class="card-header"><h2 class="text-center">Formulario para actualizar información de la Delegación  de {{delegacion.name}}</h2> </div>
 	                <div class="card-body">
 	                    <form method="post" enctype="multipart/form-data" name="modificarDelegacion" id="modificarDelegacion" >
 	                        {% csrf_token %}
 	                        <input type="hidden" name="action" value="modificarDelegacion"/>
 							<input type="hidden" name="delegacion_id" value="{{delegacion.id}}"/>
-							<div class="form-group">
-		                        <div class="col-md-6">
-		                            <label  class="form-label " for="nombre">Escribe el nuevo nombre de la Delegación</label>
-		                            <input type="text" required class="form-control" id="nombre" name='nombre' value="{{delegacion.name}}">
-		                        </div> <!-- end col-md-6 -->
-								<br><br>
-								<div class="col-md-6">
-									<label for="grupoID" class="form-label">Sube la fotografía de la delegación</label><br>
-									<input type="file" name="uploadImage" accept=".png, .gif, .jpg">
-		                        </div> <!-- end col-md-7 -->
-							</div>
-							<br><br>
-	                        <div class="col-12">
-	                            <button type="submit" class="btn-outline-primary float-end ">Guardar datos</button>
+							<div class="form-floating my-3">
+                                <input type="text" required class="form-control" id="nombre", name='nombre' value="{{delegacion.name}}">
+		                        <label  class="text-danger" for="nombre">Modifica el nombre de la delegación</label>
+		                    </div>
+                            <div class="row">
+		                        <div class="col">
+                                    <div class="mb-3">                         
+                                        <label for="imagen" class="form-label">Actualiza la imagen de la Delegación</label>
+                                        <input type="file"  class="form-control " id="uploadImage" name="uploadImage" accept=".png, .jpg, .gif">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <input class="btn float-end btn-outline-primary" type="submit" value="Guardar datos">
+                                </div>
 	                        </div>
 	                    </form>
-						<br><br>
-						<p>Los campos con  <span style="color:red"> * </span> son obligatorios</p>
-	                </div>  <!-- end card-body -->
-	            </div>  <!-- end card -->
+						<p>Los campos en  <span style="color:red"> rojo </span> son obligatorios</p>
+	                </div>  
+	            </div> 
 
-	        </div> <!-- end col-md-7 -->
+	        </div> 
 			{% if delegacion.image != '' %}
 				<div class="col-md-4">
 					<div class="card">
 						<div class="card-body">
 							<img src="memorias_de_proyectos/images/{{delegacion.image}}" alt="{{delegacion_data.delegacion_name}}" class="img-fluid">
-						</div> <!-- end card body-->
-					</div> <!-- end card  -->
-				 </div> <!-- end col-md-4 -->
+						</div> 
+					</div> 
+				 </div>
 			{% endif %}
-	    </div> <!-- end row-->
-	</div> <!-- end container -->
+	    </div> 
+	</div> 
 {% endif %}
 {% endblock %}

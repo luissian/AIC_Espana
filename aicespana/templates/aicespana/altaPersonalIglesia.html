@@ -10,7 +10,7 @@
 {% if ERROR %}
 
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card  border-danger">
 					<div class="card-header"><h2 style="text-align:center">El personal de iglesia no se puede crear</h2> </div>
@@ -18,11 +18,11 @@
 						{% for values in ERROR %}
 							<h4>{{values}}</h4>
 						{% endfor %}
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-		    </div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+					</div> 
+				</div> 
+		    </div> 
+		</div> 
+	</div> 
 
 {% endif %}
 
@@ -34,26 +34,26 @@
 					<div class="card-header"><h2 style="text-align:center">Datos Guardados</h2> </div>
 					<div class="card-body">
 						<p style="text-align:center">Los datos de {{confirmation_data.nombre}} {{confirmation_data.apellido}} se han guardado correctamente</p>
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-		    </div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+					</div> 
+				</div> 
+		    </div> 
+		</div> 
+	</div> 
 	<div class="container-md">
 		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-body">
 						<p>Para dar de alta un nuevo personal de la AIC hacer click en el boton de abajo</p>
-						<br><br>
+						
 						<div class="text-center">
 							<a href="/altaPersonalIglesia"> <button type="button" class="btn btn-outline-secondary float-center" >Añadir un nuevo personal</button> </a>
-						</div> <!-- end text center -->
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+						</div> 
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+	</div> 
 
 {% else %}
 	<section class="light">
@@ -123,7 +123,7 @@
 		                            <input type="tel" class="form-control" id="movil" name='movil'>
 		                        </div>
 							</div>
-							<br>
+							
 							<div class="col-md-6">
 								<label for="rec_boletin"  class="control-label">Desea recibir boletín</label>
 								<select id="rec_boletin"  class="form-select" name='rec_boletin'>
@@ -132,7 +132,7 @@
 									<option value="2">Si, Boletin por correo postal</option>
 								</select>
 							</div>
-							<br><br>
+							
 	                        <div class="col-12">
 	                            <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
 	                            <button type="submit" class="btn-outline-primary float-end ">Guardar datos</button>
@@ -141,8 +141,8 @@
 						<p>Los campos con  <span style="color:red"> * </span> son obligatorios</p>
 	                </div>
 	            </div>
-	        </div> <!-- end col-md-10 -->
-	    </div> <!-- end row-->
-	</div> <!-- end container -->
+	        </div> 
+	    </div> 
+	</div> 
 {% endif %}
 {% endblock %}

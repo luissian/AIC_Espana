@@ -10,7 +10,7 @@
 
 {% if ERROR %}
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-6 offset-3">
 				<div class="card text-center bg-danger">
 					<div class="card-header">
@@ -20,29 +20,29 @@
 						<p class="card-text">
 							{{ERROR}}
 						</p>
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+	</div> 
 {% endif %}
 
 {% if confirmation_data %}
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-header"><h2 style="text-align:center">Datos Guardados</h2> </div>
 					<div class="card-body">
 						<p style="text-align:center">Los cambios de la Actividad {{confirmation_data}} se han guardado correctamente</p>
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-		    </div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+					</div> 
+				</div> 
+		    </div> 
+		</div> 
+	</div> 
 
 {% else %}
-	<br><br>
+	
 	<div class="container-md">
 	    <div class="row g-3">
 	        <div class="col-md-9">
@@ -89,21 +89,21 @@
 								<div class="col-md-8">
 									{% if actividad_data.memoria != '' %}
 										<a href="{{actividad_data.memoria}}">Descarga la memoria de la actividad <i class="bi bi-download"></i> </a>
-										<br><br>
-										<label for="uploadMemoria" class="form-label">Usa el boton para actualizar la Memoria de la actividad</label><br>
+										
+										<label for="uploadMemoria" class="form-label">Usa el boton para actualizar la Memoria de la actividad</label>
 										<input type="file" name="uploadMemoria" accept=".doc, .docx, .pdf, .txt">
 									{% else %}
-										<label for="uploadMemoria" class="form-label">Sube la Memoria de la actividad</label><br>
+										<label for="uploadMemoria" class="form-label">Sube la Memoria de la actividad</label>
 										<input type="file" name="uploadMemoria" accept=".doc, .docx, .pdf, .txt">
 									{% endif %}
 								</div>
 								<div class="col-md-8">
 									{% if actividad_data.fotografia != '' %}
 										<a href="{{actividad_data.fotografia}}">Descarga la fotografia del Proyecto <i class="bi bi-download"></i> </a>
-										<label for="grupoID" class="form-label">Usa el boton para actualizar la fotografia de la actividad</label><br>
+										<label for="grupoID" class="form-label">Usa el boton para actualizar la fotografia de la actividad</label>
 									 	<input type="file" name="uploadFotografia" accept=".jpg, .gif, .pdf, .png">
 									{% else %}
-										<label for="grupoID" class="form-label">Sube la fotografía de la actividad</label><br>
+										<label for="grupoID" class="form-label">Sube la fotografía de la actividad</label>
 										<input type="file" name="uploadFotografia" accept=".jpg, .gif, .pdf, .png">
 									{% endif %}
 								</div>
@@ -112,17 +112,17 @@
 		                            <textarea name="observaciones" rows="8" cols="70" maxlength="500">{{actividad_data.observaciones}}</textarea>
 		                        </div>
 							</div>
-							<br><br>
+							
 	                        <div class="col-12">
 	                            <button type="submit" class="btn-outline-primary float-end ">Guardar datos</button>
 	                        </div>
 	                    </form>
-						<br><br>
+						
 						<p>Los campos con  <span style="color:red"> * </span> son obligatorios</p>
-	                </div>  <!-- end card-body -->
-	            </div>  <!-- end card -->
-	        </div> <!-- end col-md-6 -->
-	    </div> <!-- end row-->
-	</div> <!-- end container -->
+	                </div>  
+	            </div> 
+	        </div>
+	    </div> 
+	</div> 
 {% endif %}
 {% endblock %}

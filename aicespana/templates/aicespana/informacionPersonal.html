@@ -18,11 +18,11 @@
 						{% for values in ERROR %}
 							<h4>{{values}}</h4>
 						{% endfor %}
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-		    </div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+					</div> 
+				</div> 
+		    </div> 
+		</div> 
+	</div> 
 
 {% endif %}
 
@@ -30,7 +30,7 @@
 <div class="container sm-12">
 	<div class="row mt-5">
 		<div class="container sm-12">
-			<br><br><br>
+			
 			<ul class="nav nav-tabs" id="myTab" role="tablist">
 			   <li class="nav-item" role="presentation">
 			    	<button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab" aria-controls="info" aria-selected="true">Información General</button>
@@ -80,8 +80,8 @@
 												</tbody>
 											</table>
 										</div> <!--  end of table wrapper  -->
-									</div> <!-- end card body-->
-								</div> <!-- end card  -->
+									</div> 
+								</div> 
 								<div class="card">
 								   	<div class="card-header"><h2 style="text-align:center">Observaciones del Personal Iglesia</h2> </div>
    				  					<div class="card-body">
@@ -89,10 +89,10 @@
 												{{info_personal.observaciones}}
 											{% endif %}
 										</p>
-									</div> <!-- end card body-->
-								</div> <!-- end card  -->
-					  		</div> <!-- end col-md-10 -->
-					  	</div> <!-- end row-->
+									</div> 
+								</div> 
+					  		</div> 
+					  	</div> 
 					</div> <!-- end continer-->
 				</div>  <!-- end tab info -->
 
@@ -109,9 +109,9 @@
 													<tr>
 														<td class="col text-center">Dirección Postal</td>
 														<td>{{info_personal.calle}}
-															<br>{{info_personal.poblacion}}
-															<br>{{info_personal.provincia}}
-															<br>{{info_personal.codigo}}</td>
+															{{info_personal.poblacion}}
+															{{info_personal.provincia}}
+															{{info_personal.codigo}}</td>
 													</tr>
 													<tr>
 														<td class="col text-center">Tlf. Móvil</td>
@@ -146,10 +146,10 @@
 												</tbody>
 											</table>
 										</div> <!--  end of table wrapper  -->
-									</div> <!-- end card body-->
-								</div> <!-- end card  -->
-					  		</div> <!-- end col-md-10 -->
-					  	</div> <!-- end row-->
+									</div> 
+								</div> 
+					  		</div> 
+					  	</div> 
 					</div> <!-- end continer-->
 				</div>  <!-- end tab contacto -->
 
@@ -178,10 +178,10 @@
 												</tbody>
 											</table>
 										</div> <!--  end of table wrapper  -->
-									</div> <!-- end card body-->
-								</div> <!-- end card  -->
-					  		</div> <!-- end col-md-10 -->
-					  	</div> <!-- end row-->
+									</div> 
+								</div> 
+					  		</div> 
+					  	</div> 
 					</div> <!-- end continer-->
 				</div>  <!-- end tab grupo -->
 
@@ -209,11 +209,11 @@
 												</tbody>
 											</table>
 										</div> <!--  end of table wrapper  -->
-									</div> <!-- end card body-->
-								</div> <!-- end card  -->
+									</div> 
+								</div> 
 							</div> <!-- end col-md-8 -->
-						</div> <!-- end row-->
-					</div> <!-- end container -->
+						</div> 
+					</div> 
 				</div>  <!-- end tab cargos -->
 
 				<div class="tab-pane fade" id="proyecto" role="tabpanel" aria-labelledby="proyecto-tab">
@@ -245,20 +245,20 @@
 												</table>
 											</div> <!--  end of table wrapper  -->
 										{% endif %}
-									</div> <!-- end card body-->
-								</div> <!-- end card  -->
+									</div> 
+								</div> 
 							</div> <!-- end col-md-8 -->
-						</div> <!-- end row-->
-					</div> <!-- end container -->
+						</div> 
+					</div> 
 				</div>  <!-- end tab grupo -->
 			</div>  <!-- end myTabContent -->
-		</div>  <!-- end container -->
-	</div> <!-- end row-->
-</div>  <!-- end container -->
+		</div>  
+	</div> 
+</div>  
 {% else %}
-	<br><br><br>
+	
 	<div class="container-md">
-	    <div class="row g-3"">
+	    <div class="row g-3">
 	        <div class="col-md-10">
 	            <div class="card">
 					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Formulario para la busqueda de personal iglesia</h3></div>
@@ -288,8 +288,8 @@
 	                    </form>
 	                </div>
 	            </div>
-	        </div> <!-- end col-md-10 -->
-	    </div> <!-- end row-->
-	</div> <!-- end container -->
+	        </div> 
+	    </div> 
+	</div> 
 {% endif %}
 {% endblock %}

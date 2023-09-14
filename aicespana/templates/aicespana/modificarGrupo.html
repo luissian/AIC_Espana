@@ -1,18 +1,12 @@
 {% extends 'aicespana/base.html' %}
 {% load static %}
 {% block content %}
-<style media="screen">
-	.form-group.required .control-label:after {
-	  content:"  *";
-	  color:red;
-	}
-</style>
 
 {% if ERROR %}
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-6 offset-3">
-				<div class="card text-center bg-danger">
+				<div class="card text-center border-danger">
 					<div class="card-header">
 						<h2 style="text-align:center">ERROR</h2>
 					</div>
@@ -20,117 +14,137 @@
 						<p class="card-text">
 							{{ERROR}}
 						</p>
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+	</div> 
 {% endif %}
 
 {% if confirmation_data %}
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-header"><h2 style="text-align:center">Datos Guardados</h2> </div>
 					<div class="card-body">
 						<p style="text-align:center">Los cambios del grupo {{confirmation_data}} se ha guardado correctamente</p>
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-		    </div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+					</div> 
+				</div> 
+		    </div> 
+		</div> 
+	</div> 
 
 {% else %}
-	<br><br>
 	<div class="container-md">
-	    <div class="row g-3">
-	        <div class="col-md-8">
+	    <div class="row justify-content-center mt-3">
+	        <div class="col-md-10">
 			  {% if grupo_data.activo == "true" %}
 	            <div class="card">
 			  {% else %}
 				<div class="card border-danger text-danger">
 			  {% endif %}
-					<div class="card-header"><h2 style="text-align:center">Formulario para cambiar los datos del grupo {{grupo_data.grupo_name}}</h2> </div>
+					<div class="card-header"><h2 style="text-align:center">Formulario para actualizar los datos del grupo {{grupo_data.grupo_name}}</h2> </div>
 	                <div class="card-body">
-	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="modificarGrupo" id="modificarGrupo" >
+	                    <form class="row" method="post" enctype="multipart/form-data" name="modificarGrupo" id="modificarGrupo" >
 	                        {% csrf_token %}
 	                        <input type="hidden" name="action" value="modificarGrupo"/>
 							<input type="hidden" name="grupoID" value="{{grupo_data.grupoID}}"/>
-							<div class="form-group required">
-		                        <div class="col-md-8">
-		                            <label class="control-label " for="grupo_name">Modifica el nombre del grupo</label>
-		                            <input type="text" required class="form-control" id="grupo_name" name='grupo_name' value="{{grupo_data.grupo_name}}">
+                            <div class="row mt-3 justify-content-end">
+                                <div class="col-md-2">
+                                    <label class="form-check-label" for="activo">Grupo activo</label>
+                                </div>
+								<div class="col-md-1">
+                                    <div class="d-flex form-check form-switch ">
+                                        {% if grupo_data.activo == 'true' %}
+                                                <input class="form-check-input " type="checkbox" name="activo" id="activo" checked>
+                                        {% else %}
+                                            <input class="form-check-input " type="checkbox" name="activo" id="activo">
+                                        {% endif %}
+                                        
+                                    </div>
+								</div>
+                            </div>
+						    <div class="row g-2 mt-3">
+                                <div class="col">
+                                    <div class="form-floating mt-3">
+                                        <input type="text" required class="form-control" id="grupo_name" name='grupo_name' value="{{grupo_data.grupo_name}}">
+                                        <label class="text-danger " for="grupo_name">Actualiza el nombre del grupo</label>
+                                    </div>
 		                        </div>
-								<div class="col-md-8">
-		                            <label class="control-label " for="nombre">Seleciona la Diocesis de la que depende</label>
-									<select id="diocesisID" class="form-select" name="diocesisID">
-										<option value="{{grupo_data.diocesis_id}}">{{grupo_data.diocesis_name}}</option>
-										{% for diocesis_id, diocesis_name in grupo_data.diocesis_id_name_list %}
-		                                	<option value = {{diocesis_id}}>{{diocesis_name}}</option>
-										{% endfor %}
-									</select>
-								</div>
-								<div class="col-md-8">
-									<label for="calle"  class="control-label">Calle</label>
-									<input type="text" required class="form-control" id="calle" name='calle' value="{{grupo_data.calle}}">
-								</div>
-								<div class="col-md-8">
-									<label for="poblacion"  class="control-label">Población</label>
-									<input type="text" required class="form-control" id="poblacion" name='poblacion' value = "{{grupo_data.poblacion}}">
-								</div>
-								<div class="col-md-8">
-									<label for="provincia" class="control-label">Provincia</label>
-								    <select id="provincia"  required class="form-select" name='provincia'>
-									   <option selected value="{{grupo_data.provincia_index}}">{{grupo_data.provincia}}</option>
-									   {% for prov in grupo_data.provincias %}
-										   <option value = {{ forloop.counter0}}>{{prov}}</option>
-									   {% endfor %}
-								    </select>
-								</div>
-								<div class="col-md-6">
-									<label for="codigo" class="control-label">Código Postal</label>
-									<input type="text" required class="form-control" id="codigo" name='codigo' value="{{grupo_data.codigo}}">
-								</div>
-								<div class="col-md-6">
-									<label for="alta"  class="control-label">Fecha Ereción</label>
-									<input type="date" required class="form-control" id="alta" name='alta' value="{{grupo_data.alta}}">
-								</div>
-							</div>
-							<div class="form-group">
-								<div class="col-md-6">
-									<label for="baja"  class="control-label">Fecha Baja</label>
-									<input type="date"  class="form-control" id="baja" name="baja" value="{{grupo_data.baja}}">
-								</div>
-								<div class="col-md-6">
-									<label for="activo"  class="control-label">Estado del Grupo</label>
-									<select id="activo"  class="form-select" name='activo'>
-										{% if grupo_data.activo == 'true' %}
-									   		<option selected value="true">Activo</option>
-										{% else %}
-											<option selected value="false">Cerrado</option>
-										{% endif %}
-										   <option value = "true">Activo</option>
-										   <option value = "false">Cerrado</option>
-								    </select>
-
-								</div>
-		                        <div class="col-md-6">
-		                            <label for="observaciones" class="form-label">Observaciones</label>
-		                            <textarea name="observaciones" rows="8" cols="70" maxlength="500">{{grupo_data.observaciones}}</textarea>
+                                <div class="col">
+                                    <div class="form-floating mt-3">
+                                        <select id="diocesisID" class="form-select" name="diocesisID">
+                                            <option value="{{grupo_data.diocesis_id}}" selected>{{grupo_data.diocesis_name}}</option>
+                                            {% for diocesis_id, diocesis_name in grupo_data.diocesis_id_name_list %}
+                                                <option value = {{diocesis_id}}>{{diocesis_name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label class="text-danger " for="nombre">Seleciona la Diocesis de la que depende</label>
+                                    </div>
 		                        </div>
-							</div>
-							<br><br>
-	                        <div class="col-12">
-	                            <button type="submit" class="btn-outline-primary float-end ">Guardar datos</button>
-	                        </div>
+                            </div>
+                            <div class="row g-2 mt-3">
+                                <div class="col">
+                                    <div class="form-floating">
+                                        <input type="date" required class="form-control" id="alta" name='alta' value="{{grupo_data.alta}}">
+                                        <label for="alta"  class="control-label">Fecha Ereción</label>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-floating">
+                                        <input type="date"  class="form-control" id="baja" name="baja" value="{{grupo_data.baja}}">
+                                        <label for="baja">Fecha Baja</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-floating mt-3">
+                                        <input type="text" required class="form-control" id="calle" name='calle' value="{{grupo_data.calle}}">
+                                        <label for="calle"  class="text-danger">Calle</label>
+                                    </div>
+		                        </div>
+                            </div>
+                            <div class="row g-3 mt-3">
+                                <div class="col">
+                                    <div class="form-floating">
+                                        <input type="text" required class="form-control" id="poblacion" name='poblacion' value = "{{grupo_data.poblacion}}">
+                                        <label for="poblacion"  class="text-danger">Población</label>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-floating">
+                                        <select id="provincia"  required class="form-select" name='provincia'>
+                                            <option selected value="{{grupo_data.provincia_index}}">{{grupo_data.provincia}}</option>
+                                            {% for prov in grupo_data.provincias %}
+                                                <option value = {{ forloop.counter0}}>{{prov}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label for="provincia" class="text-danger">Provincia</label>
+                                    </div>
+                                </div>
+								<div class="col">
+                                    <div class="form-floating">
+                                        <input type="text" required class="form-control" id="codigo" name='codigo' value="{{grupo_data.codigo}}">
+                                        <label for="codigo" class="text-danger">Código Postal</label>
+                                    </div>
+								</div>
+                            </div>
+							<div class="row my-3">
+                                <div class="col">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Observaciones</span>
+                                        <textarea class="form-control" name="observaciones" rows="6" cols="80" maxlength="500">{{proyecto_data.observaciones}}</textarea>
+                                    </div>
+                                    <input class="btn float-end btn-outline-primary my-3" type="submit" value="Guardar datos">
+                                </div>
 	                    </form>
-						<br><br>
-						<p>Los campos con  <span style="color:red"> * </span> son obligatorios</p>
-	                </div>  <!-- end card-body -->
-	            </div>  <!-- end card -->
-	        </div> <!-- end col-md-6 -->
-	    </div> <!-- end row-->
-	</div> <!-- end container -->
+						<p>Los campos en <span style="color:red"> rojo </span> son obligatorios</p>
+	                </div>  
+	            </div> 
+	        </div>
+	    </div> 
+	</div> 
 {% endif %}
 {% endblock %}

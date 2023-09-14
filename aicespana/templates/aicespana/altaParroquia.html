@@ -10,32 +10,32 @@
 
 {% if confirmation_data %}
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-header"><h2 style="text-align:center">Datos Guardados</h2> </div>
 					<div class="card-body">
 						<p style="text-align:center">Los datos de la Parroquia {{confirmation_data}} se han guardado correctamente</p>
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-		    </div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+					</div> 
+				</div> 
+		    </div> 
+		</div> 
+	</div> 
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-body">
 						<p>Para dar de alta una nueva Parroquia hacer click en el boton de abajo</p>
-						<br><br>
+						
 						<div class="text-center">
 							<a href="/altaParroquia"> <button type="button" class="btn btn-outline-secondary float-center" >Añadir una nueva parroquia</button> </a>
-						</div> <!-- end text center -->
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+						</div> 
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+	</div> 
 
 {% else %}
 	<section class="light">
@@ -44,7 +44,7 @@
 	    </div>
 	</section>
 	<div class="container-md">
-	    <div class="row g-3"">
+	    <div class="row g-3">
 	        <div class="col-md-7">
 	            <div class="card">
 	                    <div class="card-body">
@@ -93,7 +93,7 @@
 		                            <textarea name="observaciones" rows="8" cols="70" maxlength="500"></textarea>
 		                        </div>
 							</div>
-							<br><br>
+							
 	                        <div class="col-12">
 	                            <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
 	                            <button type="submit" class="btn-outline-primary float-end ">Guardar datos</button>
@@ -102,7 +102,7 @@
 						<p>Los campos con  <span style="color:red"> * </span> son obligatorios</p>
 	                </div>
 	            </div>
-	        </div> <!-- end col-md-7 -->
+	        </div> 
 			<div class="col-md-4 offset-1">
 	            <div class="card">
 					<div class="card-header"><h2 style="text-align:center">Listado de Parroquias</h2> </div>
@@ -134,10 +134,10 @@
 									{% endfor %}
 	                            </tbody>
 	                        </table>
-						</div>  <!-- end card-body -->
-		            </div>  <!-- end card -->
-		        </div> <!-- end col-md-5 -->
-	    </div> <!-- end row-->
-	</div> <!-- end container -->
+						</div>  
+		            </div> 
+		        </div> 
+	    </div> 
+	</div> 
 {% endif %}
 {% endblock %}

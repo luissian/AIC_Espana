@@ -5,7 +5,7 @@
 <script type="text/javascript" src="{% static 'aicespana/js/aicespana.js' %}"></script>
 {% if  voluntarios_data %}
 	<div class="container sm-12">
-		<br><br><br>
+		
 		<ul class="nav nav-tabs" id="myTab" role="tablist">
 		  <li class="nav-item" role="presentation">
 		    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab" aria-controls="info" aria-selected="true">Información General</button>
@@ -50,10 +50,10 @@
 				  							</tbody>
 				  						</table>
 				  					</div> <!--  end of table wrapper  -->
-				  				</div> <!-- end card body-->
-				  			</div> <!-- end card  -->
+				  				</div> 
+				  			</div> 
 				  		</div> <!-- end col-md-8 -->
-				  	</div> <!-- end row-->
+				  	</div> 
 				</div> <!-- end continer-->
 			</div>  <!-- end tab info -->
 
@@ -82,7 +82,7 @@
 					  								</tr>
 					  								<tr>
 					  									<td colspan="2" class="col text-center">Dirección</td>
-					  									<td>{{calle}}<br>{{pob}}<br>{{prov}}</td>
+					  									<td>{{calle}}{{pob}}{{prov}}</td>
 					  								</tr>
 					  								<tr>
 					  									<td colspan="2" class="col text-center">Tlf. Móvil</td>
@@ -100,11 +100,11 @@
 					  						</tbody>
 					  					</table>
 					  				</div> <!--  end of table wrapper  -->
-					  			</div> <!-- end card body-->
-					  		</div> <!-- end card  -->
+					  			</div> 
+					  		</div> 
 				  		</div> <!-- end col-md-8 -->
-				    </div> <!-- end row-->
-				</div> <!-- end container -->
+				    </div> 
+				</div> 
 			</div>  <!-- end tab cargos -->
 
 			<div class="tab-pane fade" id="lista" role="tabpanel" aria-labelledby="lista-tab">
@@ -132,11 +132,11 @@
 												</tbody>
 							  				</table>
 							  			</div> <!--  end of table wrapper  -->
-							  		</div> <!-- end card body-->
-							  	</div> <!-- end card  -->
+							  		</div> 
+							  	</div> 
 						  	</div> <!-- end col-md-8 -->
-						</div> <!-- end row-->
-					</div> <!-- end container -->
+						</div> 
+					</div> 
 				{% endif %}
 				{% if voluntarios_data.older_than_80  %}
 					<div class="container-md">
@@ -162,15 +162,15 @@
 												</tbody>
 							  				</table>
 							  			</div> <!--  end of table wrapper  -->
-							  		</div> <!-- end card body-->
-							  	</div> <!-- end card  -->
+							  		</div> 
+							  	</div> 
 						  	</div> <!-- end col-md-8 -->
-						</div> <!-- end row-->
-					</div> <!-- end container -->
+						</div> 
+					</div> 
 				{% endif %}
 			</div>  <!-- end tab lista -->
 		</div>  <!-- end tab content -->
-	</div>  <!-- end container -->
+	</div>  
 {% else %}
 	<div class="container sm-8">
 		<div class=""row" style="margin-top: 20px;">
@@ -184,7 +184,7 @@
 
 
 							<div class="col-md-10">
-								<br><br>
+								
 							    <label  class="control-label col-md-5" for="grupo">Seleciona el grupo</label>
 								<select name="grupo_id" id="grupo_id" class="col-md-4" required>
 									<option value=""></option>
@@ -192,7 +192,7 @@
 									    <option value="{{id}}">{{grp}} en la parroquia "{{parroquia}}"</option>
 									{% endfor %}
 								</select>
-								<br><br>
+								
 								<div class="col-md-12">
 									<input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
 									<button type="submit" class="btn-outline-primary float-end ">Obtener voluntarios pertenecientes al grupo</button>
@@ -200,10 +200,10 @@
 							</div>
 						</form>
 					</div>
-				</div> <!-- end card  -->
+				</div> 
 			</div> <!-- end scroll  -->
 		</div>
-	</div> <!-- end container -->
+	</div> 
 
 {% endif %}
 {% endblock %}

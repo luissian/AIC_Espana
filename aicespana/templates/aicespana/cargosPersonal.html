@@ -18,11 +18,11 @@
 						{% for values in ERROR %}
 							<h4>{{values}}</h4>
 						{% endfor %}
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-		    </div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+					</div> 
+				</div> 
+		    </div> 
+		</div> 
+	</div> 
 
 {% endif %}
 
@@ -34,26 +34,26 @@
 					<div class="card-header"><h2 style="text-align:center">Datos Guardados</h2> </div>
 					<div class="card-body">
 						<p style="text-align:center">Los datos de {{confirmation_data.nombre}} {{confirmation_data.apellidos}} se han guardado correctamente</p>
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-		    </div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+					</div> 
+				</div> 
+		    </div> 
+		</div> 
+	</div> 
 	<div class="container-md">
 		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-body">
 						<p>Para asignar un cargo a otro personal de la Iglesia hacer click en el boton de abajo</p>
-						<br><br>
+						
 						<div class="text-center">
 							<a href="/cargosPersonalIglesia"> <button type="button" class="btn btn-outline-secondary float-center" >Asignar un nuevo Cargo</button> </a>
-						</div> <!-- end text center -->
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+						</div> 
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+	</div> 
 
 {% elif personal_available_settings %}
 	<div class="container-md">
@@ -68,13 +68,13 @@
 							{% else %}
 								<h4 style="text-align:center"><strong>{{personal_available_settings.name}} </strong>no tiene acualmente ningún cargo</h4>
 							{% endif %}
-							<br><br>
+							
 							{% if personal_available_settings.collaboration != '' %}
 								<h5 style="text-align:center">{{personal_available_settings.name}} es un {{personal_available_settings.collaboration}}</h5>
 							{% else %}
 								<h5 style="text-align:center">{{personal_available_settings.name}} no se le ha asignado ningun tipo de colaboración</h5>
 							{% endif %}
-						</div> <!-- end col-md-10 -->
+						</div> 
 						<div class="col-md-10">
 							<p>Datos del personal de la Iglesia</p>
 							<table class="table table-hover">
@@ -121,13 +121,13 @@
 									</tr>
 								</tbody>
 							</table>
-						</div> <!-- end col-md-10 -->
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
-	<br>
+						</div> 
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+	</div> 
+	
 	<div class="container-md">
 	    <div class="row g-3">
 	        <div class="col-md-10">
@@ -138,7 +138,7 @@
 	                        {% csrf_token %}
 	                        <input type="hidden" name="action" value="asignarCargos"/>
 							<input type="hidden" name="user_id" value="{{personal_available_settings.user_id}}"/>
-								<br>
+								
 		                        <div class="col-md-10">
 		                            <label  class="control-label col-md-3" for="grupo">Seleciona el Grupo</label>
 									<select name="grupo" id="grupo" class="col-md-6">
@@ -153,7 +153,7 @@
 									</select>
 
 		                        </div>
-								<br>
+								
 								<div class="col-md-10">
 		                            <label for="proyecto"  class="control-label col-md-3">Seleciona la delegación</label>
 									<select name="delegacion" id="delegacion" class="col-md-6">
@@ -167,7 +167,7 @@
 										{% endfor %}
 									</select>
 								</div>
-								<br>
+								
 								<!-- Remove temporary diocesis
 								<div class="col-md-10">
 		                            <label for="proyecto"  class="control-label col-md-3">Seleciona la diocesis</label>
@@ -182,11 +182,11 @@
 										{% endfor %}
 									</select>
 								</div>
-								<br>
+								
 								 -->
 
 
-								<br>
+								
 								<div class="col-md-10">
 	                            	<label for="cargo"  class="control-label col-md-3">Seleciona el cargo</label>
 									<select name="cargo" id="cargo" class="col-md-6">
@@ -200,7 +200,7 @@
 										{% endfor %}
 									</select>
 		                        </div>
-								<br>
+								
 
 	                        <div class="col-12">
 	                            <button type="submit" class="btn-outline-primary float-end ">Guardar cambios</button>
@@ -208,16 +208,16 @@
 	                    </form>
 	                </div>
 	            </div>
-	        </div> <!-- end col-md-10 -->
-	    </div> <!-- end row-->
-	</div> <!-- end container -->
+	        </div> 
+	    </div> 
+	</div> 
 {% elif updated_data %}
 	<section class="light">
 		<div class="container md-8">
 			<h1 class="h1 text-center" id="pageHeaderTitle">Asignacion de cargos del personal de la Iglesia</h1>
 		</div>
 	</section>
-	<br><br><br>
+	
 	<div class="container-md">
 		<div class="row g-3">
 			<div class="col-md-10">
@@ -255,7 +255,7 @@
 									</tr>
 								</tbody>
 							</table>
-							<br><br>
+							
 							<table class="table table-hover">
 								<thead>
 									<tr>
@@ -276,12 +276,12 @@
 
 								</tbody>
 							</table>
-						</div> <!-- end col-md-10 -->
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+						</div> 
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+	</div> 
 {% elif personal_list %}
 	<div class="container-md">
 		<div class="row g-3">
@@ -308,15 +308,15 @@
 								{% endfor %}
 							</tbody>
 						</table>
-						<br><br>
+						
 						<div class="text-center">
 							<a href="/cargosPersonal"> <button type="button" class="btn btn-outline-secondary float-center" >Buscar de nuevo</button> </a>
-						</div> <!-- end text center -->
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+						</div> 
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+	</div> 
 {% else %}
 	<section class="light">
 		<div class="container md-8">
@@ -324,7 +324,7 @@
 
 	    </div>
 	</section>
-	<br><br><br>
+	
 	<div class="container-md">
 	    <div class="row g-3">
 	        <div class="col-md-10">
@@ -356,8 +356,8 @@
 	                    </form>
 	                </div>
 	            </div>
-	        </div> <!-- end col-md-10 -->
-	    </div> <!-- end row-->
-	</div> <!-- end container -->
+	        </div> 
+	    </div> 
+	</div> 
 {% endif %}
 {% endblock %}

@@ -1,50 +1,44 @@
 {% extends 'aicespana/base.html' %}
 {% load static %}
 {% block content %}
-<style media="screen">
-	.form-group.required .control-label:after {
-	  content:"  *";
-	  color:red;
-	}
-</style>
 
 {% if ERROR %}
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-6 offset-3">
-				<div class="card text-center bg-danger">
-					<div class="card-header">
-						<h2 style="text-align:center">ERROR</h2>
+				<div class="card text-center border-danger">
+					<div class="card-header text-align-center">
+						<h2 class="text-danger">ERROR</h2>
 					</div>
 					<div class="card-body">
 						<p class="card-text">
 							{{ERROR}}
 						</p>
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+	</div> 
 {% endif %}
 
 {% if confirmation_data %}
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-header"><h2 style="text-align:center">Datos Guardados</h2> </div>
 					<div class="card-body">
-						<p style="text-align:center">Los cambios de la Diocesis {{confirmation_data}} se ha guardado correctamente</p>
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-		    </div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+						<p class="text-center">Los cambios de la Diocesis {{confirmation_data}} se ha guardado correctamente</p>
+					</div> 
+				</div> 
+		    </div> 
+		</div> 
+	</div> 
 
 {% else %}
-	<br><br>
+	
 	<div class="container-md">
-	    <div class="row g-3"">
+	    <div class="row mt-3 justify-content-center">
 	        <div class="col-md-8">
 				{% if diocesis_data.activo == "true" %}
   	            	<div class="card">
@@ -52,29 +46,31 @@
   					<div class="card border-danger text-danger">
   			  	{% endif %}
 
-					<div class="card-header"><h2 style="text-align:center">Formulario para cambiar los datos de la diocesis {{diocesis_data.diocesis_name}}</h2> </div>
+					<div class="card-header"><h2 style="text-align:center">Formulario para actualizar los datos de la diocesis de {{diocesis_data.diocesis_name}}</h2> </div>
 	                <div class="card-body">
-	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="modificarDiocesis" id="modificarDiocesis" >
+	                    <form class="row" method="post" enctype="multipart/form-data" name="modificarDiocesis" id="modificarDiocesis" >
 	                        {% csrf_token %}
 	                        <input type="hidden" name="action" value="modificarDiocesis"/>
 							<input type="hidden" name="diocesisID" value="{{diocesis_data.diocesis_id}}"/>
-							<div class="form-group required">
-		                        <div class="col-md-6">
-		                            <label class="control-label " for="nombre">Modifica el nombre de la Diocesis</label>
-		                            <input type="text" required class="form-control" id="diocesisNombre", name='diocesisNombre' value="{{diocesis_data.diocesis_name}}">
-		                        </div>
-								<br>
-								<div class="col-md-">
-		                            <label class="control-label " for="nombre">Seleciona la Delegación de la que depende</label>
-									<select id="delegacion_id" class="form-select" name="delegacion_id">
-										<option value="{{diocesis_data.delegation_id}}">{{diocesis_data.delegation_name}}</option>
-										{% for dele_id, dele_name in diocesis_data.delegation_id_name_list %}
-		                                	<option value = {{dele_id}}>{{dele_name}}</option>
-										{% endfor %}
-									</select>
+                            <div class="form-floating my-3">
+                                <input type="text" required class="form-control" id="diocesisNombre", name='diocesisNombre' value="{{delegacion.diocesis_name}}">
+		                        <label  class="text-danger" for="nombre">Modifica el nombre de la diocesi</label>
+		                    </div>
+							<div class="row">
+                                <div class="col">
+                                    <div class="form-floating my-2">
+                                        <select name="delegacion_id" id="delegacion_id" class="form-select">
+                                            <option value="{{diocesis_data.delegation_id}}">{{diocesis_data.delegation_name}}</option>
+                                            {% for dele_id, dele_name in diocesis_data.delegation_id_name_list %}
+                                                <option value = {{dele_id}}>{{dele_name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label class="control-label text-danger" for="nombre">Seleciona la Delegación de la que depende</label>
+                                    </div>
 								</div>
-								<br>
-								<div class="col-md-6">
+							</div>
+                            <div class="row">
+								<div class="col">
 									{% if diocesis_data.allowed_close %}
 										<label for="activo"  class="control-label">Estado de la Diocesis</label>
 										<select id="activo"  class="form-select" name='activo'>
@@ -87,24 +83,32 @@
 											   <option value = "false">Cerrada</option>
 									    </select>
 									{% else %}
-										<h5>Diocesis Activa </h5>
-										<br>
-										<p>Para cerrar la diocesis se han de cerrar primero los grupos que dependen de la Diocesis</p>
-										<input type="hidden" name="activo" value="activo"/>
+                                        <div class="card text-center border-secondary my-3">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <h5>Diocesis Activa </h5>
+										
+                                                    <p>Para cerrar la diocesis se han de cerrar primero los grupos que dependen de la Diocesis</p>
+                                                    <input type="hidden" name="activo" value="activo"/>
+                                                </div>
+
+                                            </div>
+                                        </div>
+										
 									{% endif %}
 								</div>
 							</div>
-							<br><br>
-	                        <div class="col-12">
-	                            <button type="submit" class="btn-outline-primary float-end ">Guardar datos</button>
+							<div class="row mb-3">
+                                <div class="col">
+                                    <input class="btn float-end btn-outline-primary" type="submit" value="Guardar datos">
+                                </div>
 	                        </div>
 	                    </form>
-						<br><br>
-						<p>Los campos con  <span style="color:red"> * </span> son obligatorios</p>
-	                </div>  <!-- end card-body -->
-	            </div>  <!-- end card -->
-	        </div> <!-- end col-md-6 -->
-	    </div> <!-- end row-->
-	</div> <!-- end container -->
+						<p>Los campos en  <span style="color:red"> rojo </span> son obligatorios</p>
+	                </div>  
+	            </div> 
+	        </div>
+	    </div> 
+	</div> 
 {% endif %}
 {% endblock %}

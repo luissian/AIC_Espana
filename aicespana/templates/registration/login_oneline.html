@@ -20,7 +20,7 @@
         {% else %}
             <div class="col-sm-6">
 
-                <br><br>
+                
                 <form id="signin" class="navbar-form navbar-right" role="form" method="post" action="{% url 'login' %}">
                    {% csrf_token %}
                    <h4>Por favor teclea tu Usuario y Contraseña.</h4>
@@ -29,13 +29,13 @@
                        <label class="col-sm-6  control-label" for="nombre">Nombre de usuario</label>
                        <div class="col-sm-6"><input id="id_username" type="text" required class="form-control" name="username" value="" placeholder="Nombre de usuario"></div>
                    </div>
-                   <br>
+                   
                    <div class="input-group">
                        <i class="bi bi-lock"></i>
                        <label class="col-sm-6 control-label " for="nombre">Contraseña</label>
                         <div class="col-sm-6"><input id="id_password" type="password" required class="form-control" name="password" value="" placeholder="Contraseña"></div>
                    </div>
-                   <br><br>
+                   
                    <button type="submit" class="btn btn-primary"> Enviar datos </button>
                 </form>
 

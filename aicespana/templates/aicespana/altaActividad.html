@@ -16,7 +16,7 @@
 </style>
 {% if ERROR %}
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-6 offset-3">
 				<div class="card text-center border-danger">
 					<div class="card-header">
@@ -28,34 +28,34 @@
 								{{text}}
 							{% endfor %}
 						</p>
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+	</div> 
 {% endif %}
 
 {% if confirmation_data %}
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-header"><h2 style="text-align:center">Datos Guardados</h2> </div>
 					<div class="card-body">
 						<p style="text-align:center">La Actividad {{confirmation_data}} se ha guardado correctamente</p>
-						<br><br><br>
+						
 						<input type="button" value="Dar de alta otra Actividad" onclick="location.href ='/altaActividad' ;"/>
-						<br><br>
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-		    </div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+						
+					</div> 
+				</div> 
+		    </div> 
+		</div> 
+	</div> 
 
 {% else %}
-	<br><br>
+	
 	<div class="container-md">
-	    <div class="row g-3"">
+	    <div class="row g-3">
 	        <div class="col-md-10">
 	            <div class="card">
 					<div class="card-header"><h2 style="text-align:center">Formulario alta Actividad</h2> </div>
@@ -74,14 +74,14 @@
 									<label for="alta" class="control-label">Fecha de Alta</label>
 									<input type="date"  class="form-control" id="alta" name='alta'>
 								</div>
-								<br>
+								
 								<div class="col-md-8">
-									<label for="uploadMemoria" class="form-label">Memoria de la actividad</label><br>
+									<label for="uploadMemoria" class="form-label">Memoria de la actividad</label>
 								 	<input type="file" name="uploadMemoria" accept=".doc, .docx, .pdf, .txt">
 								</div>
-								<br><br>
+								
 								<div class="col-md-8">
-									<label for="uploadFotografia" class="form-label">Fotografia de la actividad</label><br>
+									<label for="uploadFotografia" class="form-label">Fotografia de la actividad</label>
 								 	<input type="file" name="uploadFotografia" accept=".jpg, .gif, .pdf, .png">
 								</div>
 							</div>
@@ -91,18 +91,18 @@
 		                            <textarea name="observaciones" rows="12" cols="100" maxlength="990"></textarea>
 		                        </div>
 							</div>
-							<br><br>
+							
 	                        <div class="col-12">
 	                            <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
 	                            <button type="submit" class="btn-outline-primary float-end ">Guardar datos</button>
 	                        </div>
 	                    </form>
-						<br><br>
+						
 						<p>Los campos con  <span style="color:red"> * </span> son obligatorios</p>
-	                </div>  <!-- end card-body -->
-	            </div>  <!-- end card -->
-	        </div> <!-- end col-md-10 -->
-	    </div> <!-- end row-->
-	</div> <!-- end container -->
+	                </div>  
+	            </div> 
+	        </div> 
+	    </div> 
+	</div> 
 {% endif %}
 {% endblock %}

@@ -2,15 +2,15 @@
 {% load static %}
 {% block content %}
 <style media="screen">
-	.form-group.required .control-label:after {
-	  content:"  *";
-	  color:red;
-	}
+    .form-switch .form-check-input:checked {
+        background-position: right center;
+        background-color: red !important;
+      }
 </style>
 {% if ERROR %}
 
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card  border-danger">
 					<div class="card-header"><h2 style="text-align:center">El voluntario no se encuentra en la base de datos</h2> </div>
@@ -18,11 +18,11 @@
 						{% for values in ERROR %}
 							<h4>{{values}}</h4>
 						{% endfor %}
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-		    </div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+					</div> 
+				</div> 
+		    </div> 
+		</div> 
+	</div> 
 
 {% endif %}
 
@@ -34,30 +34,30 @@
 					<div class="card-header"><h2 style="text-align:center">Datos Guardados</h2> </div>
 					<div class="card-body">
 						<p style="text-align:center">Los datos de {{confirmation_data.nombre}} {{confirmation_data.apellidos}} se han guardado correctamente</p>
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-		    </div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+					</div> 
+				</div> 
+		    </div> 
+		</div> 
+	</div> 
 	<div class="container-md">
 		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-body">
 						<p>Para dar de alta un nuevo voluntario hacer click en el boton de abajo</p>
-						<br><br>
+						
 						<div class="text-center">
 							<a href="/nuevoVoluntario"> <button type="button" class="btn btn-outline-secondary float-center" >Añadir un nuevo Voluntario</button> </a>
-						</div> <!-- end text center -->
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+						</div> 
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+	</div> 
 
 {% elif personal_available_settings %}
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3 mt-3">
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-header"><h2 style="text-align:center">Información de {{personal_available_settings.name}}</h2> </div>
@@ -68,13 +68,13 @@
 							{% else %}
 								<h4 style="text-align:center"><strong>{{personal_available_settings.name}} </strong>no tiene acualmente ningún cargo</h4>
 							{% endif %}
-							<br><br>
+							
 							{% if personal_available_settings.collaboration != '' %}
 								<h5 style="text-align:center">{{personal_available_settings.name}} es un {{personal_available_settings.collaboration}}</h5>
 							{% else %}
 								<h5 style="text-align:center">{{personal_available_settings.name}} no se le ha asignado ningun tipo de colaboración</h5>
 							{% endif %}
-						</div> <!-- end col-md-10 -->
+						</div> 
 						<div class="col-md-10">
 							<p>Datos de la colaboración</p>
 							<table class="table table-hover">
@@ -141,119 +141,161 @@
 									</tr>
 								</tbody>
 							</table>
-						</div> <!-- end col-md-10 -->
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
-	<br>
+						</div> 
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+	</div> 
+
 	<div class="container-md">
-	    <div class="row g-3">
+	    <div class="row g-3 mt-3">
 	        <div class="col-md-10">
 	            <div class="card">
-					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Formulario para asignar cargos</h3></div>
+					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Formulario para asignar/modificar cargos</h3></div>
                     <div class="card-body">
 	                    <form class="row g-3" method="post" action="cargosVoluntarios"   enctype="multipart/form-data" name="asignarCargos" id="asignarCargos" >
 	                        {% csrf_token %}
 	                        <input type="hidden" name="action" value="asignarCargos"/>
 							<input type="hidden" name="user_id" value="{{personal_available_settings.user_id}}"/>
-								<br>
-		                        <div class="col-md-10">
-		                            <label  class="control-label col-md-3" for="grupo">Seleciona el Grupo</label>
-									<select name="grupo" id="grupo" class="col-md-6">
-										{% if personal_available_settings.group_id != '' %}
-											<option selected value="{{personal_available_settings.group_id}}">{{personal_available_settings.group}} en la dioecsis {{personal_available_settings.diocesis}}</option>
-											<option  selected value="">Eliminar al voluntario del Grupo</option>
-										{% else %}
-											<option  selected value="">Elegir grupo</option>
-										{% endif %}
-										{% for id, group, diocesis  in personal_available_settings.available_groups %}
-											<option value="{{id}}">{{group}} en la diocesis {{diocesis}}</option>
-										{% endfor %}
-									</select>
-
-		                        </div>
-								<br>
-								<div class="col-md-10">
-		                            <label for="proyecto"  class="control-label col-md-3">Seleciona el proyecto</label>
-									<select name="proyecto" id="proyecto" class="col-md-6">
-										{% if personal_available_settings.project_id != '' %}
-											<option value="{{personal_available_settings.project_id}}">{{personal_available_settings.project}}</option>
-											<option value="">Eliminar al voluntario del proyecto</option>
-										{% else %}
-											<option value="">Elegir Proyecto</option>
-										{% endif %}
-										{% for id, project  in personal_available_settings.available_projects %}
-											<option value="{{id}}">{{project}} </option>
-										{% endfor %}
-									</select>
-								</div>
-								<br>
-
-								<div class="col-md-10">
-	                            	<label for="actividad"  class="control-label col-md-3">Seleciona la actividad</label>
-
-									<select name="actividad" id="actividad" class="col-md-6">
-										{% if personal_available_settings.activity_id != '' %}
-											<option value="{{personal_available_settings.activity_id}}">{{personal_available_settings.activity}}</option>
-											<option value="">Eliminar al voluntatario de la actividad</option>
-										{% else %}
-											<option value="">Elegir Actividad</option>
-										{% endif %}
-										{% for id, activity  in personal_available_settings.available_actitvities %}
-											<option value="{{id}}">{{activity}}</option>
-										{% endfor %}
-									</select>
-		                        </div>
-								<br>
-								<div class="col-md-10">
-	                            	<label for="cargo"  class="control-label col-md-3">Seleciona el cargo</label>
-									<select name="cargo" id="cargo" class="col-md-6">
-										{% if personal_available_settings.responsability_id != '' %}
-											<option value="{{personal_available_settings.responsability_id}}">{{personal_available_settings.responsability}}</option>
-											<option value="">Eliminar Cargo</option>
-										{% else %}
-											<option value="">Elegir cargo</option>
-										{% endif %}
-										{% for id, cargo  in personal_available_settings.available_responsible %}
-											<option value="{{id}}">{{cargo}}</option>
-										{% endfor %}
-									</select>
-		                        </div>
-								<br>
-								<div class="col-md-10">
-	                            	<label for="colaboracion"  class="control-label col-md-3">Seleciona el tipo de colaboración</label>
-									<select name="colaboracion" id="colaboracion" class="col-md-6">
-										{% if personal_available_settings.collaboration_id != '' %}
-											<option value="{{personal_available_settings.collaboration_id}}">{{personal_available_settings.collaboration}}</option>
-										{% else %}
-											<option value="">Selecciona el tipo de colaboración</option>
-										{% endif %}
-										{% for id, collaboration  in personal_available_settings.available_collaboration %}
-											<option value="{{id}}">{{collaboration}}</option>
-										{% endfor %}
-									</select>
-		                        </div>
-	                        <div class="col-12">
-
-	                            <button type="submit" class="btn-outline-primary float-end ">Guardar cambios</button>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-floating my-2">
+                                        <select name="grupo" id="grupo" class="form-select">
+                                            {% if personal_available_settings.group_id != '' %}
+                                                <option selected value="{{personal_available_settings.group_id}}">{{personal_available_settings.group}} en la dioecsis {{personal_available_settings.diocesis}}</option>
+                                                
+                                            {% else %}
+                                                <option  selected value="">Elegir grupo</option>
+                                            {% endif %}
+                                            {% for id, group, diocesis  in personal_available_settings.available_groups %}
+                                                <option value="{{id}}">{{group}} en la diocesis {{diocesis}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label  class="control-label" for="grupo">Seleciona el Grupo</label>
+                                    </div>
+                                </div>
+                                {% if personal_available_settings.group_id != '' %}
+                                    <div class="col-md-4">
+                                        <div class="form-check form-switch mt-2">
+                                            <input class="form-check-input " type="checkbox" name="eliminar_grupo" id="eliminar_grupo">
+                                            <label class="form-check-label" for="eliminar_grupo">Eliminar asignacion al grupo</label>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-floating my-2">
+                                        <select name="proyecto" id="proyecto" class="form-select">
+                                            {% if personal_available_settings.project_id != '' %}
+                                                <option value="{{personal_available_settings.project_id}}">{{personal_available_settings.project}}</option>
+                                            {% else %}
+                                                <option value="">Elegir Proyecto</option>
+                                            {% endif %}
+                                            {% for id, project  in personal_available_settings.available_projects %}
+                                                <option value="{{id}}">{{project}} </option>
+                                            {% endfor %}
+                                        </select>
+                                        <label for="proyecto"  class="control-label">Seleciona el proyecto</label>
+                                    </div>
+                                </div>
+                                {% if personal_available_settings.project_id != '' %}
+                                    <div class="col-md-4">
+                                        <div class="form-check form-switch mt-2">
+                                            <input class="form-check-input " type="checkbox" name="eliminar_proyecto" id="eliminar_proyecto">
+                                            <label class="form-check-label" for="eliminar_grupo">Eliminar asignacion al proyecto</label>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-floating my-2">
+                                        <select name="actividad" id="actividad" class="form-select">
+                                            {% if personal_available_settings.activity_id != '' %}
+                                                <option value="{{personal_available_settings.activity_id}}">{{personal_available_settings.activity}}</option>
+                                            {% else %}
+                                                <option value="">Elegir Actividad</option>
+                                            {% endif %}
+                                            {% for id, activity  in personal_available_settings.available_actitvities %}
+                                                <option value="{{id}}">{{activity}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label for="actividad"  class="control-label">Seleciona la actividad</label>
+                                    </div>
+                                </div>
+                                {% if  personal_available_settings.activity_id != '' %}
+                                    <div class="col-md-4">
+                                        <div class="form-check form-switch mt-2">
+                                            <input class="form-check-input " type="checkbox" name="eliminar_actividad" id="eliminar_actividad">
+                                            <label class="form-check-label" for="eliminar_grupo">Eliminar asignacion de la actividad</label>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-floating my-2">
+                                        <select name="cargo" multiple="multiple" size="8" id="cargo" class="form-select" style="height: 30%;"> 
+                                            {% if personal_available_settings.responsability_id != '' %}
+                                                <option value="{{personal_available_settings.responsability_id}}" selected>{{personal_available_settings.responsability}}</option>
+                                            {% else %}
+                                                <option value="">Elegir cargo</option>
+                                            {% endif %}
+                                            {% for id, cargo  in personal_available_settings.available_responsible %}
+                                                <option value="{{id}}">{{cargo}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label for="cargo"  class="control-label">Seleciona el cargo</label>
+                                    </div>
+                                </div>
+                                {% if  personal_available_settings.responsability_id != '' %}
+                                    <div class="col-md-4">
+                                        <div class="form-check form-switch mt-5">
+                                            <input class="form-check-input " type="checkbox" name="eliminar_cargo" id="eliminar_cargo">
+                                            <label class="form-check-label" for="eliminar_grupo">Eliminar todos los cargos</label>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-floating my-2">
+                                        <select name="colaboracion" id="colaboracion" class="form-select">
+                                            {% if personal_available_settings.collaboration_id != '' %}
+                                                <option value="{{personal_available_settings.collaboration_id}}">{{personal_available_settings.collaboration}}</option>
+                                            {% else %}
+                                                <option value="">Selecciona el tipo de colaboración</option>
+                                            {% endif %}
+                                            {% for id, collaboration  in personal_available_settings.available_collaboration %}
+                                                <option value="{{id}}">{{collaboration}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label for="colaboracion"  class="control-label">Seleciona el tipo de colaboración</label>
+                                    </div>
+                                </div>
+                            </div>
+	                        <div class="row">
+                                <div class="col">
+                                    <input class="btn float-end btn-outline-primary my-3" type="submit" value="Guardar datos">
+                                </div>
 	                        </div>
 	                    </form>
 	                </div>
 	            </div>
-	        </div> <!-- end col-md-10 -->
-	    </div> <!-- end row-->
-	</div> <!-- end container -->
+	        </div> 
+	    </div> 
+	</div> 
 {% elif updated_data %}
 	<section class="light">
 		<div class="container md-8">
 			<h1 class="h1 text-center" id="pageHeaderTitle">Asignacion de cargos de voluntarios</h1>
 		</div>
 	</section>
-	<br><br><br>
+	
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Datos actualizados del voluntario</h3></div>
@@ -309,7 +351,7 @@
 									</tr>
 								</tbody>
 							</table>
-							<br><br>
+							
 							<table class="table table-hover">
 								<thead>
 									<tr>
@@ -360,12 +402,12 @@
 									</tr>
 								</tbody>
 							</table>
-						</div> <!-- end col-md-10 -->
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+						</div> 
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+	</div> 
 {% elif personal_list %}
 	<div class="container-md">
 		<div class="row g-3">
@@ -392,15 +434,15 @@
 								{% endfor %}
 							</tbody>
 						</table>
-						<br><br>
+						
 						<div class="text-center">
 							<a href="/modificacionVoluntario"> <button type="button" class="btn btn-outline-secondary float-center" >Buscar de nuevo</button> </a>
-						</div> <!-- end text center -->
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+						</div> 
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+	</div> 
 {% else %}
 	<section class="light">
 		<div class="container md-8">
@@ -408,9 +450,9 @@
 
 	    </div>
 	</section>
-	<br><br><br>
+	
 	<div class="container-md">
-	    <div class="row g-3"">
+	    <div class="row g-3">
 	        <div class="col-md-10">
 	            <div class="card">
 					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Formulario para la busqueda de voluntario</h3></div>
@@ -440,8 +482,8 @@
 	                    </form>
 	                </div>
 	            </div>
-	        </div> <!-- end col-md-10 -->
-	    </div> <!-- end row-->
-	</div> <!-- end container -->
+	        </div> 
+	    </div> 
+	</div> 
 {% endif %}
 {% endblock %}

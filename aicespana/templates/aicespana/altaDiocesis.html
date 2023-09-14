@@ -1,22 +1,10 @@
 {% extends 'aicespana/base.html' %}
 {% load static %}
 {% block content %}
-<style media="screen">
-	.form-group.required .control-label:after {
-	  content:"  *";
-	  color:red;
-	}
-</style>
-<style>
-.table-wrapper {
-    height: 350px;
-    overflow: auto;
-    display:inline-block;
-    width: 440px;
-</style>
+{% include "aicespana/cdn_table_functionality.html" %}
 {% if ERROR %}
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-6 offset-3">
 				<div class="card text-center border-danger">
 					<div class="card-header">
@@ -28,34 +16,34 @@
 								{{text}}
 							{% endfor %}
 						</p>
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-			</div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+	</div> 
 {% endif %}
 
 {% if confirmation_data %}
 	<div class="container-md">
-		<div class="row g-3"">
+		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-header"><h2 style="text-align:center">Datos Guardados</h2> </div>
 					<div class="card-body">
 						<p style="text-align:center">Los Diocesis {{confirmation_data}} se ha guardado correctamente</p>
-						<br><br><br>
+						
 						<input type="button" value="Dar de alta otra Diocesis" onclick="location.href ='/altaDiocesis' ;"/>
-						<br><br>
-					</div> <!-- end card body-->
-				</div> <!-- end card  -->
-		    </div> <!-- end col-md-10 -->
-		</div> <!-- end row-->
-	</div> <!-- end container -->
+						
+					</div> 
+				</div> 
+		    </div> 
+		</div> 
+	</div> 
 
 {% else %}
-	<br><br>
+	
 	<div class="container-md">
-	    <div class="row g-3"">
+	    <div class="row g-2">
 	        <div class="col-md-6">
 	            <div class="card">
 					<div class="card-header"><h2 style="text-align:center">Formulario alta Diocesis</h2> </div>
@@ -63,58 +51,75 @@
 	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="altaDiocesis" id="altaDiocesis" >
 	                        {% csrf_token %}
 	                        <input type="hidden" name="action" value="altaDiocesis"/>
-							<div class="form-group required">
-		                        <div class="col-md-6">
-		                            <label class="control-label " for="nombre">Nombre de la Diocesis</label>
-		                            <input type="text" required class="form-control" id="nombre", name='nombre'>
+							<div class="row">
+		                        <div class="col">
+		                            <div class="form-floating my-3">
+                                        <input type="text" required class="form-control" id="nombre", name='nombre'>
+                                        <label for="nombre" class="text-danger">Nombre de la Diocesis</label>
+                                    </div>
 		                        </div>
-								<div class="col-md-6">
-		                            <label class="control-label " for="nombre">Seleciona la Delegación de la que depende</label>
-									<select id="delegacion_id" required class="form-select" name="delegacion_id">
-										<option value="">Selecciona la delegación</option>
-										{% for dele_id, dele_name in diocesis_data.delegation_data %}
-		                                	<option value = {{dele_id}}>{{dele_name}}</option>
-										{% endfor %}
-									</select>
+                            </div>
+                            <div class="row">
+								<div class="col">
+		                            <div class="form-floating mb-3">
+                                        <select id="delegacion_id" required class="form-select" name="delegacion_id">
+                                            <option value="">Selecciona la delegación</option>
+                                            {% for dele_id, dele_name in diocesis_data.delegation_data %}
+                                                <option value = {{dele_id}}>{{dele_name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label class="text-danger" for="nombre">Seleciona la Delegación de la que depende</label>
+                                    </div>
 								</div>
 							</div>
-							<br><br>
-	                        <div class="col-12">
-	                            <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
-	                            <button type="submit" class="btn-outline-primary float-end ">Guardar datos</button>
+							<div class="row my-3">
+                                <div class="col">
+                                    <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
+                                    <input class="btn float-end btn-outline-primary" type="submit" value="Guardar datos">
+                                </div>
 	                        </div>
 	                    </form>
-						<br><br>
-						<p>Los campos con  <span style="color:red"> * </span> son obligatorios</p>
-	                </div>  <!-- end card-body -->
-	            </div>  <!-- end card -->
-	        </div> <!-- end col-md-6 -->
-			<div class="col-md-5 offset-1">
+						
+						<p>Los campos en  <span style="color:red"> rojo </span> son obligatorios</p>
+	                </div> 
+	            </div>  
+	        </div> 
+			<div class="col-md-6">
 	            <div class="card">
 					<div class="card-header"><h2 style="text-align:center">Listado de Diocesis</h2> </div>
 	                    <div class="card-body">
-							<div class="table-wrapper">
-								<table class="table table-hover">
-									<thead>
-										<tr>
-											<th>Diocesis</th>
-											<th>Delegación</th>
-										</tr>
-									</thead>
-	                            	<tbody>
-										{% for diocesis, delegacion in diocesis_data.diocesis_list %}
-											<tr>
-												<td>{{ diocesis }}</td>
-												<td>{{delegacion}}</td>
-											</tr>
-											{% endfor %}
-		                            </tbody>
-		                        </table>
-							<div> <!-- end table-wrapper -->
-						</div>  <!-- end card-body -->
-		            </div>  <!-- end card -->
-		        </div> <!-- end col-md-5 -->
-	    </div> <!-- end row-->
-	</div> <!-- end container -->
+							<div class="row">
+                                <div class="col">
+                                    <table class="table table-hover" id="diocesis_tabla">
+                                        <thead>
+                                            <tr>
+                                                <th>Delegación</th>
+                                                <th>Diocesis</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for diocesis, delegacion in diocesis_data.diocesis_list %}
+                                                <tr>
+                                                    <td>{{delegacion}}</td>
+                                                    <td>{{ diocesis }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+							<div> 
+						</div>  
+		            </div>  
+		        </div> 
+	    </div> 
+	</div> 
 {% endif %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#diocesis_tabla').DataTable({
+            dom: "fltirp",
+            responsive: true,
+        });
+    });
+</script>
 {% endblock %}

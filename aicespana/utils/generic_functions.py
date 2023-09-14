@@ -896,12 +896,15 @@ def fetch_grupo_data_to_modify(data_form):
         "codigo",
         "alta",
         "baja",
-        "activo",
         "observaciones",
     ]
     for item in extract_list:
         data[item] = data_form[item]
     data["provincia"] = get_provincia_name_from_index(data["provincia"])
+    if "activo" in data_form:
+        data["activo"] = "true"
+    else:
+        data["activo"] = "false"
     return data
 
 
@@ -936,7 +939,7 @@ def get_id_grupo_diocesis_delegacion_name():
     Return:
         group_diocesis_data
     """
-    group_diocesis_data = collections.OrderedDict()
+    group_diocesis_data = [] # collections.OrderedDict()
     if aicespana.models.Grupo.objects.all().exists():
         delegation_objs = aicespana.models.Delegacion.objects.all().order_by(
             "nombreDelegacion"
@@ -952,6 +955,7 @@ def get_id_grupo_diocesis_delegacion_name():
                     diocesisDependiente=diocesis_obj
                 ).order_by("nombreGrupo")
                 for grupo_obj in grupo_objs:
+                    """
                     if delegation_name not in group_diocesis_data:
                         group_diocesis_data[delegation_name] = []
                     group_diocesis_data[delegation_name].append(
@@ -961,6 +965,8 @@ def get_id_grupo_diocesis_delegacion_name():
                             diocesis_name,
                         ]
                     )
+                    """
+                    group_diocesis_data.append([delegation_name, diocesis_name, grupo_obj.get_grupo_id(),grupo_obj.get_grupo_name()])
 
     return group_diocesis_data
 
