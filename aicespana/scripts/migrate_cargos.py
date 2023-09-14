@@ -21,5 +21,11 @@ def run():
         fh.write("user_id,cargo_id\n")
         for p_ext_obj in p_ext_objs:
             fh.write(str(p_ext_obj.pk) + ","+ str(p_ext_obj.cargo.pk) + "\n")
+    f_name = os.path.join(up_dir, "cargos_iglesia.csv")
+    p_ext_objs = aicespana.models.PersonalIglesia.objects.all().exclude(cargo=None)
+    with open(f_name, "w") as fh:
+        fh.write("user_id,cargo_id\n")
+        for p_ext_obj in p_ext_objs:
+            fh.write(str(p_ext_obj.pk) + ","+ str(p_ext_obj.cargo.pk) + "\n")
     print ("completed")
     
