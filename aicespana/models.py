@@ -846,10 +846,12 @@ class PersonalExterno(models.Model):
             grupo = ""
             grupo_id = ""
             diocesis = ""
+            delegacion = ""
         else:
             grupo = self.grupoAsociado.get_grupo_name()
             grupo_id = self.grupoAsociado.get_grupo_id()
             diocesis = self.grupoAsociado.get_diocesis_name()
+            delegacion= self.grupoAsociado.get_delegacion_name()
         if self.proyectoAsociado is None:
             proyecto_id = ""
             proyecto_name = ""
@@ -891,6 +893,7 @@ class PersonalExterno(models.Model):
         data["grupo"] = grupo
         data["grupo_id"] = grupo_id
         data["diocesis"] = diocesis
+        data["delegacion"] = delegacion
         data["proyecto_id"] = proyecto_id
         data["proyecto_name"] = proyecto_name
         data["actividad_id"] = actividad_id
@@ -1156,6 +1159,10 @@ class PersonalManager(models.Manager):
                 online = True
             else:
                 online = False
+        if data["grupoID"] == "":
+            grupo_obj = None
+        else:
+            grupo_obj = Grupo.objects.get(pk__exact=data["grupoID"])
         new_personel = self.create(
             nombre=data["nombre"],
             apellido=data["apellido"],
@@ -1170,6 +1177,7 @@ class PersonalManager(models.Manager):
             fechaNacimiento=data["nacimiento"],
             recibirBoletin=boletin,
             boletinOnline=online,
+            grupoAsociado = grupo_obj,
         )
         return new_personel
 
@@ -1214,6 +1222,9 @@ class PersonalIglesia(models.Model):
 
     def get_personal_location(self):
         return "%s" % (self.poblacion)
+    
+    def get_personal_provincia(self):
+        return "%s" % (self.provincia)
 
     def get_delegacion_belongs_to(self):
         if self.delegacion:
@@ -1263,10 +1274,12 @@ class PersonalIglesia(models.Model):
             return ""
 
     def get_all_data_from_personal(self):
+        """
         if self.fechaAlta is None:
             alta = ""
         else:
             alta = self.fechaAlta.strftime("%Y-%m-%d")
+        """
         if self.fechaBaja is None:
             baja = ""
         else:
@@ -1298,6 +1311,20 @@ class PersonalIglesia(models.Model):
                 rec_boletin = "2"
         else:
             rec_boletin = "0"
+        if self.grupoAsociado is None:
+            grupo = ""
+            grupo_id = ""
+            diocesis = ""
+            if self.delegacion is None:
+                delegacion = ""
+            else:
+                delegacion = self.delegacion
+        else:
+            grupo = self.grupoAsociado.get_grupo_name()
+            grupo_id = self.grupoAsociado.get_grupo_id()
+            diocesis = self.grupoAsociado.get_diocesis_name()
+            delegacion= self.grupoAsociado.get_delegacion_name()
+        
         data = {}
         data["user_id"] = self.pk
         data["nombre"] = self.nombre
@@ -1319,6 +1346,10 @@ class PersonalIglesia(models.Model):
         data["activo"] = activo
         data["online"] = online
         data["rec_boletin"] = rec_boletin
+        data["grupo"] = grupo
+        data["grupo_id"] = grupo_id
+        data["diocesis"] = diocesis
+        data["delegacion"] = delegacion
         return data
 
     def get_data_for_boletin(self):
@@ -1407,8 +1438,12 @@ class PersonalIglesia(models.Model):
             activo = False
         else:
             activo = True
+        if data["grupoID"] == "":
+            grupo = None
+        else:
+            grupo = Grupo.objects.get(pk__exact=data["grupoID"])
         self.nombre = data["nombre"]
-        self.apellido = data["apellidos"]
+        self.apellido = data["apellido"]
         self.calle = data["calle"]
         self.poblacion = data["poblacion"]
         self.provincia = data["provincia"]
@@ -1422,6 +1457,7 @@ class PersonalIglesia(models.Model):
         self.recibirBoletin = boletin
         self.boletinOnline = online
         self.personalActivo = activo
+        self.grupoAsociado = grupo
         self.save()
         return self
 

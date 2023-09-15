@@ -1,12 +1,7 @@
 {% extends 'aicespana/base.html' %}
 {% load static %}
 {% block content %}
-<style media="screen">
-	.form-group.required .control-label:after {
-	  content:"  *";
-	  color:red;
-	}
-</style>
+{% include "aicespana/cdn_table_functionality.html" %}
 {% if ERROR %}
 
 	<div class="container-md">
@@ -28,19 +23,19 @@
 
 {% if confirmation_data %}
 	<div class="container-md">
-		<div class="row g-3">
+		<div class="row g-3 justify-content-center">
 			<div class="col-md-10">
 				<div class="card">
-					<div class="card-header"><h2 style="text-align:center">Datos Guardados</h2> </div>
+					<div class="card-header text-center"><h2>Datos Guardados</h2> </div>
 					<div class="card-body">
-						<p style="text-align:center">Los datos de {{confirmation_data.nombre}} {{confirmation_data.apellidos}} se han guardado correctamente</p>
+						<p style="text-align:center">Los datos se han guardado correctamente</p>
 					</div> 
 				</div> 
 		    </div> 
 		</div> 
 	</div> 
 	<div class="container-md">
-		<div class="row g-3">
+		<div class="row g-3 justify-content-center">
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-body">
@@ -58,7 +53,7 @@
 {% elif voluntary_data %}
 	<div class="container-md">
 		<div class="row g-3">
-			<div class="col-md-10">
+			<div class="col-md-12">
 				<div class="card">
 					<div class="card-header"><h2 style="text-align:center">Modificación de datos de {{voluntary_data.nombre}} {{voluntary_data.apellido}}</h2> </div>
 					<div class="card-body">
@@ -67,165 +62,237 @@
 							<input type="hidden" name="action" value="actualizarCampos"/>
 							<input type="hidden" name="user_id" value="{{voluntary_data.user_id}}"/>
 							
-							<div class="form-group required">
-								<div class="col-md-5">
-									<label class="control-label" for="nombre">Nombre</label>
-									<input type="text" required class="form-control" id="nombre" name='nombre' value="{{voluntary_data.nombre}}">
-								</div>
-								<div class="col-md-5">
-									<label for="apellidos"  class="control-label">Apellidos</label>
-									<input type="text" required class="form-control" id="apellidos" name='apellidos' value="{{voluntary_data.apellido}}">
-								</div>
-
+							<div class="row g-1 mt-3">
+		                        <div class="col">
+		                            <div class="form-floating">
+                                        <input type="text" required class="form-control" id="nombre" name='nombre' value="{{voluntary_data.nombre}}" placeholder="Nombre">
+                                        <label for="nombre" class="text-danger">Nombre</label>
+								    </div>
+                                </div>
+								<div class="col">
+		                            <div class="form-floating">
+                                        <input type="text" required class="form-control" id="apellidos" name='apellidos' value="{{voluntary_data.apellido}}">
+                                        <label for="apellidos" class="text-danger">Apellidos</label>
+								    </div>
+                                </div>
+                                <div class="col-md-3">
+		                            <div class="form-floating">
+                                        <input type="text"  class="form-control" id="dni" name='dni' value="{{voluntary_data.dni}}">
+                                        <label for="nif">NIF/NIE</label>
+                                    </div>
+                                </div>
 							</div>
-
-							<div class="form-group">
-								<div class="col-md-5">
-									<label for="nif"  class="control-label">NIF/NIE</label>
-									<input type="text"  class="form-control" id="dni" name='dni' value="{{voluntary_data.dni}}">
-								</div>
-								<div class="col-md-5">
-									<label for="nacimiento" class="control-label">Fecha de Nacimiento</label>
-									<input type="date"  class="form-control" id="nacimiento" name='nacimiento' value="{{voluntary_data.nacimiento}}">
-								</div>
-								<div class="col-md-5">
-									<label for="alta" class="control-label">Fecha de Alta</label>
-									<input type="date"  class="form-control" id="alta" name='alta' value="{{voluntary_data.alta}}">
-								</div>
-								<div class="col-md-5">
-									<label for="baja" class="control-label">Fecha de Baja</label>
-									<input type="date"  class="form-control" id="baja" name='baja' value="{{voluntary_data.baja}}">
-								</div>
-								<div class="col-md-12">
-									<label for="calle" class="form-label">Calle</label>
-									<input type="text" class="form-control" id="calle" name='calle' placeholder="Indicar la calle" value="{{voluntary_data.calle}}">
-								</div>
-								<div class="col-md-6">
-									<label for="poblacion" class="form-label">Población</label>
-									<input type="text" class="form-control" id="poblacion" name='poblacion' value="{{voluntary_data.poblacion}}">
-								</div>
-								<div class="col-md-4">
-									<label for="provincia" class="form-label">Provincias</label>
-									<select id="provincia" class="form-select" name='provincia'>
-										<option selected value="{{voluntary_data.provincia_index}}">{{voluntary_data.provincia}}</option>
-										{% for prov in voluntary_data.provincias %}
-											<option value = {{forloop.counter0}}>{{prov}}</option>
-										{% endfor %}
-									</select>
-								</div>
-								<div class="col-md-2">
-									<label for="codigo" class="form-label">Código Postal</label>
-									<input type="text" class="form-control" id="codigo" name='codigo' value="{{voluntary_data.codigo}}">
-								</div>
-								<div class="col-12">
-									<label for="email" class="form-label">email</label>
-									<input type="email" class="form-control" id="email" name='email' value="{{voluntary_data.email}}">
-								</div>
-								<div class="col-md-6">
-									<label for="fijo" class="form-label">Telefono Fijo</label>
-									<input type="text" class="form-control" id="fijo" name='fijo' value="{{voluntary_data.fijo}}">
-								</div>
-								<div class="col-md-6">
-									<label for="movil" class="form-label">Telefono Movil</label>
-									<input type="tel" class="form-control" id="movil" name='movil' value="{{voluntary_data.movil}}"'>
+                            <div class="row g-1 mt-3">
+                                <div class="col">
+		                            <div class="form-floating">
+                                        <input type="date"  class="form-control" id="nacimiento" name='nacimiento' value="{{voluntary_data.nacimiento}}">
+                                        <label for="nacimiento">Fecha de Nacimiento</label>
+                                    </div>
+                                </div>
+                                <div class="col">
+		                            <div class="form-floating">
+                                        <input type="date"  class="form-control" id="alta" name='alta' value="{{voluntary_data.alta}}">
+                                        <label for="alta">Fecha de Alta</label>
+                                    </div>
+                                </div>
+                                <div class="col">
+		                            <div class="form-floating">
+                                        <input type="date"  class="form-control" id="baja" name='baja' value="{{voluntary_data.baja}}">
+                                        <label for="baja">Fecha de Baja</label>
+							        </div>
 								</div>
 							</div>
-							<div class="form-group required">
-								<div class="col-md-4">
-									<label for="colaboracion_id" class="control-label">Tipo de Colaboración</label>
-									<select id="colaboracion_id" required class="form-select" name='colaboracion_id'>
-										<option selected value="{{voluntary_data.colaboracion_id}}">{{voluntary_data.colaboracion}}</option>
-										{% for id,val in voluntary_data.tipo_colaboracion %}
-											<option value="{{id}}">{{val}}</option>
-										{% endfor %}
-									</select>
+                            <div class="row mt-3">
+                                <div class="col">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="calle" name='calle' value="{{voluntary_data.calle}}">
+                                        <label for="calle">Calle</label>
+                                    </div>
 								</div>
 							</div>
-							<div class="form-group">
-								<div class="col-md-8">
-									<label class="control-label " for="nombre">Seleciona el Grupo del que depende</label>
-									<select id="grupoID" class="form-select" name="grupoID">
-										 <option selected value="{{voluntary_data.grupo_id}}">{{voluntary_data.grupo}} en la diocesis de {{voluntary_data.diocesis}}</option>
-										{% for grupo_id, grupo_name , diocesis_name in voluntary_data.grupo_lista %}
-											<option value="{{grupo_id}}">{{grupo_name}} en la diocesis de {{diocesis_name}}</option>
-										{% endfor %}
-									</select>
-								</div>
-								<div class="form-group">
-									<div class="col-md-8">
-										<label class="control-label" for="proyectoID">Seleciona el Proyecto del que depende</label>
-										<select id="proyectoID" class="form-select" name="proyectoID">
-											{% if voluntary_data.proyecto_data_form.0 == '' %}
-												<option selected value=""> No pertenece a ningún Proyecto</option>
-											{% else %}
-												<option selected value="{{voluntary_data.proyecto_data_form.0}}">{{voluntary_data.proyecto_data_form.1}} del grupo {{voluntary_data.proyecto_data_form.2}} en la diocesis de {{voluntary_data.proyecto_data_form.3}}</option>
-											{% endif %}
-											<option value=""> No pertenece a ningún Proyecto</option>
-											{% for proyecto_id, proyecto_name, grupo_name , diocesis_name in voluntary_data.proyecto_lista %}
-												<option value="{{proyecto_id}}">{{proyecto_name}} en  {{grupo_name}} en la diocesis de {{diocesis_name}}</option>
-											{% endfor %}
-										</select>
+                            <div class="row mt-3">
+                                <div class="col">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="poblacion" name='poblacion' value="{{voluntary_data.poblacion}}">
+        								<label for="poblacion">Población</label>
 									</div>
-								
-								<div class="form-group">
-									<div class="col-md-8">
-										<label class="control-label" for="actividadID">Seleciona la Actividad del que depende</label>
-										<select id="actividadID" class="form-select" name="actividadID">
-											{% if voluntary_data.actividad_data_form.0 == '' %}
-												<option selected value=""> No pertenece a ninguna Actividad</option>
-											{% else %}
-												<option selected value="{{voluntary_data.actividad_data_form.0}}">{{voluntary_data.actividad_data_form.1}}</option>
-											{% endif %}
-											<option value=""> No pertenece a ninguna Actividad</option>
-											{% for actividad_id, actividad_name, grupo_name , diocesis_name in voluntary_data.actividad_lista %}
-												<option value="{{actividad_id}}">{{actividad_name}}</option>
-											{% endfor %}
-										</select>
+                                </div>
+                                <div class="col">
+		                            <div class="form-floating">
+                                        <select id="provincia" class="form-select" name='provincia'>
+                                            <option selected value="{{voluntary_data.provincia_index}}">{{voluntary_data.provincia}}</option>
+                                            {% for prov in voluntary_data.provincias %}
+                                                <option value = {{forloop.counter0}}>{{prov}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label for="provincia" >Provincia</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+		                            <div class="form-floating">
+                                        <input type="text" class="form-control" id="codigo" name='codigo' value="{{voluntary_data.codigo}}">
+                                        <label for="codigo">Código Postal</label>
+                                    </div>
+								</div>
+							</div>
+                            <div class="row mt-3">
+                                <div class="col">
+                                    <div class="form-floating">
+                                        <input type="email" class="form-control" id="email" name='email' value="{{voluntary_data.email}}">
+									    <label for="email">email</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+		                            <div class="form-floating">
+                                        <input type="text" class="form-control" id="fijo" name='fijo' value="{{voluntary_data.fijo}}">
+                                        <label for="fijo">Telefono Fijo</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+		                            <div class="form-floating">
+                                        <input type="tel" class="form-control" id="movil" name='movil' value="{{voluntary_data.movil}}">
+									    <label for="movil">Telefono Movil</label>
 									</div>
-								
-								<div class="col-md-6">
-									<label for="rec_boletin"  class="control-label">Desea recibir boletín</label>
-									<select id="rec_boletin"  class="form-select" name='rec_boletin'>
-										{% if voluntary_data.rec_boletin == '0' %}
-											<option selected value="0">No deseo recibir el boletin</option>
-										{% elif voluntary_data.rec_boletin == '1'%}
-											<option selected value="1">Si, Boletin online</option>
-										{% else %}
-											<option selected value="2">Si, Boletin por correo postal</option>
-										{% endif %}
-										<option value="0">No deseo recibir el boletin</option>
-										<option value="1">Si, Boletin online</option>
-										<option value="2">Si, Boletin por correo postal</option>
-									</select>
 								</div>
-								<div class="col-md-6">
-									<label for="activo"  class="control-label">Estado del voluntario</label>
-									<select id="activo"  class="form-select" name='activo'>
-										{% if voluntary_data.activo == 'true' %}
-											<option selected value="true">Voluntario en activo</option>
-										{% else %}
-											<option selected value="false">Voluntario de baja</option>
-										{% endif %}
-										<option value="false">Voluntario de baja</option>
-										<option value="true">Voluntario en activo</option>
-									</select>
+							</div>
+                            <div class="row mt-3">
+                                <div class="col">
+                                    <div class="form-floating">
+                                        <select id="colaboracion_id" required class="form-select" name='colaboracion_id'>
+                                            <option selected value="{{voluntary_data.colaboracion_id}}">{{voluntary_data.colaboracion}}</option>
+                                            {% for id,val in voluntary_data.tipo_colaboracion %}
+                                                <option value="{{id}}">{{val}}</option>
+                                            {% endfor %}
+                                        </select>
+    									<label for="colaboracion_id">Tipo de Colaboración</label>
+                                    </div>
+                                </div>
+                                <div class="col">
+		                            <div class="form-floating">
+                                        <select id="rec_boletin"  class="form-select" name='rec_boletin'>
+                                            {% if voluntary_data.rec_boletin == '0' %}
+                                                <option selected value="0">No deseo recibir el boletin</option>
+                                            {% elif voluntary_data.rec_boletin == '1'%}
+                                                <option selected value="1">Si, Boletin online</option>
+                                            {% else %}
+                                                <option selected value="2">Si, Boletin por correo postal</option>
+                                            {% endif %}
+                                            <option value="0">No deseo recibir el boletin</option>
+                                            <option value="1">Si, Boletin online</option>
+                                            <option value="2">Si, Boletin por correo postal</option>
+                                        </select>
+                                        <label for="rec_boletin">Desea recibir boletín</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 mt-3">
+		                            <label class="form-check-label" for="activo">Voluntario activo</label>
 								</div>
-
+                                <div class="col-md-1 mt-3">
+                                    <div class="d-flex form-check form-switch ">
+                                        {% if voluntary_data.activo == 'true' %}
+                                            <input class="form-check-input " type="checkbox" name="activo" id="activo" checked>
+                                        {% else %}
+                                            <input class="form-check-input " type="checkbox" name="activo" id="activo">
+                                        {% endif %}
+                                    </div>
+                                </div>
 							</div>
-							
-							<div class="col-12">
-
-								<button type="submit" class="btn-outline-primary float-end ">Guardar datos</button>
-							</div>
+                            <div class="row mt-4 justify-content-center">
+                                <div class="col-md-10">
+                                    <div class="card border-secondary">
+                                        <div class="card-header text-center"> <h5>Actividad de {{voluntary_data.nombre}} {{voluntary_data.apellido}}</h5></div>
+                                        <div class="card-body">
+                                            <div class="row mt-3">
+                                                <div class="col-md-9">
+                                                    <div class="form-floating">
+                                                        <select id="grupoID" class="form-select" name="grupoID">
+                                                            {% if voluntary_data.grupo != "" %}
+                                                                <option selected value="{{voluntary_data.grupo_id}}">{{voluntary_data.grupo}} en la diocesis de {{voluntary_data.diocesis}}</option>
+                                                            {% endif %}
+                                                            {% for grupo_id, grupo_name , diocesis_name in voluntary_data.grupo_lista %}
+                                                               <option value="{{grupo_id}}">{{grupo_name}} en la diocesis de {{diocesis_name}}</option>
+                                                           {% endfor %}
+                                                       </select>
+                                                       <label for="nombre">Seleciona el Grupo del que depende</label>
+                                                    </div>
+                                                </div>
+                                                {% if voluntary_data.grupo != "" %}
+                                                    <div class="col-md-3 mt-3">
+                                                        <div class="d-flex form-check form-switch ">
+                                                            <input class="form-check-input " type="checkbox" name="eliminar_grupo" id="eliminar_grupo">
+                                                            <label class="form-check-label" for="eliminar_grupo"> Desasignar grupo</label>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div class="col-md-9">
+                                                    <div class="form-floating">
+                                                        <select id="proyectoID" class="form-select" name="proyectoID">
+                                                            {% if voluntary_data.proyecto_data_form.0 == '' %}
+                                                                <option selected value=""> Selecciona el Proyecto</option>
+                                                            {% else %}
+                                                                <option selected value="{{voluntary_data.proyecto_data_form.0}}">{{voluntary_data.proyecto_data_form.1}} del grupo {{voluntary_data.proyecto_data_form.2}} en la diocesis de {{voluntary_data.proyecto_data_form.3}}</option>
+                                                            {% endif %}
+                                                            {% for proyecto_id, proyecto_name, grupo_name , diocesis_name in voluntary_data.proyecto_lista %}
+                                                                <option value="{{proyecto_id}}">{{proyecto_name}} en  {{grupo_name}} en la diocesis de {{diocesis_name}}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        <label for="proyectoID">Seleciona el Proyecto del que depende</label>
+                                                    </div>
+                                                </div>
+                                                {% if voluntary_data.proyecto_data_form.0 != '' %}
+                                                    <div class="col-md-3 mt-3">
+                                                        <div class="d-flex form-check form-switch ">
+                                                            <input class="form-check-input " type="checkbox" name="eliminar_proyecto" id="eliminar_proyecto">
+                                                            <label class="form-check-label" for="eliminar_proyecto"> Desasignar proyecto</label>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div class="col-md-9">
+                                                    <div class="form-floating">
+                                                        <select id="actividadID" class="form-select" name="actividadID">
+                                                            {% if voluntary_data.actividad_data_form.0 == '' %}
+                                                                <option selected value=""> Seleciona la Actividad</option>
+                                                            {% else %}
+                                                                <option selected value="{{voluntary_data.actividad_data_form.0}}">{{voluntary_data.actividad_data_form.1}}</option>
+                                                            {% endif %}
+                                                            {% for actividad_id, actividad_name, grupo_name , diocesis_name in voluntary_data.actividad_lista %}
+                                                                <option value="{{actividad_id}}">{{actividad_name}}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        <label for="actividadID">Seleciona la Actividad del que depende</label>
+                                                    </div>                               
+                                                </div>
+                                                {% if voluntary_data.actividad_data_form.0 != '' %}
+                                                    <div class="col-md-3 mt-3">
+                                                        <div class="d-flex form-check form-switch ">
+                                                            <input class="form-check-input " type="checkbox" name="eliminar_actividad" id="eliminar_actividad">
+                                                            <label class="form-check-label" for="eliminar_actividad"> Desasignar actividad</label>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>               
+                                    </div>
+                                </div>               
+                            </div>
+							<div class="row my-3">
+                                <div class="col">
+                                    <input class="btn float-end btn-outline-primary my-3" type="submit" value="Guardar datos">
+                                </div>
+                            </div>
 						</form>
-						<p>Los campos con <span style="color:red"> * </span> son obligatorios</p>
+						<p>Los campos en <span style="color:red"> rojo </span> son obligatorios</p>
 					</div> 	
 				</div> 
 			</div> 
 		</div> 
 	</div> 
 
-
+{% comment %} 
 {% elif updated_data %}
 	<section class="light">
 		<div class="container md-8">
@@ -346,7 +413,7 @@
 				</div> 
 			</div> 
 		</div> 
-	</div> 
+	</div>  {% endcomment %}
 {% elif personal_list %}
 	<div class="container-md">
 		<div class="row g-3">
@@ -355,29 +422,37 @@
 					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Multiples coincidencias en la busqueda</h3></div>
 					<div class="card-body">
 						<h5 style="text-align:center">Se han encontrado varios Voluntarios.</h5>
-						<p>Añade más información para encontrar sólo a un Voluntario.</p>
+                        <div class="card border-secondary mt-3" >
+                            <div class="card-body text-center">
+                                <p>Añade más información para encontrar sólo a un Voluntario.</p>
 
-						<p>O haz click en el nombre del Voluntario para modificar sus datos </p>
-						<table class="table table-hover">
-							<thead>
-								<tr>
-									<td>Nombre</td>
-									<td>Población</td>
-								</tr>
-							</thead>
-							<tbody>
-								{% for id, nombre, poblacion in personal_list %}
-									<tr>
-										<td><a href="modificacionVoluntarioId={{id}}">{{nombre}}</a></td>
-										<td>{{poblacion}}</td>
-									</tr>
-								{% endfor %}
-							</tbody>
-						</table>
-						
-						<div class="text-center">
-							<a href="/modificacionVoluntario"> <button type="button" class="btn btn-outline-secondary float-center" >Buscar de nuevo</button> </a>
-						</div> 
+                                <p>O haz click en el nombre del Voluntario para modificar sus datos </p>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col"></div>
+                                <table class="table table-hover" id="voluntarios_tabla">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                            <td>Población</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for id, nombre, poblacion in personal_list %}
+                                            <tr>
+                                                <td><a href="modificacionVoluntarioId={{id}}">{{nombre}}</a></td>
+                                                <td>{{poblacion}}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                
+                                <div class="text-center">
+                                    <a href="/modificacionVoluntario"> <button type="button" class="btn btn-outline-secondary float-center" >Buscar de nuevo</button> </a>
+                                </div> 
+                            </div> 
+                        </div>
 					</div> 
 				</div> 
 			</div> 
@@ -388,38 +463,47 @@
 	<section class="light">
 		<div class="container md-8">
 			<h1 class="h1 text-center" id="pageHeaderTitle">Modificación de los datos de voluntarios</h1>
-
 	    </div>
 	</section>
 	
 	<div class="container-md">
-	    <div class="row g-3">
+	    <div class="row g-3 justify-content-center">
 	        <div class="col-md-10">
 	            <div class="card">
 					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Formulario para la busqueda de voluntario</h3></div>
                     <div class="card-body">
-	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="busquedaVoluntario" id="busquedaVoluntario" >
+	                    <form class="row" method="post" enctype="multipart/form-data" name="busquedaVoluntario" id="busquedaVoluntario" >
 	                        {% csrf_token %}
 	                        <input type="hidden" name="action" value="busquedaVoluntario"/>
 
-		                        <div class="col-md-5">
-		                            <label class="control-label " for="nombre">Nombre</label>
-		                            <input type="text"  class="form-control" id="nombre", name='nombre'>
+                            <div class="row g-2 mt-3">
+		                        <div class="col">
+		                            <div class="form-floating">
+                                        <input type="text"  class="form-control" id="nombre", name='nombre' placeholder="Nombre">
+                                        <label for="nombre">Nombre</label>
+                                    </div>
 		                        </div>
-
+                                <div class="col">
+                                    <div class="form-floating">
+                                        <input type="text"  class="form-control" id="apellido" name='apellido' placeholder="Apellido">
+                                        <label for="apellido">Apellido</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row my-3"></div>
 		                        <div class="col-md-5">
-		                            <label for="apellido"  class="control-label">Apellido</label>
-		                            <input type="text"  class="form-control" id="apellido" name='apellido'>
+                                    <div class="form-floating">
+                                        <input type="text"  class="form-control" id="nif" name='nif' placeholder="nif">
+                                        <label for="nif" >NIF/NIE</label>
+                                    </div>
 		                        </div>
-		                        <div class="col-md-5">
-		                            <label for="nif"  class="control-label">NIF/NIE</label>
-		                            <input type="text"  class="form-control" id="nif" name='nif'>
-		                        </div>
-
-	                        <div class="col-12">
-	                            <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
-	                            <button type="submit" class="btn-outline-primary float-end ">Buscar voluntario</button>
-	                        </div>
+                            </div>
+                            <div class="row g-3 my-3">
+                                <div class="col">
+                                    <input type="reset" class="btn btn-outline-secondary mx-2" value="Limpiar campos">
+                                    <input class="btn float-end btn-outline-primary mx-2" type="submit" value="Buscar voluntario">
+                                </div>
+                            </div>
 	                    </form>
 	                </div>
 	            </div>
@@ -427,4 +511,12 @@
 	    </div> 
 	</div> 
 {% endif %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#voluntarios_tabla').DataTable({
+            dom: "fltirp",
+            responsive: true,
+        });
+    });
+</script>
 {% endblock %}

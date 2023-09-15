@@ -908,7 +908,7 @@ def fetch_grupo_data_to_modify(data_form):
     return data
 
 
-def get_info_of_voluntarios(personal_objs):
+def get_info_of_voluntarios_personel(personal_objs):
     voluntarios = []
     for personal_obj in personal_objs:
         data = []

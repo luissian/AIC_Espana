@@ -1,14 +1,14 @@
 {% extends 'aicespana/base.html' %}
 {% load static %}
 {% block content %}
+{% include "aicespana/cdn_table_functionality.html" %}
 <style media="screen">
-	.form-group.required .control-label:after {
-	  content:"  *";
-	  color:red;
-	}
+    .form-switch .form-check-input:checked {
+        background-position: right center;
+        background-color: red !important;
+      }
 </style>
 {% if ERROR %}
-
 	<div class="container-md">
 		<div class="row g-3">
 			<div class="col-md-10">
@@ -23,7 +23,6 @@
 		    </div> 
 		</div> 
 	</div> 
-
 {% endif %}
 
 {% if confirmation_data %}
@@ -57,10 +56,10 @@
 
 {% elif personal_available_settings %}
 	<div class="container-md">
-		<div class="row g-3">
+		<div class="row g-3 justify-content-center mt-3">
 			<div class="col-md-10">
 				<div class="card">
-					<div class="card-header"><h2 style="text-align:center">Información de {{personal_available_settings.name}}</h2> </div>
+					<div class="card-header text-center" ><h2>Formulario para actualizar cargos al personal de Iglesia </h2> </div>
 					<div class="card-body">
 						<div class="col-md-10">
 							{% if personal_available_settings.responsability != '' %}
@@ -68,142 +67,85 @@
 							{% else %}
 								<h4 style="text-align:center"><strong>{{personal_available_settings.name}} </strong>no tiene acualmente ningún cargo</h4>
 							{% endif %}
-							
-							{% if personal_available_settings.collaboration != '' %}
-								<h5 style="text-align:center">{{personal_available_settings.name}} es un {{personal_available_settings.collaboration}}</h5>
-							{% else %}
-								<h5 style="text-align:center">{{personal_available_settings.name}} no se le ha asignado ningun tipo de colaboración</h5>
-							{% endif %}
 						</div> 
-						<div class="col-md-10">
-							<p>Datos del personal de la Iglesia</p>
-							<table class="table table-hover">
-								<tbody>
-									<tr>
-										<td>Cargo</td>
-										<td>
-											{% if personal_available_settings.responsability != '' %}
-												{{personal_available_settings.responsability}}
-											{% else %}
-												No se ha asignado a ningún cargo
-											{% endif %}
-										</td>
-									</tr>
-									<tr>
-										<td>Grupo</td>
-										<td>
-											{% if personal_available_settings.group != '' %}
-												{{personal_available_settings.group}}
-											{% else %}
-												No se ha asignado a ningún grupo
-											{% endif %}
-										</td>
-									</tr>
-									<tr>
-										<td>Delegación</td>
-										<td>
-											{% if personal_available_settings.delegacion %}
-												{{personal_available_settings.delegacion}}
-											{% else %}
-												No se ha asignado a ninguna Delegación
-											{% endif %}
-										</td>
-									</tr>
-									<tr>
-										<td>Diocesis</td>
-										<td>
-											{% if personal_available_settings.diocesis %}
-												{{personal_available_settings.diocesis}}
-											{% else %}
-												No se ha asignado a ninguna Diocesis
-											{% endif %}
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div> 
-					</div> 
-				</div> 
-			</div> 
-		</div> 
-	</div> 
-	
-	<div class="container-md">
-	    <div class="row g-3">
-	        <div class="col-md-10">
-	            <div class="card">
-					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Formulario para asignar cargos</h3></div>
+						
+					</div> 		
                     <div class="card-body">
 	                    <form class="row g-3" method="post" enctype="multipart/form-data" action="cargosPersonal" name="asignarCargos" id="asignarCargos" >
 	                        {% csrf_token %}
 	                        <input type="hidden" name="action" value="asignarCargos"/>
 							<input type="hidden" name="user_id" value="{{personal_available_settings.user_id}}"/>
-								
-		                        <div class="col-md-10">
-		                            <label  class="control-label col-md-3" for="grupo">Seleciona el Grupo</label>
-									<select name="grupo" id="grupo" class="col-md-6">
-										{% if personal_available_settings.group_id != '' %}
-											<option  selected value="{{personal_available_settings.group_id}}">{{personal_available_settings.group}} en {{personal_available_settings.diocesis}}</option>
-										{% else %}
-											<option selected value="">Sin determinar</option>
-										{% endif %}
-										{% for id, group, diocesis  in personal_available_settings.available_groups %}
-											<option value="{{id}}">{{group}} en {{diocesis}}</option>
-										{% endfor %}
-									</select>
-
+                            <div class="row mt-3">
+                                <div class="col-md-8">
+                                    <div class="form-floating">
+                                        <select name="cargo" id="cargo" class="form-select">
+                                            {% if personal_available_settings.responsability_id != '' %}
+                                                <option  selected value="{{personal_available_settings.responsability_id}}">{{personal_available_settings.responsability}}</option>
+                                            {% else %}
+                                                <option selected value="">Sin determinar</option>
+                                            {% endif %}
+                                            {% for id, cargo  in personal_available_settings.available_responsible %}
+                                                <option value="{{id}}">{{cargo}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label for="cargo">Seleciona el cargo</label>
+                                    </div>
+                                </div>
+                                {% if personal_available_settings.responsability_id != '' %}
+                                    <div class="col-md-4">
+                                        <div class="form-check form-switch mt-2">
+                                            <input class="form-check-input " type="checkbox" name="eliminar_cargo" id="eliminar_cargo">
+                                            <label class="form-check-label" for="eliminar_cargo">Eliminar asignacion al cargo</label>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-8">
+                                    <div class="form-floating">
+                                        <select name="grupo" id="grupo" class="form-select">
+                                            {% if personal_available_settings.group_id != '' %}
+                                                <option  selected value="{{personal_available_settings.group_id}}">{{personal_available_settings.group}} en {{personal_available_settings.diocesis}}</option>
+                                            {% else %}
+                                                <option selected value="">Selectiona el grupo</option>
+                                            {% endif %}
+                                            {% for id, group, diocesis  in personal_available_settings.available_groups %}
+                                                <option value="{{id}}">{{group}} en {{diocesis}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label  for="grupo">Seleciona el Grupo</label>
+		                            </div>
+                                </div>
+                                {% if personal_available_settings.group_id != '' %}
+                                    <div class="col-md-4">
+                                        <div class="form-check form-switch mt-2">
+                                            <input class="form-check-input " type="checkbox" name="eliminar_grupo" id="eliminar_grupo">
+                                            <label class="form-check-label" for="eliminar_grupo">Eliminar asignacion al grupo</label>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-8">
+                                    <div class="form-floating">
+                                        <select name="delegacion" id="delegacion" class="form-select">
+                                            {% if personal_available_settings.delegacion_id != '' %}
+                                                <option selected value="{{personal_available_settings.delegacion_id}}">{{personal_available_settings.delegacion}}</option>
+                                            {% else %}
+                                                <option selected value="">Seleciona la delegacion</option>
+                                            {% endif %}
+                                            {% for id, deleg  in personal_available_settings.available_delegacion %}
+                                                <option value="{{id}}">{{deleg}} </option>
+                                            {% endfor %}
+                                        </select>
+                                        <label for="proyecto">Seleciona la delegación</label>
+    								</div>
 		                        </div>
-								
-								<div class="col-md-10">
-		                            <label for="proyecto"  class="control-label col-md-3">Seleciona la delegación</label>
-									<select name="delegacion" id="delegacion" class="col-md-6">
-										{% if personal_available_settings.delegacion_id != '' %}
-											<option selected value="{{personal_available_settings.delegacion_id}}">{{personal_available_settings.delegacion}}</option>
-										{% else %}
-											<option selected value="">Sin determinar</option>
-										{% endif %}
-										{% for id, deleg  in personal_available_settings.available_delegacion %}
-											<option value="{{id}}">{{deleg}} </option>
-										{% endfor %}
-									</select>
-								</div>
-								
-								<!-- Remove temporary diocesis
-								<div class="col-md-10">
-		                            <label for="proyecto"  class="control-label col-md-3">Seleciona la diocesis</label>
-									<select name="diocesis" id="diocesis" class="col-md-6">
-										{% if personal_available_settings.diocesis_id != '' %}
-											<option selected value="{{personal_available_settings.diocesis_id}}">{{personal_available_settings.diocesis}}</option>
-										{% else %}
-											<option selected value="">Sin determinar</option>
-										{% endif %}
-										{% for id, dioce  in personal_available_settings.available_diocesis %}
-											<option value="{{id}}">{{dioce}} </option>
-										{% endfor %}
-									</select>
-								</div>
-								
-								 -->
-
-
-								
-								<div class="col-md-10">
-	                            	<label for="cargo"  class="control-label col-md-3">Seleciona el cargo</label>
-									<select name="cargo" id="cargo" class="col-md-6">
-										{% if personal_available_settings.responsability_id != '' %}
-											<option  selected value="{{personal_available_settings.responsability_id}}">{{personal_available_settings.responsability}}</option>
-										{% else %}
-											<option selected value="">Sin determinar</option>
-										{% endif %}
-										{% for id, cargo  in personal_available_settings.available_responsible %}
-											<option value="{{id}}">{{cargo}}</option>
-										{% endfor %}
-									</select>
-		                        </div>
-								
-
-	                        <div class="col-12">
-	                            <button type="submit" class="btn-outline-primary float-end ">Guardar cambios</button>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <input class="btn float-end btn-outline-primary my-3" type="submit" value="Guardar datos">
+                                </div>
 	                        </div>
 	                    </form>
 	                </div>
@@ -212,102 +154,70 @@
 	    </div> 
 	</div> 
 {% elif updated_data %}
-	<section class="light">
-		<div class="container md-8">
-			<h1 class="h1 text-center" id="pageHeaderTitle">Asignacion de cargos del personal de la Iglesia</h1>
-		</div>
-	</section>
-	
-	<div class="container-md">
-		<div class="row g-3">
-			<div class="col-md-10">
-				<div class="card">
-					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Datos actualizados del personal de la Iglesia</h3></div>
-					<div class="card-body">
-						<h3 class="h1 text-center"> {{updated_data.name}}</h3>
-						<div class="col-md-10">
-							<table class="table table-hover">
-								<thead>
-									<tr>
-										<th colspan="2">Datos de generales de {{updated_data.name}}</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>Grupo</td>
-										<td>
-											{% if updated_data.group != '' %}
-												{{updated_data.group}}
-											{% else %}
-												Sin asignar
-											{% endif %}
-										</td>
-									</tr>
-									<tr>
-										<td>Delegación</td>
-										<td>
-											{% if updated_data.delegacion %}
-												{{updated_data.delegacion}}
-											{% else %}
-												Sin asignar
-											{% endif %}
-										</td>
-									</tr>
-								</tbody>
-							</table>
-							
-							<table class="table table-hover">
-								<thead>
-									<tr>
-										<th colspan="2">Cargos que tiene el personal de la Iglesia</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>Cargo</td>
-										<td>
-											{% if updated_data.responsability != '' %}
-												{{updated_data.responsability}}
-											{% else %}
-												Sin asignar
-											{% endif %}
-										</td>
-									</tr>
-
-								</tbody>
-							</table>
-						</div> 
-					</div> 
-				</div> 
-			</div> 
-		</div> 
-	</div> 
+    <div class="container-md">
+        <div class="row g-3 justify-content-center">
+            <div class="col-md-10">
+                <div class="card">
+                    <div class="card-header text-center"><h2>Datos Guardados</h2> </div>
+                    <div class="card-body">
+                        <p style="text-align:center">Los datos se han guardado correctamente</p>
+                    </div> 
+                </div> 
+            </div> 
+        </div> 
+    </div> 
+    <div class="container-md">
+        <div class="row g-3 justify-content-center">
+            <div class="col-md-10">
+                <div class="card">
+                    <div class="card-body">
+                        <p>Para asignar cargos a otra persona de la iglesia hacer click en el boton de abajo</p>
+                        
+                        <div class="text-center">
+                            <a href="/cargosPersonal"> <button type="button" class="btn btn-outline-secondary float-center" >Actualizar cargos personal Iglesia</button> </a>
+                        </div> 
+                    </div> 
+                </div> 
+            </div> 
+        </div> 
+    </div> 
 {% elif personal_list %}
 	<div class="container-md">
-		<div class="row g-3">
+		<div class="row justify-content-center">
 			<div class="col-md-10">
-				<div class="card">
+				<div class="card mt-3">
 					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Multiples coincidencias en la busqueda</h3></div>
 					<div class="card-body">
-						<h5 style="text-align:center">Se han encontrado varios Personal de la Iglesia.</h5>
-						<p>Añade más información para encontrar sólo a una Persona de la Iglesia. </p>
-						<p>O haz click en el nombre de la persona de Iglesia para asignarle  cargos </p>
-						<table class="table table-hover">
-							<thead>
-								<tr>
-									<td>Nombre</td>
-									<td>Población</td>
-								</tr>
-							</thead>
-							<tbody>
-								{% for id, nombre, poblacion in personal_list %}
-									<tr>
-										<td><a href="cargosPersonalID={{id}}">{{nombre}}</a></td>
-										<td>{{poblacion}}</td>
-									</tr>
-								{% endfor %}
-							</tbody>
-						</table>
+                        <div class="row my-3">
+                            <h5 style="text-align:center">Se han encontrado varios Personal de la Iglesia.</h5>
+                            <div class="card border-secondary mt-3" >
+                                <div class="card-body text-center">
+                                    <p>Añade más información para encontrar sólo a una persona de la Iglesia.</p>
+
+                                    <p>O haz click en el nombre la persona de Iglesia para asignarle  cargos </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row"> 
+                            <div class="col">
+                                <table class="table table-hover" id="personal_tabla">
+                                    <thead>
+                                        <tr>
+                                            <td>Nombre</td>
+                                            <td>Población</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for id, nombre, poblacion in personal_list %}
+                                            <tr>
+                                                <td><a href="cargosPersonalID={{id}}">{{nombre}}</a></td>
+                                                <td>{{poblacion}}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
 						
 						<div class="text-center">
 							<a href="/cargosPersonal"> <button type="button" class="btn btn-outline-secondary float-center" >Buscar de nuevo</button> </a>
@@ -321,12 +231,11 @@
 	<section class="light">
 		<div class="container md-8">
 			<h1 class="h1 text-center" id="pageHeaderTitle">Asignación de cargos del personal de la Iglesia</h1>
-
 	    </div>
 	</section>
 	
 	<div class="container-md">
-	    <div class="row g-3">
+	    <div class="row g-3 justify-content-center">
 	        <div class="col-md-10">
 	            <div class="card">
 					<div class="card-header h3 text-center" id="pageHeaderTitle">Formulario para la busqueda del personal de la Iglesia</div>
@@ -334,25 +243,35 @@
 	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="busquedaPersonal" id="busquedaPersonal" >
 	                        {% csrf_token %}
 	                        <input type="hidden" name="action" value="busquedaPersonal"/>
-
+                            <div class="row g-2 mt-3">
+		                        <div class="col">
+		                            <div class="form-floating">
+                                        <input type="text"  class="form-control" id="nombre", name='nombre' placeholder="Nombre">
+                                        <label for="nombre">Nombre</label>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-floating">
+                                        <input type="text"  class="form-control" id="apellido" name='apellido' placeholder="Apellido">
+                                        <label for="apellido">Apellido</label>
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row g-2 mt-3">
 		                        <div class="col-md-5">
-		                            <label class="control-label " for="nombre">Nombre</label>
-		                            <input type="text"  class="form-control" id="nombre", name='nombre'>
+		                            <div class="form-floating">
+                                        <input type="text"  class="form-control" id="nif" name='nif' placeholder="nif">
+                                        <label for="nif" >NIF/NIE</label>
+                                    </div>
 		                        </div>
-
-		                        <div class="col-md-5">
-		                            <label for="apellido"  class="control-label">Apellido</label>
-		                            <input type="text"  class="form-control" id="apellido" name='apellido'>
-		                        </div>
-		                        <div class="col-md-5">
-		                            <label for="nif"  class="control-label">NIF/NIE</label>
-		                            <input type="text"  class="form-control" id="nif" name='nif'>
-		                        </div>
-
-	                        <div class="col-12">
-	                            <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
-	                            <button type="submit" class="btn-outline-primary float-end ">Buscar personal Iglesia</button>
-	                        </div>
+                            </div>
+                            <div class="row g-3 my-3">
+                                <div class="col">
+                                    <input type="reset" class="btn btn-outline-secondary mx-2" value="Limpiar campos">
+                                    <input class="btn float-end btn-outline-primary mx-2" type="submit" value="Buscar voluntario">
+                                </div>
+                            </div>
 	                    </form>
 	                </div>
 	            </div>
@@ -360,4 +279,12 @@
 	    </div> 
 	</div> 
 {% endif %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#personal_tabla').DataTable({
+            dom: "fltirp",
+            responsive: true,
+        });
+    });
+</script>
 {% endblock %}

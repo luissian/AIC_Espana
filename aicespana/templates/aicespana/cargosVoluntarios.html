@@ -288,126 +288,33 @@
 	    </div> 
 	</div> 
 {% elif updated_data %}
-	<section class="light">
-		<div class="container md-8">
-			<h1 class="h1 text-center" id="pageHeaderTitle">Asignacion de cargos de voluntarios</h1>
-		</div>
-	</section>
-	
-	<div class="container-md">
-		<div class="row g-3">
-			<div class="col-md-10">
-				<div class="card">
-					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Datos actualizados del voluntario</h3></div>
-					<div class="card-body">
-						<h3 class="h1 text-center"> {{updated_data.name}}</h3>
-						<div class="col-md-10">
-							<table class="table table-hover">
-								<thead>
-									<tr>
-										<th colspan="2">Datos de grupo</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>Grupo</td>
-										<td>
-											{% if updated_data.group != '' %}
-												{{updated_data.group}}
-											{% else %}
-												Sin asignar
-											{% endif %}
-										</td>
-									</tr>
-									<tr>
-										<td>Parroquia</td>
-										<td>
-											{% if updated_data.parroquia != '' %}
-												{{updated_data.parroquia}}
-											{% else %}
-												Sin asignar
-											{% endif %}
-										</td>
-									</tr>
-									<tr>
-										<td>Diocesis</td>
-										<td>
-											{% if updated_data.diocesis != '' %}
-												{{updated_data.diocesis}}
-											{% else %}
-												Sin asignar
-											{% endif %}
-										</td>
-									</tr>
-									<tr>
-										<td>Delegación</td>
-										<td>
-											{% if updated_data.delegacion %}
-												{{updated_data.delegacion}}
-											{% else %}
-												Sin asignar
-											{% endif %}
-										</td>
-									</tr>
-								</tbody>
-							</table>
-							
-							<table class="table table-hover">
-								<thead>
-									<tr>
-										<th colspan="2">Cargos que tiene el voluntario</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>Tipo de Voluntario</td>
-										<td>
-											{% if updated_data.collaboration != '' %}
-												{{updated_data.collaboration}}
-											{% else %}
-												Sin asignar
-											{% endif %}
-										</td>
-									</tr>
-									<tr>
-										<td>Cargo</td>
-										<td>
-											{% if updated_data.responsability != '' %}
-												{{updated_data.responsability}}
-											{% else %}
-												Sin asignar
-											{% endif %}
-										</td>
-									</tr>
-									<tr>
-										<td>Proyecto </td>
-										<td>
-											{% if updated_data.project != '' %}
-												{{updated_data.project}}
-											{% else %}
-												Sin asignar
-											{% endif %}
-										</td>
-									</tr>
-
-									<tr>
-										<td>Actividad</td>
-										<td>
-											{% if updated_data.activity %}
-												{{updated_data.activity}}
-											{% else %}
-												Sin asignar
-											{% endif %}
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div> 
-					</div> 
-				</div> 
-			</div> 
-		</div> 
-	</div> 
+    <div class="container-md">
+        <div class="row g-3 justify-content-center">
+            <div class="col-md-10">
+                <div class="card">
+                    <div class="card-header text-center"><h2>Datos Guardados</h2> </div>
+                    <div class="card-body">
+                        <p style="text-align:center">Los datos se han guardado correctamente</p>
+                    </div> 
+                </div> 
+            </div> 
+        </div> 
+    </div> 
+    <div class="container-md">
+        <div class="row g-3 justify-content-center">
+            <div class="col-md-10">
+                <div class="card">
+                    <div class="card-body">
+                        <p>Para asignar cargos a otro voluntario hacer click en el boton de abajo</p>
+                        
+                        <div class="text-center">
+                            <a href="/cargosVoluntarios"> <button type="button" class="btn btn-outline-secondary float-center" >Actualizar cargos voluntario</button> </a>
+                        </div> 
+                    </div> 
+                </div> 
+            </div> 
+        </div> 
+    </div> 
 {% elif personal_list %}
 	<div class="container-md">
 		<div class="row g-3">
@@ -452,7 +359,7 @@
 	</section>
 	
 	<div class="container-md">
-	    <div class="row g-3">
+	    <div class="row g-3 justify-content-center">
 	        <div class="col-md-10">
 	            <div class="card">
 					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Formulario para la busqueda de voluntario</h3></div>
@@ -460,25 +367,34 @@
 	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="busquedaVoluntario" id="busquedaVoluntario" >
 	                        {% csrf_token %}
 	                        <input type="hidden" name="action" value="busquedaVoluntario"/>
-
-		                        <div class="col-md-5">
-		                            <label class="control-label " for="nombre">Nombre</label>
-		                            <input type="text"  class="form-control" id="nombre", name='nombre'>
+                            <div class="row g-1 mt-3">
+                                <div class="col">
+                                    <div class="form-floating">
+                                        <input type="text"  class="form-control" id="nombre", name='nombre' placeholder="Nombre">
+		                                <label for="nombre">Nombre</label>
+                                    </div>    
 		                        </div>
-
-		                        <div class="col-md-5">
-		                            <label for="apellido"  class="control-label">Apellido</label>
-		                            <input type="text"  class="form-control" id="apellido" name='apellido'>
-		                        </div>
-		                        <div class="col-md-5">
-		                            <label for="nif"  class="control-label">NIF/NIE</label>
-		                            <input type="text"  class="form-control" id="nif" name='nif'>
-		                        </div>
-
-	                        <div class="col-12">
-	                            <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
-	                            <button type="submit" class="btn-outline-primary float-end ">Buscar voluntario</button>
-	                        </div>
+                                <div class="col">
+                                    <div class="form-floating">
+                                        <input type="text"  class="form-control" id="apellido" name='apellido' placeholder="Apellido">
+                                        <label for="apellido">Apellido</label>
+                                    </div>    
+		                        </div>        
+		                    </div>
+                            <div class="row g-1 mt-3">
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="text"  class="form-control" id="nif" name='nif' placeholder="NIF">
+                                        <label for="nif">NIF/NIE</label>
+		                            </div>
+                                </div>    
+                            </div>
+                            <div class="row g-1 mt-3">
+                                <div class="col">
+                                    <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
+                                    <input class="btn float-end btn-outline-primary" type="submit" value="Buscar voluntario">
+                                </div>
+                            </div>
 	                    </form>
 	                </div>
 	            </div>

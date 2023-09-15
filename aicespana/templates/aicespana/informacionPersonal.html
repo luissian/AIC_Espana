@@ -1,14 +1,8 @@
 {% extends 'aicespana/base.html' %}
 {% load static %}
 {% block content %}
-<style media="screen">
-	.form-group.required .control-label:after {
-	  content:"  *";
-	  color:red;
-	}
-</style>
+{% include "aicespana/cdn_table_functionality.html" %}
 {% if ERROR %}
-
 	<div class="container-md">
 		<div class="row align-items-center">
 			<div class="col-md-10">
@@ -23,242 +17,297 @@
 		    </div> 
 		</div> 
 	</div> 
-
 {% endif %}
 
 {% if info_personal %}
-<div class="container sm-12">
-	<div class="row mt-5">
-		<div class="container sm-12">
-			
-			<ul class="nav nav-tabs" id="myTab" role="tablist">
-			   <li class="nav-item" role="presentation">
-			    	<button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab" aria-controls="info" aria-selected="true">Información General</button>
-			</li>
-			<li class="nav-item" role="presentation">
-			   	<button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contacto" type="button" role="tab" aria-controls="contacto" aria-selected="false">Datos de Contacto</button>
-			</li>
-			<li class="nav-item" role="presentation">
-			   	<button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#grupo" type="button" role="tab" aria-controls="grupo" aria-selected="false">Grupo</button>
-			</li>
-			<li class="nav-item" role="presentation">
-			  	<button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#cargos" type="button" role="tab" aria-controls="cargos" aria-selected="false">Cargos</button>
-			</li>
-			<li class="nav-item" role="presentation">
-			  	<button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#proyecto" type="button" role="tab" aria-controls="proyecto" aria-selected="false">Proyecto/Actividad</button>
-			</li>
-		   </ul>
-		   <div class="tab-content" id="myTabContent">
-			   <div class="tab-pane fade show active" id="info" role="tabpanel" aria-labelledby="info-tab">
-				   <div class="container-md">
-					   <div class="row mt-4">
-						   <div class="col-md-10">
-							    <div class="card">
-								   	<div class="card-header"><h2 style="text-align:center">Información del Personal de Iglesia</h2> </div>
-   				  					<div class="card-body">
-										<div class="table-wrapper">
-											<table id="voluntario" class="table table-hover mb-0">
-												<tbody>
-													<tr>
-														<td class="col text-center">Nombre</td>
-														<td>{{info_personal.nombre}}  {{info_personal.apellido}}</td>
-													</tr>
-													<tr>
-														<td class="col text-center">Fecha Nacimiento</td>
-														<td>{{info_personal.nacimiento}}</td>
-													</tr>
-													<tr>
-														<td class="col text-center">Boletin</td>
-														<td>
-															{% if info_personal.boletin == 'True' %}
-																Si, Desea recibir el boletin
-															{% else %}
-																No desea recibir el boletin
-															{% endif %}
-														</td>
-													</tr>
-												</tbody>
-											</table>
-										</div> <!--  end of table wrapper  -->
-									</div> 
-								</div> 
-								<div class="card">
-								   	<div class="card-header"><h2 style="text-align:center">Observaciones del Personal Iglesia</h2> </div>
-   				  					<div class="card-body">
-										<p>{% if info_personal.observaciones %}
-												{{info_personal.observaciones}}
-											{% endif %}
-										</p>
-									</div> 
-								</div> 
-					  		</div> 
-					  	</div> 
-					</div> <!-- end continer-->
-				</div>  <!-- end tab info -->
+    <div class="container">
+        <div class="row mt-3">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-10">
+                        <h2 style="text-align:center">Información de {{info_personal.nombre}}  {{info_personal.apellido}} </h2>
+                    </div>
+                </div>
+                <div class="row mt-3 justify-content-center">
+                    <div class="col-md-8">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab" aria-controls="info" aria-selected="true">Información General</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contacto" type="button" role="tab" aria-controls="contacto" aria-selected="false">Datos de Contacto</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#grupo" type="button" role="tab" aria-controls="grupo" aria-selected="false">Grupo</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#cargos" type="button" role="tab" aria-controls="cargos" aria-selected="false">Cargos</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#proyecto" type="button" role="tab" aria-controls="proyecto" aria-selected="false">Proyecto/Actividad</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="info" role="tabpanel" aria-labelledby="info-tab">
+                                <div class="container-md">
+                                    <div class="row mt-1">
+                                        <div class="col">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <table id="general" class="table table-hover text-center">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td class="h6">Situación</td>
+                                                                    {% if info_personal.activo == "true" %}
+                                                                        <td>En activo</td>
+                                                                    {% else %}
+                                                                        <td class="text-danger">Baja</td>
+                                                                    {% endif %}
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="h6">NIF/NIE</td>
+                                                                    <td>{{info_personal.dni}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="h6">Fecha nacimiento</td>
+                                                                    <td>{{info_personal.nacimiento}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="h6">Fecha baja</td>
+                                                                    <td>{{info_personal.baja}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="h6">Boletin</td>
+                                                                    <td>
+                                                                        {% if info_personal.boletin == 'True' %}
+                                                                            Si, Desea recibir el boletin
+                                                                        {% else %}
+                                                                            No desea recibir el boletin
+                                                                        {% endif %}
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="row mt-3">
+                                                            <div class="col">
+                                                                <div class="card border-secondary">
+                                                                    <div class="card-header"><h4>Observaciones</h4> </div>
+                                                                    <div class="card-body">
+                                                                        <p> {% if info_personal.observaciones %}
+                                                                                {{info_personal.observaciones}}
+                                                                            {% endif %}
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>  
+                                                </div> 
+                                            </div> 
+                                        </div> 
+                                    </div> 
+                                </div> 
+                                <div class="tab-pane fade" id="contacto" role="tabpanel" aria-labelledby="grupo-tab">
+                                    <div class="container-md">
+                                        <div class="row mt-1 justify-content-center">
+                                            <div class="col">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <table id="contacto-table" class="table table-hover text-center">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td class="h6">Calle</td>
+                                                                    <td>{{info_personal.calle}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="h6">Población</td>
+                                                                    <td>{{info_personal.poblacion}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="h6">Provincia</td>
+                                                                    <td>{{info_personal.provincia}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="h6">Código postal</td>
+                                                                    <td>{{info_personal.codigo}}</td>
+                                                                </tr>
 
-				<div class="tab-pane fade" id="contacto" role="tabpanel" aria-labelledby="grupo-tab">
-					<div class="container-md">
-					    <div class="row mt-5">
-						  	<div class="col-md-10">
-						  		<div class="card">
-						  			<div class="card-header"><h2 style="text-align:center">Datos de contacto </h2> </div>
-						  			<div class="card-body">
-										<div class="table-wrapper">
-											<table id="contacto-table" class="table table-hover mb-0">
-												<tbody>
-													<tr>
-														<td class="col text-center">Dirección Postal</td>
-														<td>{{info_personal.calle}}
-															{{info_personal.poblacion}}
-															{{info_personal.provincia}}
-															{{info_personal.codigo}}</td>
-													</tr>
-													<tr>
-														<td class="col text-center">Tlf. Móvil</td>
-														<td>
-															{% if  not info_personal.movil %}
-																No se ha proporcionado
-															{% else %}
-																{{info_personal.movil}}
-															{% endif %}
-														</td>
-													</tr>
-													<tr>
-														<td class="col text-center">Tlf. Fijo</td>
-														<td>
-															{% if not info_personal.telephone  %}
-															No se ha proporcionado
-															{% else%}
-																{{info_personal.telephone}}
-															{% endif%}
-														</td>
-													</tr>
-													<tr>
-														<td class="col text-center">correo electrónico</td>
-														<td>
-															{% if not info_personal.email %}
-																No se ha proporcionado
-															{% else%}
-																{{info_personal.email}}
-															{% endif%}
-														</td>
-													</tr>
-												</tbody>
-											</table>
-										</div> <!--  end of table wrapper  -->
-									</div> 
-								</div> 
-					  		</div> 
-					  	</div> 
-					</div> <!-- end continer-->
-				</div>  <!-- end tab contacto -->
-
-
-
-				<div class="tab-pane fade" id="grupo" role="tabpanel" aria-labelledby="grupo-tab">
-					<div class="container-md">
-					    <div class="row mt-5">
-						  	<div class="col-md-10">
-						  		<div class="card">
-						  			<div class="card-header"><h2 style="text-align:center">Grupo</h2> </div>
-						  			<div class="card-body">
-										<div class="table-wrapper">
-											<table id="grupo_table" class="table table-hover mb-0">
-												<tbody>
-													<tr>
-														<td class="col text-center">Nombre del grupo</td>
-														<td>
-															{% if not info_personal.grupo %}
-																El Personal de Iglesia no está asignado a ningún grupo
-															{% else %}
-																{{info_personal.grupo}} en la diocesis de {{info_personal.diocesis}}
-															{% endif%}
-														</td>
-													</tr>
-												</tbody>
-											</table>
-										</div> <!--  end of table wrapper  -->
-									</div> 
-								</div> 
-					  		</div> 
-					  	</div> 
-					</div> <!-- end continer-->
-				</div>  <!-- end tab grupo -->
-
-				<div class="tab-pane fade" id="cargos" role="tabpanel" aria-labelledby="cargos-tab">
-					<div class="container-md">
-					    <div class="row mt-5">
-						  	<div class="col-md-10">
-						  		<div class="card">
-						  			<div class="card-header"><h2 style="text-align:center">Cargos</h2> </div>
-						  			<div class="card-body">
-										<div class="table-wrapper">
-											<table id="cargos_table" class="table table-hover mb-0">
-												<tbody>
-
-													<tr>
-														<td class="col text-center">Cargo</td>
-														<td >
-															{% if not info_personal.cargos %}
-																El Personal de Iglesia no tiene ningún cargo
-															{% else %}
-																{{info_personal.cargos}} en la diocesis de {{info_personal.diocesis}}
-															{% endif%}
-															{{info_personal.cargos}}</td>
-													</tr>
-												</tbody>
-											</table>
-										</div> <!--  end of table wrapper  -->
-									</div> 
-								</div> 
-							</div> <!-- end col-md-8 -->
-						</div> 
-					</div> 
-				</div>  <!-- end tab cargos -->
-
-				<div class="tab-pane fade" id="proyecto" role="tabpanel" aria-labelledby="proyecto-tab">
-					<div class="container-md">
-					    <div class="row mt-5">
-						  	<div class="col-md-10">
-						  		<div class="card">
-						  			<div class="card-header"><h2 style="text-align:center">Proyecto o Actividad del Voluntario</h2> </div>
-						  			<div class="card-body">
-										{% if not info_personal.proyecto_name and not info_personal.actividad_name %}
-											<h5 style="text-align:center">No está asignado a ningún proyecto ni a ninguna actividad </h5>
-										{% else %}
-											<div class="table-wrapper">
-												<table id="cargos_table" class="table table-hover mb-0">
-													<tbody>
-														{% if info_personal.proyecto_name %}
-														<tr>
-															<td class="col text-center">Proyecto que participa el personal de iglesia</td>
-															<td> {{info_personal.proyecto_name}}</td>
-														</tr>
-														{% endif %}
-														{% if  info_personal.actividad_name %}
-														<tr>
-															<td class="col text-center">Actividad que participa el personal iglesia</td>
-															<td> {{info_personal.actividad_name}}</td>
-														</tr>
-														{% endif %}
-													</tbody>
-												</table>
-											</div> <!--  end of table wrapper  -->
-										{% endif %}
-									</div> 
-								</div> 
-							</div> <!-- end col-md-8 -->
-						</div> 
-					</div> 
-				</div>  <!-- end tab grupo -->
-			</div>  <!-- end myTabContent -->
-		</div>  
-	</div> 
-</div>  
+                                                                <tr>
+                                                                    <td class="h6">Tlf. Móvil</td>
+                                                                    <td>
+                                                                        {% if  not info_personal.movil %}
+                                                                            No se ha proporcionado
+                                                                        {% else %}
+                                                                            {{info_personal.movil}}
+                                                                        {% endif %}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="h6">Tlf. Fijo</td>
+                                                                    <td>
+                                                                        {% if not info_personal.telephone  %}
+                                                                        No se ha proporcionado
+                                                                        {% else%}
+                                                                            {{info_personal.telephone}}
+                                                                        {% endif%}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="h6">correo electrónico</td>
+                                                                    <td>
+                                                                        {% if not info_personal.email %}
+                                                                            No se ha proporcionado
+                                                                        {% else%}
+                                                                            {{info_personal.email}}
+                                                                        {% endif%}
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div> 
+                                                </div> 
+                                            </div> 
+                                        </div> 
+                                    </div> 
+                                </div>  
+                                <div class="tab-pane fade" id="grupo" role="tabpanel" aria-labelledby="grupo-tab">
+                                    <div class="container-md">
+                                        <div class="row mt-1 justify-content-center">
+                                            <div class="col">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <table id="grupo_table" class="table table-hover text-center">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td class="h6">Nombre del grupo</td>
+                                                                    <td>
+                                                                        {% if not info_personal.grupo %}
+                                                                            No está asignado a ningún grupo
+                                                                        {% else %}
+                                                                            {{info_personal.grupo}}
+                                                                        {% endif%}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="h6">Diocesis</td>
+                                                                    <td>{{info_personal.diocesis}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="h6">Delegación</td>
+                                                                    <td>{{info_personal.delegacion}}</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div> 
+                                                </div> 
+                                            </div> 
+                                        </div> 
+                                    </div> 
+                                </div> 
+                                <div class="tab-pane fade" id="cargos" role="tabpanel" aria-labelledby="cargos-tab">
+                                    <div class="container-md">
+                                        <div class="row mt-1 justify-content-center">
+                                            <div class="col">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <table id="cargos_table" class="table table-hover text-center">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td class="h6">Cargo</td>
+                                                                    <td >
+                                                                        {% if not info_personal.cargos %}
+                                                                            No tiene ningún cargo
+                                                                        {% else %}
+                                                                            {{info_personal.cargos}}
+                                                                        {% endif%}
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div> 
+                                                </div> 
+                                            </div> 
+                                        </div> 
+                                    </div> 
+                                </div>  
+                                <div class="tab-pane fade" id="proyecto" role="tabpanel" aria-labelledby="proyecto-tab">
+                                    <div class="container-md">
+                                        <div class="row mt-1 justify-content-center">
+                                            <div class="col">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        {% if not info_personal.proyecto_name and not info_personal.actividad_name %}
+                                                            <h5 style="text-align:center">No está asignado a ningún proyecto ni a ninguna actividad </h5>
+                                                        {% else %}
+                                                            <table id="cargos_table" class="table table-hover text-center">
+                                                                <tbody>
+                                                                    {% if info_personal.proyecto_name %}
+                                                                    <tr>
+                                                                        <td class="h6">Proyecto que participa</td>
+                                                                        <td> {{info_personal.proyecto_name}}</td>
+                                                                    </tr>
+                                                                    {% endif %}
+                                                                    {% if  info_personal.actividad_name %}
+                                                                    <tr>
+                                                                        <td class="h6">Actividad que participa</td>
+                                                                        <td> {{info_personal.actividad_name}}</td>
+                                                                    </tr>
+                                                                    {% endif %}
+                                                                </tbody>
+                                                            </table>
+                                                        {% endif %}
+                                                    </div> 
+                                                </div> 
+                                            </div> 
+                                        </div> 
+                                    </div> 
+                                </div>  
+                            </div> 
+                        </div>
+                    </div>  
+                </div>  
+            </div>  
+        </div> 
+    </div> 
+{% elif lista_personal %}
+    <div class="container">
+        <div class="row my-3">
+            <div class="container md">
+                <div class="card">
+                    <div class="card-header text-center"><h2>Se han encontrado este personal de Iglesia</h2> </div>
+                    <div class="card-body">
+                        <div class="container"></div>
+                            <h5>Seleciona de la lista la persona que buscas</h5>
+                            <table id="personal_tabla" class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre Apellidos</th>
+                                        <th>Grupo</th>
+                                        <th>Provincia</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for id, nombre, grupo, provincia in lista_personal %}
+                                        <tr>
+                                            <td><a href="/informacionPersonalID={{id}}" class="text-decoration-none">{{nombre}}</a></td>
+                                            <td>{{grupo}}</td>
+                                            <td>{{provincia}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> 
 {% else %}
 	
 	<div class="container-md">
-	    <div class="row g-3">
+	    <div class="row g-3 mt-3 justify-content-center">
 	        <div class="col-md-10">
 	            <div class="card">
 					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Formulario para la busqueda de personal iglesia</h3></div>
@@ -266,25 +315,35 @@
 	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="busquedaPersonal" id="busquedaPersonal" >
 	                        {% csrf_token %}
 	                        <input type="hidden" name="action" value="busquedaPersonal"/>
-
+                            <div class="row g-2 mt-3">
+		                        <div class="col">
+		                            <div class="form-floating">
+                                        <input type="text"  class="form-control" id="nombre", name='nombre' placeholder="Nombre">
+                                        <label for="nombre">Nombre</label>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-floating">
+                                        <input type="text"  class="form-control" id="apellido" name='apellido' placeholder="Apellido">
+                                        <label for="apellido">Apellido</label>
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row g-2 mt-3">
 		                        <div class="col-md-5">
-		                            <label class="control-label " for="nombre">Nombre</label>
-		                            <input type="text"  class="form-control" id="nombre", name='nombre'>
+		                            <div class="form-floating">
+                                        <input type="text"  class="form-control" id="nif" name='nif' placeholder="nif">
+                                        <label for="nif" >NIF/NIE</label>
+                                    </div>
 		                        </div>
-
-		                        <div class="col-md-5">
-		                            <label for="apellidos"  class="control-label">Apellidos</label>
-		                            <input type="text"  class="form-control" id="apellidos" name='apellidos'>
-		                        </div>
-		                        <div class="col-md-5">
-		                            <label for="nif"  class="control-label">NIF/NIE</label>
-		                            <input type="text"  class="form-control" id="nif" name='nif'>
-		                        </div>
-
-	                        <div class="col-12">
-	                            <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
-	                            <button type="submit" class="btn-outline-primary float-end ">Buscar Personale iglesia</button>
-	                        </div>
+                            </div>
+                            <div class="row g-3 my-3">
+                                <div class="col">
+                                    <input type="reset" class="btn btn-outline-secondary mx-2" value="Limpiar campos">
+                                    <input class="btn float-end btn-outline-primary mx-2" type="submit" value="Buscar personal iglesia">
+                                </div>
+                            </div>
 	                    </form>
 	                </div>
 	            </div>
@@ -292,4 +351,12 @@
 	    </div> 
 	</div> 
 {% endif %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#personal_tabla').DataTable({
+            dom: "fltirp",
+            responsive: true,
+        });
+    });
+</script>
 {% endblock %}

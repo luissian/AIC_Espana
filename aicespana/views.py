@@ -298,6 +298,7 @@ def alta_personal_iglesia(request):
             "codigo",
             "nacimiento",
             "rec_boletin",
+            "grupoID",
         ]
         personal_data = {}
 
@@ -321,9 +322,8 @@ def alta_personal_iglesia(request):
                     ]
                 },
             )
-        aicespana.models.PersonalExterno_obj = (
-            aicespana.models.PersonalIglesia.objects.create_new_personel(personal_data)
-        )
+        aicespana.models.PersonalIglesia.objects.create_new_personel(personal_data)
+
         confirmation_data = {}
         confirmation_data["nombre"] = request.POST["nombre"]
         confirmation_data["apellido"] = request.POST["apellido"]
@@ -333,6 +333,9 @@ def alta_personal_iglesia(request):
             {"confirmation_data": confirmation_data},
         )
     personel_data = {"provincias": aicespana.utils.generic_functions.get_provincias()}
+    personel_data[
+        "grupos_diocesis_id_name"
+    ] = aicespana.utils.generic_functions.get_group_list_to_select_in_form()
     return render(
         request, "aicespana/altaPersonalIglesia.html", {"personel_data": personel_data}
     )
@@ -924,7 +927,9 @@ def modificacion_personal(request):
                 personal_data[
                     "provincias"
                 ] = aicespana.utils.generic_functions.get_provincias()
-
+                personal_data[
+                        "grupo_lista"
+                    ] = aicespana.utils.generic_functions.get_group_list_to_select_in_form()
                 return render(
                     request,
                     "aicespana/modificacionPersonal.html",
@@ -978,7 +983,9 @@ def modificacion_personal(request):
         ] = aicespana.utils.generic_functions.get_provincia_index_from_name(
             personal_data["provincia"]
         )
-
+        personal_data[
+            "grupo_lista"
+        ] = aicespana.utils.generic_functions.get_group_list_to_select_in_form()
         return render(
             request,
             "aicespana/modificacionPersonal.html",
@@ -991,7 +998,7 @@ def modificacion_personal(request):
         data = {}
         field_list = [
             "nombre",
-            "apellidos",
+            "apellido",
             "dni",
             "calle",
             "poblacion",
@@ -1002,12 +1009,19 @@ def modificacion_personal(request):
             "movil",
             "baja",
             "rec_boletin",
-            "activo",
             "nacimiento",
+            "grupoID",
         ]
 
         for item in field_list:
             data[item] = request.POST[item]
+        # Assign values from switch
+        if "activo" in request.POST:
+            data["activo"] = "true"
+        else:
+            data["activo"] = "false"
+        if "eliminar_grupo" in request.POST:
+            data["grupoID"] = ""
         data[
             "provincia"
         ] = aicespana.utils.generic_functions.get_provincia_name_from_index(
@@ -1020,7 +1034,7 @@ def modificacion_personal(request):
             {
                 "confirmation_data": request.POST["nombre"]
                 + " "
-                + request.POST["apellidos"]
+                + request.POST["apellido"]
             },
         )
     return render(request, "aicespana/modificacionPersonal.html")
@@ -1295,13 +1309,24 @@ def modificacion_voluntario(request):
             "colaboracion_id",
             "grupoID",
             "rec_boletin",
-            "activo",
             "actividadID",
             "proyectoID",
         ]
 
         for item in field_list:
             data[item] = request.POST[item]
+        # update switch values
+        if "activo" in request.POST:
+            data["activo"] = "true"
+        else:
+            data["activo"] = "false"
+        
+        if "eliminar_grupo" in request.POST:
+            data["grupoID"] = ""
+        if "eliminar_proyecto" in request.POST:
+            data["proyectoID"] =""
+        if "eliminar_actividad":
+            data["activiadID"] = ""
         data[
             "provincia"
         ] = aicespana.utils.generic_functions.get_provincia_name_from_index(
@@ -1447,6 +1472,11 @@ def cargos_personal(request):
         data["delegacion"] = request.POST["delegacion"]
         # data['diocesis'] = request.POST['diocesis']
         data["grupo"] = request.POST["grupo"]
+        # remove cargo or grupo if switch was set to delete it
+        if "eliminar_grupo" in request.POST:
+            data["grupo"] = ""
+        if "eliminar_cargo" in request.POST:
+            data["cargo"] = ""
         user_obj.update_information(data)
         updated_data = aicespana.utils.generic_functions.get_personal_responsability(
             user_obj
@@ -1629,6 +1659,7 @@ def informacion_personal_id(request, personal_id):
     )
     info_personal = personal_obj.get_all_data_from_personal()
     info_personal["cargos"] = personal_obj.get_responability_belongs_to()
+    import pdb; pdb.set_trace()
     return render(
         request, "aicespana/informacionPersonal.html", {"info_personal": info_personal}
     )
@@ -1646,7 +1677,7 @@ def informacion_personal(request):
         if (
             request.POST["nif"] == ""
             and request.POST["nombre"] == ""
-            and request.POST["apellidos"] == ""
+            and request.POST["apellido"] == ""
         ):
             return render(request, "aicespana/informacionPersonal.html")
         if request.POST["nif"] != "":
@@ -1681,14 +1712,14 @@ def informacion_personal(request):
                 request, "aicespana/informacionPersonal.html", {"ERROR": error}
             )
         personal_objs = aicespana.models.PersonalIglesia.objects.all()
-        if request.POST["apellidos"] != "":
+        if request.POST["apellido"] != "":
             personal_objs = personal_objs.filter(
-                apellido__icontains=request.POST["apellidos"]
+                apellido__icontains=request.POST["apellido"]
             )
             if len(personal_objs) == 0:
                 error = [
                     "No hay nigún Personal de Iglesia que tenga el apellido",
-                    request.POST["apellidos"],
+                    request.POST["apellido"],
                 ]
                 return render(
                     request, "aicespana/informacionPersonal.html", {"ERROR": error}
@@ -1706,11 +1737,11 @@ def informacion_personal(request):
                     request, "aicespana/informacionPersonal.html", {"ERROR": error}
                 )
         if len(personal_objs) > 1:
-            error = [
-                "Hay más de un Personal de Iglesia que cumple los criterios de busqueda"
-            ]
+            lista_personal = (
+                aicespana.utils.generic_functions.get_info_of_voluntarios_personel(personal_objs)
+            )
             return render(
-                request, "aicespana/informacionPersonal.html", {"ERROR": error}
+                request, "aicespana/informacionPersonal.html", {"lista_personal": lista_personal}
             )
         info_personal = personal_objs[0].get_all_data_from_personal()
         info_personal["cargos"] = personal_objs[0].get_responability_belongs_to()
@@ -1760,7 +1791,7 @@ def informacion_voluntario(request):
         if (
             request.POST["nif"] == ""
             and request.POST["nombre"] == ""
-            and request.POST["apellidos"] == ""
+            and request.POST["apellido"] == ""
         ):
             return render(request, "aicespana/informacionVoluntario.html")
         if request.POST["nif"] != "":
@@ -1797,14 +1828,14 @@ def informacion_voluntario(request):
                 request, "aicespana/informacionVoluntario.html", {"ERROR": error}
             )
         personal_objs = aicespana.models.PersonalExterno.objects.all()
-        if request.POST["apellidos"] != "":
+        if request.POST["apellido"] != "":
             personal_objs = personal_objs.filter(
-                apellido__icontains=request.POST["apellidos"].strip()
+                apellido__icontains=request.POST["apellido"].strip()
             )
             if len(personal_objs) == 0:
                 error = [
                     "No hay nigún voluntario con el apellido",
-                    request.POST["apellidos"],
+                    request.POST["apellido"],
                 ]
                 return render(
                     request, "aicespana/informacionVoluntario.html", {"ERROR": error}
@@ -1823,7 +1854,7 @@ def informacion_voluntario(request):
                 )
         if len(personal_objs) > 1:
             lista_voluntarios = (
-                aicespana.utils.generic_functions.get_info_of_voluntarios(personal_objs)
+                aicespana.utils.generic_functions.get_info_of_voluntarios_personel(personal_objs)
             )
             return render(
                 request,
