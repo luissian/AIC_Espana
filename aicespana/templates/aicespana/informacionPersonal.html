@@ -52,219 +52,219 @@
                                 <div class="container-md">
                                     <div class="row mt-1">
                                         <div class="col">
-                                                <div class="card">
-                                                    <div class="card-body">
-                                                        <table id="general" class="table table-hover text-center">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td class="h6">Situación</td>
-                                                                    {% if info_personal.activo == "true" %}
-                                                                        <td>En activo</td>
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <table id="general" class="table table-hover text-center">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="h6">Situación</td>
+                                                                {% if info_personal.activo == "true" %}
+                                                                    <td>En activo</td>
+                                                                {% else %}
+                                                                    <td class="text-danger">Baja</td>
+                                                                {% endif %}
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="h6">NIF/NIE</td>
+                                                                <td>{{info_personal.dni}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="h6">Fecha nacimiento</td>
+                                                                <td>{{info_personal.nacimiento}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="h6">Fecha baja</td>
+                                                                <td>{{info_personal.baja}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="h6">Boletin</td>
+                                                                <td>
+                                                                    {% if info_personal.boletin == 'True' %}
+                                                                        Si, Desea recibir el boletin
                                                                     {% else %}
-                                                                        <td class="text-danger">Baja</td>
+                                                                        No desea recibir el boletin
                                                                     {% endif %}
-                                                                </tr>
-                                                                <tr>
-                                                                    <td class="h6">NIF/NIE</td>
-                                                                    <td>{{info_personal.dni}}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td class="h6">Fecha nacimiento</td>
-                                                                    <td>{{info_personal.nacimiento}}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td class="h6">Fecha baja</td>
-                                                                    <td>{{info_personal.baja}}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td class="h6">Boletin</td>
-                                                                    <td>
-                                                                        {% if info_personal.boletin == 'True' %}
-                                                                            Si, Desea recibir el boletin
-                                                                        {% else %}
-                                                                            No desea recibir el boletin
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row mt-3">
+                                                        <div class="col">
+                                                            <div class="card border-secondary">
+                                                                <div class="card-header"><h4>Observaciones</h4> </div>
+                                                                <div class="card-body">
+                                                                    <p> {% if info_personal.observaciones %}
+                                                                            {{info_personal.observaciones}}
                                                                         {% endif %}
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <div class="row mt-3">
-                                                            <div class="col">
-                                                                <div class="card border-secondary">
-                                                                    <div class="card-header"><h4>Observaciones</h4> </div>
-                                                                    <div class="card-body">
-                                                                        <p> {% if info_personal.observaciones %}
-                                                                                {{info_personal.observaciones}}
-                                                                            {% endif %}
-                                                                        </p>
-                                                                    </div>
+                                                                    </p>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>  
-                                                </div> 
+                                                    </div>
+                                                </div>  
                                             </div> 
                                         </div> 
                                     </div> 
                                 </div> 
-                                <div class="tab-pane fade" id="contacto" role="tabpanel" aria-labelledby="grupo-tab">
-                                    <div class="container-md">
-                                        <div class="row mt-1 justify-content-center">
-                                            <div class="col">
-                                                <div class="card">
-                                                    <div class="card-body">
-                                                        <table id="contacto-table" class="table table-hover text-center">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td class="h6">Calle</td>
-                                                                    <td>{{info_personal.calle}}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td class="h6">Población</td>
-                                                                    <td>{{info_personal.poblacion}}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td class="h6">Provincia</td>
-                                                                    <td>{{info_personal.provincia}}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td class="h6">Código postal</td>
-                                                                    <td>{{info_personal.codigo}}</td>
-                                                                </tr>
+                            </div>
+                            
+                            <div class="tab-pane fade" id="contacto" role="tabpanel" aria-labelledby="grupo-tab">
+                                <div class="container-md">
+                                    <div class="row mt-1 justify-content-center">
+                                        <div class="col">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <table id="contacto-table" class="table table-hover text-center">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="h6">Calle</td>
+                                                                <td>{{info_personal.calle}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="h6">Población</td>
+                                                                <td>{{info_personal.poblacion}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="h6">Provincia</td>
+                                                                <td>{{info_personal.provincia}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="h6">Código postal</td>
+                                                                <td>{{info_personal.codigo}}</td>
+                                                            </tr>
 
-                                                                <tr>
-                                                                    <td class="h6">Tlf. Móvil</td>
-                                                                    <td>
-                                                                        {% if  not info_personal.movil %}
-                                                                            No se ha proporcionado
-                                                                        {% else %}
-                                                                            {{info_personal.movil}}
-                                                                        {% endif %}
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td class="h6">Tlf. Fijo</td>
-                                                                    <td>
-                                                                        {% if not info_personal.telephone  %}
+                                                            <tr>
+                                                                <td class="h6">Tlf. Móvil</td>
+                                                                <td>
+                                                                    {% if  not info_personal.movil %}
                                                                         No se ha proporcionado
-                                                                        {% else%}
-                                                                            {{info_personal.telephone}}
-                                                                        {% endif%}
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td class="h6">correo electrónico</td>
-                                                                    <td>
-                                                                        {% if not info_personal.email %}
-                                                                            No se ha proporcionado
-                                                                        {% else%}
-                                                                            {{info_personal.email}}
-                                                                        {% endif%}
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div> 
-                                                </div> 
-                                            </div> 
-                                        </div> 
-                                    </div> 
-                                </div>  
-                                <div class="tab-pane fade" id="grupo" role="tabpanel" aria-labelledby="grupo-tab">
-                                    <div class="container-md">
-                                        <div class="row mt-1 justify-content-center">
-                                            <div class="col">
-                                                <div class="card">
-                                                    <div class="card-body">
-                                                        <table id="grupo_table" class="table table-hover text-center">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td class="h6">Nombre del grupo</td>
-                                                                    <td>
-                                                                        {% if not info_personal.grupo %}
-                                                                            No está asignado a ningún grupo
-                                                                        {% else %}
-                                                                            {{info_personal.grupo}}
-                                                                        {% endif%}
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td class="h6">Diocesis</td>
-                                                                    <td>{{info_personal.diocesis}}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td class="h6">Delegación</td>
-                                                                    <td>{{info_personal.delegacion}}</td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div> 
+                                                                    {% else %}
+                                                                        {{info_personal.movil}}
+                                                                    {% endif %}
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="h6">Tlf. Fijo</td>
+                                                                <td>
+                                                                    {% if not info_personal.telephone  %}
+                                                                    No se ha proporcionado
+                                                                    {% else%}
+                                                                        {{info_personal.telephone}}
+                                                                    {% endif%}
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="h6">correo electrónico</td>
+                                                                <td>
+                                                                    {% if not info_personal.email %}
+                                                                        No se ha proporcionado
+                                                                    {% else%}
+                                                                        {{info_personal.email}}
+                                                                    {% endif%}
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
                                                 </div> 
                                             </div> 
                                         </div> 
                                     </div> 
                                 </div> 
-                                <div class="tab-pane fade" id="cargos" role="tabpanel" aria-labelledby="cargos-tab">
-                                    <div class="container-md">
-                                        <div class="row mt-1 justify-content-center">
-                                            <div class="col">
-                                                <div class="card">
-                                                    <div class="card-body">
+                            </div>
+                            <div class="tab-pane fade" id="grupo" role="tabpanel" aria-labelledby="grupo-tab">
+                                <div class="container-md">
+                                    <div class="row mt-1 justify-content-center">
+                                        <div class="col">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <table id="grupo_table" class="table table-hover text-center">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="h6">Nombre del grupo</td>
+                                                                <td>
+                                                                    {% if not info_personal.grupo %}
+                                                                        No está asignado a ningún grupo
+                                                                    {% else %}
+                                                                        {{info_personal.grupo}}
+                                                                    {% endif%}
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="h6">Diocesis</td>
+                                                                <td>{{info_personal.diocesis}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="h6">Delegación</td>
+                                                                <td>{{info_personal.delegacion}}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div> 
+                                            </div> 
+                                        </div> 
+                                    </div> 
+                                </div> 
+                            </div> 
+                            <div class="tab-pane fade" id="cargos" role="tabpanel" aria-labelledby="cargos-tab">
+                                <div class="container-md">
+                                    <div class="row mt-1 justify-content-center">
+                                        <div class="col">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <table id="cargos_table" class="table table-hover text-center">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="h6">Cargo</td>
+                                                                <td >
+                                                                    {% if not info_personal.cargos %}
+                                                                        No tiene ningún cargo
+                                                                    {% else %}
+                                                                        {{info_personal.cargos}}
+                                                                    {% endif%}
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div> 
+                                            </div> 
+                                        </div> 
+                                    </div> 
+                                </div> 
+                            </div>  
+                            <div class="tab-pane fade" id="proyecto" role="tabpanel" aria-labelledby="proyecto-tab">
+                                <div class="container-md">
+                                    <div class="row mt-1 justify-content-center">
+                                        <div class="col">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    {% if not info_personal.proyecto_name and not info_personal.actividad_name %}
+                                                        <h5 style="text-align:center">No está asignado a ningún proyecto ni a ninguna actividad </h5>
+                                                    {% else %}
                                                         <table id="cargos_table" class="table table-hover text-center">
                                                             <tbody>
+                                                                {% if info_personal.proyecto_name %}
                                                                 <tr>
-                                                                    <td class="h6">Cargo</td>
-                                                                    <td >
-                                                                        {% if not info_personal.cargos %}
-                                                                            No tiene ningún cargo
-                                                                        {% else %}
-                                                                            {{info_personal.cargos}}
-                                                                        {% endif%}
-                                                                    </td>
+                                                                    <td class="h6">Proyecto que participa</td>
+                                                                    <td> {{info_personal.proyecto_name}}</td>
                                                                 </tr>
+                                                                {% endif %}
+                                                                {% if  info_personal.actividad_name %}
+                                                                <tr>
+                                                                    <td class="h6">Actividad que participa</td>
+                                                                    <td> {{info_personal.actividad_name}}</td>
+                                                                </tr>
+                                                                {% endif %}
                                                             </tbody>
                                                         </table>
-                                                    </div> 
+                                                    {% endif %}
                                                 </div> 
                                             </div> 
                                         </div> 
                                     </div> 
-                                </div>  
-                                <div class="tab-pane fade" id="proyecto" role="tabpanel" aria-labelledby="proyecto-tab">
-                                    <div class="container-md">
-                                        <div class="row mt-1 justify-content-center">
-                                            <div class="col">
-                                                <div class="card">
-                                                    <div class="card-body">
-                                                        {% if not info_personal.proyecto_name and not info_personal.actividad_name %}
-                                                            <h5 style="text-align:center">No está asignado a ningún proyecto ni a ninguna actividad </h5>
-                                                        {% else %}
-                                                            <table id="cargos_table" class="table table-hover text-center">
-                                                                <tbody>
-                                                                    {% if info_personal.proyecto_name %}
-                                                                    <tr>
-                                                                        <td class="h6">Proyecto que participa</td>
-                                                                        <td> {{info_personal.proyecto_name}}</td>
-                                                                    </tr>
-                                                                    {% endif %}
-                                                                    {% if  info_personal.actividad_name %}
-                                                                    <tr>
-                                                                        <td class="h6">Actividad que participa</td>
-                                                                        <td> {{info_personal.actividad_name}}</td>
-                                                                    </tr>
-                                                                    {% endif %}
-                                                                </tbody>
-                                                            </table>
-                                                        {% endif %}
-                                                    </div> 
-                                                </div> 
-                                            </div> 
-                                        </div> 
-                                    </div> 
-                                </div>  
-                            </div> 
+                                </div> 
+                            </div>  
                         </div>
                     </div>  
                 </div>  

@@ -27,11 +27,7 @@ def alta_actividad(request):
             "aicespana/errorPage.html",
             {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
-    actividad_data = {}
-    # actividad_data['grupos_diocesis_id_name'] = get_id_grupo_diocesis_delegacion_name()
-    # actividad_data['grupos_diocesis_id_name'] = get_group_list_to_select_in_form()
-    # actividad_data['actividad_grupos_diocesis_name'] = get_id_actividad_grupos_diocesis_delegacion_name()
-
+    actividades = aicespana.utils.generic_functions.get_summary_actividades()
     if request.method == "POST" and request.POST["action"] == "altaActividad":
         if aicespana.models.Actividad.objects.filter(
             nombreActividad__iexact=request.POST["nombre"]
@@ -40,12 +36,11 @@ def alta_actividad(request):
                 request,
                 "aicespana/altaActividad.html",
                 {
-                    "actividad_data": actividad_data,
+                    "actividades": actividades,
                     "ERROR": [aicespana.message_text.ERROR_ACTIVIDAD_EXIST],
                 },
             )
         data = {}
-        # data['grupo_obj'] = get_grupo_obj_from_id(request.POST['grupoID']) if request.POST['grupoID'] != '' else None
         data["alta"] = request.POST["alta"]
         data["nombre"] = request.POST["nombre"]
         data["observaciones"] = request.POST["observaciones"]
@@ -64,8 +59,9 @@ def alta_actividad(request):
             "aicespana/altaActividad.html",
             {"confirmation_data": request.POST["nombre"]},
         )
+    
     return render(
-        request, "aicespana/altaActividad.html", {"actividad_data": actividad_data}
+        request, "aicespana/altaActividad.html", {"actividades": actividades}
     )
 
 
@@ -350,16 +346,21 @@ def alta_proyecto(request):
             {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     proyecto_data = {}
+    proyecto_data["p_list"] = aicespana.utils.generic_functions.get_projects_information(
+        "manager", ""
+    )
+    
     # proyecto_data['grupos_diocesis_id_name'] = get_id_grupo_diocesis_delegacion_name()
     proyecto_data[
         "grupos_diocesis_id_name"
     ] = aicespana.utils.generic_functions.get_group_list_to_select_in_form()
+    """
     proyecto_data[
         "proyectos_grupos_diocesis_name"
     ] = (
         aicespana.utils.generic_functions.get_id_proyectos_grupos_diocesis_delegacion_name()
     )
-
+    """
     if request.method == "POST" and request.POST["action"] == "altaProyecto":
         if aicespana.models.Proyecto.objects.filter(
             nombreProyecto__iexact=request.POST["nombre"]
@@ -928,8 +929,8 @@ def modificacion_personal(request):
                     "provincias"
                 ] = aicespana.utils.generic_functions.get_provincias()
                 personal_data[
-                        "grupo_lista"
-                    ] = aicespana.utils.generic_functions.get_group_list_to_select_in_form()
+                    "grupo_lista"
+                ] = aicespana.utils.generic_functions.get_group_list_to_select_in_form()
                 return render(
                     request,
                     "aicespana/modificacionPersonal.html",
@@ -1050,13 +1051,9 @@ def modificacion_proyecto(request):
         )
 
     proyecto_data = {}
-    # proyecto_data['grupos_diocesis_id_name'] = get_id_grupo_diocesis_delegacion_name()
-    proyecto_data[
-        "proyectos_grupos_diocesis_name"
-    ] = (
-        aicespana.utils.generic_functions.get_id_proyectos_grupos_diocesis_delegacion_name()
+    proyecto_data["p_list"] = aicespana.utils.generic_functions.get_projects_information(
+        "manager", ""
     )
-
     return render(
         request, "aicespana/modificacionProyecto.html", {"proyecto_data": proyecto_data}
     )
@@ -1320,11 +1317,11 @@ def modificacion_voluntario(request):
             data["activo"] = "true"
         else:
             data["activo"] = "false"
-        
+
         if "eliminar_grupo" in request.POST:
             data["grupoID"] = ""
         if "eliminar_proyecto" in request.POST:
-            data["proyectoID"] =""
+            data["proyectoID"] = ""
         if "eliminar_actividad":
             data["activiadID"] = ""
         data[
@@ -1609,7 +1606,7 @@ def cargos_voluntarios(request):
             request.POST["user_id"]
         )
         data = {}
-        
+
         data["cargo"] = request.POST["cargo"]
         if "eliminar_grupo" in request.POST:
             data["actividad"] = ""
@@ -1624,7 +1621,6 @@ def cargos_voluntarios(request):
         else:
             data["proyecto"] = request.POST["proyecto"]
         data["colaboracion"] = request.POST["colaboracion"]
-        import pdb; pdb.set_trace()
         user_obj.update_information(data)
         updated_data = (
             aicespana.utils.generic_functions.get_external_personal_responsability(
@@ -1659,7 +1655,6 @@ def informacion_personal_id(request, personal_id):
     )
     info_personal = personal_obj.get_all_data_from_personal()
     info_personal["cargos"] = personal_obj.get_responability_belongs_to()
-    import pdb; pdb.set_trace()
     return render(
         request, "aicespana/informacionPersonal.html", {"info_personal": info_personal}
     )
@@ -1738,10 +1733,14 @@ def informacion_personal(request):
                 )
         if len(personal_objs) > 1:
             lista_personal = (
-                aicespana.utils.generic_functions.get_info_of_voluntarios_personel(personal_objs)
+                aicespana.utils.generic_functions.get_info_of_voluntarios_personel(
+                    personal_objs
+                )
             )
             return render(
-                request, "aicespana/informacionPersonal.html", {"lista_personal": lista_personal}
+                request,
+                "aicespana/informacionPersonal.html",
+                {"lista_personal": lista_personal},
             )
         info_personal = personal_objs[0].get_all_data_from_personal()
         info_personal["cargos"] = personal_objs[0].get_responability_belongs_to()
@@ -1854,7 +1853,9 @@ def informacion_voluntario(request):
                 )
         if len(personal_objs) > 1:
             lista_voluntarios = (
-                aicespana.utils.generic_functions.get_info_of_voluntarios_personel(personal_objs)
+                aicespana.utils.generic_functions.get_info_of_voluntarios_personel(
+                    personal_objs
+                )
             )
             return render(
                 request,
@@ -2020,6 +2021,7 @@ def listado_grupo(request, grupo_id):
 def listado_proyectos(request):
     region = None
     user_type = "user"
+    project_data = {}
     if not aicespana.utils.generic_functions.is_manager(request):
         if not aicespana.utils.generic_functions.check_delegada_regional(request.user):
             return render(
@@ -2035,8 +2037,11 @@ def listado_proyectos(request):
         region = delegacion_name
     else:
         user_type = "manager"
-    project_data = aicespana.utils.generic_functions.get_projects_information(
+    project_data["p_list"] = aicespana.utils.generic_functions.get_projects_information(
         user_type, region
+    )
+    project_data["graphics"] = aicespana.utils.generic_functions.graphics_per_proyect(
+        region
     )
     return render(
         request, "aicespana/listadoProyectos.html", {"project_data": project_data}

@@ -1,67 +1,57 @@
 {% extends 'aicespana/base.html' %}
 {% load static %}
 {% block content %}
-<style media="screen">
-	.form-group.required .control-label:after {
-	  content:"  *";
-	  color:red;
-	}
-</style>
-<style>
-.table-wrapper {
-    height: 250px;
-    overflow: auto;
-    display:inline-block;
-    width: auto;
-</style>
-
+{% include "aicespana/cdn_table_functionality.html" %}
 <div class="container-md">
-	<div class="col-md-12">
+	<div class="col">
 	    <div class="card">
 	        <div class="card-header"><h2 style="text-align:center">Listado de Delegados Regionales</h2> </div>
             <div class="card-body">
-				{% for delegacion, cargos in listado_delegados.items %}
-					<table class="table table-hover">
-						<thead>
-							<tr>
-								<th>Delegación</th>
-								<th>Nombre</th>
-								<th>Cargo</th>
-								<th>Telefono Movil</th>
-								<th>email</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>{{delegacion}}</td>
-								<td></td>
-								 <td></td>
-								 <td></td>
-								 <td></td>
-							</tr>
-							{% for tipo , id, nombre, cargo, movil, email in cargos %}
-								<tr>
-									<td></td>
-									{% if tipo == 'iglesia' %}
-										<td><a href="informacionPersonalID={{id}}">{{nombre}}</a></td>
-									{% else %}
-										<td> <a href="informacionVoluntarioID={{id}}">{{nombre}}</a></td>
-									{% endif %}
-									<td>{{cargo}}</td>
-									<td>{{movil}}</td>
-									<td>{{email}}</td>
-								</tr>
-							{% endfor %}
+                <div class="row">
+                    <div class="col">
+                        <table  id="delegados_tabla" class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Delegación</th>
+                                    <th>Nombre</th>
+                                    <th>Cargo</th>
+                                    <th>Telefono Movil</th>
+                                    <th>email</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for tipo , deleg, id, nombre, cargo, movil, email in listado_delegados %}
+                                    <tr>
+                                        <td>{{deleg}}</td>
+                                        {% if tipo == 'iglesia' %}
+                                            <td><a href="informacionPersonalID={{id}}">{{nombre}}</a></td>
+                                        {% else %}
+                                            <td> <a href="informacionVoluntarioID={{id}}">{{nombre}}</a></td>
+                                        {% endif %}
+                                        <td>{{cargo}}</td>
+                                        <td>{{movil}}</td>
+                                        <td>{{email}}</td>
+                                    </tr>
+                                {% endfor %}
 
-						</tbody>
-					</table>
+                            </tbody>
+                        </table>
+                    </div>
+				</div>
 
-					
-				{% endfor %}
 			</div>  
 		</div> 
 	</div> 
-
 </div> 
-
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#delegados_tabla').DataTable({
+            dom: "fltirpB",
+            responsive: true,
+            buttons: [
+                'excel'
+            ]
+        });
+    });
+</script>
 {% endblock %}

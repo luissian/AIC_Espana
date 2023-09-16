@@ -1,21 +1,8 @@
 {% extends 'aicespana/base.html' %}
 {% load static %}
 {% block content %}
-<style media="screen">
-	.form-group.required .control-label:after {
-	  content:"  *";
-	  color:red;
-	}
-</style>
-<style>
-.table-wrapper {
-    height: 450px;
-    overflow: auto;
-    display:inline-block;
-    width: 850px;
-</style>
+{% include "aicespana/cdn_table_functionality.html" %}
 {% if ERROR %}
-
 	<div class="container-md">
 		<div class="row g-3">
 			<div class="col-md-10">
@@ -29,78 +16,89 @@
 				</div> 
 		    </div> 
 		</div> 
-		
 	</div> 
-
 {% endif %}
 {% if presidentes %}
 
 	<div class="container-md">
-		<div class="col-md-11">
-		    <div class="card">
-		        <div class="card-header"><h2 style="text-align:center">Listado de Presidentas de Grupo</h2> </div>
-	            <div class="card-body">
-
-	                <table class="table table-hover table-wrapper">
-		                <thead>
-	                        <tr>
-								<th>Nombre</th>
-								<th>Número de movil</th>
-	                            <th>Grupo</th>
-	                            <th>Diocesis</th>
-	                             <th>Delegación</th>
-	                        </tr>
-	                    </thead>
-	                	<tbody>
-	                        {% for nombre, movil, grupo, diocesis, delegacion in presidentes %}
-	                            <tr>
-	                                <td>{{nombre}}</td>
-									<td>{{movil}}</td>
-									<td>{{grupo}}</td>
-	                                <td>{{diocesis}}</td>
-	                                <td>{{delegacion}}</td>
-	                            </tr>
-	                        {% endfor %}
-	                    </tbody>
-	                </table>
-	            </div>  
-		    </div> 
-		</div> 
+        <div class="row mt-3 justify-content-center">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header"><h2 style="text-align:center">Listado de Presidentas de Grupo</h2> </div>
+                    <div class="card-body">
+                        <table id="presidentas_tabla" class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Número de movil</th>
+                                    <th>Grupo</th>
+                                    <th>Diocesis</th>
+                                    <th>Delegación</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for nombre, movil, grupo, diocesis, delegacion in presidentes %}
+                                    <tr>
+                                        <td>{{nombre}}</td>
+                                        <td>{{movil}}</td>
+                                        <td>{{grupo}}</td>
+                                        <td>{{diocesis}}</td>
+                                        <td>{{delegacion}}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>  
+                </div> 
+            </div> 
+        </div>
 	</div> 
 {% else %}
     <div class="container-md">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col">
                 <div class="card">
                     <div class="card-header"><h2 style="text-align:center">Listado de Presidentes de Grupo por Delegación</h2> </div>
                     <div class="card-body">
                         <form class="row g-3" method="post" enctype="multipart/form-data" name="listadoPresidentesGrupo" id="listadoPresidentesGrupo" >
                             {% csrf_token %}
                             <input type="hidden" name="action" value="listadoPresidentesGrupo"/>
-                            <div class="form-group required">
-                                <div class="col-md-6">
-                                    <label class="control-label " for="delegacion">Selecciona la Delegación</label>
-                                    <select id="delegacion_id" required class="form-select" name="delegacion_id">
-                                        <option value="">Selecciona la delegación</option>
-                                        {% for dele_id, dele_name in delegation_data %}
-                                            <option value = {{dele_id}}>{{dele_name}}</option>
-                                        {% endfor %}
-                                    </select>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-floating mt-3">
+                                        <select id="delegacion_id" required class="form-select" name="delegacion_id">
+                                            <option value="">Selecciona la delegación</option>
+                                            {% for dele_id, dele_name in delegation_data %}
+                                                <option value = {{dele_id}}>{{dele_name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label class="text-danger" for="delegacion">Selecciona la Delegación</label>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-12">
-                                <button type="submit" class="btn-outline-primary float-end ">Enviar datos</button>
-                            </div>
-                        </form>
-                        
-
-                        
-                        <p>Los campos con  <span style="color:red"> * </span> son obligatorios</p>
+                            <div class="row my-3">
+	                            <div class="col">
+                                    <input class="btn float-end btn-outline-primary" type="submit" value="Enviar datos">
+                                </div>
+	                        </div>
+	                    </form>
+						<p>Los campos en <span style="color:red"> rojo </span> son obligatorios</p>
                     </div>  
                 </div> 
-            </div> <!-- end col-md-12 -->
+            </div> 
         </div> 
     </div> 
 
 {%  endif %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#presidentas_tabla').DataTable({
+            dom: "fltirpB",
+            responsive: true,
+            buttons: [
+                'excel'
+            ]
+        });
+    });
+</script>
 {% endblock %}

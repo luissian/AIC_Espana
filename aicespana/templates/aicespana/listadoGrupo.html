@@ -102,11 +102,17 @@
 												</tr>
 												<tr>
 													<td>Estado del Grupo</td>
-													<td>{{grupo_data.informacion.11}}</td>
+													<td>
+                                                        {% if grupo_data.informacion.11 == "true" %}
+                                                            Activo
+                                                        {% else %}
+                                                            Baja
+                                                        {% endif %}
+                                                    </td>
 												</tr>
 											</tbody>
 										</table>
-									</div> <!--  end of table wrapper  -->
+									</div> 
 								</div> 
 							</div> 
 						</div> 

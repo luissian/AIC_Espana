@@ -1,7 +1,7 @@
 {% extends 'aicespana/base.html' %}
 {% load static %}
 {% block content %}
-
+{% include "aicespana/cdn_table_functionality.html" %}
 <div class="container-md">
     <div class="row g-3">
         <div class="col-md-6 offset-3">
@@ -9,7 +9,7 @@
                 <div class="card-header"><h2 style="text-align:center">Listado de actividades</h2> </div>
                     <div class="card-body">
                         <h5 class="card-title">Seleciona el actividad que deseas modificar</h5>
-                        <table class="table table-hover">
+                        <table id="actividad_tabla" class="table table-hover">
                             <thead>
                                 <tr>
                                     <th>Actividad</th>
@@ -28,5 +28,15 @@
 	        </div> 
     </div> 
 </div> 
-
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#actividad_tabla').DataTable({
+            dom: "fltirpB",
+            responsive: true,
+            buttons: [
+                'excel'
+            ]
+        });
+    });
+</script>
 {% endblock %}

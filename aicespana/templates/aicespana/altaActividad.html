@@ -1,22 +1,10 @@
 {% extends 'aicespana/base.html' %}
 {% load static %}
 {% block content %}
-<style media="screen">
-	.form-group.required .control-label:after {
-	  content:"  *";
-	  color:red;
-	}
-</style>
-<style>
-.table-wrapper {
-    height: 550px;
-    overflow: auto;
-    display:inline-block;
-    width: 540px;
-</style>
+{% include "aicespana/cdn_table_functionality.html" %}
 {% if ERROR %}
 	<div class="container-md">
-		<div class="row g-3">
+		<div class="row my-3">
 			<div class="col-md-6 offset-3">
 				<div class="card text-center border-danger">
 					<div class="card-header">
@@ -55,54 +43,93 @@
 {% else %}
 	
 	<div class="container-md">
-	    <div class="row g-3">
-	        <div class="col-md-10">
+        <div class="row g-1 justify-content-center">
+	        <div class="col-md-6">
 	            <div class="card">
 					<div class="card-header"><h2 style="text-align:center">Formulario alta Actividad</h2> </div>
 	                <div class="card-body">
 	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="altaActividad" id="altaActividad" >
 	                        {% csrf_token %}
 	                        <input type="hidden" name="action" value="altaActividad"/>
-							<div class="form-group required">
-		                        <div class="col-md-8">
-		                            <label class="control-label " for="nombre">Nombre de la Actividad</label>
-		                            <input type="text" required class="form-control" id="nombre", name='nombre'>
-		                        </div>
-							</div>
-							<div class="form-group">
-								<div class="col-md-5">
-									<label for="alta" class="control-label">Fecha de Alta</label>
-									<input type="date"  class="form-control" id="alta" name='alta'>
-								</div>
-								
-								<div class="col-md-8">
+							<div class="row">
+		                        <div class="col">
+                                    <div class="form-floating mt-3">
+                                        <input type="text" required class="form-control" id="nombre", name='nombre' placeholder="Nombre">
+		                                <label class="text-danger" for="nombre">Nombre de la Actividad</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-floating mt-3">
+                                        <input type="date"  class="form-control" id="alta" name='alta' placeholder="alta">
+                                        <label for="alta">Fecha de Alta</label>
+                                    </div>
+                                </div>
+                            </div>
+		                    <div class="row">
+								<div class="col mt-3">                                    
 									<label for="uploadMemoria" class="form-label">Memoria de la actividad</label>
-								 	<input type="file" name="uploadMemoria" accept=".doc, .docx, .pdf, .txt">
+								 	<input type="file" class="form-control" name="uploadMemoria" accept=".doc, .docx, .pdf, .txt">
 								</div>
-								
-								<div class="col-md-8">
+                            </div>
+							<div class="row">
+								<div class="col mt-3">
 									<label for="uploadFotografia" class="form-label">Fotografia de la actividad</label>
-								 	<input type="file" name="uploadFotografia" accept=".jpg, .gif, .pdf, .png">
+								 	<input type="file"  class="form-control" name="uploadFotografia" accept=".jpg, .gif, .pdf, .png">
 								</div>
 							</div>
 							<div class="form-group">
-		                        <div class="col-md-10">
+		                        <div class="col mt-5">
 		                            <label for="observaciones" class="form-label">Observaciones</label>
-		                            <textarea name="observaciones" rows="12" cols="100" maxlength="990"></textarea>
+		                            <textarea name="observaciones" rows="8" cols="52" maxlength="500"></textarea>
 		                        </div>
 							</div>
-							
-	                        <div class="col-12">
-	                            <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
-	                            <button type="submit" class="btn-outline-primary float-end ">Guardar datos</button>
-	                        </div>
+							<div class="row">
+                                <div class="col my-3">
+                                    <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
+                                    <input class="btn float-end btn-outline-primary" type="submit" value="Guardar datos">
+                                </div>
+                            </div>
 	                    </form>
-						
-						<p>Los campos con  <span style="color:red"> * </span> son obligatorios</p>
+                        <p>Los campos en <span style="color:red"> rojo </span> son obligatorios</p>
 	                </div>  
 	            </div> 
 	        </div> 
+            <div class="col-md-6">
+	            <div class="card">
+					<div class="card-header text-center"><h2>Listado de actividades</h2> </div>
+	                    <div class="card-body">
+                            <table id="actividad_tabla" class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre de la actividad</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for act_id, act in actividades %}
+                                        <tr>
+                                            <td>{{act}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+		            </div> 
+		        </div>
+            </div>
 	    </div> 
 	</div> 
 {% endif %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#actividad_tabla').DataTable({
+            dom: "fltirpB",
+            responsive: true,
+            buttons: [
+                'excel'
+            ]
+        });
+    });
+</script>
 {% endblock %}

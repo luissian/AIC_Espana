@@ -1,15 +1,15 @@
 {% extends 'aicespana/base.html' %}
 {% load static %}
 {% block content %}
-
+{% include "aicespana/cdn_table_functionality.html" %}
 <div class="container-md">
-    <div class="row g-3">
-        <div class="col-md-9">
+    <div class="row t-3 justify-content-center">
+        <div class="col-md-10">
             <div class="card">
                 <div class="card-header"><h2 style="text-align:center">Listado de Proyectos</h2> </div>
                     <div class="card-body">
                         <h5 class="card-title">Seleciona el Proyecto que deseas modificar</h5>
-                        <table class="table table-hover">
+                        <table id="proyecto_tabla" class="table table-hover">
                             <thead>
                                 <tr>
                                     <th>Delegación</th>
@@ -19,30 +19,31 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for delegacion, diocesis_data in proyecto_data.proyectos_grupos_diocesis_name.items %}
+                                {% for proj, proj_id, grp_id, grp, dioc , deleg, alta, baja, activo, memoria, photo in proyecto_data.p_list %}
                                     <tr>
-                                        <td>{{delegacion}}</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td>{{deleg}}</td>
+                                        <td>{{dioc}}</td>
+                                        <td>{{grp}}</td>
+                                        <td>{{proj}}&nbsp;&nbsp;<a href="/modificarProyecto={{proj_id}}"><i class="bi bi-pen"></i></a></td>
                                     </tr>
-                                    {% for diocesis, proyectos in diocesis_data.items %}
-                                        {% for id, proyecto, grupo in proyectos %}
-                                            <tr>
-                                                <td></td>
-                                                <td>{{diocesis}}</td>
-                                                <td>{{grupo}}</td>
-                                                <td>{{proyecto}}&nbsp;&nbsp;<a href="/modificarProyecto={{id}}"><i class="bi bi-pen"></i></a></td>
-                                            </tr>
-                                            {% endfor %}
-                                        {% endfor %}
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>  
 	            </div> 
-	        </div> 
+	        </div>
+        </div> 
     </div> 
 </div> 
-
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#proyecto_tabla').DataTable({
+            dom: "fltirpB",
+            responsive: true,
+            buttons: [
+                'excel'
+            ]
+        });
+    });
+</script>
 {% endblock %}

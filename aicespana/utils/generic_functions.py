@@ -1,11 +1,13 @@
 from django.contrib.auth.models import Group
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
+from django.db.models import Avg, F, Count, Func, Value, CharField
 import collections
 import os
 import xlsxwriter
 
 import aicespana.models
+import aicespana.utils.graphics
 
 
 def allow_see_group_information_voluntary(request, group_obj):
@@ -200,6 +202,54 @@ def get_delegation_data(delegation_id):
                 delegation_data["cargos"].append([cargo_name, user_name])
 
     return delegation_data
+
+
+def graphics_per_proyect(region):
+    """Create a pie chart based on region. If it is empty, number of proyects
+    per each delegacion are showed. If it is specific region, then the number
+    of project per diocesis in this delegacion
+
+    Parameters
+    ----------
+    region : string
+        name of the region to create the graphic
+    """
+
+    if region == "" or region is None:
+        projects = list(
+            aicespana.models.Proyecto.objects.all()
+            .values(
+                delegacion=F(
+                    "grupoAsociado__diocesisDependiente__delegacionDependiente__nombreDelegacion"
+                )
+            )
+            .annotate(total=Count("nombreProyecto"))
+        )
+        data = aicespana.utils.graphics.conversion_data(
+            projects, "delegacion", "total", "list"
+        )
+        title = "Numero de proyectos por delegación"
+    else:
+        diocesis_objs = aicespana.models.Diocesis.objects.filter(
+            delegacionDependiente__nombreDelegacion__iexact=region
+        )
+        projects = list(
+            aicespana.models.Proyecto.objects.filter(
+                grupoAsociado__diocesisDependiente__in=diocesis_objs
+            )
+            .values(diocesis=F("grupoAsociado__diocesisDependiente__nombreDiocesis"))
+            .annotate(total=Count("nombreProyecto"))
+        )
+        data = aicespana.utils.graphics.conversion_data(
+            projects, "diocesis", "total", "list"
+        )
+        title = "Numero de proyectos por diocesis"
+    graphics = {}
+    options = {"title": title}
+    graphics["num_project"] = aicespana.utils.graphics.pie_graphic(
+        data["label"], data["value"], options
+    )
+    return graphics
 
 
 def delegation_name_list():
@@ -939,7 +989,7 @@ def get_id_grupo_diocesis_delegacion_name():
     Return:
         group_diocesis_data
     """
-    group_diocesis_data = [] # collections.OrderedDict()
+    group_diocesis_data = []  # collections.OrderedDict()
     if aicespana.models.Grupo.objects.all().exists():
         delegation_objs = aicespana.models.Delegacion.objects.all().order_by(
             "nombreDelegacion"
@@ -966,7 +1016,14 @@ def get_id_grupo_diocesis_delegacion_name():
                         ]
                     )
                     """
-                    group_diocesis_data.append([delegation_name, diocesis_name, grupo_obj.get_grupo_id(),grupo_obj.get_grupo_name()])
+                    group_diocesis_data.append(
+                        [
+                            delegation_name,
+                            diocesis_name,
+                            grupo_obj.get_grupo_id(),
+                            grupo_obj.get_grupo_name(),
+                        ]
+                    )
 
     return group_diocesis_data
 
@@ -1134,14 +1191,9 @@ def get_id_actividad_name():
 
     return actividad_data
 
-
+"""
 def get_id_proyectos_grupos_diocesis_delegacion_name():
-    """
-    Description:
-        The function gets the proyecto the diocesis name and the delegation belogs to
-    Return:
-        proyecto_grupo_diocesis_data
-    """
+
     proyecto_grupo_diocesis_data = collections.OrderedDict()
     if aicespana.models.Proyecto.objects.all().exists():
         delegation_objs = aicespana.models.Delegacion.objects.all().order_by(
@@ -1184,6 +1236,7 @@ def get_id_proyectos_grupos_diocesis_delegacion_name():
                             ]
                         )
     return proyecto_grupo_diocesis_data
+"""
 
 
 def get_project_group_diocesis():
@@ -1705,11 +1758,11 @@ def get_list_personal_iglesia(delegacion=None):
 def get_delegados_regionales():
     """
     Description:
-        The function get the delegados regionales ordered by delegation
+        The function get the delegados regionales
     Return:
         Return delegados_list
     """
-    delegados_list = collections.OrderedDict()
+    delegados_list = []
     if (
         aicespana.models.PersonalIglesia.objects.filter(
             cargo__entidadCargo__entidad__exact="Delegación"
@@ -1722,16 +1775,13 @@ def get_delegados_regionales():
                 cargo__entidadCargo__entidad__exact="Delegación"
             )
             .exclude(personalActivo=False)
-            .order_by("delegacion")
-            .order_by("cargo__nombreCargo")
+
         )
         for personal_obj in personal_objs:
-            delegation_name = personal_obj.get_delegacion_belongs_to()
-            if delegation_name not in delegados_list:
-                delegados_list[delegation_name] = []
-            delegados_list[delegation_name].append(
+            delegados_list.append(
                 [
                     "iglesia",
+                    personal_obj.get_delegacion_belongs_to(),
                     personal_obj.get_personal_id(),
                     personal_obj.get_personal_name(),
                     personal_obj.get_responability_belongs_to(),
@@ -1751,16 +1801,13 @@ def get_delegados_regionales():
                 cargo__entidadCargo__entidad__exact="Delegación"
             )
             .exclude(personalActivo=False)
-            .order_by("grupoAsociado__diocesisDependiente__delegacionDependiente")
-            .order_by("cargo__nombreCargo")
+            
         )
         for personal_obj in personal_objs:
-            delegation_name = personal_obj.get_delegacion_belongs_to()
-            if delegation_name not in delegados_list:
-                delegados_list[delegation_name] = []
-            delegados_list[delegation_name].append(
+            delegados_list.append(
                 [
                     "externo",
+                    personal_obj.get_delegacion_belongs_to(),
                     personal_obj.get_personal_id(),
                     personal_obj.get_personal_name(),
                     personal_obj.get_responability_belongs_to(),
