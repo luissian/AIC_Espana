@@ -1,6 +1,40 @@
 import plotly.graph_objects as go
 from plotly.offline import plot
 
+def bar_graphic(labels, values, options):
+    """Options fields are: title, height"""
+    fig = go.Figure()
+    fig.add_trace(
+        go.Bar(
+            x=labels,
+            y=values,
+            name=options["title"],
+        )
+    )
+
+    # Customize aspect
+    fig.update_traces(
+        marker_line_color="rgb(8,48,107)",
+        marker_line_width=1.5,
+        opacity=0.8,
+    )
+    fig.update_layout(
+        title="Numero de voluntarios por actividad",
+        title_font_color="green",
+        title_font_size=20,
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        xaxis_tickangle=-45,
+        yaxis=dict(title=options["yaxis"]),
+        margin=dict(l=0, r=0, t=30, b=0),
+        height=options["height"],
+        width=options["width"],
+    )
+    
+    plot_div = plot(fig, output_type="div", config={"displaylogo": False})
+
+    return plot_div
+
 
 def pie_graphic(labels, values, options, show_legend=True):
 
@@ -38,14 +72,14 @@ def pie_graphic(labels, values, options, show_legend=True):
     )
 
     fig.update_layout(
-        height=520,
-        width=520,
+        height=370,
+        width=420,
         showlegend=show_legend,
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
         title=options["title"],
         title_font_color="blue",
-        title_font_size=25,
+        title_font_size=20,
     )
 
     plot_div = plot(fig, output_type="div", config={"displaylogo": False})

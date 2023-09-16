@@ -2242,15 +2242,31 @@ def listado_personal_externo(request):
 
 @login_required
 def listado_actividades(request):
+    region = None
+    user_type = "user"
+    activity_data = {}
     if not aicespana.utils.generic_functions.is_manager(request):
-        return render(
-            request,
-            "aicespana/errorPage.html",
-            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
+        if not aicespana.utils.generic_functions.check_delegada_regional(request.user):
+            return render(
+                request,
+                "aicespana/errorPage.html",
+                {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
+            )
+        delegacion_name = (
+            aicespana.utils.generic_functions.delegacion_name_from_loged_user(
+                request.user.username
+            )
         )
-    actividades = aicespana.utils.generic_functions.get_summary_actividades()
+        region = delegacion_name
+    else:
+        user_type = "manager"
+    activity_data["act_list"] = aicespana.utils.generic_functions.get_summary_actividades(user_type, region)
+    activity_data["graphics"] = aicespana.utils.generic_functions.graphics_per_activity(
+        region
+    )
+
     return render(
-        request, "aicespana/listadoActividades.html", {"actividades": actividades}
+        request, "aicespana/listadoActividades.html", {"activity_data": activity_data}
     )
 
 

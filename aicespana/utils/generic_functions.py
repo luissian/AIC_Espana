@@ -105,17 +105,22 @@ def check_delegada_regional(user):
     return False
 
 
-def get_summary_actividades():
+def get_summary_actividades(user_type, region=None):
     """
     Description:
         Get the list of activities
     """
-    data = []
     if not aicespana.models.Actividad.objects.filter(actividadActiva=True).exists():
         return data
-    act_objs = aicespana.models.Actividad.objects.filter(actividadActiva=True).order_by(
-        "nombreActividad"
-    )
+    if user_type == "manager":
+        act_objs = aicespana.models.Actividad.objects.filter(actividadActiva=True)
+    elif user_type == "user" and region is not None:
+        act_objs = aicespana.models.Actividad.objects.filter(actividadActiva=True,
+            grupoAsociado__diocesisDependiente__delegacionDependiente__nombreDelegacion__iexact=region)
+    else:
+        return
+    data = []
+
     for act_obj in act_objs:
         data.append([act_obj.get_actividad_id(), act_obj.get_actividad_name()])
     return data
@@ -203,6 +208,64 @@ def get_delegation_data(delegation_id):
 
     return delegation_data
 
+def graphics_per_activity(region):
+    """Create a pie chart based on region. If it is empty, number of activities
+    per each delegacion are showed. If it is specific region, then the number
+    of activities per diocesis in this delegacion
+
+    Parameters
+    ----------
+    region : string
+        name of the region to create the graphic
+    """
+
+    if region == "" or region is None:
+        activities = list(
+            aicespana.models.Actividad.objects.all()
+            .values(
+                delegacion=F(
+                    "grupoAsociado__diocesisDependiente__delegacionDependiente__nombreDelegacion"
+                )
+            )
+            .annotate(total=Count("nombreActividad"))
+        )
+        data = aicespana.utils.graphics.conversion_data(
+            activities, "delegacion", "total", "list"
+        )
+        title = "Numero de actividades por delegación"
+    else:
+        diocesis_objs = aicespana.models.Diocesis.objects.filter(
+            delegacionDependiente__nombreDelegacion__iexact=region
+        )
+        activities = list(
+            aicespana.models.Actividad.objects.filter(
+                grupoAsociado__diocesisDependiente__in=diocesis_objs
+            )
+            .values(diocesis=F("grupoAsociado__diocesisDependiente__nombreDiocesis"))
+            .annotate(total=Count("nombreActividad"))
+        )
+        data = aicespana.utils.graphics.conversion_data(
+            activities, "diocesis", "total", "list"
+        )
+        title = "Numero de actividades por diocesis"
+    graphics = {}
+    
+    options = {"title": title}
+    graphics["num_activity"] = aicespana.utils.graphics.pie_graphic(
+        data["label"], data["value"], options
+    )
+    # graphic having activities and number of voluntarios
+    if region == "" or region is None:
+        act_voluntarios = aicespana.models.PersonalExterno.objects.filter(personalActivo=True).exclude(actividadAsociada=None).values(actividad=F("actividadAsociada__nombreActividad")).annotate(total=Count("nombre"))
+    else:
+        act_voluntarios = aicespana.models.PersonalExterno.objects.filter(personalActivo=True, actividadAsociada__grupoAsociado__diocesisDependiente__in=diocesis_objs).values(actividad=F("actividadAsociada__nombreActividad")).annotate(total=Count("nombre"))
+    data = aicespana.utils.graphics.conversion_data(
+        act_voluntarios, "actividad", "total", "list"
+    )
+    title = "Numero de voluntarios por actividad"
+    options = {"title": title , "height": 500 , "width":900, "yaxis":"Numero de voluntarios"}
+    graphics["num_voluntarios"] = aicespana.utils.graphics.bar_graphic(data["label"], data["value"], options)
+    return graphics
 
 def graphics_per_proyect(region):
     """Create a pie chart based on region. If it is empty, number of proyects
