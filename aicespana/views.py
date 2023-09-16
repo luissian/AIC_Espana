@@ -2264,7 +2264,7 @@ def listado_actividades(request):
     activity_data["graphics"] = aicespana.utils.generic_functions.graphics_per_activity(
         region
     )
-
+    activity_data["user_type"] = user_type
     return render(
         request, "aicespana/listadoActividades.html", {"activity_data": activity_data}
     )

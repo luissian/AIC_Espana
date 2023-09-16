@@ -22,7 +22,13 @@
                                     <div class="tab-content" id="myTabContent">
                                         <div class="tab-pane fade show active" id="actividades" role="tabpanel" aria-labelledby="actividades-tab">
                                             <div class="container-md">
-                                                <div class="text-center"><h5>Seleciona una Actividad para ver las Delegaciones donde se realiza</h5></div>
+                                                <div class="text-center">
+                                                    {% if activity_data.user_type == "manager" %}
+                                                        <h5>Seleciona una Actividad para ver las Delegaciones donde se realiza</h5>
+                                                    {% else %}
+                                                        <h5>Actividades de la delegación</h5>
+                                                    {% endif %}
+                                                </div>
                                                 <div class="row justify-content-center">
                                                     <div class="col-md-8">
                                                         <table id="actividad_tabla" class="table table-hover table-bordered">
@@ -34,7 +40,13 @@
                                                             <tbody>
                                                                 {% for act_id, act in activity_data.act_list %}
                                                                     <tr>
-                                                                        <td>{{act}}&nbsp;&nbsp;<a href="/listadoActividad={{act_id}}"><i class="bi bi-journal-plus"></i></a></td>
+                                                                        <td>
+                                                                            {% if activity_data.user_type == "manager" %}
+                                                                                {{act}}&nbsp;&nbsp;<a href="/listadoActividad={{act_id}}"><i class="bi bi-journal-plus"></i></a>
+                                                                            {% else %}
+                                                                                {{act}}
+                                                                            {% endif %}
+                                                                        </td>
                                                                     </tr>
                                                                 {% endfor %}
                                                             </tbody>
