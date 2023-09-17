@@ -57,90 +57,108 @@
 
 {% elif personal_available_settings %}
 	<div class="container-md">
-		<div class="row g-3 mt-3">
+		<div class="row g-3 mt-3 justify-content-center">
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-header"><h2 style="text-align:center">Información de {{personal_available_settings.name}}</h2> </div>
 					<div class="card-body">
-						<div class="col-md-10">
-							{% if personal_available_settings.responsability != '' %}
-									<h4 style="text-align:center"><strong>{{personal_available_settings.name}} </strong>tiene el cargo de {{personal_available_settings.responsability}}</h4>
-							{% else %}
-								<h4 style="text-align:center"><strong>{{personal_available_settings.name}} </strong>no tiene acualmente ningún cargo</h4>
-							{% endif %}
-							
-							{% if personal_available_settings.collaboration != '' %}
-								<h5 style="text-align:center">{{personal_available_settings.name}} es un {{personal_available_settings.collaboration}}</h5>
-							{% else %}
-								<h5 style="text-align:center">{{personal_available_settings.name}} no se le ha asignado ningun tipo de colaboración</h5>
-							{% endif %}
-						</div> 
-						<div class="col-md-10">
-							<p>Datos de la colaboración</p>
-							<table class="table table-hover">
-								<tbody>
-									<tr>
-										<td>Proyecto</td>
-										<td>
-											{% if personal_available_settings.project != '' %}
-												{{personal_available_settings.project}}
-											{% else %}
-												No se ha asignado a ningún proyecto
-											{% endif %}
-										</td>
-									</tr>
-									<tr>
-										<td>Actividad</td>
-										<td>
-											{% if personal_available_settings.activity != '' %}
-												{{personal_available_settings.activity}}
-											{% else %}
-												No se ha asignado a ninguna actividad
-											{% endif %}
-										</td>
-									</tr>
-									<tr>
-										<td>Grupo</td>
-										<td>
-											{% if personal_available_settings.group != '' %}
-												{{personal_available_settings.group}}
-											{% else %}
-												No se ha asignado a ningún grupo
-											{% endif %}
-										</td>
-									</tr>
-									<tr>
-										<td>Parroquia</td>
-										<td>
-											{% if personal_available_settings.parroquia != '' %}
-												{{personal_available_settings.parroquia}}
-											{% else %}
-												No se ha asignado a ninguna Parroquia
-											{% endif %}
-										</td>
-									</tr>
-									<tr>
-										<td>Diocesis</td>
-										<td>
-											{% if personal_available_settings.diocesis != '' %}
-												{{personal_available_settings.diocesis}}
-											{% else %}
-												No se ha asignado a ninguna Diócesis
-											{% endif %}
-										</td>
-									</tr>
-									<tr>
-										<td>Delegación</td>
-										<td>
-											{% if personal_available_settings.delegacion %}
-												{{personal_available_settings.delegacion}}
-											{% else %}
-												No se ha asignado a ninguna Delegación
-											{% endif %}
-										</td>
-									</tr>
-								</tbody>
-							</table>
+                        <div class="row">
+                            <div class="col-md-10">
+                                {% if personal_available_settings.responsability %}
+                                    {% if personal_available_settings.responsability|length > 1 %}
+                                        <div class="row g-2">
+                                            <div class="col">
+                                                <h4><strong>{{personal_available_settings.name}} </strong>tiene los cargos de :
+                                            </div>
+                                            <div class="col">
+                                                {% for id, cargo in  personal_available_settings.responsability %}
+                                                    {{cargo}} <br>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="text-center">
+                                            <h4>{{personal_available_settings.name}} tiene el cargo de {{personal_available_settings.responsability.0.1 }}
+                                            </h4>
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <h4 style="text-align:center"><strong>{{personal_available_settings.name}} </strong>no tiene acualmente ningún cargo</h4>
+                                {% endif %}
+                                
+                                {% if personal_available_settings.collaboration != '' %}
+                                    <h5 style="text-align:center">{{personal_available_settings.name}} es {{personal_available_settings.collaboration}}</h5>
+                                {% else %}
+                                    <h5 style="text-align:center">{{personal_available_settings.name}} no se le ha asignado ningun tipo de colaboración</h5>
+                                {% endif %}
+                            </div> 
+                        </div>
+                        <div class="row">
+                            <p class="text-center">Datos de la colaboración</p>
+						    <div class="col-md-2">
+                                <h6>Proyecto</h6>
+                            </div>
+                            <div class="col-md-4">
+                                {% if personal_available_settings.project != '' %}
+                                    {{personal_available_settings.project}}
+                                {% else %}
+                                    No se ha asignado a ningún proyecto
+                                {% endif %}
+                            </div>
+                            <div class="col-md-2">
+                                <h6>Actividad</h6>
+                            </div>
+                            <div class="col-md-4">
+                                {% if personal_available_settings.activity != '' %}
+                                    {{personal_available_settings.activity}}
+                                {% else %}
+                                    No se ha asignado a ninguna actividad
+                                {% endif %}
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <h6>Grupo</h6>
+                                </div>
+                                <div class="col-md-4">
+                                    {% if personal_available_settings.group != '' %}
+                                        {{personal_available_settings.group}}
+                                    {% else %}
+                                        No se ha asignado a ningún grupo
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-2">
+                                    <h6>Parroquia</h6>
+                                </div>
+                                <div class="col-md-4">
+                                    {% if personal_available_settings.parroquia != '' %}
+                                        {{personal_available_settings.parroquia}}
+                                    {% else %}
+                                        No se ha asignado a ninguna Parroquia
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <h6>Diocesis</h6>
+                                </div>
+                                <div class="col-md-4">
+                                    {% if personal_available_settings.diocesis != '' %}
+                                        {{personal_available_settings.diocesis}}
+                                    {% else %}
+                                        No se ha asignado a ninguna Diócesis
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-2">
+                                    <h6>Delegación</h6>
+                                </div>
+                                <div class="col-md-4">
+                                    {% if personal_available_settings.delegacion %}
+                                        {{personal_available_settings.delegacion}}
+                                    {% else %}
+                                        No se ha asignado a ninguna Delegación
+                                    {% endif %}
+                                </div>
+                            </div>
 						</div> 
 					</div> 
 				</div> 
@@ -149,7 +167,7 @@
 	</div> 
 
 	<div class="container-md">
-	    <div class="row g-3 mt-3">
+	    <div class="row g-3 mt-3 justify-content-center">
 	        <div class="col-md-10">
 	            <div class="card">
 					<div class="card-header"><h3 class="h1 text-center" id="pageHeaderTitle">Formulario para asignar/modificar cargos</h3></div>
@@ -239,7 +257,9 @@
                                     <div class="form-floating my-2">
                                         <select name="cargo" multiple="multiple" size="8" id="cargo" class="form-select" style="height: 30%;"> 
                                             {% if personal_available_settings.responsability_id != '' %}
-                                                <option value="{{personal_available_settings.responsability_id}}" selected>{{personal_available_settings.responsability}}</option>
+                                                {% for id, cargo in personal_available_settings.responsability %}
+                                                    <option value="{{id}}" selected>{{cargo}}</option>
+                                                {% endfor %}
                                             {% else %}
                                                 <option value="">Elegir cargo</option>
                                             {% endif %}

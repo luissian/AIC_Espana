@@ -405,7 +405,9 @@ class Proyecto(models.Model):
     def get_proyecto_full_data(self, delegacion=False):
         if delegacion:
             if self.grupoAsociado:
-                delegacion_name = self.grupoAsociado.diocesisDependiente.get_delegacion_name()
+                delegacion_name = (
+                    self.grupoAsociado.diocesisDependiente.get_delegacion_name()
+                )
             else:
                 delegacion_name = ""
         if self.fechaAlta is None:
@@ -660,7 +662,8 @@ class PersonalExterno(models.Model):
     actividadAsociada = models.ForeignKey(
         Actividad, on_delete=models.CASCADE, null=True, blank=True
     )
-    cargo = models.ForeignKey(Cargo, on_delete=models.CASCADE, null=True, blank=True)
+    # cargo = models.ForeignKey(Cargo, on_delete=models.CASCADE, null=True, blank=True)
+    cargo = models.ManyToManyField(Cargo)
     tipoColaboracion = models.ForeignKey(
         TipoColaboracion, on_delete=models.CASCADE, null=True, blank=True
     )
@@ -785,10 +788,18 @@ class PersonalExterno(models.Model):
                 self.proyectoAsociado.get_diocesis_name(),
             ]
 
-    def get_responability_belongs_to(self):
+    def get_responability_belongs_to(self, include_id=None):
+        cargos = []
         if self.cargo:
-            return "%s" % (self.cargo.get_cargo_name())
-        return ""
+            cargo_objs = self.cargo.all()
+            for cargo_obj in cargo_objs:
+                if include_id is None:
+                    cargos.append(cargo_obj.get_cargo_name())
+                else:
+                    cargos.append(
+                        [cargo_obj.get_cargo_id(), cargo_obj.get_cargo_name()]
+                    )
+        return cargos
 
     def get_responability_id_belongs_to(self):
         if self.cargo:
@@ -851,7 +862,7 @@ class PersonalExterno(models.Model):
             grupo = self.grupoAsociado.get_grupo_name()
             grupo_id = self.grupoAsociado.get_grupo_id()
             diocesis = self.grupoAsociado.get_diocesis_name()
-            delegacion= self.grupoAsociado.get_delegacion_name()
+            delegacion = self.grupoAsociado.get_delegacion_name()
         if self.proyectoAsociado is None:
             proyecto_id = ""
             proyecto_name = ""
@@ -948,7 +959,7 @@ class PersonalExterno(models.Model):
         if self.fechaNacimiento is None:
             nacimiento = ""
         else:
-            nacimiento = self.fechaNacimiento .strftime("%d-%m-%Y")
+            nacimiento = self.fechaNacimiento.strftime("%d-%m-%Y")
         if self.recibirBoletin:
             if self.boletinOnline:
                 rec_boletin = "Por email"
@@ -1036,13 +1047,14 @@ class PersonalExterno(models.Model):
                 actividad_obj = None
         else:
             actividad_obj = None
+        # delete previous cargos if exists
+        self.cargo.clear()
         if data["cargo"] != "":
-            try:
-                cargo_obj = Cargo.objects.get(pk__exact=data["cargo"])
-            except Exception:
-                cargo_obj = None
-        else:
-            cargo_obj = None
+            for item in data["cargo"]:
+                try:
+                    self.cargo.add(Cargo.objects.get(pk__exact=item))
+                except Exception:
+                    continue
         if data["colaboracion"] != "":
             try:
                 colaboracion_obj = TipoColaboracion.objects.get(
@@ -1055,7 +1067,6 @@ class PersonalExterno(models.Model):
         self.grupoAsociado = grupo_obj
         self.proyectoAsociado = proyecto_obj
         self.actividadAsociada = actividad_obj
-        self.cargo = cargo_obj
         self.tipoColaboracion = colaboracion_obj
         self.save()
         return self
@@ -1177,13 +1188,14 @@ class PersonalManager(models.Manager):
             fechaNacimiento=data["nacimiento"],
             recibirBoletin=boletin,
             boletinOnline=online,
-            grupoAsociado = grupo_obj,
+            grupoAsociado=grupo_obj,
         )
         return new_personel
 
 
 class PersonalIglesia(models.Model):
-    cargo = models.ForeignKey(Cargo, on_delete=models.CASCADE, null=True, blank=True)
+    # cargo = models.ForeignKey(Cargo, on_delete=models.CASCADE, null=True, blank=True)
+    cargo = models.ManyToManyField(Cargo)
     grupoAsociado = models.ForeignKey(
         Grupo, on_delete=models.CASCADE, null=True, blank=True
     )
@@ -1222,7 +1234,7 @@ class PersonalIglesia(models.Model):
 
     def get_personal_location(self):
         return "%s" % (self.poblacion)
-    
+
     def get_personal_provincia(self):
         return "%s" % (self.provincia)
 
@@ -1251,10 +1263,18 @@ class PersonalIglesia(models.Model):
             return "%s" % (self.grupoAsociado.get_grupo_id())
         return ""
 
-    def get_responability_belongs_to(self):
+    def get_responability_belongs_to(self, include_id=None):
+        cargos = []
         if self.cargo:
-            return "%s" % (self.cargo.get_cargo_name())
-        return ""
+            cargo_objs = self.cargo.all()
+            for cargo_obj in cargo_objs:
+                if include_id is None:
+                    cargos.append(cargo_obj.get_cargo_name())
+                else:
+                    cargos.append(
+                        [cargo_obj.get_cargo_id(), cargo_obj.get_cargo_name()]
+                    )
+        return cargos
 
     def get_responability_id_belongs_to(self):
         if self.cargo:
@@ -1323,8 +1343,8 @@ class PersonalIglesia(models.Model):
             grupo = self.grupoAsociado.get_grupo_name()
             grupo_id = self.grupoAsociado.get_grupo_id()
             diocesis = self.grupoAsociado.get_diocesis_name()
-            delegacion= self.grupoAsociado.get_delegacion_name()
-        
+            delegacion = self.grupoAsociado.get_delegacion_name()
+
         data = {}
         data["user_id"] = self.pk
         data["nombre"] = self.nombre
@@ -1386,27 +1406,18 @@ class PersonalIglesia(models.Model):
                 delegacion_obj = None
         else:
             delegacion_obj = None
-        """
-        if data['diocesis'] != '':
-            try:
-                diocesis_obj = Diocesis.objects.get(pk__exact = data['diocesis'])
-            except:
-                diocesis_obj = None
-        else:
-            diocesis_obj = None
-        """
+
+        # delete previous cargos if exists
+        self.cargo.clear()
         if data["cargo"] != "":
-            try:
-                cargo_obj = Cargo.objects.get(pk__exact=data["cargo"])
-            except Exception:
-                cargo_obj = None
-        else:
-            cargo_obj = None
+            for item in data["cargo"]:
+                try:
+                    self.cargo.add(Cargo.objects.get(pk__exact=item))
+                except Exception:
+                    continue
 
         self.grupoAsociado = grupo_obj
         self.delegacion = delegacion_obj
-        # self.diocesis = diocesis_obj
-        self.cargo = cargo_obj
         self.save()
         return self
 

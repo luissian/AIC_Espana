@@ -221,7 +221,9 @@
                                                                     {% if not info_personal.cargos %}
                                                                         No tiene ningún cargo
                                                                     {% else %}
-                                                                        {{info_personal.cargos}}
+                                                                        {% for cargo  in info_personal.cargos %}
+                                                                            {{cargo}} <br>
+                                                                        {% endfor %}
                                                                     {% endif%}
                                                                 </td>
                                                             </tr>

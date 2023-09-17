@@ -1,6 +1,7 @@
 import plotly.graph_objects as go
 from plotly.offline import plot
 
+
 def bar_graphic(labels, values, options):
     """Options fields are: title, height"""
     fig = go.Figure()
@@ -30,7 +31,7 @@ def bar_graphic(labels, values, options):
         height=options["height"],
         width=options["width"],
     )
-    
+
     plot_div = plot(fig, output_type="div", config={"displaylogo": False})
 
     return plot_div
@@ -59,9 +60,9 @@ def pie_graphic(labels, values, options, show_legend=True):
         )
     )
     if len(labels) > len(colors):
-        marker_opts=dict(line=dict(color="darkblue", width=1))
+        marker_opts = dict(line=dict(color="darkblue", width=1))
     else:
-        marker_opts=dict(colors=colors, line=dict(color="darkblue", width=1))
+        marker_opts = dict(colors=colors, line=dict(color="darkblue", width=1))
     fig.update_traces(
         hoverinfo="label+percent",
         textinfo="value",

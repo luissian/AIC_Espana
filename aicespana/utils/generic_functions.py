@@ -115,8 +115,10 @@ def get_summary_actividades(user_type, region=None):
     if user_type == "manager":
         act_objs = aicespana.models.Actividad.objects.filter(actividadActiva=True)
     elif user_type == "user" and region is not None:
-        act_objs = aicespana.models.Actividad.objects.filter(actividadActiva=True,
-            grupoAsociado__diocesisDependiente__delegacionDependiente__nombreDelegacion__iexact=region)
+        act_objs = aicespana.models.Actividad.objects.filter(
+            actividadActiva=True,
+            grupoAsociado__diocesisDependiente__delegacionDependiente__nombreDelegacion__iexact=region,
+        )
     else:
         return
     data = []
@@ -208,6 +210,7 @@ def get_delegation_data(delegation_id):
 
     return delegation_data
 
+
 def graphics_per_activity(region):
     """Create a pie chart based on region. If it is empty, number of activities
     per each delegacion are showed. If it is specific region, then the number
@@ -249,23 +252,43 @@ def graphics_per_activity(region):
         )
         title = "Numero de actividades por diocesis"
     graphics = {}
-    
+
     options = {"title": title}
     graphics["num_activity"] = aicespana.utils.graphics.pie_graphic(
         data["label"], data["value"], options
     )
     # graphic having activities and number of voluntarios
     if region == "" or region is None:
-        act_voluntarios = aicespana.models.PersonalExterno.objects.filter(personalActivo=True).exclude(actividadAsociada=None).values(actividad=F("actividadAsociada__nombreActividad")).annotate(total=Count("nombre"))
+        act_voluntarios = (
+            aicespana.models.PersonalExterno.objects.filter(personalActivo=True)
+            .exclude(actividadAsociada=None)
+            .values(actividad=F("actividadAsociada__nombreActividad"))
+            .annotate(total=Count("nombre"))
+        )
     else:
-        act_voluntarios = aicespana.models.PersonalExterno.objects.filter(personalActivo=True, actividadAsociada__grupoAsociado__diocesisDependiente__in=diocesis_objs).values(actividad=F("actividadAsociada__nombreActividad")).annotate(total=Count("nombre"))
+        act_voluntarios = (
+            aicespana.models.PersonalExterno.objects.filter(
+                personalActivo=True,
+                actividadAsociada__grupoAsociado__diocesisDependiente__in=diocesis_objs,
+            )
+            .values(actividad=F("actividadAsociada__nombreActividad"))
+            .annotate(total=Count("nombre"))
+        )
     data = aicespana.utils.graphics.conversion_data(
         act_voluntarios, "actividad", "total", "list"
     )
     title = "Numero de voluntarios por actividad"
-    options = {"title": title , "height": 500 , "width":900, "yaxis":"Numero de voluntarios"}
-    graphics["num_voluntarios"] = aicespana.utils.graphics.bar_graphic(data["label"], data["value"], options)
+    options = {
+        "title": title,
+        "height": 500,
+        "width": 900,
+        "yaxis": "Numero de voluntarios",
+    }
+    graphics["num_voluntarios"] = aicespana.utils.graphics.bar_graphic(
+        data["label"], data["value"], options
+    )
     return graphics
+
 
 def graphics_per_proyect(region):
     """Create a pie chart based on region. If it is empty, number of proyects
@@ -1254,6 +1277,7 @@ def get_id_actividad_name():
 
     return actividad_data
 
+
 """
 def get_id_proyectos_grupos_diocesis_delegacion_name():
 
@@ -1366,10 +1390,7 @@ def get_external_personal_responsability(personal_obj):
     personal_responsability["activity_id"] = personal_obj.get_actividad_id_belongs_to()
     personal_responsability[
         "responsability"
-    ] = personal_obj.get_responability_belongs_to()
-    personal_responsability[
-        "responsability_id"
-    ] = personal_obj.get_responability_id_belongs_to()
+    ] = personal_obj.get_responability_belongs_to(include_id=True)
     personal_responsability[
         "collaboration"
     ] = personal_obj.get_collaboration_belongs_to()
@@ -1401,10 +1422,7 @@ def get_personal_responsability(personal_obj):
     personal_responsability["diocesis"] = personal_obj.get_diocesis_belongs_to()
     personal_responsability[
         "responsability"
-    ] = personal_obj.get_responability_belongs_to()
-    personal_responsability[
-        "responsability_id"
-    ] = personal_obj.get_responability_id_belongs_to()
+    ] = personal_obj.get_responability_belongs_to(include_id=True)
     personal_responsability["delegacion"] = personal_obj.get_delegacion_belongs_to()
     personal_responsability[
         "delegacion_id"
@@ -1833,13 +1851,9 @@ def get_delegados_regionales():
         .exclude(personalActivo=False)
         .exists()
     ):
-        personal_objs = (
-            aicespana.models.PersonalIglesia.objects.filter(
-                cargo__entidadCargo__entidad__exact="Delegación"
-            )
-            .exclude(personalActivo=False)
-
-        )
+        personal_objs = aicespana.models.PersonalIglesia.objects.filter(
+            cargo__entidadCargo__entidad__exact="Delegación"
+        ).exclude(personalActivo=False)
         for personal_obj in personal_objs:
             delegados_list.append(
                 [
@@ -1859,13 +1873,9 @@ def get_delegados_regionales():
         .exclude(personalActivo=False)
         .exists()
     ):
-        personal_objs = (
-            aicespana.models.PersonalExterno.objects.filter(
-                cargo__entidadCargo__entidad__exact="Delegación"
-            )
-            .exclude(personalActivo=False)
-            
-        )
+        personal_objs = aicespana.models.PersonalExterno.objects.filter(
+            cargo__entidadCargo__entidad__exact="Delegación"
+        ).exclude(personalActivo=False)
         for personal_obj in personal_objs:
             delegados_list.append(
                 [

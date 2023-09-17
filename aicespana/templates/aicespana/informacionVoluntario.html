@@ -222,7 +222,9 @@
                                                                 {% if not info_voluntario.cargos %}
                                                                     No tiene ningún cargo
                                                                 {% else %}
-                                                                    {{info_voluntario.cargos}}
+                                                                    {% for cargo in info_voluntario.cargos %}
+                                                                        {{cargo}} <br>
+                                                                    {% endfor %}
                                                                 {% endif%}
                                                             </td>
                                                         </tr>

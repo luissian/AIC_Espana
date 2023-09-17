@@ -59,10 +59,8 @@ def alta_actividad(request):
             "aicespana/altaActividad.html",
             {"confirmation_data": request.POST["nombre"]},
         )
-    
-    return render(
-        request, "aicespana/altaActividad.html", {"actividades": actividades}
-    )
+
+    return render(request, "aicespana/altaActividad.html", {"actividades": actividades})
 
 
 @login_required
@@ -346,10 +344,10 @@ def alta_proyecto(request):
             {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     proyecto_data = {}
-    proyecto_data["p_list"] = aicespana.utils.generic_functions.get_projects_information(
-        "manager", ""
-    )
-    
+    proyecto_data[
+        "p_list"
+    ] = aicespana.utils.generic_functions.get_projects_information("manager", "")
+
     # proyecto_data['grupos_diocesis_id_name'] = get_id_grupo_diocesis_delegacion_name()
     proyecto_data[
         "grupos_diocesis_id_name"
@@ -1051,9 +1049,9 @@ def modificacion_proyecto(request):
         )
 
     proyecto_data = {}
-    proyecto_data["p_list"] = aicespana.utils.generic_functions.get_projects_information(
-        "manager", ""
-    )
+    proyecto_data[
+        "p_list"
+    ] = aicespana.utils.generic_functions.get_projects_information("manager", "")
     return render(
         request, "aicespana/modificacionProyecto.html", {"proyecto_data": proyecto_data}
     )
@@ -1465,15 +1463,19 @@ def cargos_personal(request):
         )
 
         data = {}
-        data["cargo"] = request.POST["cargo"]
-        data["delegacion"] = request.POST["delegacion"]
-        # data['diocesis'] = request.POST['diocesis']
-        data["grupo"] = request.POST["grupo"]
         # remove cargo or grupo if switch was set to delete it
         if "eliminar_grupo" in request.POST:
             data["grupo"] = ""
+        else:
+            data["grupo"] = request.POST["grupo"]
+        # cargo
         if "eliminar_cargo" in request.POST:
             data["cargo"] = ""
+        else:
+            data["cargo"] = request.POST.getlist("cargo")
+
+        data["delegacion"] = request.POST["delegacion"]
+
         user_obj.update_information(data)
         updated_data = aicespana.utils.generic_functions.get_personal_responsability(
             user_obj
@@ -1606,27 +1608,30 @@ def cargos_voluntarios(request):
             request.POST["user_id"]
         )
         data = {}
-
-        data["cargo"] = request.POST["cargo"]
-        if "eliminar_grupo" in request.POST:
+        # cargo
+        if "eliminar_cargo" in request.POST:
+            data["cargo"] = ""
+        else:
+            data["cargo"] = request.POST.getlist("cargo")
+        # actividad
+        if "eliminar_actividad" in request.POST:
             data["actividad"] = ""
         else:
             data["actividad"] = request.POST["actividad"]
+        # grupo
         if "eliminar_grupo" in request.POST:
             data["grupo"] = ""
         else:
             data["grupo"] = request.POST["grupo"]
+        # proyecto
         if "eliminar_proyecto" in request.POST:
             data["proyecto"] = ""
         else:
             data["proyecto"] = request.POST["proyecto"]
         data["colaboracion"] = request.POST["colaboracion"]
+
         user_obj.update_information(data)
-        updated_data = (
-            aicespana.utils.generic_functions.get_external_personal_responsability(
-                user_obj
-            )
-        )
+        updated_data = "Cargos actualizados"
 
         return render(
             request, "aicespana/cargosVoluntarios.html", {"updated_data": updated_data}
@@ -2260,7 +2265,9 @@ def listado_actividades(request):
         region = delegacion_name
     else:
         user_type = "manager"
-    activity_data["act_list"] = aicespana.utils.generic_functions.get_summary_actividades(user_type, region)
+    activity_data[
+        "act_list"
+    ] = aicespana.utils.generic_functions.get_summary_actividades(user_type, region)
     activity_data["graphics"] = aicespana.utils.generic_functions.graphics_per_activity(
         region
     )
