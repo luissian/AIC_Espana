@@ -36,9 +36,12 @@ def allow_see_group_information_voluntary(request, group_obj):
                 usuario_obj = aicespana.models.PersonalExterno.objects.filter(
                     nombre__iexact=nombre_usuario, apellido__iexact=apellido_usuario
                 ).last()
-                if usuario_obj.get_responability_belongs_to() == "Presidenta Nacional":
+                if "Presidenta Nacional" in usuario_obj.get_responability_belongs_to():
                     return True
-                if usuario_obj.get_responability_belongs_to() != "Delegada Regional":
+                if (
+                    "Delegada Regional"
+                    not in usuario_obj.get_responability_belongs_to()
+                ):
                     return False
                 if (
                     usuario_obj.get_delegacion_belongs_to()
@@ -361,6 +364,7 @@ def delegacion_name_from_loged_user(username):
             .last()
             .get_delegacion_name()
         )
+
     return None
 
 

@@ -2028,17 +2028,18 @@ def listado_proyectos(request):
     user_type = "user"
     project_data = {}
     if not aicespana.utils.generic_functions.is_manager(request):
-        if not aicespana.utils.generic_functions.check_delegada_regional(request.user):
-            return render(
-                request,
-                "aicespana/errorPage.html",
-                {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
-            )
+        # check if loggin user is a delegation name
         delegacion_name = (
             aicespana.utils.generic_functions.delegacion_name_from_loged_user(
                 request.user.username
             )
         )
+        if delegacion_name is None:
+            return render(
+                request,
+                "aicespana/errorPage.html",
+                {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
+            )
         region = delegacion_name
     else:
         user_type = "manager"
@@ -2084,25 +2085,23 @@ def listado_voluntarios_grupo(request):
 
 @login_required
 def listado_personal_iglesia(request):
-    delegacion = None
+    delegacion_name = None
     if not aicespana.utils.generic_functions.is_manager(request):
-        if not aicespana.utils.generic_functions.check_delegada_regional(request.user):
-            return render(
-                request,
-                "aicespana/errorPage.html",
-                {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
+        # check if loggin user is a delegation name
+        delegacion_name = (
+            aicespana.utils.generic_functions.delegacion_name_from_loged_user(
+                request.user.username
             )
-        delegacion = aicespana.utils.generic_functions.delegacion_name_from_loged_user(
-            request.user.username
         )
-        if delegacion is None:
+        if delegacion_name is None:
             return render(
                 request,
                 "aicespana/errorPage.html",
                 {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
             )
+
     listado_personal = aicespana.utils.generic_functions.get_list_personal_iglesia(
-        delegacion
+        delegacion_name
     )
     return render(
         request,
@@ -2182,17 +2181,18 @@ def listado_presidentes_grupo(request):
 @login_required
 def listado_personal_externo(request):
     if not aicespana.utils.generic_functions.is_manager(request):
-        if not aicespana.utils.generic_functions.check_delegada_regional(request.user):
-            return render(
-                request,
-                "aicespana/errorPage.html",
-                {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
-            )
+        # check if loggin user is a delegation name
         delegacion_name = (
             aicespana.utils.generic_functions.delegacion_name_from_loged_user(
                 request.user.username
             )
         )
+        if delegacion_name is None:
+            return render(
+                request,
+                "aicespana/errorPage.html",
+                {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
+            )
         delegacion_id = aicespana.utils.generic_functions.get_delegacion_id_from_name(
             delegacion_name
         )
@@ -2251,17 +2251,18 @@ def listado_actividades(request):
     user_type = "user"
     activity_data = {}
     if not aicespana.utils.generic_functions.is_manager(request):
-        if not aicespana.utils.generic_functions.check_delegada_regional(request.user):
-            return render(
-                request,
-                "aicespana/errorPage.html",
-                {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
-            )
+        # check if loggin user is a delegation name
         delegacion_name = (
             aicespana.utils.generic_functions.delegacion_name_from_loged_user(
                 request.user.username
             )
         )
+        if delegacion_name is None:
+            return render(
+                request,
+                "aicespana/errorPage.html",
+                {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
+            )
         region = delegacion_name
     else:
         user_type = "manager"
