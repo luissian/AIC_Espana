@@ -29,21 +29,29 @@
                         <table id="presidentas_tabla" class="table table-hover">
                             <thead>
                                 <tr>
+                                    <th>Delegación</th>
+                                    <th>Diocesis</th>
+                                    <th>Grupo</th>
                                     <th>Nombre</th>
                                     <th>Número de movil</th>
-                                    <th>Grupo</th>
-                                    <th>Diocesis</th>
-                                    <th>Delegación</th>
+                                    <th>email</th>
+                                    
+                                    
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for nombre, movil, grupo, diocesis, delegacion in presidentes %}
+                                {% for tipo , deleg, diocesis, grupo, id, nombre, cargo, movil, email in presidentes %}
                                     <tr>
-                                        <td>{{nombre}}</td>
-                                        <td>{{movil}}</td>
-                                        <td>{{grupo}}</td>
+                                        <td>{{deleg}}</td>
                                         <td>{{diocesis}}</td>
-                                        <td>{{delegacion}}</td>
+                                        <td>{{grupo}}</td>
+                                        {% if tipo == 'iglesia' %}
+                                            <td><a href="informacionPersonalID={{id}}">{{nombre}}</a></td>
+                                        {% else %}
+                                            <td> <a href="informacionVoluntarioID={{id}}">{{nombre}}</a></td>
+                                        {% endif %}
+                                        <td>{{movil}}</td>
+                                        <td>{{email}}</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -53,42 +61,6 @@
             </div> 
         </div>
 	</div> 
-{% else %}
-    <div class="container-md">
-        <div class="row">
-            <div class="col">
-                <div class="card">
-                    <div class="card-header"><h2 style="text-align:center">Listado de Presidentes de Grupo por Delegación</h2> </div>
-                    <div class="card-body">
-                        <form class="row g-3" method="post" enctype="multipart/form-data" name="listadoPresidentesGrupo" id="listadoPresidentesGrupo" >
-                            {% csrf_token %}
-                            <input type="hidden" name="action" value="listadoPresidentesGrupo"/>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-floating mt-3">
-                                        <select id="delegacion_id" required class="form-select" name="delegacion_id">
-                                            <option value="">Selecciona la delegación</option>
-                                            {% for dele_id, dele_name in delegation_data %}
-                                                <option value = {{dele_id}}>{{dele_name}}</option>
-                                            {% endfor %}
-                                        </select>
-                                        <label class="text-danger" for="delegacion">Selecciona la Delegación</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row my-3">
-	                            <div class="col">
-                                    <input class="btn float-end btn-outline-primary" type="submit" value="Enviar datos">
-                                </div>
-	                        </div>
-	                    </form>
-						<p>Los campos en <span style="color:red"> rojo </span> son obligatorios</p>
-                    </div>  
-                </div> 
-            </div> 
-        </div> 
-    </div> 
-
 {%  endif %}
 <script type="text/javascript">
     $(document).ready(function() {

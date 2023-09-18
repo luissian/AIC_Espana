@@ -1840,60 +1840,50 @@ def get_list_personal_iglesia(delegacion=None):
     return personal_list
 
 
-def get_delegados_regionales():
+def get_personal_por_cargo(cargo):
     """
     Description:
-        The function get the delegados regionales
+        The function get the voluntairs which have the cargo name
     Return:
-        Return delegados_list
+        Return p_cargo
     """
-    delegados_list = []
-    if (
-        aicespana.models.PersonalIglesia.objects.filter(
-            cargo__entidadCargo__entidad__exact="Delegación"
+    p_cargo = []
+    import pdb; pdb.set_trace()
+    if not aicespana.models.Cargo.objects.filter(nombreCargo__iexact=cargo).exists():
+        return p_cargo
+    cargo_obj = aicespana.models.Cargo.objects.filter(nombreCargo__iexact=cargo).last()
+    p_externo_objs = cargo_obj.personalexterno_set.all().exclude(personalActivo=False)
+    for p_externo_obj in p_externo_objs:
+        p_cargo.append(
+            [
+                "externo",
+                p_externo_obj.get_delegacion_belongs_to(),
+                p_externo_obj.get_diocesis_belongs_to(),
+                p_externo_obj.get_group_belongs_to(),
+                p_externo_obj.get_personal_id(),
+                p_externo_obj.get_personal_name(),
+                cargo,
+                p_externo_obj.get_movil_number(),
+                p_externo_obj.get_email(),
+            ]
         )
-        .exclude(personalActivo=False)
-        .exists()
-    ):
-        personal_objs = aicespana.models.PersonalIglesia.objects.filter(
-            cargo__entidadCargo__entidad__exact="Delegación"
-        ).exclude(personalActivo=False)
-        for personal_obj in personal_objs:
-            delegados_list.append(
-                [
-                    "iglesia",
-                    personal_obj.get_delegacion_belongs_to(),
-                    personal_obj.get_personal_id(),
-                    personal_obj.get_personal_name(),
-                    personal_obj.get_responability_belongs_to(),
-                    personal_obj.get_movil_number(),
-                    personal_obj.get_email(),
-                ]
-            )
-    if (
-        aicespana.models.PersonalExterno.objects.filter(
-            cargo__entidadCargo__entidad__exact="Delegación"
+    p_iglesia_objs = cargo_obj.personaliglesia_set.all().exclude(personalActivo=False)
+    for p_iglesia_obj in p_iglesia_objs:
+        p_cargo.append(
+            [
+                "iglesia",
+                p_iglesia_obj.get_delegacion_belongs_to(),
+                p_iglesia_obj.get_diocesis_belongs_to(),
+                p_iglesia_obj.get_group_belongs_to(),
+                p_iglesia_obj.get_personal_id(),
+                p_iglesia_obj.get_personal_name(),
+                cargo,
+                p_iglesia_obj.get_movil_number(),
+                p_iglesia_obj.get_email(),
+            ]
         )
-        .exclude(personalActivo=False)
-        .exists()
-    ):
-        personal_objs = aicespana.models.PersonalExterno.objects.filter(
-            cargo__entidadCargo__entidad__exact="Delegación"
-        ).exclude(personalActivo=False)
-        for personal_obj in personal_objs:
-            delegados_list.append(
-                [
-                    "externo",
-                    personal_obj.get_delegacion_belongs_to(),
-                    personal_obj.get_personal_id(),
-                    personal_obj.get_personal_name(),
-                    personal_obj.get_responability_belongs_to(),
-                    personal_obj.get_movil_number(),
-                    personal_obj.get_email(),
-                ]
-            )
-
-    return delegados_list
+    
+    return p_cargo
 
 
 def get_personal_externo_por_delegacion(delegacion_id):
@@ -1955,14 +1945,9 @@ def get_personal_externo_por_delegacion(delegacion_id):
             worksheet.write_row(row_num, 0, data)
     return personal_externo, os.path.join(settings.MEDIA_URL, f_name)
 
-
+"""
 def presidentas_diocesis():
-    """
-    Description:
-        The function return the list of presidentas diocesis
-    Return :
-        presidentas_dioc_data
-    """
+  
     presidentas_dioc_data = []
     if aicespana.models.PersonalExterno.objects.filter(
         cargo__nombreCargo="Presidenta Diocesana", personalActivo=True
@@ -1979,7 +1964,7 @@ def presidentas_diocesis():
             data.append(presidenta_obj.get_email())
             presidentas_dioc_data.append(data)
     return presidentas_dioc_data
-
+"""
 
 def presidentes_grupo(delegation_id):
     """

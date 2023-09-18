@@ -1,7 +1,6 @@
 {% extends 'aicespana/base.html' %}
 {% load static %}
 {% block content %}
-<script type="text/javascript" src="{% static 'aicespana/js/aicespana.js' %}"></script>
 {% if  delegacion_data %}
 
 	<div class="container-md">
@@ -10,9 +9,6 @@
 				<div class="card">
 					<div class="card-header"><h2 style="text-align:center">Información de la Delegación de  {{delegacion_data.delegacion_name}}</h2> </div>
 					<div class="card-body">
-
-						<button onclick="exportTableToExcel('dioGeneral')" class="btn float-end">Guardar Tabla en Excel <i class="bi bi-download"></i></button>
-
 						<table  class="table">
 							<thead>
 								<tr>

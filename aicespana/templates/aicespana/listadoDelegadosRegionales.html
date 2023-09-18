@@ -20,7 +20,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for tipo , deleg, id, nombre, cargo, movil, email in listado_delegados %}
+                                {% for tipo , deleg, diocesis, grupo, id, nombre, cargo, movil, email in listado_delegados %}
                                     <tr>
                                         <td>{{deleg}}</td>
                                         {% if tipo == 'iglesia' %}

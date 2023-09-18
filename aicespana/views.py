@@ -27,7 +27,7 @@ def alta_actividad(request):
             "aicespana/errorPage.html",
             {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
-    actividades = aicespana.utils.generic_functions.get_summary_actividades()
+    actividades = aicespana.utils.generic_functions.get_summary_actividades("manager")
     if request.method == "POST" and request.POST["action"] == "altaActividad":
         if aicespana.models.Actividad.objects.filter(
             nombreActividad__iexact=request.POST["nombre"]
@@ -2118,7 +2118,7 @@ def listado_delegados_regionales(request):
             "aicespana/errorPage.html",
             {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
-    listado_delegados = aicespana.utils.generic_functions.get_delegados_regionales()
+    listado_delegados = aicespana.utils.generic_functions.get_personal_por_cargo("Delegada regional")
     return render(
         request,
         "aicespana/listadoDelegadosRegionales.html",
@@ -2134,7 +2134,7 @@ def listado_presidentas_diocesis(request):
             "aicespana/errorPage.html",
             {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
-    presidentas = aicespana.utils.generic_functions.presidentas_diocesis()
+    presidentas = aicespana.utils.generic_functions.get_personal_por_cargo("Presidenta Diocesana")
     return render(
         request,
         "aicespana/listadoPresidentasDiocesis.html",
@@ -2150,6 +2150,13 @@ def listado_presidentes_grupo(request):
             "aicespana/errorPage.html",
             {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
+    presidentes = aicespana.utils.generic_functions.get_personal_por_cargo("Presidenta de Grupo")
+    return render(
+            request,
+            "aicespana/listadoPresidentesGrupo.html",
+            {"presidentes": presidentes},
+        )
+    """
     if request.method == "POST" and request.POST["action"] == "listadoPresidentesGrupo":
         presidentes = aicespana.utils.generic_functions.presidentes_grupo(
             request.POST["delegacion_id"]
@@ -2164,18 +2171,8 @@ def listado_presidentes_grupo(request):
                 "aicespana/listadoPresidentesGrupo.html",
                 {"delegation_data": delegation_data, "ERROR": error_message},
             )
-        return render(
-            request,
-            "aicespana/listadoPresidentesGrupo.html",
-            {"presidentes": presidentes},
-        )
+    """
 
-    delegation_data = aicespana.utils.generic_functions.delegation_id_and_name_list()
-    return render(
-        request,
-        "aicespana/listadoPresidentesGrupo.html",
-        {"delegation_data": delegation_data},
-    )
 
 
 @login_required
