@@ -165,19 +165,75 @@ def get_activity_data_in_delegations(actividad_id):
     return data
 
 
-def get_delegation_data(delegation_id):
+def get_cargos_per_location(entity, area, area_id):
     """
     Description:
         The function gets the information and the personal name and the responsability.
     Input:
-        delegation_id  # id of the delegation
+        entity # is the entidad cargo
+        area  # one of the values delegation/diocesis or group
+        area_id # pk of the area
     Return:
-        delegation_data
+        cargos_personal
     """
-    delegation_data = {}
-    delegation_data["cargos"] = []
-    if aicespana.models.Delegacion.objects.filter(pk__exact=delegation_id).exists():
-        delegation_data["name"] = (
+
+    cargos_personal = []
+    # cargos_personal["cargos"] = []
+    if not aicespana.models.Cargo.objects.filter(
+        entidadCargo__entidad__iexact=entity
+    ).exists():
+        return cargos_personal
+    # import pdb; pdb.set_trace()
+    cargo_objs = aicespana.models.Cargo.objects.filter(
+        entidadCargo__entidad__iexact=entity
+    ).order_by("nombreCargo")
+    for cargo_obj in cargo_objs:
+        if area == "delegation":
+            p_ext_objs = cargo_obj.personalexterno_set.filter(
+                grupoAsociado__diocesisDependiente__delegacionDependiente__pk__exact=area_id
+            ).exclude(personalActivo=False)
+            if len(p_ext_objs) == 0:
+                # check if cargo belongs to personal iglesia
+                p_ext_objs = cargo_obj.personaliglesia_set.filter(
+                    grupoAsociado__diocesisDependiente__delegacionDependiente__pk__exact=area_id
+                ).exclude(personalActivo=False)
+                if len(p_ext_objs) == 0:
+                    cargos_personal.append([cargo_obj.get_cargo_name(), ""])
+                    continue
+        elif area == "diocesis":
+            p_ext_objs = cargo_obj.personalexterno_set.filter(
+                grupoAsociado__diocesisDependiente__pk__exact=area_id
+            ).exclude(personalActivo=False)
+            if len(p_ext_objs) == 0:
+                p_ext_objs = cargo_obj.personaliglesia_set.filter(
+                    grupoAsociado__diocesisDependiente__pk__exact=area_id
+                ).exclude(personalActivo=False)
+                if len(p_ext_objs) == 0:
+                    cargos_personal.append([cargo_obj.get_cargo_name(), ""])
+                    continue
+        elif area == "grupo":
+            p_ext_objs = cargo_obj.personalexterno_set.filter(
+                grupoAsociado__pk__exact=area_id
+            ).exclude(personalActivo=False)
+            if len(p_ext_objs) == 0:
+                p_ext_objs = cargo_obj.personaliglesia_set.filter(
+                    grupoAsociado__pk__exact=area_id
+                ).exclude(personalActivo=False)
+                if len(p_ext_objs) == 0:
+                    cargos_personal.append([cargo_obj.get_cargo_name(), ""])
+                    continue
+        else:
+            return cargos_personal
+        for p_ext_obj in p_ext_objs:
+            cargos_personal.append(
+                [cargo_obj.get_cargo_name(), p_ext_obj.get_personal_name()]
+            )
+    import pdb
+
+    pdb.set_trace()
+    """
+    Delegacion.objects.filter(pk__exact=loc_id).exists():
+        cargos_personal["name"] = (
             aicespana.models.Delegacion.objects.filter(pk__exact=delegation_id)
             .last()
             .get_delegacion_name()
@@ -189,7 +245,10 @@ def get_delegation_data(delegation_id):
                 entidadCargo__entidad__iexact="delegación"
             ).order_by("nombreCargo")
             for cargo_obj in cargo_objs:
+                
                 cargo_name = cargo_obj.get_cargo_name()
+                p_externo_objs = cargo_obj.personalexterno_set.filter(grupoAsociado__diocesisDependiente__delegacionDependiente__pk__exact=delegation_id).exclude(personalActivo=False)
+                
                 if (
                     aicespana.models.PersonalExterno.objects.filter(
                         cargo__nombreCargo__exact=cargo_name,
@@ -209,9 +268,9 @@ def get_delegation_data(delegation_id):
                     )
                 else:
                     user_name = "Puesto vacante"
-                delegation_data["cargos"].append([cargo_name, user_name])
-
-    return delegation_data
+                cargos_personal["cargos"].append([cargo_name, user_name])
+    """
+    return cargos_personal
 
 
 def graphics_per_activity(region):
@@ -503,39 +562,6 @@ def get_diocesis_obj_from_id(diocesis_id):
     return aicespana.models.Diocesis.objects.filter(pk__exact=diocesis_id).last()
 
 
-def get_diocesis_cargos(diocesis_obj):
-    """
-    Description:
-        The function gets the information and the personal name and the responsability.
-    Input:
-        diocesis_obj  # obj of the diocesis
-    Return:
-        cargos_data
-    """
-    cargos_data = {}
-    if aicespana.models.Cargo.objects.filter(
-        entidadCargo__entidad__iexact="diocesis"
-    ).exists():
-        cargo_objs = aicespana.models.Cargo.objects.filter(
-            entidadCargo__entidad__iexact="diocesis"
-        ).order_by("nombreCargo")
-        for cargo_obj in cargo_objs:
-            cargo_name = cargo_obj.get_cargo_name()
-            if aicespana.models.PersonalExterno.objects.filter(
-                cargo__nombreCargo__exact=cargo_name,
-                grupoAsociado__diocesisDependiente=diocesis_obj,
-            ).exists():
-                personal_obj = aicespana.models.PersonalExterno.objects.filter(
-                    cargo__nombreCargo__exact=cargo_name,
-                    grupoAsociado__diocesisDependiente=diocesis_obj,
-                ).last()
-                cargos_data[cargo_name] = personal_obj.get_personal_name()
-            else:
-                cargos_data[cargo_name] = "Sin Asignar"
-
-    return cargos_data
-
-
 def get_diocesis_id_name_and_delegation_name():
     """
     Description:
@@ -632,59 +658,6 @@ def get_groups_in_diocesis(diocesis_obj, situation):
         for grupo_obj in grupo_objs:
             groups_data.append([grupo_obj.get_grupo_id(), grupo_obj.get_grupo_name()])
     return groups_data
-
-
-def get_grupo_cargos(grupo_obj):
-    """
-    Description:
-        The function gets the information and the voluntario name and the responsability.
-    Input:
-        grupo_obj  # obj of the grupo
-    Return:
-        cargos_data
-    """
-    cargos_data = {}
-    if aicespana.models.Cargo.objects.filter(
-        entidadCargo__entidad__iexact="grupo"
-    ).exists():
-        cargo_objs = aicespana.models.Cargo.objects.filter(
-            entidadCargo__entidad__iexact="grupo"
-        ).order_by("nombreCargo")
-        for cargo_obj in cargo_objs:
-            cargo_name = cargo_obj.get_cargo_name()
-            if (
-                aicespana.models.PersonalExterno.objects.filter(
-                    cargo__nombreCargo__exact=cargo_name, grupoAsociado=grupo_obj
-                )
-                .exclude(personalActivo=False)
-                .exists()
-            ):
-                personal_obj = (
-                    aicespana.models.PersonalExterno.objects.filter(
-                        cargo__nombreCargo__exact=cargo_name, grupoAsociado=grupo_obj
-                    )
-                    .exclude(personalActivo=False)
-                    .last()
-                )
-                cargos_data[cargo_name] = personal_obj.get_personal_name()
-            elif (
-                aicespana.models.PersonalIglesia.objects.filter(
-                    cargo__nombreCargo__exact=cargo_name, grupoAsociado=grupo_obj
-                )
-                .exclude(personalActivo=False)
-                .exists()
-            ):
-                personal_obj = (
-                    aicespana.models.PersonalIglesia.objects.filter(
-                        cargo__nombreCargo__exact=cargo_name, grupoAsociado=grupo_obj
-                    )
-                    .exclude(personalActivo=False)
-                    .last()
-                )
-                cargos_data[cargo_name] = personal_obj.get_personal_name()
-            else:
-                cargos_data[cargo_name] = "Sin Asignar"
-    return cargos_data
 
 
 def get_grupo_cargos_personal(grupo_obj):
@@ -1848,7 +1821,6 @@ def get_personal_por_cargo(cargo):
         Return p_cargo
     """
     p_cargo = []
-    import pdb; pdb.set_trace()
     if not aicespana.models.Cargo.objects.filter(nombreCargo__iexact=cargo).exists():
         return p_cargo
     cargo_obj = aicespana.models.Cargo.objects.filter(nombreCargo__iexact=cargo).last()
@@ -1882,7 +1854,7 @@ def get_personal_por_cargo(cargo):
                 p_iglesia_obj.get_email(),
             ]
         )
-    
+
     return p_cargo
 
 
@@ -1945,6 +1917,7 @@ def get_personal_externo_por_delegacion(delegacion_id):
             worksheet.write_row(row_num, 0, data)
     return personal_externo, os.path.join(settings.MEDIA_URL, f_name)
 
+
 """
 def presidentas_diocesis():
   
@@ -1965,6 +1938,7 @@ def presidentas_diocesis():
             presidentas_dioc_data.append(data)
     return presidentas_dioc_data
 """
+
 
 def presidentes_grupo(delegation_id):
     """

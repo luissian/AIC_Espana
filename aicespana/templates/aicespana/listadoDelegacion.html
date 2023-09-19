@@ -29,16 +29,16 @@
 						</table>
 					</div> 
 				</div> 
-			</div> <!-- end md-10-->
+			</div>
 			<div class="col-md-4">
 				<div class="card">
 					<div class="card-body">
 						<img src="memorias_de_proyectos/images/{{delegacion_data.delegacion_image}}" alt="{{delegacion_data.delegacion_name}}" class="img-fluid">
 					</div> 
 				</div> 
-			</div> <!-- end md-4-->
-		</div> <!-- end row  -->
-	</div> <!-- end container  -->
+			</div> 
+		</div> 
+	</div> 
 
 	<div class="container-md">
 		<div class="row mt-4">
@@ -82,11 +82,11 @@
 
 					<div class="tab-pane fade" id="cargos" role="tabpanel" aria-labelledby="cargos-tab">
 						<div class="container-md">
-							<div class="row mt-5">
+							<div class="row mt-3 justify-content-center">
 								<div class="col-md-10">
 									<div class="card">
 										<div class="card-body">
-							                <table id="dioGeneral" class="table table-hover mb-0">
+							                <table id="dioGeneral" class="table table-hover ">
 							                    <thead>
 							                        <tr>
 														<th>Cargo</th>
@@ -94,11 +94,11 @@
 													</tr>
 												</thead>
 												<tbody>
-													{% for cargo , nombre   in delegacion_data.cargos %}
+													{% for cargo , nombre in delegacion_data.cargos %}
 														<tr>
 															<td>{{cargo}}</td>
 															<td>
-																{% if nombre != 'Puesto vacante' %}
+																{% if nombre != 'No asignado' %}
 																	{{nombre}}
 																{% endif %}
 															</td>

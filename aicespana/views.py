@@ -1941,11 +1941,17 @@ def listado_delegacion(request, delegacion_id):
     delegacion_data["summary"] = [
         aicespana.utils.generic_functions.get_summary_of_delegation(delegacion_obj)
     ]
+    import pdb
+
+    pdb.set_trace()
     delegacion_data["delegacion_name"] = delegacion_obj.get_delegacion_name()
     delegacion_data["delegacion_image"] = delegacion_obj.get_delegacion_image()
-    delegacion_data.update(
-        aicespana.utils.generic_functions.get_delegation_data(delegacion_id)
+    delegacion_data[
+        "cargos"
+    ] = aicespana.utils.generic_functions.get_cargos_per_location(
+        "Delegación", "delegation", delegacion_id
     )
+
     return render(
         request,
         "aicespana/listadoDelegacion.html",
@@ -1970,8 +1976,8 @@ def listado_diocesis(request, diocesis_id):
     diocesis_data["grupos"] = aicespana.utils.generic_functions.get_groups_in_diocesis(
         diocesis_obj, True
     )
-    diocesis_data["cargos"] = aicespana.utils.generic_functions.get_diocesis_cargos(
-        diocesis_obj
+    diocesis_data["cargos"] = aicespana.utils.generic_functions.get_cargos_per_location(
+        "Diocesis", "diocesis", diocesis_id
     )
     diocesis_data["summary"] = [
         aicespana.utils.generic_functions.get_summary_of_diocesis(diocesis_obj)
@@ -2001,7 +2007,9 @@ def listado_grupo(request, grupo_id):
         )
     grupo_data = {}
     grupo_data["nombre_grupo"] = grupo_obj.get_grupo_name()
-    grupo_data["cargos"] = aicespana.utils.generic_functions.get_grupo_cargos(grupo_obj)
+    grupo_data["cargos"] = aicespana.utils.generic_functions.get_cargos_per_location(
+        "Grupo", "grupo", grupo_id
+    )
     grupo_data["informacion"] = grupo_obj.get_grupo_full_data()
     grupo_data["summary"] = [
         aicespana.utils.generic_functions.get_summary_of_group(grupo_obj)
@@ -2118,7 +2126,9 @@ def listado_delegados_regionales(request):
             "aicespana/errorPage.html",
             {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
-    listado_delegados = aicespana.utils.generic_functions.get_personal_por_cargo("Delegada regional")
+    listado_delegados = aicespana.utils.generic_functions.get_personal_por_cargo(
+        "Delegada regional"
+    )
     return render(
         request,
         "aicespana/listadoDelegadosRegionales.html",
@@ -2134,7 +2144,9 @@ def listado_presidentas_diocesis(request):
             "aicespana/errorPage.html",
             {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
-    presidentas = aicespana.utils.generic_functions.get_personal_por_cargo("Presidenta Diocesana")
+    presidentas = aicespana.utils.generic_functions.get_personal_por_cargo(
+        "Presidenta Diocesana"
+    )
     return render(
         request,
         "aicespana/listadoPresidentasDiocesis.html",
@@ -2150,12 +2162,14 @@ def listado_presidentes_grupo(request):
             "aicespana/errorPage.html",
             {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
-    presidentes = aicespana.utils.generic_functions.get_personal_por_cargo("Presidenta de Grupo")
+    presidentes = aicespana.utils.generic_functions.get_personal_por_cargo(
+        "Presidenta de Grupo"
+    )
     return render(
-            request,
-            "aicespana/listadoPresidentesGrupo.html",
-            {"presidentes": presidentes},
-        )
+        request,
+        "aicespana/listadoPresidentesGrupo.html",
+        {"presidentes": presidentes},
+    )
     """
     if request.method == "POST" and request.POST["action"] == "listadoPresidentesGrupo":
         presidentes = aicespana.utils.generic_functions.presidentes_grupo(
@@ -2172,7 +2186,6 @@ def listado_presidentes_grupo(request):
                 {"delegation_data": delegation_data, "ERROR": error_message},
             )
     """
-
 
 
 @login_required
