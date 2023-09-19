@@ -56,15 +56,6 @@
                                     <input type="text" required class="form-control" id="proyecto_name" name='proyecto_name' value="{{proyecto_data.proyecto_name}}">
                                     <label  for="proyecto_name" class="text-danger" >Modifica el nombre del Proyecto</label>
                                 </div>
-                                <div class="form-floating mb-3">
-                                    <select  class="form-select" name="grupoID" id="grupoID">
-                                        <option value="{{proyecto_data.grupoID}}" selected>{{proyecto_data.grupo_name}}</option>
-                                        {% for grupo_id, grupo_name , diocesis_name in proyecto_data.grupos_diocesis_id_name %}
-                                            <option value="{{grupo_id}}">{{grupo_name}} en la diocesis de {{diocesis_name}}</option>
-                                        {% endfor %}
-                                    </select>
-                                    <label for="grupoID">Seleciona el Grupo del que depende</label>
-                                </div>
                                 <div class="row g-2 mb-3">
                                     <div class="col-md">
                                         <div class="form-floating">

@@ -183,7 +183,6 @@ def get_cargos_per_location(entity, area, area_id):
         entidadCargo__entidad__iexact=entity
     ).exists():
         return cargos_personal
-    # import pdb; pdb.set_trace()
     cargo_objs = aicespana.models.Cargo.objects.filter(
         entidadCargo__entidad__iexact=entity
     ).order_by("nombreCargo")
@@ -228,48 +227,7 @@ def get_cargos_per_location(entity, area, area_id):
             cargos_personal.append(
                 [cargo_obj.get_cargo_name(), p_ext_obj.get_personal_name()]
             )
-    import pdb
 
-    pdb.set_trace()
-    """
-    Delegacion.objects.filter(pk__exact=loc_id).exists():
-        cargos_personal["name"] = (
-            aicespana.models.Delegacion.objects.filter(pk__exact=delegation_id)
-            .last()
-            .get_delegacion_name()
-        )
-        if aicespana.models.Cargo.objects.filter(
-            entidadCargo__entidad__iexact="delegación"
-        ).exists():
-            cargo_objs = aicespana.models.Cargo.objects.filter(
-                entidadCargo__entidad__iexact="delegación"
-            ).order_by("nombreCargo")
-            for cargo_obj in cargo_objs:
-                
-                cargo_name = cargo_obj.get_cargo_name()
-                p_externo_objs = cargo_obj.personalexterno_set.filter(grupoAsociado__diocesisDependiente__delegacionDependiente__pk__exact=delegation_id).exclude(personalActivo=False)
-                
-                if (
-                    aicespana.models.PersonalExterno.objects.filter(
-                        cargo__nombreCargo__exact=cargo_name,
-                        grupoAsociado__diocesisDependiente__delegacionDependiente__pk__exact=delegation_id,
-                    )
-                    .exclude(personalActivo=False)
-                    .exists()
-                ):
-                    user_name = (
-                        aicespana.models.PersonalExterno.objects.filter(
-                            cargo__nombreCargo__exact=cargo_name,
-                            grupoAsociado__diocesisDependiente__delegacionDependiente__pk__exact=delegation_id,
-                        )
-                        .exclude(personalActivo=False)
-                        .last()
-                        .get_personal_name()
-                    )
-                else:
-                    user_name = "Puesto vacante"
-                cargos_personal["cargos"].append([cargo_name, user_name])
-    """
     return cargos_personal
 
 
@@ -352,51 +310,104 @@ def graphics_per_activity(region):
     return graphics
 
 
-def graphics_per_proyect(region):
-    """Create a pie chart based on region. If it is empty, number of proyects
-    per each delegacion are showed. If it is specific region, then the number
-    of project per diocesis in this delegacion
-
-    Parameters
-    ----------
-    region : string
-        name of the region to create the graphic
-    """
-
+def graphic_p_ext_per_project(region):
+    """Create a pie chart based on region."""
     if region == "" or region is None:
-        projects = list(
-            aicespana.models.Proyecto.objects.all()
+        p_ext_per_projects = list(
+            aicespana.models.PersonalExterno.objects.filter(personalActivo=True)
+            .exclude(proyectoAsociado=None)
+            .exclude(grupoAsociado=None)
             .values(
                 delegacion=F(
                     "grupoAsociado__diocesisDependiente__delegacionDependiente__nombreDelegacion"
                 )
             )
-            .annotate(total=Count("nombreProyecto"))
+            .annotate(total=Count("proyectoAsociado__nombreProyecto"))
         )
+
         data = aicespana.utils.graphics.conversion_data(
-            projects, "delegacion", "total", "list"
+            p_ext_per_projects, "delegacion", "total", "list"
         )
-        title = "Numero de proyectos por delegación"
+        title = "Voluntarios por delegación"
     else:
         diocesis_objs = aicespana.models.Diocesis.objects.filter(
             delegacionDependiente__nombreDelegacion__iexact=region
         )
-        projects = list(
-            aicespana.models.Proyecto.objects.filter(
-                grupoAsociado__diocesisDependiente__in=diocesis_objs
+        p_ext_per_projects = list(
+            aicespana.models.PersonalExterno.objects.filter(
+                personalActivo=True,
+                grupoAsociado__diocesisDependiente__in=diocesis_objs,
             )
+            .exclude(proyectoAsociado=None)
+            .exclude(grupoAsociado=None)
             .values(diocesis=F("grupoAsociado__diocesisDependiente__nombreDiocesis"))
-            .annotate(total=Count("nombreProyecto"))
+            .annotate(total=Count("proyectoAsociado__nombreProyecto"))
         )
+
         data = aicespana.utils.graphics.conversion_data(
-            projects, "diocesis", "total", "list"
+            p_ext_per_projects, "diocesis", "total", "list"
         )
-        title = "Numero de proyectos por diocesis"
-    graphics = {}
+        title = "Voluntarios por diocesis"
+
     options = {"title": title}
-    graphics["num_project"] = aicespana.utils.graphics.pie_graphic(
-        data["label"], data["value"], options
+    return aicespana.utils.graphics.pie_graphic(data["label"], data["value"], options)
+
+
+def graphic_p_ext_asigned_project(region):
+    """Create a pie graph for the voluntarios asigned/no asigned to project
+
+    Parameters
+    ----------
+    region : string
+        Name of the region for filtering data. if empty all regions are
+        considered
+    """
+    if region == "" or region is None:
+        p_ext_in_proj = (
+            aicespana.models.PersonalExterno.objects.filter(personalActivo=True)
+            .exclude(proyectoAsociado=None)
+            .count()
+        )
+        p_ext_not_in_proj = aicespana.models.PersonalExterno.objects.filter(
+            personalActivo=True, proyectoAsociado=None
+        ).count()
+        title = "Voluntarios en las delegaciones"
+    else:
+        diocesis_objs = aicespana.models.Diocesis.objects.filter(
+            delegacionDependiente__nombreDelegacion__iexact=region
+        )
+        p_ext_in_proj = (
+            aicespana.models.PersonalExterno.objects.filter(
+                personalActivo=True,
+                grupoAsociado__diocesisDependiente__in=diocesis_objs,
+            )
+            .exclude(proyectoAsociado=None)
+            .count()
+        )
+        p_ext_not_in_proj = aicespana.models.PersonalExterno.objects.filter(
+            personalActivo=True,
+            grupoAsociado__diocesisDependiente__in=diocesis_objs,
+            proyectoAsociado=None,
+        ).count()
+        title = "Voluntarios en la delegación"
+    options = {"title": title}
+
+    return aicespana.utils.graphics.pie_graphic(
+        ["En projectos", "Sin asignar"], [p_ext_in_proj, p_ext_not_in_proj], options
     )
+
+
+def graphics_per_project(region):
+    """Create a pie chart for voluntarios per delegation/diocesis.
+        Create a pie charr for the percentage of voluntarios asigned to projects
+    Parameters
+    ----------
+    region : string
+        name of the region to create the graphic
+    """
+    graphics = {}
+    graphics["num_per_ext"] = graphic_p_ext_per_project(region)
+    graphics["per_per_ext"] = graphic_p_ext_asigned_project(region)
     return graphics
 
 
@@ -976,9 +987,6 @@ def get_proyecto_data_to_modify(proyecto_id):
     extract_list = [
         "proyecto_name",
         "proyectoID",
-        "grupoID",
-        "grupo_name",
-        "diocesis_name",
         "alta",
         "baja",
         "activo",
@@ -1171,17 +1179,54 @@ def get_grupo_data_to_modify(grupo_id):
 
 
 def get_projects_information(user_type, region=None):
+    data = []
     if user_type == "manager":
-        proj_objs = aicespana.models.Proyecto.objects.all()
+        project_objs = aicespana.models.Proyecto.objects.all().exclude(
+            proyectoActivo=False
+        )  # .values_list("nombreProyecto", flat=True).distinct()
+        p_ext_objs = aicespana.models.PersonalExterno.objects.filter(
+            personalActivo=True
+        ).exclude(proyectoAsociado=None)
     elif user_type == "user" and region is not None:
-        proj_objs = aicespana.models.Proyecto.objects.filter(
-            grupoAsociado__diocesisDependiente__delegacionDependiente__nombreDelegacion__iexact=region
+        project_list = (
+            aicespana.models.PersonalExterno.objects.filter(
+                grupoAsociado__diocesisDependiente__delegacionDependiente__nombreDelegacion__iexact=region
+            )
+            .exclude(proyectoAsociado=None, personalActivo=False)
+            .values_list("proyectoAsociado__nombreProyecto", flat=True)
+            .distinct()
+        )
+        project_objs = []
+        for project in project_list:
+            project_objs.append(
+                aicespana.models.Proyecto.objects.filter(
+                    nombreProyecto__exact=project
+                ).last()
+            )
+        p_ext_objs = (
+            aicespana.models.PersonalExterno.objects.filter(
+                grupoAsociado__diocesisDependiente__delegacionDependiente__nombreDelegacion__iexact=region
+            )
+            .exclude(proyectoAsociado=None)
+            .values("proyectoAsociado__nombreProyecto")
         )
     else:
         return
-    data = []
-    for proj_obj in proj_objs:
-        data.append(proj_obj.get_proyecto_full_data(delegacion=True))
+
+    for project_obj in project_objs:
+        group_list = list(
+            p_ext_objs.filter(proyectoAsociado=project_obj)
+            .values_list(
+                "grupoAsociado__nombreGrupo",
+                "grupoAsociado__diocesisDependiente__nombreDiocesis",
+                "grupoAsociado__diocesisDependiente__delegacionDependiente__nombreDelegacion",
+            )
+            .distinct()
+        )
+        for group in group_list:
+            grp_list = list(group)
+            grp_list += project_obj.get_proyecto_full_data()
+            data.append(grp_list)
     return data
 
 
@@ -1219,7 +1264,6 @@ def fetch_proyecto_data_to_modify(data_form, file_form):
     data = {}
     extract_list = [
         "proyecto_name",
-        "grupoID",
         "alta",
         "baja",
         "activo",
@@ -1303,52 +1347,48 @@ def get_id_proyectos_grupos_diocesis_delegacion_name():
 """
 
 
-def get_project_group_diocesis():
+def get_project_list():
     """
     Description:
         The function gets the proyecto and the diocesis name
     Return:
         proyecto_grupo_diocesis_list
     """
-    proyecto_grupo_diocesis_list = []
+    proyecto_list = []
     if aicespana.models.Proyecto.objects.all().exists():
         proyecto_objs = aicespana.models.Proyecto.objects.all().order_by(
             "nombreProyecto"
         )
         for proyecto_obj in proyecto_objs:
-            proyecto_grupo_diocesis_list.append(
+            proyecto_list.append(
                 [
                     proyecto_obj.get_proyecto_id(),
                     proyecto_obj.get_proyecto_name(),
-                    proyecto_obj.get_grupo_name(),
-                    proyecto_obj.get_diocesis_name(),
                 ]
             )
-    return proyecto_grupo_diocesis_list
+    return proyecto_list
 
 
-def get_activity_group_diocesis():
+def get_activities_list():
     """
     Description:
         The function gets the proyecto and the diocesis name
     Return:
         proyecto_grupo_diocesis_list
     """
-    activity_grupo_diocesis_list = []
+    activity_list = []
     if aicespana.models.Actividad.objects.all().exists():
         actividad_objs = aicespana.models.Actividad.objects.all().order_by(
             "nombreActividad"
         )
         for actividad_obj in actividad_objs:
-            activity_grupo_diocesis_list.append(
+            activity_list.append(
                 [
                     actividad_obj.get_actividad_id(),
                     actividad_obj.get_actividad_name(),
-                    actividad_obj.get_grupo_name(),
-                    actividad_obj.get_diocesis_name(),
                 ]
             )
-    return activity_grupo_diocesis_list
+    return activity_list
 
 
 def get_external_personal_responsability(personal_obj):
@@ -1939,14 +1979,14 @@ def presidentas_diocesis():
     return presidentas_dioc_data
 """
 
-
+"""
 def presidentes_grupo(delegation_id):
-    """
+    
     Description:
         The function get the presidentes for each group for te given delegation
     Return:
         presidentes_data
-    """
+    
     presidentes_data = []
     if aicespana.models.PersonalExterno.objects.filter(
         cargo__nombreCargo="Presidenta de Grupo",
@@ -1968,6 +2008,7 @@ def presidentes_grupo(delegation_id):
             )
 
     return presidentes_data
+"""
 
 
 def bajas_personal_externo_excel():
@@ -2211,3 +2252,35 @@ def store_file(user_file):
     filename = fs.save(file_name, user_file)
     # saved_file = os.path.join(settings.MEDIA_ROOT, file_name)
     return file_name
+
+
+def voluntarios_per_project(user_type, region):
+    """_summary_
+
+    Parameters
+    ----------
+    region : _type_
+        _description_
+    """
+    if user_type == "manager":
+        p_ext_objs = aicespana.models.PersonalExterno.objects.filter(
+            personalActivo=True
+        )
+
+    elif user_type == "user" and region is not None:
+        p_ext_objs = aicespana.models.PersonalExterno.objects.filter(
+            grupoAsociado__diocesisDependiente__delegacionDependiente__nombreDelegacion__iexact=region,
+            personalActivo=True,
+        )
+    p_ext_objs = p_ext_objs.exclude(proyectoAsociado=None).exclude(grupoAsociado=None)
+    data = list(
+        p_ext_objs.values_list(
+            "nombre",
+            "apellido",
+            "proyectoAsociado__nombreProyecto",
+            "grupoAsociado__nombreGrupo",
+            "grupoAsociado__diocesisDependiente__nombreDiocesis",
+            "grupoAsociado__diocesisDependiente__delegacionDependiente__nombreDelegacion",
+        )
+    )
+    return data

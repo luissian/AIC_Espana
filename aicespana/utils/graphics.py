@@ -81,6 +81,7 @@ def pie_graphic(labels, values, options, show_legend=True):
         title=options["title"],
         title_font_color="blue",
         title_font_size=20,
+        margin=dict(l=0, r=0, t=30, b=0),
     )
 
     plot_div = plot(fig, output_type="div", config={"displaylogo": False})

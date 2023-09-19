@@ -234,8 +234,8 @@
                                                             {% else %}
                                                                 <option selected value="{{voluntary_data.proyecto_data_form.0}}">{{voluntary_data.proyecto_data_form.1}} del grupo {{voluntary_data.proyecto_data_form.2}} en la diocesis de {{voluntary_data.proyecto_data_form.3}}</option>
                                                             {% endif %}
-                                                            {% for proyecto_id, proyecto_name, grupo_name , diocesis_name in voluntary_data.proyecto_lista %}
-                                                                <option value="{{proyecto_id}}">{{proyecto_name}} en  {{grupo_name}} en la diocesis de {{diocesis_name}}</option>
+                                                            {% for proyecto_id, proyecto_name in voluntary_data.proyecto_lista %}
+                                                                <option value="{{proyecto_id}}">{{proyecto_name}} </option>
                                                             {% endfor %}
                                                         </select>
                                                         <label for="proyectoID">Seleciona el Proyecto del que depende</label>
@@ -259,7 +259,7 @@
                                                             {% else %}
                                                                 <option selected value="{{voluntary_data.actividad_data_form.0}}">{{voluntary_data.actividad_data_form.1}}</option>
                                                             {% endif %}
-                                                            {% for actividad_id, actividad_name, grupo_name , diocesis_name in voluntary_data.actividad_lista %}
+                                                            {% for actividad_id, actividad_name in voluntary_data.actividad_lista %}
                                                                 <option value="{{actividad_id}}">{{actividad_name}}</option>
                                                             {% endfor %}
                                                         </select>

@@ -33,7 +33,7 @@ class GrupoAdmin(admin.ModelAdmin):
 
 class ProyectoAdmin(admin.ModelAdmin):
     actions = ["download_file"]
-    list_display = ["nombreProyecto", "grupoAsociado", "fechaAlta"]
+    list_display = ["nombreProyecto", "proyectoActivo", "fechaAlta", "fechaBaja"]
 
     def download_file(self, request, queryset):
         None
@@ -42,7 +42,7 @@ class ProyectoAdmin(admin.ModelAdmin):
 
 
 class ActividadAdmin(admin.ModelAdmin):
-    list_display = ["nombreActividad", "grupoAsociado", "fechaAlta"]
+    list_display = ["nombreActividad", "actividadActiva" , "fechaAlta", "fechaBaja"]
     search_fields = ("nombreActividad__icontains",)
 
 

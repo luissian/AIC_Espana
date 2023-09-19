@@ -11,36 +11,42 @@
                     <div class="col">
                         <ul class="nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="listado-tab" data-bs-toggle="tab" data-bs-target="#listado" type="button" role="tab" aria-controls="listado" aria-selected="true">Listado</button>
+                                <button class="nav-link active" id="proyectos-tab" data-bs-toggle="tab" data-bs-target="#proyectos" type="button" role="tab" aria-controls="proyectos" aria-selected="true">Proyectos</button>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats" type="button" role="tab" aria-controls="stats" aria-selected="false">Estadisticas</button>
                             </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="listado-tab" data-bs-toggle="tab" data-bs-target="#listado" type="button" role="tab" aria-controls="listado" aria-selected="false">Listado voluntarios</button>
+                            </li>
                         </ul>
                         <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show active" id="listado" role="tabpanel" aria-labelledby="listado-tab">
+                            <div class="tab-pane fade show active" id="proyectos" role="tabpanel" aria-labelledby="proyectos-tab">
                                 <div class="container-md">
                                     <div class="row mt-1">
                                         <div class="col">
+                                            <div class="text-center my-3">
+                                                <h5>Proyectos con personal asignado</h5>
+                                            </div>
                                             <table id="projecto_tabla" class="table table-striped table-bordered">
                                                 <thead>
                                                     <tr>
-                                                        <th>Delegacion</th>
-                                                        <th>Diocesis</th>
-                                                        <th>Grupo</th>
                                                         <th>Nombre Proyecto</th>
+                                                        <th>Grupo</th>
+                                                        <th>Diocesis</th>
+                                                        <th>Delegacion</th>
                                                         <th>Fecha Alta</th>
                                                         <th>Fecha Baja</th>
                                                         <th>Memoria del projecto</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {% for proj, proj_id, grp_id, grp, dioc , deleg, alta, baja, activo, memoria, photo in project_data.p_list %}
+                                                    {% for grupo, dioc, deleg, proj, proj_id, alta, baja, activo, memoria, photo in project_data.p_list %}
                                                         <tr>
-                                                            <td>{{deleg}}</td>
-                                                            <td>{{dioc}}</td>
-                                                            <td><a href="listadoGrupo={{grp_id}}">{{grp}}</a></td>
                                                             <td>{{proj}}</td>
+                                                            <td>{{grupo}}</td>
+                                                            <td>{{dioc}}</td>
+                                                            <td>{{deleg}}</td>
                                                             <td>{{alta}}</td>
                                                             <td>{{baja}}</td>
                                                             <td>
@@ -63,8 +69,25 @@
                                             <div class="card">
                                                 <div class="card-body">
                                                     <div class="row justify-content-center">
-                                                        <div class="col-md-8">
-                                                            {{ project_data.graphics.num_project | safe }}
+                                                        <div class="col">
+                                                            <div class="row">
+                                                                <h5>Voluntarios asignados a proyectos</h5>
+                                                            </div>
+                                                            <div class="row mt-3">
+                                                                {{ project_data.graphics.num_per_ext | safe }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>  
+                                            </div> 
+                                        </div> 
+                                        <div class="col">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="row justify-content-center">
+                                                        <div class="col">
+                                                            <h5>Relación de voluntarios</h5>
+                                                            {{ project_data.graphics.per_per_ext | safe }}
                                                         </div>
                                                     </div>
                                                 </div>  
@@ -72,7 +95,45 @@
                                         </div> 
                                     </div>
                                 </div>  
-                            </div> 
+                            </div>
+                            <div class="tab-pane fade" id="listado" role="tabpanel" aria-labelledby="listado-tab">
+                                <div class="container-md">
+                                    <div class="row mt-1">
+                                        <div class="col">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <table id="voluntario_tabla" class="table table-striped table-bordered">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Nombre voluntario</th>
+                                                                        <th>Nombre Proyecto</th>
+                                                                        <th>Grupo</th>
+                                                                        <th>Diocesis</th>
+                                                                        <th>Delegacion</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    {% for nombre, appellido, proj, grupo, dioc, deleg in project_data.v_list %}
+                                                                        <tr>
+                                                                            <td>{{nombre}} {{appellido}}</td>
+                                                                            <td>{{proj}}</td>
+                                                                            <td>{{grupo}}</td>
+                                                                            <td>{{dioc}}</td>
+                                                                            <td>{{deleg}}</td>
+                                                                        </tr>
+                                                                    {% endfor %}
+                                                                </tbody>
+                                                            </table>
+                                                        </div> 
+                                                    </div>
+                                                </div>
+                                            </div>  
+                                        </div> 
+                                    </div> 
+                                </div>
+                            </div>
                         </div> 
                     </div>
                 </div> 
@@ -83,6 +144,15 @@
 <script type="text/javascript">
     $(document).ready(function() {
         $('#projecto_tabla').DataTable({
+            dom: "fltirpB",
+            responsive: true,
+            buttons: [
+                'excel'
+            ]
+        });
+    });
+    $(document).ready(function() {
+        $('#voluntario_tabla').DataTable({
             dom: "fltirpB",
             responsive: true,
             buttons: [

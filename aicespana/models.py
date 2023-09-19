@@ -341,12 +341,10 @@ class Grupo(models.Model):
 
 class ProyectoManager(models.Manager):
     def create_new_proyecto(self, data):
-
         if data["alta"] != "":
             alta = datetime.strptime(data["alta"], "%Y-%m-%d").date()
         else:
             alta = None
-
         memoria = data["memoria_file"] if "memoria_file" in data != "" else None
         fotografia = (
             data["fotografia_file"] if "fotografia_file" in data != "" else None
@@ -354,7 +352,6 @@ class ProyectoManager(models.Manager):
 
         new_project = self.create(
             nombreProyecto=data["nombre"],
-            grupoAsociado=data["grupo_obj"],
             fechaAlta=alta,
             memoriaProyecto=memoria,
             fotografiaProyecto=fotografia,
@@ -363,9 +360,6 @@ class ProyectoManager(models.Manager):
 
 
 class Proyecto(models.Model):
-    grupoAsociado = models.ForeignKey(
-        Grupo, on_delete=models.CASCADE, null=True, blank=True
-    )
     nombreProyecto = models.CharField(max_length=80)
     memoriaProyecto = models.FileField(
         storage=memory_project_path_location, null=True, blank=True
@@ -387,29 +381,7 @@ class Proyecto(models.Model):
     def get_proyecto_name(self):
         return "%s" % (self.nombreProyecto)
 
-    def get_diocesis_name(self):
-        if self.grupoAsociado:
-            return "%s" % (self.grupoAsociado.get_diocesis_name())
-        return ""
-
-    def get_grupo_name(self):
-        if self.grupoAsociado:
-            return "%s" % (self.grupoAsociado.get_grupo_name())
-        return ""
-
-    def get_grupo_id(self):
-        if self.grupoAsociado:
-            return "%s" % (self.grupoAsociado.get_grupo_id())
-        return ""
-
-    def get_proyecto_full_data(self, delegacion=False):
-        if delegacion:
-            if self.grupoAsociado:
-                delegacion_name = (
-                    self.grupoAsociado.diocesisDependiente.get_delegacion_name()
-                )
-            else:
-                delegacion_name = ""
+    def get_proyecto_full_data(self):
         if self.fechaAlta is None:
             alta = ""
         else:
@@ -437,21 +409,15 @@ class Proyecto(models.Model):
         data = [
             self.nombreProyecto,
             self.pk,
-            self.get_grupo_id(),
-            self.get_grupo_name(),
-            self.get_diocesis_name(),
             alta,
             baja,
             activo,
             memoria_proyecto,
             fotografia_proyecto,
         ]
-        if delegacion:
-            data.insert(5, delegacion_name)
         return data
 
     def update_proyecto_data(self, data):
-        self.grupoAsociado = Grupo.objects.filter(pk__exact=data["grupoID"]).last()
         self.nombreProyecto = data["proyecto_name"]
         if data["activo"] == "false":
             self.proyectoActivo = False
@@ -487,7 +453,6 @@ class ActividadManager(models.Manager):
 
         new_actividad = self.create(
             nombreActividad=data["nombre"],
-            # grupoAsociado = data['grupo_obj'],
             fechaAlta=alta,
             memoriaActividad=memoria,
             fotografiaActividad=fotografia,
@@ -496,9 +461,6 @@ class ActividadManager(models.Manager):
 
 
 class Actividad(models.Model):
-    grupoAsociado = models.ForeignKey(
-        Grupo, on_delete=models.CASCADE, null=True, blank=True
-    )
     nombreActividad = models.CharField(max_length=200)
     memoriaActividad = models.FileField(
         storage=memory_project_path_location, null=True, blank=True
@@ -519,21 +481,6 @@ class Actividad(models.Model):
 
     def get_actividad_name(self):
         return "%s" % (self.nombreActividad)
-
-    def get_diocesis_name(self):
-        if self.grupoAsociado:
-            return "%s" % (self.grupoAsociado.get_diocesis_name())
-        return ""
-
-    def get_grupo_name(self):
-        if self.grupoAsociado:
-            return "%s" % (self.grupoAsociado.get_grupo_name())
-        return ""
-
-    def get_grupo_id(self):
-        if self.grupoAsociado:
-            return "%s" % (self.grupoAsociado.get_grupo_id())
-        return ""
 
     def get_actividad_full_data(self):
         if self.fechaAlta is None:
@@ -572,8 +519,6 @@ class Actividad(models.Model):
         ]
 
     def update_actividad_data(self, data):
-        # self.grupoAsociado = Grupo.objects.filter(pk__exact = data['grupoID']).last()
-        self.nombreActividad = data["actividad_name"]
         if data["activo"] == "false":
             self.actividadActiva = False
         else:
@@ -662,7 +607,6 @@ class PersonalExterno(models.Model):
     actividadAsociada = models.ForeignKey(
         Actividad, on_delete=models.CASCADE, null=True, blank=True
     )
-    # cargo = models.ForeignKey(Cargo, on_delete=models.CASCADE, null=True, blank=True)
     cargo = models.ManyToManyField(Cargo)
     tipoColaboracion = models.ForeignKey(
         TipoColaboracion, on_delete=models.CASCADE, null=True, blank=True
@@ -723,8 +667,6 @@ class PersonalExterno(models.Model):
             return [
                 self.actividadAsociada.get_actividad_id(),
                 self.actividadAsociada.get_actividad_name(),
-                self.actividadAsociada.get_grupo_name(),
-                self.actividadAsociada.get_diocesis_name(),
             ]
 
     def get_collaboration_belongs_to(self):

@@ -348,17 +348,6 @@ def alta_proyecto(request):
         "p_list"
     ] = aicespana.utils.generic_functions.get_projects_information("manager", "")
 
-    # proyecto_data['grupos_diocesis_id_name'] = get_id_grupo_diocesis_delegacion_name()
-    proyecto_data[
-        "grupos_diocesis_id_name"
-    ] = aicespana.utils.generic_functions.get_group_list_to_select_in_form()
-    """
-    proyecto_data[
-        "proyectos_grupos_diocesis_name"
-    ] = (
-        aicespana.utils.generic_functions.get_id_proyectos_grupos_diocesis_delegacion_name()
-    )
-    """
     if request.method == "POST" and request.POST["action"] == "altaProyecto":
         if aicespana.models.Proyecto.objects.filter(
             nombreProyecto__iexact=request.POST["nombre"]
@@ -1075,17 +1064,10 @@ def modificar_proyecto(request, proyecto_id):
         proyecto_id
     )
 
-    proyecto_data[
-        "grupos_diocesis_id_name"
-    ] = (
-        aicespana.utils.generic_functions.get_group_list_to_select_in_form()
-    )  # get_id_grupo_diocesis_name()
-
     if request.method == "POST" and request.POST["action"] == "modificarProyecto":
         if (
             aicespana.models.Proyecto.objects.filter(
                 nombreProyecto__iexact=request.POST["proyecto_name"],
-                grupoAsociado__pk__exact=request.POST["grupoID"],
             )
             .exclude(pk__exact=request.POST["proyectoID"])
             .exists()
@@ -1148,11 +1130,11 @@ def modificacion_voluntario_id(request, voluntario_id):
     ] = aicespana.utils.generic_functions.get_volunteer_types()
     voluntary_data[
         "proyecto_lista"
-    ] = aicespana.utils.generic_functions.get_project_group_diocesis()
+    ] = aicespana.utils.generic_functions.get_project_list()
     voluntary_data["proyecto_data_form"] = user_obj.get_proyecto_data_for_form()
     voluntary_data[
         "actividad_lista"
-    ] = aicespana.utils.generic_functions.get_activity_group_diocesis()
+    ] = aicespana.utils.generic_functions.get_activities_list()
     voluntary_data["actividad_data_form"] = user_obj.get_actividad_data_for_form()
 
     return render(
@@ -1266,13 +1248,13 @@ def modificacion_voluntario(request):
         ] = aicespana.utils.generic_functions.get_volunteer_types()
         voluntary_data[
             "proyecto_lista"
-        ] = aicespana.utils.generic_functions.get_project_group_diocesis()
+        ] = aicespana.utils.generic_functions.get_project_list()
         voluntary_data["proyecto_data_form"] = personal_objs[
             0
         ].get_proyecto_data_for_form()
         voluntary_data[
             "actividad_lista"
-        ] = aicespana.utils.generic_functions.get_activity_group_diocesis()
+        ] = aicespana.utils.generic_functions.get_activities_list()
         voluntary_data["actividad_data_form"] = personal_objs[
             0
         ].get_actividad_data_for_form()
@@ -1941,9 +1923,6 @@ def listado_delegacion(request, delegacion_id):
     delegacion_data["summary"] = [
         aicespana.utils.generic_functions.get_summary_of_delegation(delegacion_obj)
     ]
-    import pdb
-
-    pdb.set_trace()
     delegacion_data["delegacion_name"] = delegacion_obj.get_delegacion_name()
     delegacion_data["delegacion_image"] = delegacion_obj.get_delegacion_image()
     delegacion_data[
@@ -2054,8 +2033,11 @@ def listado_proyectos(request):
     project_data["p_list"] = aicespana.utils.generic_functions.get_projects_information(
         user_type, region
     )
-    project_data["graphics"] = aicespana.utils.generic_functions.graphics_per_proyect(
+    project_data["graphics"] = aicespana.utils.generic_functions.graphics_per_project(
         region
+    )
+    project_data["v_list"] = aicespana.utils.generic_functions.voluntarios_per_project(
+        user_type, region
     )
     return render(
         request, "aicespana/listadoProyectos.html", {"project_data": project_data}

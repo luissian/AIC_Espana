@@ -115,13 +115,10 @@
                                 <thead>
                                     <tr>
                                         <th>Proyecto</th>
-                                        <th>Grupo</th>
-                                        <th>Diocesis</th>
-                                        <th>Delegación</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for proj, proj_id, grp_id, grp, dioc , deleg, alta, baja, activo, memoria, photo in proyecto_data.p_list %}
+                                    {% for proj, proj_id, alta, baja, activo, memoria, photo in proyecto_data.p_list %}
                                         <tr>
                                             <td>{{proj}}</td>
                                             <td>{{grp}}</td>
