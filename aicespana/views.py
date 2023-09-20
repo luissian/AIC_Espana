@@ -4,13 +4,10 @@ import os
 # from django.contrib.auth.models import User
 from django.shortcuts import render
 
-# from django.template import loader
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 import aicespana.models
 
-# from .message_text import *
-# from .utils.generic_functions import *
 import aicespana.utils.generic_functions
 import aicespana.message_text
 
@@ -27,7 +24,7 @@ def alta_actividad(request):
             "aicespana/errorPage.html",
             {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
-    actividades = aicespana.utils.generic_functions.get_summary_actividades("manager")
+    actividades = aicespana.utils.generic_functions.get_activity_list()
     if request.method == "POST" and request.POST["action"] == "altaActividad":
         if aicespana.models.Actividad.objects.filter(
             nombreActividad__iexact=request.POST["nombre"]
@@ -344,9 +341,7 @@ def alta_proyecto(request):
             {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     proyecto_data = {}
-    proyecto_data[
-        "p_list"
-    ] = aicespana.utils.generic_functions.get_projects_information("manager", "")
+    proyecto_data["p_list"] = aicespana.utils.generic_functions.get_project_list()
 
     if request.method == "POST" and request.POST["action"] == "altaProyecto":
         if aicespana.models.Proyecto.objects.filter(
@@ -1134,7 +1129,7 @@ def modificacion_voluntario_id(request, voluntario_id):
     voluntary_data["proyecto_data_form"] = user_obj.get_proyecto_data_for_form()
     voluntary_data[
         "actividad_lista"
-    ] = aicespana.utils.generic_functions.get_activities_list()
+    ] = aicespana.utils.generic_functions.get_activity_list()
     voluntary_data["actividad_data_form"] = user_obj.get_actividad_data_for_form()
 
     return render(
@@ -1254,7 +1249,7 @@ def modificacion_voluntario(request):
         ].get_proyecto_data_for_form()
         voluntary_data[
             "actividad_lista"
-        ] = aicespana.utils.generic_functions.get_activities_list()
+        ] = aicespana.utils.generic_functions.get_activity_list()
         voluntary_data["actividad_data_form"] = personal_objs[
             0
         ].get_actividad_data_for_form()
@@ -2260,16 +2255,19 @@ def listado_actividades(request):
         user_type = "manager"
     activity_data[
         "act_list"
-    ] = aicespana.utils.generic_functions.get_summary_actividades(user_type, region)
+    ] = aicespana.utils.generic_functions.get_actividades_information(user_type, region)
     activity_data["graphics"] = aicespana.utils.generic_functions.graphics_per_activity(
         region
     )
-    activity_data["user_type"] = user_type
+    activity_data[
+        "v_list"
+    ] = aicespana.utils.generic_functions.voluntarios_per_activity(user_type, region)
     return render(
         request, "aicespana/listadoActividades.html", {"activity_data": activity_data}
     )
 
 
+"""
 @login_required
 def listado_actividad(request, actividad_id):
     if not aicespana.utils.generic_functions.is_manager(request):
@@ -2285,7 +2283,7 @@ def listado_actividad(request, actividad_id):
             {"content": aicespana.message_text.ERROR_ACTIVIDAD_NOT_EXIST},
         )
 
-    # Get the delgacion which have the avtivity
+    # Get the delgacion which have the activity
     actividad_data = aicespana.utils.generic_functions.get_activity_data_in_delegations(
         actividad_id
     )
@@ -2302,6 +2300,7 @@ def listado_actividad(request, actividad_id):
     return render(
         request, "aicespana/listadoActividad.html", {"actividad_data": actividad_data}
     )
+"""
 
 
 @login_required

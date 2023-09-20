@@ -46,11 +46,6 @@ urlpatterns = [
         views.informacion_voluntario_id,
         name="informacion_voluntario_id",
     ),
-    path(
-        "listadoActividad=<int:actividad_id>",
-        views.listado_actividad,
-        name="listado_actividad",
-    ),
     path("listadoActividades", views.listado_actividades, name="listado_actividades"),
     path("listadoBoletin", views.listado_boletin, name="listado_boletin"),
     path(

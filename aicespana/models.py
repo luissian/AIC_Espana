@@ -726,8 +726,6 @@ class PersonalExterno(models.Model):
             return [
                 self.proyectoAsociado.get_proyecto_id(),
                 self.proyectoAsociado.get_proyecto_name(),
-                self.proyectoAsociado.get_grupo_name(),
-                self.proyectoAsociado.get_diocesis_name(),
             ]
 
     def get_responability_belongs_to(self, include_id=None):

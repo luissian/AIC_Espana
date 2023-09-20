@@ -118,12 +118,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for proj, proj_id, alta, baja, activo, memoria, photo in proyecto_data.p_list %}
+                                    {% for proj_id, proj in proyecto_data.p_list %}
                                         <tr>
                                             <td>{{proj}}</td>
-                                            <td>{{grp}}</td>
-                                            <td>{{dioc}}</td>
-                                            <td>{{deleg}}</td>
                                     {% endfor %}
                                 </tbody>
                             </table>
