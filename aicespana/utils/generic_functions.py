@@ -380,6 +380,32 @@ def graphic_activity_per_p_ext(region):
             .annotate(total=Count("nombre"))
         )
     else:
+        act_list = (
+            aicespana.models.PersonalExterno.objects.filter(
+                grupoAsociado__diocesisDependiente__delegacionDependiente__nombreDelegacion__iexact=region
+            )
+            .exclude(actividadAsociada=None, personalActivo=False)
+            .values_list("actividadAsociada__nombreActividad", flat=True)
+            .distinct()
+        )
+        act_objs = []
+        for act in act_list:
+            act_objs.append(
+                aicespana.models.Actividad.objects.filter(
+                    nombreActividad__exact=act
+                ).last()
+            )
+        p_ext_objs = (
+            aicespana.models.PersonalExterno.objects.filter(
+                grupoAsociado__diocesisDependiente__delegacionDependiente__nombreDelegacion__iexact=region
+            )
+            .exclude(proyectoAsociado=None)
+            .values("proyectoAsociado__nombreProyecto")
+        )
+        
+        
+        
+        
         diocesis_objs = aicespana.models.Diocesis.objects.filter(
             delegacionDependiente__nombreDelegacion__iexact=region
         )
@@ -415,7 +441,7 @@ def graphics_per_activity(region):
     graphics = {}
     graphics["num_per_ext"] = graphic_p_ext_per_activity(region)
     graphics["act_per_ext"] = graphic_p_ext_asigned_activity(region)
-    graphics["num_voluntarios"] = graphic_activity_per_p_ext(region)
+    # graphics["num_voluntarios"] = graphic_activity_per_p_ext(region)
     return graphics
 
     """ 
