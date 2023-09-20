@@ -129,7 +129,7 @@ def get_actividades_information(user_type, region=None):
                 grupoAsociado__diocesisDependiente__delegacionDependiente__nombreDelegacion__iexact=region,
                 personalActivo=True,
             )
-            .exclude(actividaAsociada=None)
+            .exclude(actividadAsociada=None)
             .values_list("actividadAsociada__nombreActividad", flat=True)
             .distinct()
         )
