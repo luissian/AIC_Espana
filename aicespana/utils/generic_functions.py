@@ -495,40 +495,6 @@ def graphics_per_activity(region):
     graphics["num_voluntarios"] = graphic_activity_per_p_ext(region)
     return graphics
 
-    """ 
-    # graphic having activities and number of voluntarios
-    if region == "" or region is None:
-        act_voluntarios = (
-            aicespana.models.PersonalExterno.objects.filter(personalActivo=True)
-            .exclude(actividadAsociada=None)
-            .values(actividad=F("actividadAsociada__nombreActividad"))
-            .annotate(total=Count("nombre"))
-        )
-    else:
-        act_voluntarios = (
-            aicespana.models.PersonalExterno.objects.filter(
-                personalActivo=True,
-                actividadAsociada__grupoAsociado__diocesisDependiente__in=diocesis_objs,
-            )
-            .values(actividad=F("actividadAsociada__nombreActividad"))
-            .annotate(total=Count("nombre"))
-        )
-    data = aicespana.utils.graphics.conversion_data(
-        act_voluntarios, "actividad", "total", "list"
-    )
-    title = "Numero de voluntarios por actividad"
-    options = {
-        "title": title,
-        "height": 500,
-        "width": 900,
-        "yaxis": "Numero de voluntarios",
-    }
-    graphics["num_voluntarios"] = aicespana.utils.graphics.bar_graphic(
-        data["label"], data["value"], options
-    )
-    return graphics
- """
-
 
 def graphic_p_ext_per_project(region):
     """Create a pie chart based on region."""
@@ -617,6 +583,49 @@ def graphic_p_ext_asigned_project(region):
     )
 
 
+def graphic_proyectos_per_delegation(region):
+    graph = {}
+    if region == "" or region is None:
+        proj_delegations = list(
+            aicespana.models.PersonalExterno.objects.filter(personalActivo=True)
+            .exclude(proyectoAsociado=None)
+            .exclude(grupoAsociado=None)
+            .values(
+                delegacion=F(
+                    "grupoAsociado__diocesisDependiente__delegacionDependiente__nombreDelegacion"
+                )
+            )
+            .annotate(proyecto=F("proyectoAsociado__nombreProyecto"))
+            .distinct()
+        )
+        projects = {}
+        for proj_delegation in proj_delegations:
+            if proj_delegation["proyecto"] not in projects:
+                projects[proj_delegation["proyecto"]] = 0
+            projects[proj_delegation["proyecto"]] += 1
+        labels = []
+        values = []
+        for act, val in projects.items():
+            labels.append(act)
+            values.append(val)
+        graph["num_proyectos"] = len(labels)
+        total_proyectos = aicespana.models.Proyecto.objects.filter(
+            proyectoActivo=True
+        ).count()
+        if total_proyectos > len(labels):
+            values.append(total_proyectos - len(labels))
+            labels.append("Sin asociar a grupo")
+
+        options = {
+            "title": "",
+            "height": 350,
+            "width": 900,
+            "yaxis": "Proyectos por delegación",
+        }
+        graph["graph"] = aicespana.utils.graphics.bar_graphic(labels, values, options)
+    return graph
+
+
 def graphics_per_project(region):
     """Create a pie chart for voluntarios per delegation/diocesis.
         Create a pie charr for the percentage of voluntarios asigned to projects
@@ -628,6 +637,8 @@ def graphics_per_project(region):
     graphics = {}
     graphics["num_per_ext"] = graphic_p_ext_per_project(region)
     graphics["per_per_ext"] = graphic_p_ext_asigned_project(region)
+    if region is "" or region is None:
+        graphics["proyectos_per_delegation"] = graphic_proyectos_per_delegation(region)
     return graphics
 
 

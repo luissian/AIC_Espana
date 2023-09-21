@@ -94,7 +94,26 @@
                                             </div> 
                                         </div> 
                                     </div>
-                                </div>  
+                                    {% if  project_data.graphics.proyectos_per_delegation.graph %}
+                                        <div class="row mt-1">
+                                            <div class="col">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="row justify-content-center">
+                                                            <div class="col">
+                                                                <div class="row text-center">
+                                                                    <h5>Proyectos en las delegaciones</h5>
+                                                                </div>
+                                                                <div class="row mt-3">
+                                                                    {{ project_data.graphics.proyectos_per_delegation.graph | safe }}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>  
+                                                </div> 
+                                            </div> 
+                                    {% endif %}
+                                </div>
                             </div>
                             <div class="tab-pane fade" id="listado" role="tabpanel" aria-labelledby="listado-tab">
                                 <div class="container-md">
