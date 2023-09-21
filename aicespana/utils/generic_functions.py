@@ -328,15 +328,30 @@ def graphic_p_ext_asigned_activity(region):
         Name of the region for filtering data. if empty all regions are
         considered
     """
+    labels = []
+    values = []
     if region == "" or region is None:
-        p_ext_in_act = (
+        labels.append("En actividad")
+        values.append((
             aicespana.models.PersonalExterno.objects.filter(personalActivo=True)
             .exclude(actividadAsociada=None)
+            .exclude(grupoAsociado=None)
             .count()
-        )
-        p_ext_not_in_act = aicespana.models.PersonalExterno.objects.filter(
+        ))
+        labels.append("Sin asignar")
+        values.append(aicespana.models.PersonalExterno.objects.filter(
             personalActivo=True, actividadAsociada=None
-        ).count()
+            ).exclude(grupoAsociado=None).count())
+        num_no_grp =  aicespana.models.PersonalExterno.objects.filter(
+            personalActivo=True, grupoAsociado=None).exclude(actividadAsociada=None).count()
+        if num_no_grp > 0:
+            labels.append("Con actividad y sin grupo")
+            values.append(num_no_grp)
+        num_no_grp_no_act = aicespana.models.PersonalExterno.objects.filter(
+            personalActivo=True,actividadAsociada=None,grupoAsociado=None).count()
+        if num_no_grp_no_act > 0:
+            labels.append("Sin actividad y sin grupo")
+            values.append(num_no_grp_no_act )
         title = "Voluntarios en las delegaciones"
     else:
         diocesis_objs = aicespana.models.Diocesis.objects.filter(
@@ -358,8 +373,7 @@ def graphic_p_ext_asigned_activity(region):
         title = "Voluntarios en la delegación"
     options = {"title": title}
 
-    return aicespana.utils.graphics.pie_graphic(
-        ["En projectos", "Sin asignar"], [p_ext_in_act, p_ext_not_in_act], options
+    return aicespana.utils.graphics.pie_graphic( labels, values, options
     )
 
 
@@ -379,40 +393,15 @@ def graphic_activity_per_p_ext(region):
             .values(actividad=F("actividadAsociada__nombreActividad"))
             .annotate(total=Count("nombre"))
         )
-    else:
-        act_list = (
-            aicespana.models.PersonalExterno.objects.filter(
-                grupoAsociado__diocesisDependiente__delegacionDependiente__nombreDelegacion__iexact=region
-            )
-            .exclude(actividadAsociada=None, personalActivo=False)
-            .values_list("actividadAsociada__nombreActividad", flat=True)
-            .distinct()
-        )
-        act_objs = []
-        for act in act_list:
-            act_objs.append(
-                aicespana.models.Actividad.objects.filter(
-                    nombreActividad__exact=act
-                ).last()
-            )
-        p_ext_objs = (
-            aicespana.models.PersonalExterno.objects.filter(
-                grupoAsociado__diocesisDependiente__delegacionDependiente__nombreDelegacion__iexact=region
-            )
-            .exclude(proyectoAsociado=None)
-            .values("proyectoAsociado__nombreProyecto")
-        )
-        
-        
-        
-        
+    else:        
         diocesis_objs = aicespana.models.Diocesis.objects.filter(
             delegacionDependiente__nombreDelegacion__iexact=region
         )
+        import pdb; pdb.set_trace()
         act_voluntarios = (
             aicespana.models.PersonalExterno.objects.filter(
                 personalActivo=True,
-                actividadAsociada__grupoAsociado__diocesisDependiente__in=diocesis_objs,
+                grupoAsociado__diocesisDependiente__in=diocesis_objs,
             )
             .values(actividad=F("actividadAsociada__nombreActividad"))
             .annotate(total=Count("nombre"))
@@ -441,7 +430,7 @@ def graphics_per_activity(region):
     graphics = {}
     graphics["num_per_ext"] = graphic_p_ext_per_activity(region)
     graphics["act_per_ext"] = graphic_p_ext_asigned_activity(region)
-    # graphics["num_voluntarios"] = graphic_activity_per_p_ext(region)
+    graphics["num_voluntarios"] = graphic_activity_per_p_ext(region)
     return graphics
 
     """ 
