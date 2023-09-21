@@ -332,32 +332,45 @@ def graphic_p_ext_asigned_activity(region):
     values = []
     if region == "" or region is None:
         labels.append("En actividad")
-        values.append((
-            aicespana.models.PersonalExterno.objects.filter(personalActivo=True)
-            .exclude(actividadAsociada=None)
+        values.append(
+            (
+                aicespana.models.PersonalExterno.objects.filter(personalActivo=True)
+                .exclude(actividadAsociada=None)
+                .exclude(grupoAsociado=None)
+                .count()
+            )
+        )
+        labels.append("Sin asignar")
+        values.append(
+            aicespana.models.PersonalExterno.objects.filter(
+                personalActivo=True, actividadAsociada=None
+            )
             .exclude(grupoAsociado=None)
             .count()
-        ))
-        labels.append("Sin asignar")
-        values.append(aicespana.models.PersonalExterno.objects.filter(
-            personalActivo=True, actividadAsociada=None
-            ).exclude(grupoAsociado=None).count())
-        num_no_grp =  aicespana.models.PersonalExterno.objects.filter(
-            personalActivo=True, grupoAsociado=None).exclude(actividadAsociada=None).count()
+        )
+        num_no_grp = (
+            aicespana.models.PersonalExterno.objects.filter(
+                personalActivo=True, grupoAsociado=None
+            )
+            .exclude(actividadAsociada=None)
+            .count()
+        )
         if num_no_grp > 0:
             labels.append("Con actividad y sin grupo")
             values.append(num_no_grp)
         num_no_grp_no_act = aicespana.models.PersonalExterno.objects.filter(
-            personalActivo=True,actividadAsociada=None,grupoAsociado=None).count()
+            personalActivo=True, actividadAsociada=None, grupoAsociado=None
+        ).count()
         if num_no_grp_no_act > 0:
             labels.append("Sin actividad y sin grupo")
-            values.append(num_no_grp_no_act )
+            values.append(num_no_grp_no_act)
         title = "Voluntarios en las delegaciones"
     else:
         diocesis_objs = aicespana.models.Diocesis.objects.filter(
             delegacionDependiente__nombreDelegacion__iexact=region
         )
-        p_ext_in_act = (
+        labels.append("En actividad")
+        values.append(
             aicespana.models.PersonalExterno.objects.filter(
                 personalActivo=True,
                 grupoAsociado__diocesisDependiente__in=diocesis_objs,
@@ -365,16 +378,18 @@ def graphic_p_ext_asigned_activity(region):
             .exclude(actividadAsociada=None)
             .count()
         )
-        p_ext_not_in_act = aicespana.models.PersonalExterno.objects.filter(
-            personalActivo=True,
-            grupoAsociado__diocesisDependiente__in=diocesis_objs,
-            actividadAsociada=None,
-        ).count()
+        labels.append("Sin asignar")
+        values.append(
+            aicespana.models.PersonalExterno.objects.filter(
+                personalActivo=True,
+                grupoAsociado__diocesisDependiente__in=diocesis_objs,
+                actividadAsociada=None,
+            ).count()
+        )
         title = "Voluntarios en la delegación"
     options = {"title": title}
 
-    return aicespana.utils.graphics.pie_graphic( labels, values, options
-    )
+    return aicespana.utils.graphics.pie_graphic(labels, values, options)
 
 
 def graphic_activity_per_p_ext(region):
@@ -393,11 +408,10 @@ def graphic_activity_per_p_ext(region):
             .values(actividad=F("actividadAsociada__nombreActividad"))
             .annotate(total=Count("nombre"))
         )
-    else:        
+    else:
         diocesis_objs = aicespana.models.Diocesis.objects.filter(
             delegacionDependiente__nombreDelegacion__iexact=region
         )
-        import pdb; pdb.set_trace()
         act_voluntarios = (
             aicespana.models.PersonalExterno.objects.filter(
                 personalActivo=True,
@@ -419,6 +433,52 @@ def graphic_activity_per_p_ext(region):
     return aicespana.utils.graphics.bar_graphic(data["label"], data["value"], options)
 
 
+def graphic_act_per_delegation(region):
+    graph = {}
+    if region == "" or region is None:
+        act_delegations = list(
+            aicespana.models.PersonalExterno.objects.filter(personalActivo=True)
+            .exclude(actividadAsociada=None)
+            .exclude(grupoAsociado=None)
+            .values(
+                delegacion=F(
+                    "grupoAsociado__diocesisDependiente__delegacionDependiente__nombreDelegacion"
+                )
+            )
+            .annotate(actividad=F("actividadAsociada__nombreActividad"))
+            .distinct()
+        )
+        activities = {}
+        for act_delegation in act_delegations:
+            if act_delegation["actividad"] not in activities:
+                activities[act_delegation["actividad"]] = 0
+            activities[act_delegation["actividad"]] += 1
+        labels = []
+        values = []
+        for act, val in activities.items():
+            labels.append(act)
+            values.append(val)
+        graph["num_activities"] = len(labels)
+        total_activity = aicespana.models.Actividad.objects.filter(
+            actividadActiva=True
+        ).count()
+        if total_activity > len(labels):
+            values.append(total_activity - len(labels))
+            labels.append("Sin asociar a grupo")
+
+        title = "Actividades por delegación"
+        options = {"title": title}
+
+        options = {
+            "title": title,
+            "height": 500,
+            "width": 900,
+            "yaxis": "Numero de actividades por delegación",
+        }
+        graph["graph"] = aicespana.utils.graphics.bar_graphic(labels, values, options)
+    return graph
+
+
 def graphics_per_activity(region):
     """Create a pie chart for voluntarios per delegation/diocesis.
         Create a pie charr for the percentage of voluntarios asigned to projects
@@ -430,6 +490,8 @@ def graphics_per_activity(region):
     graphics = {}
     graphics["num_per_ext"] = graphic_p_ext_per_activity(region)
     graphics["act_per_ext"] = graphic_p_ext_asigned_activity(region)
+    if region == "" or region is None:
+        graphics["act_per_delegation"] = graphic_act_per_delegation(region)
     graphics["num_voluntarios"] = graphic_activity_per_p_ext(region)
     return graphics
 

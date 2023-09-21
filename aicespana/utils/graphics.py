@@ -20,7 +20,7 @@ def bar_graphic(labels, values, options):
         opacity=0.8,
     )
     fig.update_layout(
-        title="Numero de voluntarios por actividad",
+        title=options["title"],
         title_font_color="green",
         title_font_size=20,
         paper_bgcolor="rgba(0,0,0,0)",

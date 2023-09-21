@@ -68,8 +68,8 @@
                                                             <div class="card-body">
                                                                 <div class="row justify-content-center">
                                                                     <div class="col">
-                                                                        <div class="row">
-                                                                            <h5>Voluntarios asignados a activiadades</h5>
+                                                                        <div class="row text-center">
+                                                                            <h5>Voluntarios asignados a actividades</h5>
                                                                         </div>
                                                                         <div class="row mt-3">
                                                                             {{ activity_data.graphics.num_per_ext | safe }}
@@ -83,7 +83,7 @@
                                                         <div class="card">
                                                             <div class="card-body">
                                                                 <div class="row justify-content-center">
-                                                                    <div class="col">
+                                                                    <div class="col text-center">
                                                                         <h5>Relación de voluntarios</h5>
                                                                         {{ activity_data.graphics.act_per_ext | safe }}
                                                                     </div>
@@ -94,11 +94,31 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="col">
+                                                        {% if  activity_data.graphics.act_per_delegation.graph %}
+                                                            <div class="col">
+                                                                <div class="card text-center">
+                                                                    <div class="card-body">
+                                                                        <div class="row justify-content-center">
+                                                                            <div class="col">
+
+                                                                                <h5>Actividad por delegación</h5>
+                                                                                <h6>Hay {{activity_data.graphics.act_per_delegation.num_activities}} actividades que están asociadas a delegaciones</h6>
+                                                                                {{ activity_data.graphics.act_per_delegation.graph | safe }}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>  
+                                                                </div> 
+                                                            </div>
+                                                        {% endif %}
+                                                    </div> 
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col">
                                                         <div class="card">
                                                             <div class="card-body">
                                                                 <div class="row justify-content-center">
-                                                                    <div class="col">
-                                                                        <h5>Relación de voluntarios</h5>
+                                                                    <div class="col text-center">
+                                                                        <h5>Relación de voluntarios asignados a actividad</h5>
                                                                         {{ activity_data.graphics.num_voluntarios | safe }}
                                                                     </div>
                                                                 </div>
