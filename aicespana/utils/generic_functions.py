@@ -642,6 +642,64 @@ def graphics_per_project(region):
     return graphics
 
 
+def graphics_p_ext_delegation():
+    graph = {}
+    graph["num_p_ext"] = aicespana.models.PersonalExterno.objects.filter(
+        personalActivo=True
+    ).count()
+    p_ext_delegations = list(
+        aicespana.models.PersonalExterno.objects.filter(personalActivo=True)
+        .exclude(grupoAsociado=None)
+        .values(
+            delegacion=F(
+                "grupoAsociado__diocesisDependiente__delegacionDependiente__nombreDelegacion"
+            )
+        )
+        .annotate(p_ext=Count("nombre"))
+    )
+    data = aicespana.utils.graphics.conversion_data(
+        p_ext_delegations, "delegacion", "p_ext", "list"
+    )
+
+    title = ""
+    options = {"title": title}
+
+    graph["graph"] = aicespana.utils.graphics.pie_graphic(
+        data["label"], data["value"], options
+    )
+    return graph
+
+
+def graphics_groups_per_delegation():
+    graph = {}
+    graph["num_grupos"] = aicespana.models.Grupo.objects.all().count()
+    groups_delegations = list(
+        aicespana.models.Grupo.objects.all()
+        .exclude(diocesisDependiente=None)
+        .values(
+            delegacion=F("diocesisDependiente__delegacionDependiente__nombreDelegacion")
+        )
+        .annotate(grupos=Count("nombreGrupo"))
+    )
+    data = aicespana.utils.graphics.conversion_data(
+        groups_delegations, "delegacion", "grupos", "list"
+    )
+    title = ""
+    options = {"title": title}
+
+    graph["graph"] = aicespana.utils.graphics.pie_graphic(
+        data["label"], data["value"], options
+    )
+    return graph
+
+
+def graphics_per_delegation():
+    graphics = {}
+    graphics["voluntarios"] = graphics_p_ext_delegation()
+    graphics["grupos"] = graphics_groups_per_delegation()
+    return graphics
+
+
 def delegation_name_list():
     """
     Description:

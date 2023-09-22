@@ -1881,6 +1881,8 @@ def listado_delegaciones(request):
                     delegacion_obj.get_delegacion_name(),
                 ]
             )
+        graphics = aicespana.utils.generic_functions.graphics_per_delegation()
+    """
     if request.method == "POST" and request.POST["action"] == "informacionDelegacion":
         delegacion_data = aicespana.utils.generic_functions.get_delegation_data(
             request.POST["delegacion"]
@@ -1890,9 +1892,11 @@ def listado_delegaciones(request):
             "aicespana/listadoDelegaciones.html",
             {"delegacion_data": delegacion_data},
         )
-
+    """
     return render(
-        request, "aicespana/listadoDelegaciones.html", {"delegaciones": delegaciones}
+        request,
+        "aicespana/listadoDelegaciones.html",
+        {"delegaciones": delegaciones, "graphics": graphics},
     )
 
 
