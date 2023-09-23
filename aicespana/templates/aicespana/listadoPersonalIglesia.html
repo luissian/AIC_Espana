@@ -22,12 +22,16 @@
 							<tbody>
 								{% for delegacion, diocesis_data in listado_personal.items %}
 									{% for diocesis, nombres in diocesis_data.items %}
-										{% for id, nombre, cargo, grupo in nombres %}
+										{% for id, nombre, cargos, grupo in nombres %}
 										<tr>
 											<td>{{delegacion}}</td>
 											<td>{{diocesis}}</td>
 											<td>{{nombre}}</td>
-											<td>{{cargo}}</td>
+											<td>
+                                                {% for cargo in cargos %}
+                                                    {{cargo}}
+                                                {% endfor %}
+                                            </td>
 											<td>{{grupo}}</td>
 										</tr>
 										{% endfor %}
