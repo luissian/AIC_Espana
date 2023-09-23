@@ -1870,6 +1870,7 @@ def listado_boletin(request):
 @login_required
 def listado_delegaciones(request):
     delegaciones = []
+    voluntarios_list = False
     if aicespana.models.Delegacion.objects.all().exists():
         delegacion_objs = aicespana.models.Delegacion.objects.all().order_by(
             "nombreDelegacion"
@@ -1882,21 +1883,20 @@ def listado_delegaciones(request):
                 ]
             )
         graphics = aicespana.utils.generic_functions.graphics_per_delegation()
-    """
-    if request.method == "POST" and request.POST["action"] == "informacionDelegacion":
-        delegacion_data = aicespana.utils.generic_functions.get_delegation_data(
-            request.POST["delegacion"]
+    if request.user.username == "admin":
+        voluntarios_list = (
+            aicespana.utils.generic_functions.get_voluntarios_list_for_admin()
         )
-        return render(
-            request,
-            "aicespana/listadoDelegaciones.html",
-            {"delegacion_data": delegacion_data},
-        )
-    """
+        pass
+
     return render(
         request,
         "aicespana/listadoDelegaciones.html",
-        {"delegaciones": delegaciones, "graphics": graphics},
+        {
+            "delegaciones": delegaciones,
+            "graphics": graphics,
+            "voluntarios_list": voluntarios_list,
+        },
     )
 
 

@@ -27,6 +27,7 @@ def allow_see_group_information_voluntary(request, group_obj):
         if administracion_groups not in request.user.groups.all():
             todas_delegaciones = Group.objects.get(name="todasDelegaciones")
             if todas_delegaciones not in request.user.groups.all():
+                """
                 nombre_usuario = request.user.first_name
                 apellido_usuario = request.user.last_name
                 if not aicespana.models.PersonalExterno.objects.filter(
@@ -49,6 +50,14 @@ def allow_see_group_information_voluntary(request, group_obj):
                 ):
                     return False
                 return True
+                """
+                # check if request user is the same as delegation
+                if (
+                    delegacion_name_from_loged_user(request.user.username)
+                    == group_obj.get_delegacion_name()
+                ):
+                    return True
+                return False
     except Exception:
         return False
     return True
@@ -1152,6 +1161,20 @@ def get_actividad_data_to_modify(actividad_id):
     for index in range(len(extract_list)):
         actividad_data[extract_list[index]] = data[index]
     return actividad_data
+
+
+def get_voluntarios_list_for_admin():
+
+    return list(
+        aicespana.models.PersonalExterno.objects.all().values_list(
+            "nombre",
+            "apellido",
+            "personalActivo",
+            "grupoAsociado__nombreGrupo",
+            "grupoAsociado__diocesisDependiente__nombreDiocesis",
+            "grupoAsociado__diocesisDependiente__delegacionDependiente__nombreDelegacion",
+        )
+    )
 
 
 def fetch_parroquia_data_to_modify(data_form):
