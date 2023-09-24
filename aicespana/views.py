@@ -1035,7 +1035,7 @@ def modificacion_proyecto(request):
     proyecto_data = {}
     proyecto_data[
         "p_list"
-    ] = aicespana.utils.generic_functions.get_projects_information("manager", "")
+    ] = aicespana.utils.generic_functions.get_projects_information("manager", "", True)
     return render(
         request, "aicespana/modificacionProyecto.html", {"proyecto_data": proyecto_data}
     )

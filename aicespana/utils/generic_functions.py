@@ -1490,9 +1490,16 @@ def get_grupo_data_to_modify(grupo_id):
     return grupo_data
 
 
-def get_projects_information(user_type, region=None):
+def get_projects_information(user_type, region=None, only_list=None):
     data = []
     if user_type == "manager":
+        if only_list is not None:
+            return list(
+                aicespana.models.Proyecto.objects.all().values_list(
+                    "nombreProyecto", "pk"
+                )
+            )
+
         project_objs = aicespana.models.Proyecto.objects.all().exclude(
             proyectoActivo=False
         )  # .values_list("nombreProyecto", flat=True).distinct()
