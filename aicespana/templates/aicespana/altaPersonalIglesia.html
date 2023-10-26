@@ -109,13 +109,13 @@
                                 </div>
 		                        <div class="col">
 		                            <div class="form-floating">
-                                        <select id="provincia" class="form-select" name='provincia'>
+                                        <select id="provincia" required class="form-select" name='provincia'>
                                             <option selected value=''>Selecionar</option>
                                             {% for prov in personel_data.provincias %}
                                                 <option value = {{forloop.counter0}}>{{prov}}</option>
                                             {% endfor %}
                                         </select>
-                                        <label for="provincia">Provincia</label>
+                                        <label class="text-danger" for="provincia">Provincia</label>
 		                            </div>
                                 </div>
 		                        <div class="col-md-3">
