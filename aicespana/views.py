@@ -1,6 +1,6 @@
 # import statistics
 import os
-
+import re
 # from django.contrib.auth.models import User
 from django.shortcuts import render
 
@@ -395,6 +395,13 @@ def alta_voluntario(request):
             "aicespana/errorPage.html",
             {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
+    new_volunteer_data = {
+        "types": aicespana.utils.generic_functions.get_volunteer_types(),
+        "provincias": aicespana.utils.generic_functions.get_provincias(),
+    }
+    new_volunteer_data[
+        "grupos_diocesis_id_name"
+    ] = aicespana.utils.generic_functions.get_group_list_to_select_in_form()
     if request.method == "POST" and request.POST["action"] == "altaVoluntario":
         confirmation_data = ""
         info_to_fetch = [
@@ -413,6 +420,9 @@ def alta_voluntario(request):
             "tipoColaboracion",
             "grupoID",
             "rec_boletin",
+            "domiciliacion",
+            "cuenta",
+            "cantidad",
         ]
         personal_data = {}
         for field in info_to_fetch:
@@ -432,9 +442,30 @@ def alta_voluntario(request):
                 {
                     "ERROR": [
                         aicespana.message_text.ERROR_VOLUNTARIO_ALREADY_IN_DATABASE
-                    ]
+                    ],
+                    "new_volunteer_data": new_volunteer_data
                 },
             )
+        
+        # check valid bank count
+        if personal_data ["cuenta"] != "":
+            cuenta = personal_data["cuenta"].replace(" ","").replace("-","")
+            # check if bank count include IBAN format
+            count_match = re.search(r"\w{2}\d{22}", cuenta)
+            if not count_match:
+                # Check that count has 20 numbers
+                count_match = re.search(r"\d{20}", cuenta)
+                if not count_match:
+                    return render(
+                        request,
+                        "aicespana/altaVoluntario.html",
+                        {
+                            "ERROR": [
+                                aicespana.message_text.ERROR_NUMERO_DE_CUENTA_INVALIDO
+                            ],
+                            "new_volunteer_data": new_volunteer_data
+                        },
+                    )
         aicespana.models.PersonalExterno.objects.create_new_external_personel(
             personal_data
         )
@@ -447,13 +478,7 @@ def alta_voluntario(request):
             "aicespana/altaVoluntario.html",
             {"confirmation_data": confirmation_data},
         )
-    new_volunteer_data = {
-        "types": aicespana.utils.generic_functions.get_volunteer_types(),
-        "provincias": aicespana.utils.generic_functions.get_provincias(),
-    }
-    new_volunteer_data[
-        "grupos_diocesis_id_name"
-    ] = aicespana.utils.generic_functions.get_group_list_to_select_in_form()
+    
     # new_volunteer_data['grupos_diocesis_id_name'] = get_id_grupo_diocesis_name()
     return render(
         request,
@@ -1110,28 +1135,7 @@ def modificacion_voluntario_id(request, voluntario_id):
             {"content": aicespana.message_text.ERROR_VOLUNTARIO_DOES_NOT_EXIST},
         )
     user_obj = aicespana.utils.generic_functions.get_user_obj_from_id(voluntario_id)
-    voluntary_data = user_obj.get_all_data_from_voluntario()
-    voluntary_data[
-        "provincia_index"
-    ] = aicespana.utils.generic_functions.get_provincia_index_from_name(
-        voluntary_data["provincia"]
-    )
-    voluntary_data["provincias"] = aicespana.utils.generic_functions.get_provincias()
-    voluntary_data[
-        "grupo_lista"
-    ] = aicespana.utils.generic_functions.get_group_list_to_select_in_form()
-    voluntary_data[
-        "tipo_colaboracion"
-    ] = aicespana.utils.generic_functions.get_volunteer_types()
-    voluntary_data[
-        "proyecto_lista"
-    ] = aicespana.utils.generic_functions.get_project_list()
-    voluntary_data["proyecto_data_form"] = user_obj.get_proyecto_data_for_form()
-    voluntary_data[
-        "actividad_lista"
-    ] = aicespana.utils.generic_functions.get_activity_list()
-    voluntary_data["actividad_data_form"] = user_obj.get_actividad_data_for_form()
-
+    voluntary_data = aicespana.utils.generic_functions.get_personal_data_to_modify(user_obj)
     return render(
         request,
         "aicespana/modificacionVoluntario.html",
@@ -1226,34 +1230,8 @@ def modificacion_voluntario(request):
                 "aicespana/modificacionVoluntario.html",
                 {"personal_list": personal_list},
             )
-        voluntary_data = personal_objs[0].get_all_data_from_voluntario()
-        voluntary_data[
-            "provincia_index"
-        ] = aicespana.utils.generic_functions.get_provincia_index_from_name(
-            voluntary_data["provincia"]
-        )
-        voluntary_data[
-            "provincias"
-        ] = aicespana.utils.generic_functions.get_provincias()
-        voluntary_data[
-            "grupo_lista"
-        ] = aicespana.utils.generic_functions.get_group_list_to_select_in_form()
-        voluntary_data[
-            "tipo_colaboracion"
-        ] = aicespana.utils.generic_functions.get_volunteer_types()
-        voluntary_data[
-            "proyecto_lista"
-        ] = aicespana.utils.generic_functions.get_project_list()
-        voluntary_data["proyecto_data_form"] = personal_objs[
-            0
-        ].get_proyecto_data_for_form()
-        voluntary_data[
-            "actividad_lista"
-        ] = aicespana.utils.generic_functions.get_activity_list()
-        voluntary_data["actividad_data_form"] = personal_objs[
-            0
-        ].get_actividad_data_for_form()
 
+        voluntary_data = aicespana.utils.generic_functions.get_personal_data_to_modify(personal_objs[0])
         return render(
             request,
             "aicespana/modificacionVoluntario.html",
@@ -1283,8 +1261,10 @@ def modificacion_voluntario(request):
             "rec_boletin",
             "actividadID",
             "proyectoID",
+            "domiciliacion",
+            "cuenta",
+            "cantidad"
         ]
-
         for item in field_list:
             data[item] = request.POST[item]
         # update switch values
@@ -1304,6 +1284,25 @@ def modificacion_voluntario(request):
         ] = aicespana.utils.generic_functions.get_provincia_name_from_index(
             data["provincia"]
         )
+        if data ["cuenta"] != "":
+            cuenta = data["cuenta"].replace(" ","").replace("-","")
+            # check if bank count include IBAN format
+            count_match = re.search(r"\w{2}\d{22}", cuenta)
+            if not count_match:
+                # Check that count has 20 numbers
+                count_match = re.search(r"\d{20}", cuenta)
+                if not count_match:
+                    voluntary_data = aicespana.utils.generic_functions.get_personal_data_to_modify(user_obj)
+                    return render(
+                        request,
+                        "aicespana/modificacionVoluntario.html",
+                        {
+                            "ERROR": [
+                                aicespana.message_text.ERROR_NUMERO_DE_CUENTA_INVALIDO
+                            ],
+                            "voluntary_data": voluntary_data
+                        },
+                    )
         user_obj.update_all_data_for_voluntary(data)
 
         return render(
@@ -1966,6 +1965,18 @@ def listado_diocesis(request, diocesis_id):
         request, "aicespana/listadoDiocesis.html", {"diocesis_data": diocesis_data}
     )
 
+@login_required
+def listado_domiciliaciones(request):
+    if not aicespana.utils.generic_functions.is_manager(request):
+        return render(
+            request,
+            "aicespana/errorPage.html",
+            {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
+        )
+    domiciliacion_data = aicespana.utils.generic_functions.get_voluntarios_with_bank_account()
+    return render(
+        request, "aicespana/listadoDomiciliaciones.html", {"domiciliacion_data": domiciliacion_data}
+    )
 
 def listado_grupo(request, grupo_id):
     if not aicespana.models.Grupo.objects.filter(pk__exact=grupo_id).exists():

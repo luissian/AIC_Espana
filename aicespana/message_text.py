@@ -18,6 +18,8 @@ ERROR_NOT_FIND_PERSONAL_NIF = "No hay ningún personal de Iglesia que tenga el N
 ERROR_NOT_FIND_PERSONAl_CRITERIA = "No hay nigún Personal de la Iglesia que cumpla los criterios de busqueda"
 ERROR_NOT_FIND_VOLUNTARIO_NIF = "No hay ningún voluntario que tenga el NIF/NIE"
 
+ERROR_NUMERO_DE_CUENTA_INVALIDO = "El formato del número de cuenta no es correcto"
+
 ERROR_PROYECTO_EXIST = "No se puede crear el Proyecto porque ya existe"
 ERROR_PROYECTO_NOT_EXIST = "El Proyecto no existe"
 ERROR_PROYECTO_MODIFICATION_EXIST = "El Proyecto no se puede modificar porque ya existe uno con el mismo nombre"

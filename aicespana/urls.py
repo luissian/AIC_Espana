@@ -78,6 +78,11 @@ urlpatterns = [
         views.listado_diocesis,
         name="listado_diocesis",
     ),
+    path(
+        "listadoDomiciliaciones",
+        views.listado_domiciliaciones,
+        name="listado_domiciliaciones",
+    ),
     path("listadoGrupo=<int:grupo_id>", views.listado_grupo, name="listado_grupo"),
     path(
         "listadoPersonalExterno",

@@ -1549,6 +1549,32 @@ def get_projects_information(user_type, region=None, only_list=None):
     return data
 
 
+def get_personal_data_to_modify(user_obj):
+
+    voluntary_data = user_obj.get_all_data_from_voluntario()
+    voluntary_data["datos_cuenta"] = user_obj.get_personal_data_bank()
+    voluntary_data[
+        "provincia_index"
+    ] = get_provincia_index_from_name(
+        voluntary_data["provincia"]
+    )
+    voluntary_data["provincias"] = get_provincias()
+    voluntary_data[
+        "grupo_lista"
+    ] = get_group_list_to_select_in_form()
+    voluntary_data[
+        "tipo_colaboracion"
+    ] = get_volunteer_types()
+    voluntary_data[
+        "proyecto_lista"
+    ] = get_project_list()
+    voluntary_data["proyecto_data_form"] = user_obj.get_proyecto_data_for_form()
+    voluntary_data[
+        "actividad_lista"
+    ] = get_activity_list()
+    voluntary_data["actividad_data_form"] = user_obj.get_actividad_data_for_form()
+    return voluntary_data
+
 def fetch_actividad_data_to_modify(data_form, file_form):
     """
     Description:
@@ -2277,59 +2303,6 @@ def get_personal_externo_por_delegacion(delegacion_id):
     return personal_externo, os.path.join(settings.MEDIA_URL, f_name)
 
 
-"""
-def presidentas_diocesis():
-  
-    presidentas_dioc_data = []
-    if aicespana.models.PersonalExterno.objects.filter(
-        cargo__nombreCargo="Presidenta Diocesana", personalActivo=True
-    ).exists():
-        presidenta_objs = aicespana.models.PersonalExterno.objects.filter(
-            cargo__nombreCargo="Presidenta Diocesana", personalActivo=True
-        )
-        for presidenta_obj in presidenta_objs:
-            data = []
-            data.append(presidenta_obj.get_diocesis_belongs_to())
-            data.append(presidenta_obj.get_personal_id())
-            data.append(presidenta_obj.get_personal_name())
-            data.append(presidenta_obj.get_movil_number())
-            data.append(presidenta_obj.get_email())
-            presidentas_dioc_data.append(data)
-    return presidentas_dioc_data
-"""
-
-"""
-def presidentes_grupo(delegation_id):
-    
-    Description:
-        The function get the presidentes for each group for te given delegation
-    Return:
-        presidentes_data
-    
-    presidentes_data = []
-    if aicespana.models.PersonalExterno.objects.filter(
-        cargo__nombreCargo="Presidenta de Grupo",
-        grupoAsociado__diocesisDependiente__delegacionDependiente__pk__exact=delegation_id,
-    ).exists():
-        personal_objs = aicespana.models.PersonalExterno.objects.filter(
-            cargo__nombreCargo="Presidenta de Grupo",
-            grupoAsociado__diocesisDependiente__delegacionDependiente__pk__exact=delegation_id,
-        ).order_by("grupoAsociado__nombreGrupo")
-        for personal_obj in personal_objs:
-            presidentes_data.append(
-                [
-                    personal_obj.get_personal_name(),
-                    personal_obj.get_movil_number(),
-                    personal_obj.get_group_belongs_to(),
-                    personal_obj.get_diocesis_belongs_to(),
-                    personal_obj.get_delegacion_belongs_to(),
-                ]
-            )
-
-    return presidentes_data
-"""
-
-
 def bajas_personal_externo_excel():
     """
     Description:
@@ -2441,6 +2414,12 @@ def bajas_diocesis_list():
             )
     return bajas_diocesis
 
+
+def get_voluntarios_with_bank_account():
+    """
+    Gets the voluntarios list whom have bank data.
+    """
+    return list(aicespana.models.PersonalExterno.objects.filter(domiciliacion=True).exclude(cuentaBanco=None).values_list("nombre", "apellido", "cuentaBanco", "cantidad"))
 
 def get_excel_user_request_boletin():
     """

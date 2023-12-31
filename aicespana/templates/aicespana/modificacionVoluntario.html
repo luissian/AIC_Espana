@@ -196,6 +196,37 @@
                                         {% endif %}
                                     </div>
                                 </div>
+
+
+                                <div class="row g-1 mt-3">
+                                    <div class="col-md-3">
+                                        <div class="form-floating">
+                                            <select id="domiciliacion" class="form-select" name='domiciliacion'>
+                                                {% if voluntary_data.datos_cuenta.0  %}
+                                                    <option selected value="1">Si</option>
+                                                    <option value="0">No</option>                    
+                                                {% else %}
+                                                    <option selected value="0">No</option>
+                                                    <option value="1">Si</option>
+                                                {% endif %}
+                                            </select>
+                                            <label class="text" for="domiciliacion">Couta Domiciliada</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="cuenta" name='cuenta' value="{{voluntary_data.datos_cuenta.1}}" maxlength=30 placeholder="Número de Cuenta (20 dígitos)">
+                                            <label for="cuenta">Número de Cuenta</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-floating">
+                                            <input type="number" class="form-control" id="cantidad" name='cantidad' value={{voluntary_data.datos_cuenta.2}} placeholder="Cantidad/Euros">
+                                            <label for="cantidad">Cantidad €</label>
+                                        </div>
+                                    </div>
+                                </div>
+
 							</div>
                             <div class="row mt-4 justify-content-center">
                                 <div class="col-md-10">

@@ -1,0 +1,71 @@
+{% extends 'aicespana/base.html' %}
+{% load static %}
+{% block content %}
+{% include "aicespana/cdn_table_functionality.html" %}
+{% if domiciliacion_data %}
+	<div class="container-md">
+		<div class="row mt-3 justify-content-center">
+			<div class="col">
+				<div class="card">
+					<div class="card-header text-center"><h2>Listado de Voluntarios que tienen domiciliacion</h2=> </div>
+                        <div class="card-body">
+                            <div class="row mt-3 justify-content-center">
+                                <div class="col">
+                                    <div class="row justify-content-center">
+                                        <div class="col">
+                                            <table id="domiciliacion_tabla" class="table table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Nombre del voluntario</th>
+                                                        <th>Número de cuenta</th>
+                                                        <th>Cantidad</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for nombre, apellido, cuenta, cantidad in domiciliacion_data %}
+                                                        <tr>
+                                                            <td>{{nombre}} {{apellido}}</td>
+                                                            <td>{{cuenta}}</td>
+                                                            <td>{{cantidad}}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div> 
+                                    </div>
+                                </div>  
+                            </div> 
+                        </div> 
+                    </div> 
+                </div> 
+            </div> 
+        </div> 
+    </div>
+{% else %}
+    <div class="container-md">
+        <div class="row mt-3 justify-content-center">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header text-center"><h2>Listado de Voluntarios que tienen domiciliacion</h2=> </div>
+                        <div class="card-body">
+                            <h3 class="text-center">No hay ningún voluntario que haya dado su número de cuenta</h3>
+                        </div> 
+                    </div> 
+                </div> 
+            </div> 
+        </div> 
+    </div>
+
+{% endif %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#domiciliacion_tabla').DataTable({
+            dom: "fltirpB",
+            responsive: true,
+            buttons: [
+                'excel'
+            ]
+        });
+    });
+</script>
+{% endblock %}

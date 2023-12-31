@@ -576,6 +576,11 @@ class PersonalExternoManager(models.Manager):
             data["nacimiento"] = None
         if data["alta"] == "":
             data["alta"] = None
+        if data["domiciliacion"] == 0:
+            domiciliacion = None
+        else:
+            domiciliacion = True
+
         new_ext_personel = self.create(
             nombre=data["nombre"],
             apellido=data["apellidos"],
@@ -593,6 +598,9 @@ class PersonalExternoManager(models.Manager):
             grupoAsociado=grupo_obj,
             recibirBoletin=boletin,
             boletinOnline=online,
+            domiciliacion = domiciliacion,
+            cuentaBanco = data["cuenta"],
+            cantidad = data["cantidad"]
         )
         return new_ext_personel
 
@@ -628,6 +636,9 @@ class PersonalExterno(models.Model):
     fechaBaja = models.DateField(auto_now=False, null=True, blank=True)
     personalActivo = models.BooleanField(default=True)
     observaciones = models.CharField(max_length=1000, null=True, blank=True)
+    domiciliacion = models.BooleanField(default=False)
+    cuentaBanco = models.CharField(max_length=30, null=True, blank=True)
+    cantidad = models.FloatField(null=True, blank=True)
 
     def __str__(self):
         return "%s %s" % (self.nombre, self.apellido)
@@ -643,6 +654,17 @@ class PersonalExterno(models.Model):
 
     def get_personal_only_apellido(self):
         return "%s" % (self.apellido)
+
+    def get_personal_data_bank(self):
+        if self.cuentaBanco is None:
+            cuenta_banco = ""
+        else:
+            cuenta_banco = self.cuentaBanco
+        return [
+            self.domiciliacion,
+            cuenta_banco,
+            self.cantidad
+        ]
 
     def get_personal_location(self):
         return "%s" % (self.poblacion)
@@ -1071,6 +1093,14 @@ class PersonalExterno(models.Model):
                 ).last()
             else:
                 actividad_obj = None
+        if data["domiciliacion"] == "0":
+            domiciliacion = False
+        else:
+            domiciliacion = True
+        if data["cantidad"] == "":
+            cantidad = None
+        else:
+            cantidad = data["cantidad"]
         self.nombre = data["nombre"]
         self.apellido = data["apellidos"]
         self.calle = data["calle"]
@@ -1091,6 +1121,9 @@ class PersonalExterno(models.Model):
         self.proyectoAsociado = proyecto_obj
         self.actividadAsociada = actividad_obj
         self.personalActivo = activo
+        self.domiciliacion = domiciliacion
+        self.cuentaBanco = data["cuenta"]
+        self.cantidad = cantidad
         self.save()
         return self
 
