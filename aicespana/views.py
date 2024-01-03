@@ -1297,7 +1297,7 @@ def modificacion_voluntario(request):
                         request,
                         "aicespana/modificacionVoluntario.html",
                         {
-                            "ERROR": [
+                            "ERROR_1": [
                                 aicespana.message_text.ERROR_NUMERO_DE_CUENTA_INVALIDO
                             ],
                             "voluntary_data": voluntary_data

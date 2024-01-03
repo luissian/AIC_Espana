@@ -8,10 +8,27 @@
 		<div class="row g-3">
 			<div class="col-md-10">
 				<div class="card  border-danger">
-					<div class="card-header"><h2 style="text-align:center">El voluntario no se encuentra en la base de datos</h2> </div>
+					<div class="card-header"><h2 style="text-align:center">El voluntario no se encuentra en la base de datos </h2> </div>
 					<div class="card-body">
 						{% for values in ERROR %}
-							<h4>{{values}}</h4>
+							<h4 class="text-danger">{{values}}</h4>
+						{% endfor %}
+					</div> 
+				</div> 
+		    </div> 
+		</div> 
+	</div> 
+{% endif %}
+{% if ERROR_1 %}
+
+	<div class="container-md">
+		<div class="row g-3">
+			<div class="col-md-10">
+				<div class="card  border-danger">
+					<div class="card-header"><h2 style="text-align:center">No se ha podido guardar los datos debido a: </h2> </div>
+					<div class="card-body">
+						{% for values in ERROR_1 %}
+							<h5 class="fst-italic text-danger">{{values}}</h5>
 						{% endfor %}
 					</div> 
 				</div> 
@@ -19,8 +36,9 @@
 		</div> 
 	</div> 
 
-{% endif %}
+    
 
+{% endif %}
 {% if confirmation_data %}
 	<div class="container-md">
 		<div class="row g-3 justify-content-center">
