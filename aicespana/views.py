@@ -248,6 +248,7 @@ def alta_grupo(request):
             "provincia",
             "codigo",
             "observaciones",
+            "cuenta",
         ]
         for item in list_of_data:
             data[item] = request.POST[item]
@@ -256,6 +257,17 @@ def alta_grupo(request):
         ] = aicespana.utils.generic_functions.get_provincia_name_from_index(
             data["provincia"]
         )
+        if data["cuenta"] != "":
+            cuenta =  aicespana.utils.generic_functions.check_valid_bank_count(data["cuenta"])
+            if cuenta is False:
+                return render(
+                request,
+                "aicespana/altaGrupo.html",
+                {
+                    "grupo_data": grupo_data,
+                    "ERROR": [aicespana.message_text.ERROR_NUMERO_DE_CUENTA_INVALIDO],
+                },
+            )
         aicespana.models.Grupo.objects.create_new_group(data)
         return render(
             request,
@@ -449,10 +461,13 @@ def alta_voluntario(request):
         
         # check valid bank count
         if personal_data ["cuenta"] != "":
+            cuenta =  aicespana.utils.generic_functions.check_valid_bank_count(personal_data["cuenta"])
+            """
             cuenta = personal_data["cuenta"].replace(" ","").replace("-","")
             # check if bank count include IBAN format
             count_match = re.search(r"\w{2}\d{22}", cuenta)
-            if not count_match:
+            """
+            if cuenta is False:
                 # Check that count has 20 numbers
                 count_match = re.search(r"\d{20}", cuenta)
                 if not count_match:
@@ -785,12 +800,20 @@ def modificar_grupo(request, grupo_id):
                     "grupo_data": grupo_data,
                 },
             )
+        g_data = aicespana.utils.generic_functions.fetch_grupo_data_to_modify(request.POST)
+        if "ERROR" in g_data:
+            return render(
+                request,
+                "aicespana/modificarGrupo.html",
+                {
+                    "ERROR": g_data["ERROR"],
+                    "grupo_data": grupo_data,
+                },
+            )
         grupo_obj = aicespana.utils.generic_functions.get_grupo_obj_from_id(
             request.POST["grupoID"]
         )
-        grupo_obj.update_grupo_data(
-            aicespana.utils.generic_functions.fetch_grupo_data_to_modify(request.POST)
-        )
+        grupo_obj.update_grupo_data(g_data)
         return render(
             request,
             "aicespana/modificarGrupo.html",
@@ -1284,25 +1307,24 @@ def modificacion_voluntario(request):
         ] = aicespana.utils.generic_functions.get_provincia_name_from_index(
             data["provincia"]
         )
+        if data["domiciliacion"] == "1" and data["cuenta"] == "":
+            data["domiciliacion"] = "0"
         if data ["cuenta"] != "":
-            cuenta = data["cuenta"].replace(" ","").replace("-","")
-            # check if bank count include IBAN format
-            count_match = re.search(r"\w{2}\d{22}", cuenta)
-            if not count_match:
-                # Check that count has 20 numbers
-                count_match = re.search(r"\d{20}", cuenta)
-                if not count_match:
-                    voluntary_data = aicespana.utils.generic_functions.get_personal_data_to_modify(user_obj)
-                    return render(
-                        request,
-                        "aicespana/modificacionVoluntario.html",
-                        {
-                            "ERROR_1": [
-                                aicespana.message_text.ERROR_NUMERO_DE_CUENTA_INVALIDO
-                            ],
-                            "voluntary_data": voluntary_data
-                        },
-                    )
+            cuenta =  aicespana.utils.generic_functions.check_valid_bank_count(data["cuenta"])
+            if cuenta is False:
+                voluntary_data = aicespana.utils.generic_functions.get_personal_data_to_modify(user_obj)
+                return render(
+                    request,
+                    "aicespana/modificacionVoluntario.html",
+                    {
+                        "ERROR_1": [
+                            aicespana.message_text.ERROR_NUMERO_DE_CUENTA_INVALIDO
+                        ],
+                        "voluntary_data": voluntary_data
+                    },
+                )
+            # set that voluntario is domiciliada
+            data["domiciliacion"] == "1"
         user_obj.update_all_data_for_voluntary(data)
 
         return render(
@@ -1974,8 +1996,11 @@ def listado_domiciliaciones(request):
             {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
         )
     domiciliacion_data = aicespana.utils.generic_functions.get_voluntarios_with_bank_account()
+    domiciliacion_detailed_data = aicespana.utils.generic_functions.get_voluntarios_with_bank_account(long_list=True)
+    f_name = aicespana.utils.generic_functions.store_excel_file(domiciliacion_detailed_data, aicespana.message_text.HEADING_DETAILED_DOMICILIACION, "listado_domiciliaciones.xlsx")
+    excel_file = os.path.join(settings.MEDIA_URL, f_name)
     return render(
-        request, "aicespana/listadoDomiciliaciones.html", {"domiciliacion_data": domiciliacion_data}
+        request, "aicespana/listadoDomiciliaciones.html", {"domiciliacion_data": domiciliacion_data, "excel_file": excel_file}
     )
 
 def listado_grupo(request, grupo_id):

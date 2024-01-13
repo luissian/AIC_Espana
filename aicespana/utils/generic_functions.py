@@ -5,9 +5,11 @@ from django.db.models import Avg, F, Count, Func, Value, CharField
 import collections
 import os
 import xlsxwriter
+import re
 
 import aicespana.models
 import aicespana.utils.graphics
+import aicespana.message_text
 
 
 def allow_see_group_information_voluntary(request, group_obj):
@@ -1330,9 +1332,14 @@ def fetch_grupo_data_to_modify(data_form):
         "alta",
         "baja",
         "observaciones",
+        "cuenta",
     ]
     for item in extract_list:
         data[item] = data_form[item]
+    if data["cuenta"] != "":
+        cuenta =  check_valid_bank_count(data["cuenta"])
+        if cuenta is False:
+            return {"ERROR": aicespana.message_text.ERROR_NUMERO_DE_CUENTA_INVALIDO}
     data["provincia"] = get_provincia_name_from_index(data["provincia"])
     if "activo" in data_form:
         data["activo"] = "true"
@@ -1483,6 +1490,7 @@ def get_grupo_data_to_modify(grupo_id):
         "alta",
         "baja",
         "activo",
+        "cuenta",
     ]
     for index in range(len(extract_list)):
         grupo_data[extract_list[index]] = data[index]
@@ -2310,8 +2318,6 @@ def bajas_personal_externo_excel():
     Return:
         bajas_externo
     """
-    import xlsxwriter
-
     f_name = "Listado_bajas_voluntarios.xlsx"
     heading = ["Nombre y Apellidos", "Grupo", "Población", "Provincia"]
     lista = [heading]
@@ -2342,8 +2348,6 @@ def bajas_personal_externo_excel():
 
 def store_excel_file(user_data, heading, f_name):
     """ """
-    import xlsxwriter
-
     user_data.insert(0, heading)
     excel_file = os.path.join(settings.MEDIA_ROOT, f_name)
     if os.path.isfile(excel_file):
@@ -2415,10 +2419,26 @@ def bajas_diocesis_list():
     return bajas_diocesis
 
 
-def get_voluntarios_with_bank_account():
+def check_valid_bank_count(cuenta):
+    # remove all spaces in count
+    cuenta = cuenta.replace(" ", "")
+    # check if bank count include IBAN format
+    count_match = re.search(r"\w{2}\d{22}", cuenta)
+    if not count_match:
+        # Check that count has 20 numbers
+        count_match = re.search(r"\d{20}", cuenta)
+    valid = True if count_match else False
+    return valid
+
+
+def get_voluntarios_with_bank_account(long_list=False):
     """
     Gets the voluntarios list whom have bank data.
     """
+    # import pdb; pdb.set_trace()
+    if long_list:
+        return list(aicespana.models.PersonalExterno.objects.filter(domiciliacion=True).exclude(cuentaBanco=None).values_list("nombre", "apellido", "cuentaBanco", "cantidad", "DNI", "email", "calle", "poblacion", "provincia", "codigoPostal"))
+    
     return list(aicespana.models.PersonalExterno.objects.filter(domiciliacion=True).exclude(cuentaBanco=None).values_list("nombre", "apellido", "cuentaBanco", "cantidad"))
 
 def get_excel_user_request_boletin():
@@ -2428,8 +2448,6 @@ def get_excel_user_request_boletin():
     Return:
         Return the path for collecting the boletin
     """
-    import xlsxwriter
-
     files = {}
     f_mail_name = "Listado_boletin_correo.xlsx"
     f_online_name = "Listado_boletin_online.xlsx"

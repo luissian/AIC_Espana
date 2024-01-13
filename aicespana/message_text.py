@@ -40,3 +40,6 @@ ERROR_PERSONAL_DOES_NOT_EXIST = "El Personal de iglesia no existe"
 ERROR_NO_PRESIDENTS_IN_DELEGATION = ["No se han asignado presidentes a esta delegación"]
 
 ERROR_USER_NOT_MANAGER = "Usuario no tiene acceso a esta informacion"
+
+HEADING_DETAILED_DOMICILIACION = ["Nombre", "Apellidos", "Número de cuenta", "cantidad", "DNI", "email", "Calle", "Poblacion", "Provincia", "Código Postal"]
+

@@ -221,6 +221,7 @@ class GrupoManager(models.Manager):
     def create_new_group(self, data):
         if data["fechaErecion"] == "":
             data["fechaErecion"] = None
+        cuenta = data["cuenta"] if data["cuenta"] != "" else None
         new_group = self.create(
             diocesisDependiente=data["diocesis_obj"],
             nombreGrupo=data["nombre"],
@@ -231,6 +232,7 @@ class GrupoManager(models.Manager):
             registroNumero=data["registro"],
             fechaErecion=data["fechaErecion"],
             provincia=data["provincia"],
+            cuentaBanco=cuenta
         )
 
         return new_group
@@ -254,6 +256,7 @@ class Grupo(models.Model):
     fechaBaja = models.DateField(auto_now=False, null=True, blank=True)
     grupoActivo = models.BooleanField(default=True)
     observaciones = models.CharField(max_length=1000, null=True, blank=True)
+    cuentaBanco = models.CharField(max_length=30, null=True, blank=True)
 
     def __str__(self):
         return (
@@ -301,6 +304,7 @@ class Grupo(models.Model):
             activo = "true"
         else:
             activo = "false"
+        cuenta = self.cuentaBanco if self.cuentaBanco is not None else ""
         return [
             self.nombreGrupo,
             self.pk,
@@ -314,6 +318,7 @@ class Grupo(models.Model):
             alta,
             baja,
             activo,
+            cuenta,
         ]
 
     def update_grupo_data(self, data):
@@ -333,6 +338,7 @@ class Grupo(models.Model):
         if data["baja"] != "":
             self.fechaBaja = datetime.strptime(data["baja"], "%Y-%m-%d").date()
         self.observaciones = data["observaciones"]
+        self.cuentaBanco = data["cuenta"]
         self.save()
         return self
 
@@ -576,10 +582,10 @@ class PersonalExternoManager(models.Manager):
             data["nacimiento"] = None
         if data["alta"] == "":
             data["alta"] = None
-        if data["domiciliacion"] == 0:
-            domiciliacion = None
-        else:
-            domiciliacion = True
+        domiciliacion = True if data["domiciliacion"] == "1" else False
+
+        cantidad = data["cantidad"] if data["cantidad"] != "" else None
+        import pdb; pdb.set_trace()
 
         new_ext_personel = self.create(
             nombre=data["nombre"],
@@ -600,7 +606,7 @@ class PersonalExternoManager(models.Manager):
             boletinOnline=online,
             domiciliacion = domiciliacion,
             cuentaBanco = data["cuenta"],
-            cantidad = data["cantidad"]
+            cantidad = cantidad
         )
         return new_ext_personel
 
@@ -615,7 +621,7 @@ class PersonalExterno(models.Model):
     actividadAsociada = models.ForeignKey(
         Actividad, on_delete=models.CASCADE, null=True, blank=True
     )
-    cargo = models.ManyToManyField(Cargo)
+    cargo = models.ManyToManyField(Cargo, blank=True)
     tipoColaboracion = models.ForeignKey(
         TipoColaboracion, on_delete=models.CASCADE, null=True, blank=True
     )
