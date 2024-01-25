@@ -585,7 +585,6 @@ class PersonalExternoManager(models.Manager):
         domiciliacion = True if data["domiciliacion"] == "1" else False
 
         cantidad = data["cantidad"] if data["cantidad"] != "" else None
-        import pdb; pdb.set_trace()
 
         new_ext_personel = self.create(
             nombre=data["nombre"],
