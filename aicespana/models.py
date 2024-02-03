@@ -934,6 +934,10 @@ class PersonalExterno(models.Model):
                 rec_boletin = "Si"
         else:
             rec_boletin = "No"
+        if self.domiciliacion:
+            domiciliacion = "Si"
+        else:
+            domiciliacion = ""
         data = []
         data.append(self.nombre)
         data.append(self.apellido)
@@ -957,6 +961,7 @@ class PersonalExterno(models.Model):
         data.append(self.provincia)
         data.append(self.codigoPostal)
         data.append(rec_boletin)
+        data.append(domiciliacion)
 
         return data
 

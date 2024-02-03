@@ -1814,7 +1814,7 @@ def get_provincia_name_from_index(prov_index):
     try:
         int_index = int(prov_index)
         return provincias[int_index]
-    except KeyError:
+    except ValueError:
         return ""
 
 
@@ -2283,6 +2283,7 @@ def get_personal_externo_por_delegacion(delegacion_id):
         "Provincia",
         "Código Postal",
         "Recibir boletin",
+        "Domiciliación"
     ]
     lista = [heading]
     if aicespana.models.PersonalExterno.objects.filter(
