@@ -1,8 +1,12 @@
 # import statistics
 import os
 import re
+from django.http import JsonResponse
+from django.template.loader import render_to_string
+
 # from django.contrib.auth.models import User
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.http import JsonResponse, HttpResponse
 
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
@@ -2399,3 +2403,63 @@ def listado_bajas_diocesis(request):
         "aicespana/listadoBajasDiocesis.html",
         {"bajas_diocesis": bajas_diocesis},
     )
+
+@login_required
+def ingreso_voluntario (request):
+    # import datetime
+    if not aicespana.utils.generic_functions.is_manager(request):
+            return render(
+                request,
+                "aicespana/errorPage.html",
+                {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
+            )
+    import datetime
+    present_year = datetime.datetime.now().year
+    ingreso_voluntario = aicespana.models.IngresosPersonalExterno.objects.filter(fecha__year=present_year).values_list("p_externo__nombre", "p_externo__apellido", "ingreso", "fecha")
+    return render(
+        request,
+        "aicespana/ingresoVoluntario.html",
+        {"ingreso_voluntarios": ingreso_voluntario}
+    )
+
+
+def buscar_voluntario_para_ingreso(request):
+    if request.method == "GET":
+        query = request.GET.get('q', '')
+        if query:
+            voluntarios = aicespana.models.PersonalExterno.objects.filter(apellido__icontains=query)
+        else:
+            voluntarios = aicespana.models.PersonalExterno.objects.none()
+        # import pdb; pdb.set_trace()
+        if len(voluntarios) > 10:
+            return HttpResponse("Hay demasiados voluntarios que tienen es apellido")
+
+        voluntario_data = list(voluntarios.values_list("nombre", "apellido", "pk"))
+        if len(voluntarios) == 1:
+            # Si hay solo un usuario, renderizamos el formulario
+           
+            return render(request, 'aicespana/formulario_ingreso_voluntario.html', {"voluntario_data": voluntario_data})
+
+        return render(request, 'aicespana/voluntario_lista_ingreso.html', {"voluntario_data": voluntario_data})
+
+
+def formulario_ingreso_voluntario(request, id):
+    if request.method == "GET":
+        try:
+            voluntario_obj = aicespana.models.PersonalExterno.objects.get(pk__exact=id)
+        except:
+            return redirect("ingresoVoluntario")
+        voluntario_data = list(voluntario_obj.values_list("nombre", "apellido", "pk"))
+        return render (request,"formularioIngresoVoluntario.html", {"voluntario_data": voluntario_data})
+    if request.method == 'POST':
+        # Procesa el formulario para agregar el ingreso en euros y la fecha
+        input_data = {}
+        input_data["voluntario_id"] = request.POST.get('voluntario_id')
+        input_data["cantidad"] = request.POST.get('cantidad')
+        fecha = request.POST.get('fecha')
+        ingreso = aicespana.models.IngresosPersonalExterno.objects.create_ingreso(input_data)
+        # Aquí podrías guardar estos datos en un modelo relacionado o procesarlos como necesites
+        # Guardar o procesar el ingreso...
+        
+        return JsonResponse({'success': True, 'message': 'Ingreso registrado con éxito'})
+    return JsonResponse({'success': False, 'message': 'Datos incorrectos o faltantes'})

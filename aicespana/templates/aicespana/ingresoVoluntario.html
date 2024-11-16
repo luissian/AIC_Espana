@@ -1,0 +1,99 @@
+{% extends 'aicespana/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container-md">
+    <script src="https://unpkg.com/htmx.org@1.6.0"></script>
+    <div class="row mt-4">
+        <div class="container sm-12">
+            
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="pendiente-tab" data-bs-toggle="tab" data-bs-target="#pendiente" type="button" role="tab" aria-controls="pendiente" aria-selected="true">Pendientes año actual</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pagado-tab" data-bs-toggle="tab" data-bs-target="#pagado" type="button" role="tab" aria-controls="pagado" aria-selected="false">Voluntarios que han realizado ingreso</button>
+                  </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="pendiente" role="tabpanel" aria-labelledby="info-tab">
+                    <div class="container-md">
+                        <div class="row mt-5">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        {% comment %} <form method="GET" action="/buscarVoluntarioParaIngreso"> {% endcomment %}
+                                            <input type="text" name="q" id="search" 
+                                                hx-get="/buscarVoluntarioParaIngreso"
+                                                hx-target="#resultado-voluntario"
+                                                hx-trigger="keyup" 
+                                                placeholder="Buscar voluntario..."
+                                                onkeyup="checkInputLength(this)">
+                                        {% comment %} </form> {% endcomment %}
+                                        
+                                        <div id="resultado-voluntario">
+                                            {% for voluntario in voluntarios %}
+                                                <div class="voluntario" data-id="{{ voluntario.id }}">
+                                                    {{ nombre.nombre }}
+                                                </div>
+                                            {% empty %}
+                                                <p>No hay voluntarios para mostrar.</p>
+                                            {% endfor %}
+                                        </div>
+                                    </div> 
+                                </div> 
+                            </div> <!-- end col-md-8 -->
+                        </div> 
+                    </div> 
+                </div>  <!-- end tab formulario -->
+
+                <div class="tab-pane fade" id="pagado" role="tabpanel" aria-labelledby="pagado-tab">
+                    <div class="container-md">
+                        <div class="row mt-5">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                           <table id="pagado_table" class="table table-hover mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nombre del voluntario</th>
+                                                    <th>Fecha de ingreso</th>
+                                                    <th>Cantidad en €</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for nombre, apellido , fecha, cantidad  in ingreso_voluntarios.pagados %}
+                                                    <tr>
+                                                        <td>{{ nombre }} {{ appellido }}</td>
+                                                        <td>
+                                                            <input type="fecha">
+                                                        </td>
+                                                        <td>{{ cantidad}}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div> 
+                                </div> 
+                            </div> <!-- end col-md-8 -->
+                        </div> 
+                    </div> 
+                </div>  <!-- end tab listado -->
+            </div>
+        </div> 
+    </div>
+    <script>
+        function checkInputLength(input) {
+            const queryLength = input.value.length;
+            if (queryLength >= 4) {
+                // Solo si el texto tiene al menos 4 caracteres, hacemos la solicitud
+                input.setAttribute("hx-get", "/buscarVoluntarioParaIngreso");
+            } else {
+                // Si el texto tiene menos de 4 caracteres, deshabilitamos la solicitud
+                input.removeAttribute("hx-get");
+            }
+        }
+    </script>
+    
+
+
+{% endblock %}

@@ -1,0 +1,20 @@
+<div class="table-wrapper">
+    <table id="delegacion" class="table table-hover mb-0">
+        <thead>
+            <tr>
+                <th>Nombre del voluntario</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for nombre , apellido, id in voluntario_data %}
+                <tr>
+
+                    <td>
+                        <a href="/ingresoVoluntario/{{id}}">{{ nombre }} {{ apellido }}</a>
+                    </td>
+                </tr>
+                
+            {% endfor %}
+        </tbody>
+    </table>
+</div> <!--  end of table wrapper  -->

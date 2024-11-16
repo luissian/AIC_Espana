@@ -1140,6 +1140,19 @@ class PersonalExterno(models.Model):
     objects = PersonalExternoManager()
 
 
+class IngresosPersonalExternoManager(models.Manager):
+    def create_ingreso(self,data):
+        n_ingreso = self.create()
+        return n_ingreso
+
+class IngresosPersonalExterno(models.Model):
+    p_externo = models.ForeignKey(PersonalExterno, on_delete=models.CASCADE)
+    ingreso = models.IntegerField()
+    fecha = models.DateField(auto_now=False)
+
+    def __str__ (self):
+        return "%s" %(self.p_externo)
+
 class PersonalManager(models.Manager):
     def create_new_personel(self, data):
         if data["nacimiento"] == "":

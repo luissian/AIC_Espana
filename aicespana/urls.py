@@ -16,6 +16,7 @@ urlpatterns = [
     ),
     path("altaProyecto", views.alta_proyecto, name="alta_proyecto"),
     path("altaVoluntario", views.alta_voluntario, name="alta_voluntario"),
+    path("buscarVoluntarioParaIngreso", views.buscar_voluntario_para_ingreso, name="buscar_voluntario_para_ingreso"),
     path("cargosPersonal", views.cargos_personal, name="cargos_personal"),
     path(
         "cargosPersonalID=<int:personal_id>",
@@ -46,6 +47,7 @@ urlpatterns = [
         views.informacion_voluntario_id,
         name="informacion_voluntario_id",
     ),
+    path("ingresoVoluntario", views.ingreso_voluntario, name="ingreso_voluntario"),
     path("listadoActividades", views.listado_actividades, name="listado_actividades"),
     path("listadoBoletin", views.listado_boletin, name="listado_boletin"),
     path(
