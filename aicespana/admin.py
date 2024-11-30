@@ -60,6 +60,10 @@ class PersonalIglesiaAdmin(admin.ModelAdmin):
     search_fields = ("apellido__icontains",)
 
 
+class IngresosPersonalExternoAdmin(admin.ModelAdmin):
+    list_display = ["p_externo", "ingreso", "fecha"]
+    search_fields = ("p_externo__apellido__icontains",)
+
 admin.site.register(aicespana.models.EntidadesConCargo, EntidadesConCargoAdmin)
 admin.site.register(aicespana.models.Cargo, CargoAdmin)
 admin.site.register(aicespana.models.Delegacion, DelegacionAdmin)
@@ -71,3 +75,4 @@ admin.site.register(aicespana.models.Actividad, ActividadAdmin)
 admin.site.register(aicespana.models.PersonalExterno, PersonalExternoAdmin)
 admin.site.register(aicespana.models.TipoColaboracion, TipoColaboracionAdmin)
 admin.site.register(aicespana.models.PersonalIglesia, PersonalIglesiaAdmin)
+admin.site.register(aicespana.models.IngresosPersonalExterno, IngresosPersonalExternoAdmin)

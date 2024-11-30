@@ -29,6 +29,7 @@ urlpatterns = [
         name="cargo_voluntario",
     ),
     path("cargosVoluntarios", views.cargos_voluntarios, name="cargos_voluntarios"),
+    path("formularioIngresoVoluntario/<int:id>", views.formulario_ingreso_voluntario, name="formulario_ingreso_voluntario"),
     path(
         "informacionPersonal", views.informacion_personal, name="informacion_personal"
     ),
@@ -50,6 +51,7 @@ urlpatterns = [
     path("ingresoVoluntario", views.ingreso_voluntario, name="ingreso_voluntario"),
     path("listadoActividades", views.listado_actividades, name="listado_actividades"),
     path("listadoBoletin", views.listado_boletin, name="listado_boletin"),
+    path("listadoIngresoVoluntario", views.listado_ingreso_voluntario, name="listado_ingreso_voluntario"),
     path(
         "listadoBajasExterno", views.listado_bajas_externo, name="listado_bajas_externo"
     ),

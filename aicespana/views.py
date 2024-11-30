@@ -2406,7 +2406,6 @@ def listado_bajas_diocesis(request):
 
 @login_required
 def ingreso_voluntario (request):
-    # import datetime
     if not aicespana.utils.generic_functions.is_manager(request):
             return render(
                 request,
@@ -2415,6 +2414,7 @@ def ingreso_voluntario (request):
             )
     import datetime
     present_year = datetime.datetime.now().year
+    import pdb; pdb.set_trace()
     ingreso_voluntario = aicespana.models.IngresosPersonalExterno.objects.filter(fecha__year=present_year).values_list("p_externo__nombre", "p_externo__apellido", "ingreso", "fecha")
     return render(
         request,
@@ -2430,16 +2430,13 @@ def buscar_voluntario_para_ingreso(request):
             voluntarios = aicespana.models.PersonalExterno.objects.filter(apellido__icontains=query)
         else:
             voluntarios = aicespana.models.PersonalExterno.objects.none()
-        # import pdb; pdb.set_trace()
         if len(voluntarios) > 10:
             return HttpResponse("Hay demasiados voluntarios que tienen es apellido")
 
         voluntario_data = list(voluntarios.values_list("nombre", "apellido", "pk"))
         if len(voluntarios) == 1:
             # Si hay solo un usuario, renderizamos el formulario
-           
             return render(request, 'aicespana/formulario_ingreso_voluntario.html', {"voluntario_data": voluntario_data})
-
         return render(request, 'aicespana/voluntario_lista_ingreso.html', {"voluntario_data": voluntario_data})
 
 
@@ -2449,17 +2446,26 @@ def formulario_ingreso_voluntario(request, id):
             voluntario_obj = aicespana.models.PersonalExterno.objects.get(pk__exact=id)
         except:
             return redirect("ingresoVoluntario")
-        voluntario_data = list(voluntario_obj.values_list("nombre", "apellido", "pk"))
-        return render (request,"formularioIngresoVoluntario.html", {"voluntario_data": voluntario_data})
-    if request.method == 'POST':
+        voluntario_data = [voluntario_obj.nombre, voluntario_obj.apellido, voluntario_obj.pk]
+        return render (request,"aicespana/formularioIngresoVoluntario.html", {"voluntario_data": voluntario_data})
+    if request.method == 'POST' and request.POST["action"] == "ingresoVoluntario":
         # Procesa el formulario para agregar el ingreso en euros y la fecha
         input_data = {}
         input_data["voluntario_id"] = request.POST.get('voluntario_id')
-        input_data["cantidad"] = request.POST.get('cantidad')
-        fecha = request.POST.get('fecha')
+        input_data["ingreso"] = request.POST.get('ingreso')
+        input_data["fecha_ingreso"] = request.POST.get('fecha_ingreso')
         ingreso = aicespana.models.IngresosPersonalExterno.objects.create_ingreso(input_data)
-        # Aquí podrías guardar estos datos en un modelo relacionado o procesarlos como necesites
-        # Guardar o procesar el ingreso...
+        if isinstance(ingreso, dict):
+            return render (request, "aicespana/formularioIngresoVoluntario.html", {"error": ingreso["error"]})
+        v_obj = aicespana.models.PersonalExterno.objects.get(pk__exact=input_data["voluntario_id"])
+        v_name = v_obj.nombre + "  " + v_obj.apellido
+        return render (request, "aicespana/formularioIngresoVoluntario.html", {"confirmation_data": v_name})        
+    return redirect ("index")
+
+def listado_ingreso_voluntario(request):
+    if request.method == "GET":
+        sel_year = request.GET.get("anoIngresos")
+        listado_anual = list(aicespana.models.IngresosPersonalExterno.objects.filter(fecha__year=sel_year).values_list("p_externo__nombre","p_externo__apellido", "ingreso"))
+        html = render_to_string("aicespana/tabla_ingresos.html", {"listado_anual": listado_anual})
+        return HttpResponse(html)
         
-        return JsonResponse({'success': True, 'message': 'Ingreso registrado con éxito'})
-    return JsonResponse({'success': False, 'message': 'Datos incorrectos o faltantes'})

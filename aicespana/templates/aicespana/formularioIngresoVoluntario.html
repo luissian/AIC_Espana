@@ -1,0 +1,102 @@
+{% extends 'aicespana/base.html' %}
+{% load static %}
+{% block content %}
+{% include "aicespana/cdn_table_functionality.html" %}
+{% if error %}
+	<div class="container-md">
+		<div class="row g-3">
+			<div class="col-md-6 offset-3">
+				<div class="card text-center border-danger">
+					<div class="card-header">
+						<h2 style="text-align:center">ERROR</h2>
+					</div>
+					<div class="card-body">
+						<p class="card-text">
+								{{error}}
+						</p>
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+	</div> 
+{% endif %}
+{% if confirmation_data %}
+	<div class="container-md">
+		<div class="row g-3">
+			<div class="col-md-10">
+				<div class="card">
+					<div class="card-header"><h2 class"text-center">Datos Guardados</h2> </div>
+					<div class="card-body">
+						<p class="text-center">El ingreso efectuado por {{confirmation_data}} se ha guardado correctamente</p>
+					</div> 
+				</div> 
+		    </div> 
+		</div> 
+	</div> 
+	<div class="container-md">
+		<div class="row g-3">
+			<div class="col-md-10">
+				<div class="card">
+					<div class="card-body">
+						<p>Para añadir el ingreso a otro voluntarion hacer click en el boton de abajo</p>
+						
+						<div class="text-center">
+							<a href="/ingresoVoluntario"> <button type="button" class="btn btn-outline-secondary float-center" >Añadir un nuevo ingreso</button> </a>
+						</div> 
+					</div> 
+				</div> 
+			</div> 
+		</div> 
+	</div> 
+
+{% else %}
+	<section class="light">
+		<div class="container md-8">
+			<h4 class="text-center" id="pageHeaderTitle">Añadir el ingreso realizado por :</h4>
+            <h5 class="text-center">{{ voluntario_data.0 }} {{voluntario_data.1}}</h5>
+	    </div>
+	</section>
+	<div class="container-md">
+	    <div class="row g-2">
+	        <div class="col-md-6 offset-2">
+	            <div class="card">
+	                <div class="card-body">
+	                    <form class="row g-3" method="post" enctype="multipart/form-data" name="ingresoVoluntario" id="ingresoVoluntario" >
+	                        {% csrf_token %}
+	                        <input type="hidden" name="action" value="ingresoVoluntario"/>
+                            <input type="hidden" name="voluntario_id" id="voluntario_id" value="{{ voluntario_data.2}}">
+                            <div class="row">
+		                        <div class="col">
+		                            <div class="form-floating mt-3">
+                                        <input type="date"  class="form-control" id="fecha_ingreso" name='fecha_ingreso' required>
+                                        <label for="fecha_ingreso">Fecha del ingreso</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+		                        <div class="col">
+		                            <div class="form-floating mt-3">
+                                        <input type="number"  class="form-control" id="ingreso" name='ingreso' required placeholder="Ingreso en Euros">
+                                        <label for="number"> Ingreso en Euros</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row my-3">
+	                            <div class="col">
+                                    <input type="reset" class="btn btn-outline-secondary" value="Limpiar campos">
+                                    <input class="btn float-end btn-outline-primary" type="submit" value="Guardar datos">
+                                </div>
+	                        </div>
+                        </form>
+                    </div> 
+                </div> 
+            </div>
+        </div>
+    </div>
+{% endif %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        
+    });
+</script>
+{% endblock %}

@@ -1142,7 +1142,16 @@ class PersonalExterno(models.Model):
 
 class IngresosPersonalExternoManager(models.Manager):
     def create_ingreso(self,data):
-        n_ingreso = self.create()
+        try:
+            p_externo = PersonalExterno.objects.get(pk__exact=data["voluntario_id"])
+        except PersonalExterno.DoesNotExist :
+            return {"error": "Voluntario no existe"}
+        import pdb; pdb.set_trace()
+        n_ingreso = self.create(
+            p_externo=p_externo,
+            ingreso=data["ingreso"],
+            fecha=data["fecha_ingreso"],
+        )
         return n_ingreso
 
 class IngresosPersonalExterno(models.Model):
@@ -1152,6 +1161,9 @@ class IngresosPersonalExterno(models.Model):
 
     def __str__ (self):
         return "%s" %(self.p_externo)
+
+    objects = IngresosPersonalExternoManager()
+
 
 class PersonalManager(models.Manager):
     def create_new_personel(self, data):

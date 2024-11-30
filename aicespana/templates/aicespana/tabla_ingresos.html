@@ -1,0 +1,36 @@
+
+<div id="tabla_ingresos">
+    <div class="row mt-3">
+        <table class="table table-hover" id="listado_ingresos">
+            <thead>
+                <tr>
+                    <th>Nombre del voluntario</th>
+                    <th>Cantidad ingresada en €</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for nombre, apellido, cantidad in listado_anual %}
+                    <tr>
+                        <td>{{ nombre }} {{ apellido }}</td>
+                        <td>{{ cantidad }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $('#listado_ingresos').DataTable({
+            dom: "fltirpB",
+            responsive: true,
+            buttons: [
+                'excel'
+            ]
+        });
+    });
+
+
+</script>
