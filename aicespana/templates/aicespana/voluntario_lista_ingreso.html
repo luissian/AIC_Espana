@@ -1,17 +1,22 @@
+
 <div class="table-wrapper">
     <table id="delegacion" class="table table-hover mb-0">
         <thead>
             <tr>
                 <th>Nombre del voluntario</th>
+                <th>Ingreso</th>
+                <th>Fecha</th>
             </tr>
         </thead>
         <tbody>
-            {% for nombre , apellido, id in voluntario_data %}
+            {% for voluntario in voluntario_data %}
                 <tr>
 
                     <td>
-                        <a href="/formularioIngresoVoluntario/{{id}}">{{ nombre }} {{ apellido }}</a>
+                        <a href="/formularioIngresoVoluntario/{{voluntario.pk}}">{{ voluntario.nombre }} {{ voluntario.apellido }}</a>
                     </td>
+                    <td>{{ voluntario.ingreso }}</td>
+                    <td>{{ voluntario.fecha }}</td>
                 </tr>
                 
             {% endfor %}

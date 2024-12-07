@@ -19,17 +19,18 @@
                 <div class="tab-pane fade show active" id="pendiente" role="tabpanel" aria-labelledby="info-tab">
                     <div class="container-md">
                         <div class="row mt-5">
-                            <div class="col-md-6">
+                            <div class="col-md-8">
                                 <div class="card">
                                     <div class="card-body">
-                                            <input type="text" name="q" id="search" 
-                                                hx-get="/buscarVoluntarioParaIngreso"
-                                                hx-target="#resultado-voluntario"
-                                                hx-trigger="keyup" 
-                                                placeholder="Buscar voluntario..."
-                                                onkeyup="checkInputLength(this)">
-                                        
+                                        <input type="text" name="q" id="search" 
+                                            hx-get="/buscarVoluntarioParaIngreso"
+                                            hx-target="#resultado-voluntario"
+                                            hx-trigger="keyup" 
+                                            placeholder="Buscar voluntario..."
+                                            onkeyup="checkInputLength(this)">
+                                    
                                         <div id="resultado-voluntario">
+
                                             {% for voluntario in voluntarios %}
                                                 <div class="voluntario" data-id="{{ voluntario.id }}">
                                                     {{ nombre.nombre }}
@@ -40,6 +41,18 @@
                                         </div>
                                     </div> 
                                 </div> 
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="text-center">{{ summary.year }}</h4>
+                                        <h5>Se han ingresado {{ summary.ingreso_total }} €</h5>
+                                        <h5>de {{ summary.num_voluntarios }} voluntarios</h5>
+
+                                    </div>
+
+                                </div>
+
                             </div> 
                         </div> 
                     </div> 
@@ -58,13 +71,13 @@
                                                 <form method="post">
                                                     {% csrf_token %}
                                                     <select class="form-select"  
-                                                            name="anoIngresos" 
-                                                            id="anoIngresos"
+                                                            name="yearIngresos" 
+                                                            id="yearIngresos"
                                                             hx-get="/listadoIngresoVoluntario"
                                                             hx-target="#tabla_ingresos"
                                                             hx-swap="outerHTML">
                                                         <option value="">Elige un  año</option>
-                                                        <option value="2024">2024</option>
+                                                        
                                                     </select>
                                                 </form>
                                             </div>
@@ -91,6 +104,17 @@
                 // Si el texto tiene menos de 4 caracteres, deshabilitamos la solicitud
                 input.removeAttribute("hx-get");
             }
+        }
+        // script to populate years in the select option
+        const startYear = 2023;
+        const currentYear = new Date().getFullYear(); // current year
+        const selectElement = document.getElementById("yearIngresos");
+
+        for (let year = startYear; year <= currentYear; year++) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            selectElement.appendChild(option)
         }
     </script>
    

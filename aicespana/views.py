@@ -1,6 +1,9 @@
 # import statistics
 import os
 import re
+import datetime
+from django.db.models import OuterRef, Subquery, Value, CharField, IntegerField, Sum
+from django.db.models.functions import Coalesce
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 
@@ -2413,13 +2416,16 @@ def ingreso_voluntario (request):
                 {"content": aicespana.message_text.ERROR_USER_NOT_MANAGER},
             )
     import datetime
-    present_year = datetime.datetime.now().year
-    import pdb; pdb.set_trace()
-    ingreso_voluntario = aicespana.models.IngresosPersonalExterno.objects.filter(fecha__year=present_year).values_list("p_externo__nombre", "p_externo__apellido", "ingreso", "fecha")
+    current_year = datetime.datetime.now().year
+    # import pdb; pdb.set_trace()
+    # ingreso_voluntario = aicespana.models.IngresosPersonalExterno.objects.filter(fecha__year=present_year).values_list("p_externo__nombre", "p_externo__apellido", "ingreso", "fecha")
+    summary = {"year" : current_year}
+    summary["num_voluntarios"] = aicespana.models.IngresosPersonalExterno.objects.filter(fecha__year=current_year).count()
+    summary["ingreso_total"] = aicespana.models.IngresosPersonalExterno.objects.filter(fecha__year=current_year).aggregate(total=Sum("ingreso"))['total'] or 0
     return render(
         request,
         "aicespana/ingresoVoluntario.html",
-        {"ingreso_voluntarios": ingreso_voluntario}
+        {"summary": summary}
     )
 
 
@@ -2430,13 +2436,19 @@ def buscar_voluntario_para_ingreso(request):
             voluntarios = aicespana.models.PersonalExterno.objects.filter(apellido__icontains=query)
         else:
             voluntarios = aicespana.models.PersonalExterno.objects.none()
+            return HttpResponse("La petición no es valida")
         if len(voluntarios) > 10:
-            return HttpResponse("Hay demasiados voluntarios que tienen es apellido")
-
-        voluntario_data = list(voluntarios.values_list("nombre", "apellido", "pk"))
+            return HttpResponse("Hay demasiados voluntarios que empiezan por ese apellido")
         if len(voluntarios) == 1:
             # Si hay solo un usuario, renderizamos el formulario
-            return render(request, 'aicespana/formulario_ingreso_voluntario.html', {"voluntario_data": voluntario_data})
+            return JsonResponse({}, headers={"HX-Redirect": "formularioIngresoVoluntario/" + str(voluntarios[0].pk)})
+        # create a list with voluntario data including ingreso and date
+        year = datetime.datetime.now().year
+        ingreso_subquery = aicespana.models.IngresosPersonalExterno.objects.filter(fecha__year=year, p_externo=OuterRef('pk')).values('ingreso')[:1]
+        fecha_subquery = aicespana.models.IngresosPersonalExterno.objects.filter(fecha__year=year, p_externo=OuterRef('pk')).values('fecha')[:1]
+
+        v_query= voluntarios.annotate(ingreso=Coalesce(Subquery(ingreso_subquery, output_field=IntegerField()), Value(0)),fecha=Coalesce(Subquery(fecha_subquery, output_field=CharField()), Value("Sin fecha")))
+        voluntario_data = list(v_query.values("pk", "nombre", "apellido", "ingreso", "fecha"))
         return render(request, 'aicespana/voluntario_lista_ingreso.html', {"voluntario_data": voluntario_data})
 
 
@@ -2464,8 +2476,12 @@ def formulario_ingreso_voluntario(request, id):
 
 def listado_ingreso_voluntario(request):
     if request.method == "GET":
-        sel_year = request.GET.get("anoIngresos")
-        listado_anual = list(aicespana.models.IngresosPersonalExterno.objects.filter(fecha__year=sel_year).values_list("p_externo__nombre","p_externo__apellido", "ingreso"))
+        sel_year = request.GET.get("yearIngresos")
+        if sel_year == "":
+            listado_anual = ""
+        else:
+            listado_anual = list(aicespana.models.IngresosPersonalExterno.objects.filter(fecha__year=sel_year).values_list("p_externo__nombre","p_externo__apellido", "ingreso", "fecha"))
+        
         html = render_to_string("aicespana/tabla_ingresos.html", {"listado_anual": listado_anual})
         return HttpResponse(html)
         

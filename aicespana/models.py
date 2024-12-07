@@ -1146,7 +1146,6 @@ class IngresosPersonalExternoManager(models.Manager):
             p_externo = PersonalExterno.objects.get(pk__exact=data["voluntario_id"])
         except PersonalExterno.DoesNotExist :
             return {"error": "Voluntario no existe"}
-        import pdb; pdb.set_trace()
         n_ingreso = self.create(
             p_externo=p_externo,
             ingreso=data["ingreso"],
