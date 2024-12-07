@@ -1,4 +1,5 @@
 import os
+import re
 from datetime import date
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
@@ -1146,6 +1147,19 @@ class IngresosPersonalExternoManager(models.Manager):
             p_externo = PersonalExterno.objects.get(pk__exact=data["voluntario_id"])
         except PersonalExterno.DoesNotExist :
             return {"error": "Voluntario no existe"}
+        
+        date = re.search('^([\d]{4})-.*', data["fecha_ingreso"])
+        if date:
+            year = date.group(1)
+        else:
+            return {"error": "Fecha incorrecta"}
+        # check if personal externo already made an ingreso
+        if IngresosPersonalExterno.objects.filter(p_externo=p_externo, fecha__year=year).exists():
+            n_ingreso = IngresosPersonalExterno.objects.filter(p_externo=p_externo, fecha__year=year).last()
+            n_ingreso.ingreso = data["ingreso"]
+            n_ingreso.fecha = data["fecha_ingreso"]
+            n_ingreso.save()
+            
         n_ingreso = self.create(
             p_externo=p_externo,
             ingreso=data["ingreso"],

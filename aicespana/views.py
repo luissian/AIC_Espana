@@ -2458,7 +2458,13 @@ def formulario_ingreso_voluntario(request, id):
             voluntario_obj = aicespana.models.PersonalExterno.objects.get(pk__exact=id)
         except:
             return redirect("ingresoVoluntario")
-        voluntario_data = [voluntario_obj.nombre, voluntario_obj.apellido, voluntario_obj.pk]
+        
+        # get the ingreso if already did it
+        try:
+            ingreso = aicespana.models.IngresosPersonalExterno.objects.get(p_externo=voluntario_obj).ingreso
+        except:
+            ingreso = ""
+        voluntario_data = [voluntario_obj.nombre, voluntario_obj.apellido, voluntario_obj.pk, ingreso]
         return render (request,"aicespana/formularioIngresoVoluntario.html", {"voluntario_data": voluntario_data})
     if request.method == 'POST' and request.POST["action"] == "ingresoVoluntario":
         # Procesa el formulario para agregar el ingreso en euros y la fecha
