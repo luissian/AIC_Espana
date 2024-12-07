@@ -1159,12 +1159,13 @@ class IngresosPersonalExternoManager(models.Manager):
             n_ingreso.ingreso = data["ingreso"]
             n_ingreso.fecha = data["fecha_ingreso"]
             n_ingreso.save()
-            
-        n_ingreso = self.create(
-            p_externo=p_externo,
-            ingreso=data["ingreso"],
-            fecha=data["fecha_ingreso"],
-        )
+        else:
+            # new ingreso from personal externo
+            n_ingreso = self.create(
+                p_externo=p_externo,
+                ingreso=data["ingreso"],
+                fecha=data["fecha_ingreso"],
+            )
         return n_ingreso
 
 class IngresosPersonalExterno(models.Model):
