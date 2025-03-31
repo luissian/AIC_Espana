@@ -3,26 +3,26 @@
     
     <div class="row mt-3">
         {% if listado_anual != "" %}
-        <table class="table table-hover" id="listado_ingresos">
-            <thead>
-                <tr>
-                    <th>Nombre del voluntario</th>
-                    <th>Cantidad ingresada en €</th>
-                    <th>Fecha</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for nombre, apellido, cantidad, fecha in listado_anual %}
+            <table class="table table-hover" id="listado_ingresos">
+                <thead>
                     <tr>
-                        <td>{{ nombre }} {{ apellido }}</td>
-                        <td>{{ cantidad }}</td>
-                        <td>{{ fecha|date:"j/m/Y" }}</td>
+                        <th>Nombre del voluntario</th>
+                        <th>Cantidad ingresada en €</th>
+                        <th>Fecha</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for nombre, apellido, cantidad, fecha in listado_anual %}
+                        <tr>
+                            <td>{{ nombre }} {{ apellido }}</td>
+                            <td>{{ cantidad }}</td>
+                            <td>{{ fecha|date:"j/m/Y" }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         {% else %}
-        <h5>No hay ingresos para ese año</h5>
+            <h5>No hay ingresos para ese año</h5>
         {% endif%}
     </div>
 </div>

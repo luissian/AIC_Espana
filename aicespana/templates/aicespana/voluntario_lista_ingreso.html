@@ -1,5 +1,6 @@
 
 <div class="table-wrapper">
+    {% if voluntario_data %}
     <table id="delegacion" class="table table-hover mb-0">
         <thead>
             <tr>
@@ -22,4 +23,7 @@
             {% endfor %}
         </tbody>
     </table>
-</div> <!--  end of table wrapper  -->
+    {% else %}
+        <h5>No hay voluntarios con ese apellido</h5>
+    {% endif %}
+    </div> <!--  end of table wrapper  -->

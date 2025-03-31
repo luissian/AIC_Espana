@@ -2436,9 +2436,9 @@ def buscar_voluntario_para_ingreso(request):
             voluntarios = aicespana.models.PersonalExterno.objects.filter(apellido__icontains=query)
         else:
             voluntarios = aicespana.models.PersonalExterno.objects.none()
-            return HttpResponse("La petición no es valida")
+            return HttpResponse("No hay voluntarios con el apellido " + query)
         if len(voluntarios) > 10:
-            return HttpResponse("Hay demasiados voluntarios que empiezan por ese apellido")
+            return HttpResponse("Hay demasiados voluntarios que empiezan por el apellido" + query)
         if len(voluntarios) == 1:
             # Si hay solo un usuario, renderizamos el formulario
             return JsonResponse({}, headers={"HX-Redirect": "formularioIngresoVoluntario/" + str(voluntarios[0].pk)})

@@ -22,22 +22,35 @@
                             <div class="col-md-8">
                                 <div class="card">
                                     <div class="card-body">
-                                        <input type="text" name="q" id="search" 
-                                            hx-get="/buscarVoluntarioParaIngreso"
-                                            hx-target="#resultado-voluntario"
-                                            hx-trigger="keyup" 
-                                            placeholder="Buscar voluntario..."
-                                            onkeyup="checkInputLength(this)">
+                                        <div class="row-mt-2">
+                                            <div class="col-md">
+                                                <label class="label" for="q"> Escribe el apellido del voluntario</label>
+                                            </div>
+                                            <div>
+                                                <input type="text" name="q" id="search" 
+                                                    hx-get="/buscarVoluntarioParaIngreso"
+                                                    hx-target="#resultado-voluntario"
+                                                    hx-trigger="keyup" 
+                                                    placeholder="Buscar voluntario..."
+                                                    onkeyup="checkInputLength(this)">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row-mt-2">
                                     
-                                        <div id="resultado-voluntario">
-
-                                            {% for voluntario in voluntarios %}
-                                                <div class="voluntario" data-id="{{ voluntario.id }}">
-                                                    {{ nombre.nombre }}
-                                                </div>
-                                            {% empty %}
-                                                <p>No hay voluntarios para mostrar.</p>
-                                            {% endfor %}
+                                            <div id="resultado-voluntario">
+                                                {%  if voluntarios %}
+                                                    {% for voluntario in voluntarios %}
+                                                        <div class="voluntario" data-id="{{ voluntario.id }}">
+                                                            {{ nombre.nombre }}
+                                                        </div>
+                                                    {% empty %}
+                                                        <p>No hay voluntarios para mostrar.</p>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <h5>No hay voluntarios con el apellido </h5>
+                                                {% endif %}
+                                            </div>
                                         </div>
                                     </div> 
                                 </div> 
